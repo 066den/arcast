@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Setup 1",
+    "location": "Dubai",
+    "imageUrl": "https://res.cloudinary.com/dcluqgjqe/image/upload/v1744358650/Frame_1618875659_tkrldb.png",
+    "totalSeats": 5,
+    "openingTime": "10:00",
+    "closingTime": "21:00",
+    "packages": {
+      "connect": [
+        { "id": "recordingEditPackage.id" },
+        { "id": "recordingOnlyPackage.id" },
+        { "id": "recordingLiveCuttingPackage.id" }
+      ]
+    }
+  },
+  {
+    "name": "Setup 2",
+    "location": "Dubai",
+    "imageUrl": "https://res.cloudinary.com/dcluqgjqe/image/upload/v1744358654/Frame_1618875660_spu27d.png",
+    "totalSeats": 6,
+    "openingTime": "10:00",
+    "closingTime": "21:00",
+    "packages": {
+      "connect": [
+        { "id": "recordingEditPackage.id" },
+        { "id": "recordingOnlyPackage.id" },
+        { "id": "recordingLiveCuttingPackage.id" }
+      ]
+    }
+  },
+  {
+    "name": "Setup 3",
+    "location": "Dubai",
+    "imageUrl": "https://res.cloudinary.com/dcluqgjqe/image/upload/v1744358657/Frame_1618875661_lzt4cy.png",
+    "totalSeats": 4,
+    "openingTime": "10:00",
+    "closingTime": "21:00",
+    "packages": {
+      "connect": [
+        { "id": "recordingEditPackage.id" },
+        { "id": "recordingOnlyPackage.id" },
+        { "id": "recordingLiveCuttingPackage.id" }
+      ]
+    }
+  },
+  {
+    "name": "Setup 4",
+    "location": "Dubai",
+    "imageUrl": "https://res.cloudinary.com/dcluqgjqe/image/upload/v1744358653/Frame_1618875662_woyngq.png",
+    "totalSeats": 3,
+    "openingTime": "10:00",
+    "closingTime": "21:00",
+    "packages": {
+      "connect": [
+        { "id": "recordingEditPackage.id" },
+        { "id": "recordingOnlyPackage.id" },
+        { "id": "recordingLiveCuttingPackage.id" }
+      ]
+    }
+  }
+]

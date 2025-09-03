@@ -1,0 +1,48 @@
+[
+  {
+    "name": "Recording + Professional Edit",
+    "price_per_hour": 940.0,
+    "currency": "AED",
+    "description": "Get high-quality recording with professional editing to enhance your sound",
+    "delivery_time": 24,
+    "packagePerks": {
+      "create": [
+        { "name": "Raw video in multiple resolutions (1080p/4K)" },
+        { "name": "Audio files in multiple formats (MP3, WAV, MP4)" },
+        { "name": "Audio / video syncing" },
+        { "name": "Color grading" },
+        { "name": "Noise reduction" },
+        { "name": "Revisions", "count": 2 },
+        { "name": "Filler words removal" },
+        { "name": "SEO optimized show notes" }
+      ]
+    }
+  },
+  {
+    "name": "Recording Only",
+    "price_per_hour": 440.0,
+    "currency": "AED",
+    "description": "Get high-quality recording with professional editing to enhance your sound",
+    "delivery_time": 24,
+    "packagePerks": {
+      "create": [
+        { "name": "Raw video in multiple resolutions (1080p/4K)" },
+        { "name": "Audio files in multiple formats (MP3, WAV, MP4)" }
+      ]
+    }
+  },
+  {
+    "name": "Recording + Live Video Cutting with Synced Media",
+    "price_per_hour": 540.0,
+    "currency": "AED",
+    "description": "Get high-quality recording with professional editing to enhance your sound",
+    "delivery_time": 24,
+    "packagePerks": {
+      "create": [
+        { "name": "Audio / video syncing" },
+        { "name": "Raw video in multiple resolutions (1080p/4K)" },
+        { "name": "Audio files in multiple formats (MP3, WAV, MP4)" }
+      ]
+    }
+  }
+]

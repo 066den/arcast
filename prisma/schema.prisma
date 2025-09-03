@@ -1,0 +1,220 @@
+// Prisma schema
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Example model. You can remove or modify it as needed.
+model Studio {
+  id          String          @id @default(uuid())
+  name        String
+  location    String
+  imageUrl    String
+  totalSeats  Int
+  openingTime String // Store as "HH:mm" format
+  closingTime String // Store as "HH:mm" format
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  bookings    Booking[]
+  packages    StudioPackage[]
+}
+
+model StudioPackage {
+  id             String        @id @default(uuid())
+  name           String
+  price_per_hour Decimal       @db.Decimal(10, 2)
+  currency       String        @default("AED")
+  description    String
+  delivery_time  Int
+  studios        Studio[] // Changed to allow multiple studios
+  bookings       Booking[]
+  packagePerks   PackagePerk[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model PackagePerk {
+  id        String        @id @default(uuid())
+  name      String
+  count     Int? // Optional count for items like "3x Sony cameras"
+  packageId String
+  package   StudioPackage @relation(fields: [packageId], references: [id])
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model DiscountCode {
+  id            String       @id @default(cuid())
+  code          String       @unique
+  type          DiscountType
+  value         Float
+  maxUses       Int?
+  usedCount     Int          @default(0)
+  startDate     DateTime
+  endDate       DateTime
+  isActive      Boolean      @default(true)
+  minAmount     Float? // Minimum booking amount required
+  firstTimeOnly Boolean      @default(false) // Flag to indicate if this code is for first-time clients only
+  bookings      Booking[] // Relation to bookings that used this code
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([code])
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+}
+
+model Booking {
+  id                 String                     @id @default(uuid())
+  startTime          DateTime
+  endTime            DateTime
+  numberOfSeats      Int
+  totalCost          Decimal                    @db.Decimal(10, 2)
+  vatAmount          Decimal                    @db.Decimal(10, 2)
+  discountAmount     Decimal?                   @db.Decimal(10, 2)
+  status             BookingStatus              @default(PENDING)
+  studioId           String
+  studio             Studio                     @relation(fields: [studioId], references: [id])
+  packageId          String
+  package            StudioPackage              @relation(fields: [packageId], references: [id])
+  leadId             String
+  lead               Lead                       @relation(fields: [leadId], references: [id])
+  discountCodeId     String?
+  discountCode       DiscountCode?              @relation(fields: [discountCodeId], references: [id])
+  additionalServices BookingAdditionalService[]
+  payment            Payment? // Relation to payment
+  createdAt          DateTime                   @default(now())
+  updatedAt          DateTime                   @updatedAt
+}
+
+model Lead {
+  id                String    @id @default(uuid())
+  fullName          String
+  email             String? // Made optional
+  phoneNumber       String? // Made optional
+  whatsappNumber    String? // Optional WhatsApp number
+  recordingLocation String?
+  bookings          Booking[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum AdditionalServiceType {
+  STANDARD_EDIT_SHORT_FORM
+  CUSTOM_EDIT_SHORT_FORM
+  STANDARD_EDIT_LONG_FORM
+  CUSTOM_EDIT_LONG_FORM
+  LIVE_VIDEO_CUTTING
+  SUBTITLES
+  TELEPROMPTER_SUPPORT
+  MULTI_CAM_RECORDING
+  EPISODE_TRAILER_LONG_FORM
+  EPISODE_TRAILER_SHORT_FORM
+  WARDROBE_STYLING_CONSULTATION
+  PODCAST_DISTRIBUTION
+}
+
+model AdditionalService {
+  id              String                     @id @default(uuid())
+  title           String
+  type            AdditionalServiceType
+  price           Decimal                    @db.Decimal(10, 2)
+  currency        String                     @default("AED")
+  count           Int                        @default(1)
+  description     String
+  imageUrls       String[] // Array of image URLs
+  videoUrl        String? // Optional video URL
+  isActive        Boolean                    @default(true)
+  order           Int                        @default(999) // Controls display order on frontend, default high value for existing records
+  createdAt       DateTime                   @default(now())
+  updatedAt       DateTime                   @updatedAt
+  bookingServices BookingAdditionalService[]
+}
+
+model BookingAdditionalService {
+  id                  String            @id @default(uuid())
+  bookingId           String
+  booking             Booking           @relation(fields: [bookingId], references: [id])
+  additionalServiceId String
+  additionalService   AdditionalService @relation(fields: [additionalServiceId], references: [id])
+  quantity            Int               @default(1)
+  price               Decimal           @db.Decimal(10, 2)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@unique([bookingId, additionalServiceId])
+}
+
+// Payment-related models
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentProvider {
+  MAMO_PAY
+  // Can add other payment providers in the future
+}
+
+model Payment {
+  id            String          @id @default(uuid())
+  bookingId     String          @unique
+  booking       Booking         @relation(fields: [bookingId], references: [id])
+  amount        Decimal         @db.Decimal(10, 2)
+  currency      String          @default("AED")
+  status        PaymentStatus   @default(PENDING)
+  provider      PaymentProvider @default(MAMO_PAY)
+  externalId    String? // ID from payment provider
+  paymentLinkId String? // ID of the payment link in our system
+  paymentLink   PaymentLink?    @relation(fields: [paymentLinkId], references: [id])
+  metadata      Json? // Additional metadata about the payment
+  completedAt   DateTime? // When the payment was completed
+  refundedAt    DateTime? // When the payment was refunded (if applicable)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model PaymentLink {
+  id          String          @id @default(uuid())
+  url         String // Payment link URL
+  externalId  String? // ID from payment provider
+  provider    PaymentProvider @default(MAMO_PAY)
+  amount      Decimal         @db.Decimal(10, 2)
+  currency    String          @default("AED")
+  title       String // Title of the payment
+  description String? // Description of what is being paid for
+  metadata    Json? // Additional metadata about the payment link
+  expiresAt   DateTime? // Optional expiration date
+  payments    Payment[] // Relation to payments made with this link
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model WebhookEvent {
+  id          String          @id @default(uuid())
+  provider    PaymentProvider @default(MAMO_PAY)
+  eventType   String // Type of event (payment.completed, payment.failed, etc.)
+  payload     Json // Raw webhook payload
+  processedAt DateTime? // When the webhook was processed
+  status      String // Status of webhook processing (successful, failed, pending)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}

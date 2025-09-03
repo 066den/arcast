@@ -1,0 +1,73 @@
+[
+  {
+    "title": "Short Form Edit (Instagram/TikTok)",
+    "type": "STANDARD_EDIT_SHORT_FORM",
+    "price": 500.0,
+    "currency": "AED",
+    "description": "High-quality, premium reels with advanced editing, motion graphics, and engaging cuts.",
+    "imageUrls": [
+      "https://res.cloudinary.com/deuvbiekl/image/upload/v1741610901/Frame_1618875616_kmnkk0.png"
+    ],
+    "isActive": true
+  },
+  {
+    "title": "Long Form Edit (Youtube)",
+    "type": "STANDARD_EDIT_LONG_FORM",
+    "price": 950.0,
+    "currency": "AED",
+    "description": "Professional-grade editing with in-depth sound design, smooth transitions, and high production quality per episode.",
+    "imageUrls": [
+      "https://res.cloudinary.com/deuvbiekl/image/upload/v1741610519/Youtube_player_dtcx8v.png"
+    ],
+    "isActive": true
+  },
+  {
+    "title": "Episode Trailer (Short form)",
+    "type": "EPISODE_TRAILER_SHORT_FORM",
+    "price": 200.0,
+    "currency": "AED",
+    "description": "Quick, impactful trailer editing to capture attention and drive excitement with key highlights in a concise format.",
+    "imageUrls": [],
+    "isActive": true
+  },
+  {
+    "title": "Episode Trailer (Long form)",
+    "type": "EPISODE_TRAILER_LONG_FORM",
+    "price": 200.0,
+    "currency": "AED",
+    "description": "Professional editing to create a captivating trailer that highlights key moments, engaging your audience with a polished, cinematic preview.",
+    "imageUrls": [],
+    "isActive": true
+  },
+  {
+    "title": "Subtitles (per session)",
+    "type": "SUBTITLES",
+    "price": 440.0,
+    "currency": "AED",
+    "description": "Accurate subtitles and captions to improve accessibility and engagement for video content.",
+    "imageUrls": [
+      "https://res.cloudinary.com/deuvbiekl/image/upload/v1741610687/Frame_1618875174_bdmhcv.png"
+    ],
+    "isActive": true
+  },
+  {
+    "title": "Teleprompter Support",
+    "type": "TELEPROMPTER_SUPPORT",
+    "price": 80.0,
+    "currency": "AED",
+    "description": "On-screen script assistance for seamless delivery, perfect for structured interviews and presentations.",
+    "imageUrls": [
+      "https://res.cloudinary.com/deuvbiekl/image/upload/v1741610730/Frame_1618875174_1_zvq2lz.png"
+    ],
+    "isActive": true
+  },
+  {
+    "title": "Wardrobe Styling Consultation",
+    "type": "WARDROBE_STYLING_CONSULTATION",
+    "price": 500.0,
+    "currency": "AED",
+    "description": "Expert outfit guidance to enhance your on-camera presence and reflect your personal brand.",
+    "imageUrls": [],
+    "isActive": true
+  }
+]
