@@ -1,18 +1,16 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getStudios } from '@/services/studioServices'
+import { validateStudio } from '@/lib/schemas'
 
 export async function GET() {
   try {
     const studiosWithAvailability = await getStudios()
-    return NextResponse.json({
-      success: true,
-      studios: studiosWithAvailability,
-    })
+    return NextResponse.json(studiosWithAvailability)
   } catch (error) {
     console.error('Error fetching studios:', error)
     return NextResponse.json(
-      { success: false, error: 'Internal server error' },
+      { error: 'Internal server error' },
       { status: 500 }
     )
   }
@@ -115,5 +113,61 @@ export async function POST(req: Request) {
     })
   })
 
-  return NextResponse.json({ success: true, studio })
+  return NextResponse.json(studio)
+}
+
+export async function PATCH(req: Request) {
+  try {
+    const body = await req.json()
+    const { id, ...updateData } = body
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Studio ID is required' },
+        { status: 400 }
+      )
+    }
+
+    // Валидация данных
+    const validation = validateStudio(updateData)
+    if (!validation.success) {
+      return NextResponse.json(
+        {
+          error: 'Validation failed',
+          details: validation.error.issues,
+        },
+        { status: 400 }
+      )
+    }
+
+    // Проверяем существование студии
+    const existingStudio = await prisma.studio.findUnique({
+      where: { id },
+    })
+
+    if (!existingStudio) {
+      return NextResponse.json({ error: 'Studio not found' }, { status: 404 })
+    }
+
+    // Обновляем студию
+    const updatedStudio = await prisma.studio.update({
+      where: { id },
+      data: validation.data,
+      include: {
+        packages: {
+          include: {
+            packagePerks: true,
+          },
+        },
+      },
+    })
+
+    return NextResponse.json(updatedStudio)
+  } catch (error) {
+    console.error('Error updating studio:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
 }

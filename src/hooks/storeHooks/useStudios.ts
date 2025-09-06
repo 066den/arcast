@@ -1,11 +1,10 @@
 import { useEffect } from 'react'
 import useBookingStore from '../../store/useBookingStore'
+import useStudioStore from '../../store/useStudioStore'
 
 export function useStudios() {
   const {
-    studios,
     isLoading,
-    setStudios,
     packages,
     setPackages,
     selectedIndices,
@@ -13,9 +12,10 @@ export function useStudios() {
     selectStudio,
     selectPackage,
   } = useBookingStore()
+  const { studios, setStudios, fetchStudios } = useStudioStore()
 
   useEffect(() => {
-    if (!studios.length) return
+    if (!studios.length || !packages.length) return
     const { studio, package: selectedPackage } = selectedIndices
     if (!studio) {
       selectStudio(studios[0].id)
@@ -23,7 +23,14 @@ export function useStudios() {
     if (!selectedPackage) {
       selectPackage(packages[0].id)
     }
-  }, [studios, packages, selectedIndices, selectStudio, selectPackage])
+  }, [
+    studios,
+    packages,
+    selectedIndices,
+    selectStudio,
+    selectPackage,
+    fetchStudios,
+  ])
 
   return {
     studios,
@@ -31,6 +38,7 @@ export function useStudios() {
     setStudios,
     packages,
     setPackages,
+    fetchStudios,
     selectedStudioId: selectedIndices.studio,
     selectedPackageId: selectedIndices.package,
     clearBooking,
