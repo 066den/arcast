@@ -1,14 +1,10 @@
 import { create } from 'zustand'
-import { Studio, StudioPackage } from '../types'
+import { StudioPackage } from '../types'
 import { persist } from 'zustand/middleware'
-
-import { apiRequest, ApiError } from '@/lib/api'
-import { toast } from 'sonner'
 
 interface BookingStore {
   // State
   currentStep: number
-  studios: Studio[]
   packages: StudioPackage[]
   selectedIndices: {
     studio: string
@@ -27,7 +23,6 @@ interface BookingStore {
   createBooking: () => Promise<void>
 
   // Computed
-  setStudios: (studios: Studio[]) => void
   setPackages: (packages: StudioPackage[]) => void
   clearBooking: () => void
   totalPrice: () => number
@@ -37,7 +32,6 @@ const useBookingStore = create<BookingStore>()(
   persist(
     (set, get) => ({
       currentStep: 0,
-      studios: [],
       packages: [],
       selectedIndices: {
         studio: '',
@@ -55,7 +49,6 @@ const useBookingStore = create<BookingStore>()(
         set({
           selectedIndices: { ...get().selectedIndices, package: packageId },
         }),
-      setStudios: (studios: Studio[]) => set({ studios }),
       setPackages: (packages: StudioPackage[]) => set({ packages }),
       createBooking: async () => {
         // const booking = await createBooking()
@@ -81,7 +74,6 @@ const useBookingStore = create<BookingStore>()(
     {
       name: 'booking-store',
       partialize: state => ({
-        studios: state.studios,
         currentStep: state.currentStep,
         selectedIndices: state.selectedIndices,
       }),

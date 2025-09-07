@@ -359,7 +359,7 @@ const BookingForm = ({
           </Card>
         </form>
       </div>
-      {/* Боковая панель с итогами */}
+      {/* Sidebar with summary */}
       <div className="lg:col-span-1">
         <BookingSummary
           selectedDate={selectedDate}

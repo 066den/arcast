@@ -15,7 +15,7 @@ model Studio {
   id          String          @id @default(uuid())
   name        String
   location    String
-  imageUrl    String
+  imageUrl    String?
   totalSeats  Int
   openingTime String // Store as "HH:mm" format
   closingTime String // Store as "HH:mm" format

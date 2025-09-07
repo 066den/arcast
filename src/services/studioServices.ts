@@ -18,7 +18,7 @@ export const getStudios = async () => {
   if (!prisma) {
     throw new Error('Prisma client is not initialized')
   }
-
+  //throw new Error('test')
   try {
     const studios = await prisma.studio.findMany({
       include: {

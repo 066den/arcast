@@ -9,13 +9,16 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import HeroBackground from '@/components/HeroBackground'
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       {/* Hero Section */}
-      <section className="min-h-screen px-4 py-20 text-center bg-[url('/assets/images/hero-bg.webp')] bg-cover bg-center">
-        <div className="max-w-4xl mx-auto">
+      <section className="relative min-h-screen px-4 py-20 text-center overflow-hidden">
+        <HeroBackground />
+        {/* Content */}
+        <div className="relative z-10 max-w-4xl mx-auto">
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
             Welcome to{' '}
             <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
@@ -32,7 +35,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">

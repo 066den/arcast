@@ -11,14 +11,23 @@ interface TimePickerProps {
   disabled?: boolean
 }
 
-export function TimePicker({ 
-  value, 
-  onChange, 
-  availableTimes = [
-    '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', 
-    '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'
-  ],
-  disabled = false 
+// Generate 30-minute intervals for 24 hours
+const generateTimeSlots = (): string[] => {
+  const times: string[] = []
+  for (let hour = 0; hour < 24; hour++) {
+    for (let minute = 0; minute < 60; minute += 30) {
+      const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+      times.push(timeString)
+    }
+  }
+  return times
+}
+
+export function TimePicker({
+  value,
+  onChange,
+  availableTimes = generateTimeSlots(),
+  disabled = false,
 }: TimePickerProps) {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -56,7 +65,7 @@ export function TimePicker({
 
       {isOpen && (
         <div className="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md shadow-lg max-h-60 overflow-auto">
-          {availableTimes.map((time) => (
+          {availableTimes?.map(time => (
             <button
               key={time}
               onClick={() => handleTimeSelect(time)}

@@ -1,4 +1,4 @@
-// src/utils/notion.utils.js - Улучшенная версия
+// src/utils/notion.utils.js - Enhanced version
 import { Client } from '@notionhq/client'
 
 const notion = new Client({

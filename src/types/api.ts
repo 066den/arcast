@@ -36,3 +36,12 @@ export interface BookingFormData {
   }
   additionalServices: AdditionalService[]
 }
+
+export interface StudioFormData {
+  name: string
+  location: string
+  imageUrl?: string
+  openingTime: string
+  closingTime: string
+  totalSeats: number
+}
