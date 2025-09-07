@@ -1,6 +1,5 @@
 import { ApiError, apiRequest } from '@/lib/api'
 import { API_ENDPOINTS, ERROR_MESSAGES } from '@/lib/constants'
-import { getStudios } from '@/services/studioServices'
 import { Studio } from '@/types'
 import { toast } from 'sonner'
 import { create } from 'zustand'
