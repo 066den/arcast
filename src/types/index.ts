@@ -35,7 +35,7 @@ export type Studio = {
   id: string
   name: string
   location: string
-  imageUrl: string
+  imageUrl: string | null
   totalSeats: number
   openingTime: string
   closingTime: string

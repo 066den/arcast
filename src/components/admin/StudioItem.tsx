@@ -162,7 +162,7 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
         </div>
         <ImageEditable
           className="mt-4"
-          src={imageUrl}
+          src={imageUrl || undefined}
           alt="Studio Image"
           onUpload={handleUploadImage}
           aspectRatio={ASPECT_RATIOS.LANDSCAPE}
