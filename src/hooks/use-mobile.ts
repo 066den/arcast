@@ -4,9 +4,9 @@ const MOBILE_BREAKPOINT = 768
 
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean>(() => {
-    // На сервере используем user agent для определения мобильного устройства
+    // On server use user agent to detect mobile device
     if (typeof window === 'undefined') {
-      return false // По умолчанию считаем десктопом на сервере
+      return false // Default to desktop on server
     }
     return window.innerWidth < MOBILE_BREAKPOINT
   })

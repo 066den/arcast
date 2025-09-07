@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json()
 
-    // Валидация данных
+    // Data validation
     const validation = validateStudioImageUpload(body)
     if (!validation.success) {
       return NextResponse.json(
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
 
     const { studioId, imageUrl } = validation.data
 
-    // Проверяем существование студии
+    // Check if studio exists
     const existingStudio = await prisma.studio.findUnique({
       where: { id: studioId },
     })
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Studio not found' }, { status: 404 })
     }
 
-    // Обновляем изображение студии
+    // Update studio image
     const updatedStudio = await prisma.studio.update({
       where: { id: studioId },
       data: { imageUrl },
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
   }
 }
 
-// Метод для удаления изображения студии
+// Method for deleting studio image
 export async function DELETE(req: Request) {
   try {
     const { searchParams } = new URL(req.url)
@@ -70,7 +70,7 @@ export async function DELETE(req: Request) {
       )
     }
 
-    // Проверяем существование студии
+    // Check if studio exists
     const existingStudio = await prisma.studio.findUnique({
       where: { id: studioId },
     })
@@ -79,7 +79,7 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: 'Studio not found' }, { status: 404 })
     }
 
-    // Удаляем изображение студии (устанавливаем в null)
+    // Remove studio image (set to null)
     const updatedStudio = await prisma.studio.update({
       where: { id: studioId },
       data: { imageUrl: '' },

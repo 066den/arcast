@@ -43,9 +43,9 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
 
   const handleUploadImage = async (file: File) => {
     try {
-      // Здесь можно добавить логику загрузки на сервер
+      // Here you can add server upload logic
       console.log('Cropped file:', file)
-      // Например, отправить на API:
+      // For example, send to API:
       // const formData = new FormData()
       // formData.append('image', file)
       // await fetch('/api/studios/image', { method: 'POST', body: formData })

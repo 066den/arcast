@@ -128,7 +128,7 @@ export async function PATCH(req: Request) {
       )
     }
 
-    // Валидация данных
+    // Data validation
     const validation = validateStudio(updateData)
     if (!validation.success) {
       return NextResponse.json(
@@ -140,7 +140,7 @@ export async function PATCH(req: Request) {
       )
     }
 
-    // Проверяем существование студии
+    // Check if studio exists
     const existingStudio = await prisma.studio.findUnique({
       where: { id },
     })
@@ -149,7 +149,7 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: 'Studio not found' }, { status: 404 })
     }
 
-    // Обновляем студию
+    // Update studio
     const updatedStudio = await prisma.studio.update({
       where: { id },
       data: validation.data,

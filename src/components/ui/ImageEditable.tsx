@@ -42,7 +42,7 @@ const ImageEditable = ({
     }
 
     if (showCrop) {
-      // Создаем URL для предварительного просмотра
+      // Create URL for preview
       const imageUrl = URL.createObjectURL(file)
       setCropImage(imageUrl)
       setIsCropping(true)

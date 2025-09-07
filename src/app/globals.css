@@ -64,6 +64,10 @@
   --sidebar-border: hsl(240 3.7% 15.9%);
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
   --color-muted: var(--muted);
+  --color-destructive: var(--color-red-500);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-dark: var(--color-red-600);
+  --color-destructive-light: var(--color-red-100);
 }
 
 @media (prefers-color-scheme: dark) {
