@@ -39,11 +39,13 @@ export type Studio = {
   totalSeats: number
   openingTime: string
   closingTime: string
-  description: string
-  capacity: number
-  isFullyBooked: boolean
-  availableSlots: number
-  totalSlots: number
+  description?: string
+  capacity?: number
+  //  isFullyBooked: boolean
+  // availableSlots: number
+  // totalSlots: number
+  bookings?: Booking[]
+  packages?: StudioPackage[]
 }
 
 export interface StudioPackage {

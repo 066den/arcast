@@ -6,7 +6,7 @@ import {
   getDubaiToday,
   getTargetToday,
 } from '../../../../utils/time'
-import { TimeSlotList } from '../../../../types'
+import { Studio, TimeSlotList } from '../../../../types'
 import { BOOKING_STATUS, ERROR_MESSAGES, HTTP_STATUS } from '@/lib/constants'
 
 export async function GET(
@@ -122,15 +122,7 @@ const getStudioWithBookings = async (
 }
 
 // Helper method to generate day availability
-const generateDayAvailability = async (
-  studio: {
-    id: string
-    openingTime: string
-    closingTime: string
-    bookings: { startTime: Date; endTime: Date }[]
-  },
-  targetDate: Date
-) => {
+const generateDayAvailability = async (studio: Studio, targetDate: Date) => {
   const today = getDubaiToday()
 
   const targetDateMidnight = getTargetToday(targetDate)
@@ -145,7 +137,15 @@ const generateDayAvailability = async (
   }
 
   // Get bookings for the specific date
-  const dayBookings = filterBookingsForDate(studio.bookings, targetDateMidnight)
+  const dayBookings = studio.bookings
+    ? filterBookingsForDate(
+        studio.bookings.map(b => ({
+          startTime: new Date(b.startTime),
+          endTime: new Date(b.endTime),
+        })),
+        targetDateMidnight
+      )
+    : []
 
   // Generate time slots
   const timeSlots = generateAvailableTimeSlots(
@@ -174,7 +174,7 @@ const generateMonthAvailability = async (
     id: string
     openingTime: string
     closingTime: string
-    bookings: { startTime: Date; endTime: Date }[]
+    bookings?: { startTime: Date; endTime: Date }[]
   },
   targetDate: Date
 ) => {
@@ -205,7 +205,15 @@ const generateMonthAvailability = async (
     }
 
     // Get bookings for this day
-    const dayBookings = filterBookingsForDate(studio.bookings, currentDate)
+    const dayBookings = studio.bookings
+      ? filterBookingsForDate(
+          studio.bookings.map(b => ({
+            startTime: new Date(b.startTime),
+            endTime: new Date(b.endTime),
+          })),
+          currentDate
+        )
+      : []
 
     // Generate time slots
     const timeSlots = generateAvailableTimeSlots(
