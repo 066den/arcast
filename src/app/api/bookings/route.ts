@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { BookingFormData } from '@/types/api'
-import { z } from 'zod'
 import { isSlotWithinWorkingHours } from '@/utils/time'
 import { createNotionBookingEntry } from '@/lib/notion'
 import {
