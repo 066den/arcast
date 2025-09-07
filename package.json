@@ -4,20 +4,20 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma generate && next build",
-    "vercel-build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
-    "postinstall": "prisma generate || echo 'Prisma generate failed, continuing...'",
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev --name init",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "postinstall": "prisma generate",
+    "vercel-build": "prisma db push && next build"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
