@@ -127,6 +127,8 @@ export const ERROR_MESSAGES = {
     CAPACITY_EXCEEDED: 'Number of seats exceeds studio capacity',
     OUTSIDE_WORKING_HOURS: 'Selected time is outside of studio working hours',
     FAILED_TO_FETCH_TIMES: 'Failed to fetch times',
+    FAILED_TO_FETCH_STUDIOS: 'Failed to fetch studios',
+    FAILED_TO_UPDATE_STUDIO: 'Failed to update studio',
   },
   PAYMENT: {
     FAILED: 'Payment processing failed',
@@ -147,6 +149,10 @@ export const ERROR_MESSAGES = {
   SERVICE: {
     NOT_FOUND: 'Additional service not found',
   },
+  FILE: {
+    TYPE_NOT_ALLOWED: 'File type not allowed',
+    SIZE_EXCEEDED: 'File size exceeded',
+  },
 } as const
 
 // ========== SUCCESS MESSAGES ==========
@@ -162,6 +168,9 @@ export const SUCCESS_MESSAGES = {
   },
   PAYMENT: {
     PROCESSED: 'Payment processed successfully',
+  },
+  FILE: {
+    UPLOADED: 'File uploaded successfully',
   },
 } as const
 
@@ -194,7 +203,7 @@ export const CURRENCY_SYMBOLS = {
 // ========== FILE CONSTANTS ==========
 
 export const ALLOWED_FILE_TYPES = {
-  IMAGES: ['image/jpeg', 'image/png', 'image/webp'],
+  IMAGES: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
   DOCUMENTS: ['application/pdf', 'application/msword'],
   AUDIO: ['audio/mpeg', 'audio/wav', 'audio/aac'],
 } as const
@@ -203,6 +212,18 @@ export const MAX_FILE_SIZE = {
   IMAGE: 5 * 1024 * 1024, // 5MB
   DOCUMENT: 10 * 1024 * 1024, // 10MB
   AUDIO: 50 * 1024 * 1024, // 50MB
+} as const
+
+export const ASPECT_RATIOS = {
+  SQUARE: 1, // 1:1 - square
+  LANDSCAPE: 16 / 9, // 16:9 - wide format
+  PORTRAIT: 3 / 4, // 3:4 - portrait
+  GOLDEN: 1.618, // Golden ratio
+  CLASSIC: 4 / 3, // 4:3 - classic
+  WIDE: 21 / 9, // 21:9 - ultra wide
+  INSTAGRAM: 1, // 1:1 - Instagram square
+  STORY: 9 / 16, // 9:16 - Instagram Stories
+  COVER: 2 / 3, // 2:3 - book cover
 } as const
 
 // ========== EXPORT TYPES ==========
@@ -215,6 +236,7 @@ export type LeadStatus = keyof typeof LEAD_STATUS
 export type LeadSource = keyof typeof LEAD_SOURCES
 export type ContactStatus = keyof typeof CONTACT_STATUS
 export type Currency = keyof typeof CURRENCIES
+export type AspectRatio = keyof typeof ASPECT_RATIOS
 
 // ========== DEFAULT EXPORT ==========
 
@@ -232,4 +254,5 @@ export default {
   ERROR_MESSAGES,
   SUCCESS_MESSAGES,
   CURRENCIES,
+  ASPECT_RATIOS,
 } as const

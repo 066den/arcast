@@ -30,12 +30,9 @@ export const navigation = [
 ] as const
 
 export const adminNavigation = [
-  { name: 'Home', href: '/', icon: Home },
-  { name: 'Studios', href: '/studios', icon: Radio },
+  { name: 'Bookings', href: '/admin', icon: Calendar },
+  { name: 'Studios', href: '/admin/studios', icon: Radio },
   { name: 'Services', href: '/services', icon: Box },
-  { name: 'Booking', href: '/booking', icon: Calendar },
-  { name: 'About Us', href: '/about', icon: User },
-  { name: 'Contact Us', href: '/contact', icon: Phone },
 ] as const
 
 export const features = [

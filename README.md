@@ -14,7 +14,7 @@ A beautiful and powerful web application built with modern web technologies incl
 
 ## 🛠️ Tech Stack
 
-- **Framework**: [Next.js 14](https://nextjs.org/) with App Router
+- **Framework**: [Next.js 15](https://nextjs.org/) with App Router
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **UI Components**: [shadcn/ui](https://ui.shadcn.com/)
@@ -49,18 +49,20 @@ arcast-app/
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm or yarn
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <your-repo-url>
    cd arcast-app
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    # or
@@ -68,6 +70,7 @@ arcast-app/
    ```
 
 3. **Run the development server**
+
    ```bash
    npm run dev
    # or
@@ -113,7 +116,7 @@ Dark mode is automatically supported through CSS variables and Tailwind's dark m
 The application is fully responsive with mobile-first design principles:
 
 - **Mobile**: < 768px
-- **Tablet**: 768px - 1024px  
+- **Tablet**: 768px - 1024px
 - **Desktop**: > 1024px
 
 ## 🚀 Deployment

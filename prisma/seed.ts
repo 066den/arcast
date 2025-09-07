@@ -102,7 +102,7 @@ function derivePackageAlias(name: string): string | null {
 
 async function main(): Promise<void> {
   // 1) Read data files
-  console.log('✅ Запуск сид-скрипта...')
+  console.log('✅ Starting seed script...')
   const [studiosJson, additionalServicesJson, packagesJson] = await Promise.all(
     [
       loadJson<StudioInput[]>('studios.json'),
