@@ -377,26 +377,29 @@ export const generateAvailableTimeSlotsWithTimezone = (
   }
 }
 
-export const formatTime = (time: string) => {
+export const formatTime = (time: string, timezone: string = 'Asia/Dubai') => {
   return new Date(time).toLocaleTimeString('en-GB', {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
+    timeZone: timezone,
   })
 }
 
 export const formatTimeRange = (
   startTime: string,
-  duration: number
+  duration: number,
+  timezone: string = 'Asia/Dubai'
 ): string => {
   const start = new Date(startTime)
   const end = new Date(start.getTime() + duration * 60 * 60 * 1000)
 
-  const startFormatted = formatTime(startTime)
+  const startFormatted = formatTime(startTime, timezone)
   const endFormatted = end.toLocaleTimeString('en-GB', {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
+    timeZone: timezone,
   })
 
   return `${startFormatted} - ${endFormatted}`
@@ -406,7 +409,8 @@ export const isSlotWithinWorkingHours = (
   startTime: string,
   duration: number,
   openingTime: string,
-  closingTime: string
+  closingTime: string,
+  timezone: string = 'Asia/Dubai'
 ): boolean => {
   const start = new Date(startTime)
   const end = new Date(start.getTime() + duration * 60 * 60 * 1000)
@@ -414,11 +418,14 @@ export const isSlotWithinWorkingHours = (
   const [openHour, openMinute] = openingTime.split(':').map(Number)
   const [closeHour, closeMinute] = closingTime.split(':').map(Number)
 
-  const openTime = new Date(start)
-  openTime.setHours(openHour, openMinute, 0, 0)
-
-  const closeTime = new Date(start)
-  closeTime.setHours(closeHour, closeMinute, 0, 0)
+  // Create working hours times in the specified timezone
+  const openTime = createDateInTimezone(start, openHour, openMinute, timezone)
+  const closeTime = createDateInTimezone(
+    start,
+    closeHour,
+    closeMinute,
+    timezone
+  )
 
   return start >= openTime && end <= closeTime
 }

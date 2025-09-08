@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import {
-  generateAvailableTimeSlots,
-  getDubaiNow,
-  getDubaiToday,
-  getTargetToday,
+  generateAvailableTimeSlotsWithTimezone,
+  getTimeInTimezone,
+  createDateInTimezone,
 } from '../../../../utils/time'
 import { Studio, TimeSlotList } from '../../../../types'
 import { BOOKING_STATUS, ERROR_MESSAGES, HTTP_STATUS } from '@/lib/constants'
@@ -123,9 +122,15 @@ const getStudioWithBookings = async (
 
 // Helper method to generate day availability
 const generateDayAvailability = async (studio: Studio, targetDate: Date) => {
-  const today = getDubaiToday()
+  const timezone = 'Asia/Dubai'
 
-  const targetDateMidnight = getTargetToday(targetDate)
+  // Get current time in Dubai timezone
+  const now = getTimeInTimezone(new Date(), timezone)
+  const today = createDateInTimezone(now, 0, 0, timezone)
+
+  // Create target date in Dubai timezone
+  const targetDateMidnight = createDateInTimezone(targetDate, 0, 0, timezone)
+
   // Check if date is in the past
   if (targetDateMidnight < today) {
     return {
@@ -147,18 +152,19 @@ const generateDayAvailability = async (studio: Studio, targetDate: Date) => {
       )
     : []
 
-  // Generate time slots
-  const timeSlots = generateAvailableTimeSlots(
+  // Generate time slots using timezone-aware function
+  const timeSlots = generateAvailableTimeSlotsWithTimezone(
     studio.openingTime,
     studio.closingTime,
     dayBookings,
-    targetDateMidnight
+    targetDateMidnight,
+    timezone
   )
 
   // Filter past slots if it's today
   const isToday = isSameDate(targetDate, today)
   const filteredTimeSlots = isToday
-    ? timeSlots.filter(slot => new Date(slot.start) > getDubaiNow())
+    ? timeSlots.filter(slot => new Date(slot.start) > now)
     : timeSlots
 
   return {
@@ -178,13 +184,17 @@ const generateMonthAvailability = async (
   },
   targetDate: Date
 ) => {
+  const timezone = 'Asia/Dubai'
   const firstDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), 1)
   const daysInMonth = new Date(
     targetDate.getFullYear(),
     targetDate.getMonth() + 1,
     0
   ).getDate()
-  const today = getDubaiToday()
+
+  // Get current time in Dubai timezone
+  const now = getTimeInTimezone(new Date(), timezone)
+  const today = createDateInTimezone(now, 0, 0, timezone)
 
   const monthAvailability = []
 
@@ -215,12 +225,13 @@ const generateMonthAvailability = async (
         )
       : []
 
-    // Generate time slots
-    const timeSlots = generateAvailableTimeSlots(
+    // Generate time slots using timezone-aware function
+    const timeSlots = generateAvailableTimeSlotsWithTimezone(
       studio.openingTime,
       studio.closingTime,
       dayBookings,
-      currentDate
+      currentDate,
+      timezone
     )
 
     // Calculate availability
@@ -287,7 +298,8 @@ const calculateSlotAvailability = (
     }
   }
 
-  const now = getDubaiNow()
+  const timezone = 'Asia/Dubai'
+  const now = getTimeInTimezone(new Date(), timezone)
   const futureSlots = timeSlots.filter(slot => new Date(slot.start) > now)
 
   return {
