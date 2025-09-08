@@ -89,22 +89,26 @@ const getStudioWithBookings = async (
       : {
           startTime: {
             gte: new Date(
-              targetDate.getFullYear(),
-              targetDate.getMonth(),
-              targetDate.getDate(),
-              0,
-              0,
-              0
+              Date.UTC(
+                targetDate.getFullYear(),
+                targetDate.getMonth(),
+                targetDate.getDate(),
+                0,
+                0,
+                0
+              )
             ),
           },
           endTime: {
             lt: new Date(
-              targetDate.getFullYear(),
-              targetDate.getMonth(),
-              targetDate.getDate() + 1,
-              0,
-              0,
-              0
+              Date.UTC(
+                targetDate.getFullYear(),
+                targetDate.getMonth(),
+                targetDate.getDate() + 1,
+                0,
+                0,
+                0
+              )
             ),
           },
         }
