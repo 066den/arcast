@@ -211,7 +211,7 @@ async function main(): Promise<void> {
       },
     })
 
-    console.log(`Created studio with ID: ${createdStudio.id}`)
+    console.log(`Created studio with ID: ${createdStudio}`)
   }
 
   // Done
