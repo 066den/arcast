@@ -145,7 +145,7 @@ export const generateAvailableTimeSlots = (
     let currentSlot = new Date(dayStart)
 
     // Generate hourly slots for the day
-    while (currentSlot <= dayEnd) {
+    while (currentSlot < dayEnd) {
       const slotEnd = new Date(currentSlot.getTime() + 60 * 60 * 1000) // Add 1 hour
 
       // Check if slot overlaps with any booking
@@ -229,21 +229,25 @@ export const generateSimpleTimeSlots = (
     const [openHour, openMinute] = openingTime.split(':').map(Number)
     const [closeHour, closeMinute] = closingTime.split(':').map(Number)
 
-    // Create start and end times for the target date in local timezone
-    // Use opening/closing times directly as they represent local Dubai time
+    // Create start and end times for the target date in UTC
+    // Dubai time is UTC+4, so we need to subtract 4 hours to get UTC time
     const dayStart = new Date(
-      targetDate.getFullYear(),
-      targetDate.getMonth(),
-      targetDate.getDate(),
-      openHour, // Use opening hour directly (Dubai local time)
-      openMinute
+      Date.UTC(
+        targetDate.getFullYear(),
+        targetDate.getMonth(),
+        targetDate.getDate(),
+        openHour - 4, // Convert Dubai time to UTC
+        openMinute
+      )
     )
     const dayEnd = new Date(
-      targetDate.getFullYear(),
-      targetDate.getMonth(),
-      targetDate.getDate(),
-      closeHour, // Use closing hour directly (Dubai local time)
-      closeMinute
+      Date.UTC(
+        targetDate.getFullYear(),
+        targetDate.getMonth(),
+        targetDate.getDate(),
+        closeHour - 4, // Convert Dubai time to UTC
+        closeMinute
+      )
     )
 
     // Validate that dayStart is before dayEnd
@@ -255,7 +259,7 @@ export const generateSimpleTimeSlots = (
     let currentSlot = new Date(dayStart)
 
     // Generate hourly slots for the day
-    while (currentSlot <= dayEnd) {
+    while (currentSlot < dayEnd) {
       const slotEnd = new Date(currentSlot.getTime() + 60 * 60 * 1000) // Add 1 hour
 
       // Check if slot overlaps with any booking
@@ -317,12 +321,7 @@ export const formatTimeRange = (
   const end = new Date(start.getTime() + duration * 60 * 60 * 1000)
 
   const startFormatted = formatTime(startTime, timezone)
-  const endFormatted = end.toLocaleTimeString('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-    timeZone: timezone === 'local' ? undefined : timezone,
-  })
+  const endFormatted = formatTime(end.toISOString(), timezone)
 
   return `${startFormatted} - ${endFormatted}`
 }

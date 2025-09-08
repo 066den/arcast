@@ -127,15 +127,15 @@ const getStudioWithBookings = async (
 
 // Helper method to generate day availability
 const generateDayAvailability = async (studio: Studio, targetDate: Date) => {
-  // Get current time in Dubai timezone
+  // Get current time in Dubai timezone (UTC+4)
   const now = new Date()
-  const dubaiNow = new Date(
-    now.toLocaleString('en-US', { timeZone: 'Asia/Dubai' })
-  )
+  const dubaiNow = new Date(now.getTime() + 4 * 60 * 60 * 1000)
   const today = new Date(
-    dubaiNow.getFullYear(),
-    dubaiNow.getMonth(),
-    dubaiNow.getDate()
+    Date.UTC(
+      dubaiNow.getUTCFullYear(),
+      dubaiNow.getUTCMonth(),
+      dubaiNow.getUTCDate()
+    )
   )
 
   // Create target date at midnight in UTC
@@ -183,9 +183,13 @@ const generateDayAvailability = async (studio: Studio, targetDate: Date) => {
   const isToday = isSameDate(targetDate, today)
 
   const availableTimeSlots = isToday
-    ? timeSlots.filter(
-        slot => slot.available && new Date(slot.start) > dubaiNow
-      )
+    ? timeSlots.filter(slot => {
+        const slotStart = new Date(slot.start)
+        const slotStartDubai = new Date(
+          slotStart.getTime() + 4 * 60 * 60 * 1000
+        )
+        return slot.available && slotStartDubai > dubaiNow
+      })
     : timeSlots.filter(slot => slot.available)
 
   return {
@@ -318,10 +322,12 @@ const calculateSlotAvailability = (
   }
 
   const now = new Date()
-  const dubaiNow = new Date(
-    now.toLocaleString('en-US', { timeZone: 'Asia/Dubai' })
-  )
-  const futureSlots = timeSlots.filter(slot => new Date(slot.start) > dubaiNow)
+  const dubaiNow = new Date(now.getTime() + 4 * 60 * 60 * 1000)
+  const futureSlots = timeSlots.filter(slot => {
+    const slotStart = new Date(slot.start)
+    const slotStartDubai = new Date(slotStart.getTime() + 4 * 60 * 60 * 1000)
+    return slotStartDubai > dubaiNow
+  })
 
   return {
     availableSlots: futureSlots.filter(slot => slot.available).length,
