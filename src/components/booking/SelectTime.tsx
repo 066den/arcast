@@ -46,7 +46,7 @@ const SelectTime = ({
               variant={selectedTime === time.start ? 'default' : 'secondary'}
               onClick={() => onSelectTime(time.start)}
             >
-              {formatTimeRange(time.start, duration)}
+              {formatTimeRange(time.start, duration, 'local')}
             </Button>
           </div>
         ))
