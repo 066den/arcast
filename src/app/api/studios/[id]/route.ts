@@ -127,10 +127,15 @@ const getStudioWithBookings = async (
 
 // Helper method to generate day availability
 const generateDayAvailability = async (studio: Studio, targetDate: Date) => {
-  // Get current time in Dubai timezone
+  // Get current time in Dubai timezone (UTC+4)
   const now = new Date()
   const dubaiNow = new Date(
-    now.toLocaleString('en-US', { timeZone: 'Asia/Dubai' })
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate(),
+    now.getUTCHours() + 4, // Add 4 hours to UTC
+    now.getUTCMinutes(),
+    now.getUTCSeconds()
   )
   const today = new Date(
     dubaiNow.getFullYear(),
@@ -316,7 +321,12 @@ const calculateSlotAvailability = (
 
   const now = new Date()
   const dubaiNow = new Date(
-    now.toLocaleString('en-US', { timeZone: 'Asia/Dubai' })
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate(),
+    now.getUTCHours() + 4, // Add 4 hours to UTC
+    now.getUTCMinutes(),
+    now.getUTCSeconds()
   )
   const futureSlots = timeSlots.filter(slot => new Date(slot.start) > dubaiNow)
 
