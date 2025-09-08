@@ -1,10 +1,6 @@
 import { Studio, TimeSlotList } from '../../types'
 import { Button } from '../ui/button'
-import {
-  formatTimeRange,
-  isSlotAvailable,
-  isSlotWithinWorkingHours,
-} from '../../utils/time'
+import { formatTimeRange } from '../../utils/time'
 
 type SelectTimeProps = {
   times: TimeSlotList[]
@@ -21,20 +17,8 @@ const SelectTime = ({
   duration,
   studio,
 }: SelectTimeProps) => {
-  // Filter to show only available times
-  const availableTimes = times.filter(time => {
-    const withinWorkingHours =
-      !studio ||
-      isSlotWithinWorkingHours(
-        time.start,
-        duration,
-        studio.openingTime,
-        studio.closingTime
-      )
-
-    const slotIsAvailable = isSlotAvailable(time.start, duration, times)
-    return time.available && withinWorkingHours && slotIsAvailable
-  })
+  // Use times as they come from API (already filtered)
+  const availableTimes = times.filter(time => time.available)
 
   return (
     <div className="grid grid-cols-4 gap-4">
@@ -46,7 +30,7 @@ const SelectTime = ({
               variant={selectedTime === time.start ? 'default' : 'secondary'}
               onClick={() => onSelectTime(time.start)}
             >
-              {formatTimeRange(time.start, duration, 'local')}
+              {formatTimeRange(time.start, duration, 'Asia/Dubai')}
             </Button>
           </div>
         ))
