@@ -235,11 +235,12 @@ export const generateSimpleTimeSlots = (
     const [closeHour, closeMinute] = closingTime.split(':').map(Number)
 
     // Create start and end times for the target date in Dubai timezone
-    // Convert UTC date to Dubai timezone for time generation
+    // Generate time in Dubai timezone but store as UTC for consistency
     const dubaiDate = new Date(
       targetDate.toLocaleString('en-US', { timeZone: 'Asia/Dubai' })
     )
 
+    // Create time slots in Dubai timezone (local time)
     const dayStart = new Date(
       dubaiDate.getFullYear(),
       dubaiDate.getMonth(),
