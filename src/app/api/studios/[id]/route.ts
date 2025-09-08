@@ -130,12 +130,7 @@ const generateDayAvailability = async (studio: Studio, targetDate: Date) => {
   // Get current time in Dubai timezone (UTC+4)
   const now = new Date()
   const dubaiNow = new Date(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate(),
-    now.getUTCHours() + 4, // Add 4 hours to UTC
-    now.getUTCMinutes(),
-    now.getUTCSeconds()
+    now.toLocaleString('en-US', { timeZone: 'Asia/Dubai' })
   )
   const today = new Date(
     dubaiNow.getFullYear(),
@@ -143,14 +138,16 @@ const generateDayAvailability = async (studio: Studio, targetDate: Date) => {
     dubaiNow.getDate()
   )
 
-  // Create target date at midnight
+  // Create target date at midnight in UTC
   const targetDateMidnight = new Date(
-    targetDate.getFullYear(),
-    targetDate.getMonth(),
-    targetDate.getDate(),
-    0,
-    0,
-    0
+    Date.UTC(
+      targetDate.getFullYear(),
+      targetDate.getMonth(),
+      targetDate.getDate(),
+      0,
+      0,
+      0
+    )
   )
 
   // Check if date is in the past
@@ -184,6 +181,7 @@ const generateDayAvailability = async (studio: Studio, targetDate: Date) => {
 
   // Filter to show only available slots
   const isToday = isSameDate(targetDate, today)
+
   const availableTimeSlots = isToday
     ? timeSlots.filter(
         slot => slot.available && new Date(slot.start) > dubaiNow
@@ -321,12 +319,7 @@ const calculateSlotAvailability = (
 
   const now = new Date()
   const dubaiNow = new Date(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate(),
-    now.getUTCHours() + 4, // Add 4 hours to UTC
-    now.getUTCMinutes(),
-    now.getUTCSeconds()
+    now.toLocaleString('en-US', { timeZone: 'Asia/Dubai' })
   )
   const futureSlots = timeSlots.filter(slot => new Date(slot.start) > dubaiNow)
 
