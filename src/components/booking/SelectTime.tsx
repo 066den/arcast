@@ -28,7 +28,8 @@ const SelectTime = ({
         time.start,
         duration,
         studio.openingTime,
-        studio.closingTime
+        studio.closingTime,
+        'Asia/Dubai'
       )
 
     const isAvailable = isSlotAvailable(time.start, duration, times)
@@ -45,7 +46,7 @@ const SelectTime = ({
               variant={selectedTime === time.start ? 'default' : 'secondary'}
               onClick={() => onSelectTime(time.start)}
             >
-              {formatTimeRange(time.start, duration)}
+              {formatTimeRange(time.start, duration, 'Asia/Dubai')}
             </Button>
           </div>
         ))
