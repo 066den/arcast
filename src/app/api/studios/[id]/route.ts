@@ -127,7 +127,7 @@ const getStudioWithBookings = async (
 
 // Helper method to generate day availability
 const generateDayAvailability = async (studio: Studio, targetDate: Date) => {
-  // Get current time in Dubai timezone (UTC+4)
+  // Get current time in Dubai timezone
   const now = new Date()
   const dubaiNow = new Date(
     now.toLocaleString('en-US', { timeZone: 'Asia/Dubai' })
