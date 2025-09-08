@@ -145,7 +145,7 @@ export const generateAvailableTimeSlots = (
     let currentSlot = new Date(dayStart)
 
     // Generate hourly slots for the day
-    while (currentSlot < dayEnd) {
+    while (currentSlot <= dayEnd) {
       const slotEnd = new Date(currentSlot.getTime() + 60 * 60 * 1000) // Add 1 hour
 
       // Ensure slotEnd doesn't exceed dayEnd
@@ -235,26 +235,24 @@ export const generateSimpleTimeSlots = (
     const [closeHour, closeMinute] = closingTime.split(':').map(Number)
 
     // Create start and end times for the target date in Dubai timezone
-    // Generate time in Dubai timezone but store as UTC for consistency
-    const dubaiDate = new Date(
-      targetDate.toLocaleString('en-US', { timeZone: 'Asia/Dubai' })
-    )
-
-    // Create time slots in Dubai timezone (local time)
+    // Convert Dubai time to UTC for consistency across servers
     const dayStart = new Date(
-      dubaiDate.getFullYear(),
-      dubaiDate.getMonth(),
-      dubaiDate.getDate(),
-      openHour,
-      openMinute
+      Date.UTC(
+        targetDate.getFullYear(),
+        targetDate.getMonth(),
+        targetDate.getDate(),
+        openHour - 4, // Dubai is UTC+4, so subtract 4 hours to get UTC
+        openMinute
+      )
     )
-
     const dayEnd = new Date(
-      dubaiDate.getFullYear(),
-      dubaiDate.getMonth(),
-      dubaiDate.getDate(),
-      closeHour,
-      closeMinute
+      Date.UTC(
+        targetDate.getFullYear(),
+        targetDate.getMonth(),
+        targetDate.getDate(),
+        closeHour - 4, // Dubai is UTC+4, so subtract 4 hours to get UTC
+        closeMinute
+      )
     )
 
     // Validate that dayStart is before dayEnd
@@ -266,7 +264,7 @@ export const generateSimpleTimeSlots = (
     let currentSlot = new Date(dayStart)
 
     // Generate hourly slots for the day
-    while (currentSlot < dayEnd) {
+    while (currentSlot <= dayEnd) {
       const slotEnd = new Date(currentSlot.getTime() + 60 * 60 * 1000) // Add 1 hour
 
       // Ensure slotEnd doesn't exceed dayEnd
