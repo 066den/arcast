@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import {
-  generateAvailableTimeSlotsWithTimezone,
-  getTimeInTimezone,
-  createDateInTimezone,
-} from '../../../../utils/time'
+import { generateSimpleTimeSlots } from '../../../../utils/time'
 import { Studio, TimeSlotList } from '../../../../types'
 import { BOOKING_STATUS, ERROR_MESSAGES, HTTP_STATUS } from '@/lib/constants'
 
@@ -17,7 +13,16 @@ export async function GET(
   const { date, view = 'day' } = Object.fromEntries(searchParams)
 
   try {
-    const targetDate = new Date(date)
+    // Parse date string and create date at midnight in UTC
+    const dateParts = date.split('-')
+    const targetDate = new Date(
+      Date.UTC(
+        parseInt(dateParts[0]), // year
+        parseInt(dateParts[1]) - 1, // month (0-based)
+        parseInt(dateParts[2]) // day
+      )
+    )
+
     if (isNaN(targetDate.getTime())) {
       return NextResponse.json(
         { error: ERROR_MESSAGES.INVALID_DATE_FORMAT },
@@ -84,26 +89,22 @@ const getStudioWithBookings = async (
       : {
           startTime: {
             gte: new Date(
-              Date.UTC(
-                targetDate.getFullYear(),
-                targetDate.getMonth(),
-                targetDate.getDate(),
-                0,
-                0,
-                0
-              )
+              targetDate.getFullYear(),
+              targetDate.getMonth(),
+              targetDate.getDate(),
+              0,
+              0,
+              0
             ),
           },
           endTime: {
             lt: new Date(
-              Date.UTC(
-                targetDate.getFullYear(),
-                targetDate.getMonth(),
-                targetDate.getDate() + 1,
-                0,
-                0,
-                0
-              )
+              targetDate.getFullYear(),
+              targetDate.getMonth(),
+              targetDate.getDate() + 1,
+              0,
+              0,
+              0
             ),
           },
         }
@@ -122,14 +123,26 @@ const getStudioWithBookings = async (
 
 // Helper method to generate day availability
 const generateDayAvailability = async (studio: Studio, targetDate: Date) => {
-  const timezone = 'Asia/Dubai'
-
   // Get current time in Dubai timezone
-  const now = getTimeInTimezone(new Date(), timezone)
-  const today = createDateInTimezone(now, 0, 0, timezone)
+  const now = new Date()
+  const dubaiNow = new Date(
+    now.toLocaleString('en-US', { timeZone: 'Asia/Dubai' })
+  )
+  const today = new Date(
+    dubaiNow.getFullYear(),
+    dubaiNow.getMonth(),
+    dubaiNow.getDate()
+  )
 
-  // Create target date in Dubai timezone
-  const targetDateMidnight = createDateInTimezone(targetDate, 0, 0, timezone)
+  // Create target date at midnight
+  const targetDateMidnight = new Date(
+    targetDate.getFullYear(),
+    targetDate.getMonth(),
+    targetDate.getDate(),
+    0,
+    0,
+    0
+  )
 
   // Check if date is in the past
   if (targetDateMidnight < today) {
@@ -152,25 +165,26 @@ const generateDayAvailability = async (studio: Studio, targetDate: Date) => {
       )
     : []
 
-  // Generate time slots using timezone-aware function
-  const timeSlots = generateAvailableTimeSlotsWithTimezone(
+  // Generate time slots using simple function
+  const timeSlots = generateSimpleTimeSlots(
     studio.openingTime,
     studio.closingTime,
     dayBookings,
-    targetDateMidnight,
-    timezone
+    targetDate
   )
 
-  // Filter past slots if it's today
+  // Filter to show only available slots
   const isToday = isSameDate(targetDate, today)
-  const filteredTimeSlots = isToday
-    ? timeSlots.filter(slot => new Date(slot.start) > now)
-    : timeSlots
+  const availableTimeSlots = isToday
+    ? timeSlots.filter(
+        slot => slot.available && new Date(slot.start) > dubaiNow
+      )
+    : timeSlots.filter(slot => slot.available)
 
   return {
     studioId: studio.id,
     date: targetDate.toISOString().split('T')[0],
-    timeSlots: filteredTimeSlots,
+    timeSlots: availableTimeSlots,
   }
 }
 
@@ -184,7 +198,6 @@ const generateMonthAvailability = async (
   },
   targetDate: Date
 ) => {
-  const timezone = 'Asia/Dubai'
   const firstDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), 1)
   const daysInMonth = new Date(
     targetDate.getFullYear(),
@@ -192,9 +205,9 @@ const generateMonthAvailability = async (
     0
   ).getDate()
 
-  // Get current time in Dubai timezone
-  const now = getTimeInTimezone(new Date(), timezone)
-  const today = createDateInTimezone(now, 0, 0, timezone)
+  // Get current date
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
   const monthAvailability = []
 
@@ -225,13 +238,12 @@ const generateMonthAvailability = async (
         )
       : []
 
-    // Generate time slots using timezone-aware function
-    const timeSlots = generateAvailableTimeSlotsWithTimezone(
+    // Generate time slots using simple function
+    const timeSlots = generateSimpleTimeSlots(
       studio.openingTime,
       studio.closingTime,
       dayBookings,
-      currentDate,
-      timezone
+      currentDate
     )
 
     // Calculate availability
@@ -298,9 +310,11 @@ const calculateSlotAvailability = (
     }
   }
 
-  const timezone = 'Asia/Dubai'
-  const now = getTimeInTimezone(new Date(), timezone)
-  const futureSlots = timeSlots.filter(slot => new Date(slot.start) > now)
+  const now = new Date()
+  const dubaiNow = new Date(
+    now.toLocaleString('en-US', { timeZone: 'Asia/Dubai' })
+  )
+  const futureSlots = timeSlots.filter(slot => new Date(slot.start) > dubaiNow)
 
   return {
     availableSlots: futureSlots.filter(slot => slot.available).length,

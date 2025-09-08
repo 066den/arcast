@@ -144,7 +144,7 @@ const BookingForm = ({
     const fetchTimes = async () => {
       try {
         const response = await fetch(
-          `${API_ENDPOINTS.STUDIOS}/${selectedStudioId}?date=${selectedDate.toLocaleDateString('en-US')}&view=day`
+          `${API_ENDPOINTS.STUDIOS}/${selectedStudioId}?date=${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}&view=day`
         )
         if (!response.ok) {
           toast.error(ERROR_MESSAGES.STUDIO.FAILED_TO_FETCH_TIMES)

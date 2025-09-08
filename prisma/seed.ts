@@ -178,6 +178,10 @@ async function main(): Promise<void> {
 
   // 5) Create Studios and connect packages via placeholders in studios.json
   for (const studio of studiosJson) {
+    console.log(`Creating studio: ${studio.name}`)
+    console.log(`Opening time: ${studio.openingTime}`)
+    console.log(`Closing time: ${studio.closingTime}`)
+
     // Transform placeholder connects like { id: "recordingEditPackage.id" }
     const connectInput: { id: string }[] = []
     const rawConnect = (studio.packages as JsonRecord | undefined)?.connect as
@@ -195,7 +199,7 @@ async function main(): Promise<void> {
       }
     }
 
-    await db.studio.create({
+    const createdStudio = await db.studio.create({
       data: {
         name: studio.name,
         location: studio.location,
@@ -206,6 +210,8 @@ async function main(): Promise<void> {
         packages: connectInput.length ? { connect: connectInput } : undefined,
       },
     })
+
+    console.log(`Created studio with ID: ${createdStudio.id}`)
   }
 
   // Done
