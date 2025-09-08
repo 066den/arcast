@@ -145,7 +145,7 @@ export const generateAvailableTimeSlots = (
     let currentSlot = new Date(dayStart)
 
     // Generate hourly slots for the day
-    while (currentSlot < dayEnd) {
+    while (currentSlot <= dayEnd) {
       const slotEnd = new Date(currentSlot.getTime() + 60 * 60 * 1000) // Add 1 hour
 
       // Check if slot overlaps with any booking
@@ -229,21 +229,25 @@ export const generateSimpleTimeSlots = (
     const [openHour, openMinute] = openingTime.split(':').map(Number)
     const [closeHour, closeMinute] = closingTime.split(':').map(Number)
 
-    // Create start and end times for the target date in Dubai timezone
-    // Use simple approach: generate time in local timezone
+    // Create start and end times for the target date in UTC
+    // Dubai is UTC+4, so we need to subtract 4 hours to convert local time to UTC
     const dayStart = new Date(
-      targetDate.getFullYear(),
-      targetDate.getMonth(),
-      targetDate.getDate(),
-      openHour,
-      openMinute
+      Date.UTC(
+        targetDate.getFullYear(),
+        targetDate.getMonth(),
+        targetDate.getDate(),
+        openHour - 4, // Convert Dubai time to UTC
+        openMinute
+      )
     )
     const dayEnd = new Date(
-      targetDate.getFullYear(),
-      targetDate.getMonth(),
-      targetDate.getDate(),
-      closeHour,
-      closeMinute
+      Date.UTC(
+        targetDate.getFullYear(),
+        targetDate.getMonth(),
+        targetDate.getDate(),
+        closeHour - 4, // Convert Dubai time to UTC
+        closeMinute
+      )
     )
 
     // Validate that dayStart is before dayEnd
@@ -255,7 +259,7 @@ export const generateSimpleTimeSlots = (
     let currentSlot = new Date(dayStart)
 
     // Generate hourly slots for the day
-    while (currentSlot < dayEnd) {
+    while (currentSlot <= dayEnd) {
       const slotEnd = new Date(currentSlot.getTime() + 60 * 60 * 1000) // Add 1 hour
 
       // Check if slot overlaps with any booking
