@@ -21,32 +21,32 @@ const SelectTime = ({
   duration,
   studio,
 }: SelectTimeProps) => {
-  const filteredTimes = times.filter(time => {
+  // Filter to show only available times
+  const availableTimes = times.filter(time => {
     const withinWorkingHours =
       !studio ||
       isSlotWithinWorkingHours(
         time.start,
         duration,
         studio.openingTime,
-        studio.closingTime,
-        'Asia/Dubai'
+        studio.closingTime
       )
 
-    const isAvailable = isSlotAvailable(time.start, duration, times)
-    return withinWorkingHours && isAvailable
+    const slotIsAvailable = isSlotAvailable(time.start, duration, times)
+    return time.available && withinWorkingHours && slotIsAvailable
   })
 
   return (
     <div className="grid grid-cols-4 gap-4">
-      {filteredTimes?.length > 0 ? (
-        filteredTimes.map(time => (
+      {availableTimes?.length > 0 ? (
+        availableTimes.map(time => (
           <div key={time.start}>
             <Button
               type="button"
               variant={selectedTime === time.start ? 'default' : 'secondary'}
               onClick={() => onSelectTime(time.start)}
             >
-              {formatTimeRange(time.start, duration, 'Asia/Dubai')}
+              {formatTimeRange(time.start, duration)}
             </Button>
           </div>
         ))
