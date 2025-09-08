@@ -145,13 +145,8 @@ export const generateAvailableTimeSlots = (
     let currentSlot = new Date(dayStart)
 
     // Generate hourly slots for the day
-    while (currentSlot <= dayEnd) {
+    while (currentSlot < dayEnd) {
       const slotEnd = new Date(currentSlot.getTime() + 60 * 60 * 1000) // Add 1 hour
-
-      // Ensure slotEnd doesn't exceed dayEnd
-      if (slotEnd > dayEnd) {
-        break
-      }
 
       // Check if slot overlaps with any booking
       const isAvailable = !bookings.some(booking => {
@@ -235,24 +230,20 @@ export const generateSimpleTimeSlots = (
     const [closeHour, closeMinute] = closingTime.split(':').map(Number)
 
     // Create start and end times for the target date in Dubai timezone
-    // Convert Dubai time to UTC for consistency across servers
+    // Use simple approach: generate time in local timezone
     const dayStart = new Date(
-      Date.UTC(
-        targetDate.getFullYear(),
-        targetDate.getMonth(),
-        targetDate.getDate(),
-        openHour - 4, // Dubai is UTC+4, so subtract 4 hours to get UTC
-        openMinute
-      )
+      targetDate.getFullYear(),
+      targetDate.getMonth(),
+      targetDate.getDate(),
+      openHour,
+      openMinute
     )
     const dayEnd = new Date(
-      Date.UTC(
-        targetDate.getFullYear(),
-        targetDate.getMonth(),
-        targetDate.getDate(),
-        closeHour - 4, // Dubai is UTC+4, so subtract 4 hours to get UTC
-        closeMinute
-      )
+      targetDate.getFullYear(),
+      targetDate.getMonth(),
+      targetDate.getDate(),
+      closeHour,
+      closeMinute
     )
 
     // Validate that dayStart is before dayEnd
@@ -264,13 +255,8 @@ export const generateSimpleTimeSlots = (
     let currentSlot = new Date(dayStart)
 
     // Generate hourly slots for the day
-    while (currentSlot <= dayEnd) {
+    while (currentSlot < dayEnd) {
       const slotEnd = new Date(currentSlot.getTime() + 60 * 60 * 1000) // Add 1 hour
-
-      // Ensure slotEnd doesn't exceed dayEnd
-      if (slotEnd > dayEnd) {
-        break
-      }
 
       // Check if slot overlaps with any booking
       const isAvailable = !bookings.some(booking => {
