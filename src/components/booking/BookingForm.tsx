@@ -214,7 +214,7 @@ const BookingForm = ({
                   <Label htmlFor="duration">Duration (hours)</Label>
                   <DurationSelector value={duration} onChange={setDuration} />
                 </div>
-                <div>
+                {/* <div>
                   <Label htmlFor="guests">Number of Guests</Label>
                   <Input
                     id="guests"
@@ -224,7 +224,7 @@ const BookingForm = ({
                     value={guests}
                     onChange={e => setGuests(parseInt(e.target.value))}
                   />
-                </div>
+                </div> */}
               </div>
             </CardContent>
           </Card>

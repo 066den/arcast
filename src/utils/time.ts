@@ -248,6 +248,7 @@ export const generateSimpleTimeSlots = (
       openHour,
       openMinute
     )
+
     const dayEnd = new Date(
       dubaiDate.getFullYear(),
       dubaiDate.getMonth(),
