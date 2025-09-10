@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { BookingFormData } from '@/types/api'
 import { isSlotWithinWorkingHours } from '@/utils/time'
-import { createNotionBookingEntry } from '@/lib/notion'
+import { createNotionBookingEntry, createNotionLeadEntry } from '@/lib/notion'
 import {
   BOOKING_STATUS,
   DISCOUNT_TYPE,
@@ -12,7 +12,6 @@ import {
 } from '@/lib/constants'
 import { validateBooking } from '@/lib/schemas'
 
-// Helper function to calculate base cost
 function calculateBaseCost(pricePerHour: number, duration: number): number {
   return parseFloat(pricePerHour.toString()) * duration
 }
@@ -386,6 +385,7 @@ export async function POST(req: Request) {
     // Create Notion entry
     try {
       await createNotionBookingEntry(result)
+      await createNotionLeadEntry(result.lead)
     } catch (notionError) {
       console.error('Failed to create Notion entry:', notionError)
     }

@@ -1,15 +1,12 @@
 import { Button } from '@/components/ui/button'
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import HeroBackground from '@/components/HeroBackground'
+import ContactForm from '@/components/common/ContactForm'
 
 export default function Home() {
   return (
@@ -136,42 +133,7 @@ export default function Home() {
             </p>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Contact Form</CardTitle>
-              <CardDescription>
-                Fill out the form below and we&apos;ll get back to you as soon
-                as possible.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" placeholder="John" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" placeholder="Doe" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="john@example.com" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="message">Message</Label>
-                <Textarea
-                  id="message"
-                  placeholder="Your message here..."
-                  className="min-h-[100px]"
-                />
-              </div>
-              <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                Send Message
-              </Button>
-            </CardContent>
-          </Card>
+          <ContactForm />
         </div>
       </section>
 

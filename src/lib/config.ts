@@ -1,4 +1,4 @@
-import { Box, Calendar, User, Phone, Home, Radio } from 'lucide-react'
+import { Box, Calendar, User, Phone, Radio } from 'lucide-react'
 
 export const siteConfig = {
   name: 'ARcast',
