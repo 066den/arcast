@@ -41,17 +41,35 @@ export const bookingLeadSchema = z.object({
   discountCode: z.string().optional(),
 })
 
-export const ContactFormSchema = z.object({
-  name: z
+export const contactFormSchema = z.object({
+  firstName: z
     .string()
+    .nonempty({ message: 'First name is required' })
     .min(2, { message: 'Name must be at least 2 characters' })
     .max(100, { message: 'Name must be less than 100 characters' })
     .regex(VALIDATION.NAME_REGEX, {
       message: 'Name must only contain letters and spaces',
     }),
-  email: z.email({ message: 'Invalid email address' }),
+  lastName: z
+    .string()
+    .max(100, { message: 'Name must be less than 100 characters' })
+    .regex(VALIDATION.NAME_REGEX, {
+      message: 'Name must only contain letters and spaces',
+    })
+    .optional(),
+  email: z
+    .email({ message: 'Invalid email address' })
+    .nonempty({ message: 'Email is required' }),
+  phone: z
+    .string()
+    .nonempty({ message: 'Phone number is required' })
+    .regex(VALIDATION.PHONE_REGEX, { message: 'Invalid phone number' })
+    .transform(val => val.replace(/\D/g, ''))
+    .optional(),
+
   message: z
     .string()
+    .nonempty({ message: 'Message is required' })
     .min(10, { message: 'Message must be at least 10 characters' })
     .max(1000, { message: 'Message must be less than 1000 characters' }),
 })
@@ -81,7 +99,7 @@ export const studioSchema = z.object({
 
 export const studioImageUploadSchema = z.object({
   studioId: z.string().min(1, { message: 'Studio ID is required' }),
-  imageUrl: z.string().url({ message: 'Invalid image URL' }),
+  imageUrl: z.url({ message: 'Invalid image URL' }),
 })
 
 export const validateBooking = (data: unknown) => {
@@ -96,6 +114,11 @@ export const validateStudioImageUpload = (data: unknown) => {
   return studioImageUploadSchema.safeParse(data)
 }
 
+export const validateContactForm = (data: unknown) => {
+  return contactFormSchema.safeParse(data)
+}
+
 export type LeadSchema = z.infer<typeof bookingLeadSchema>
 export type StudioSchema = z.infer<typeof studioSchema>
 export type StudioImageUploadSchema = z.infer<typeof studioImageUploadSchema>
+export type ContactFormSchema = z.infer<typeof contactFormSchema>

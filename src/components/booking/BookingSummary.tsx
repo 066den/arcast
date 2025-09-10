@@ -1,5 +1,7 @@
 'use client'
 
+import { formatDateConsistent } from '@/utils/dateFormat'
+import { formatTimeRange } from '@/utils/time'
 import {
   Card,
   CardContent,
@@ -60,13 +62,7 @@ export function BookingSummary({
 
   const formatDate = (dateString: Date | undefined) => {
     if (!dateString) return ''
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
+    return formatDateConsistent(new Date(dateString))
   }
 
   return (
@@ -107,7 +103,7 @@ export function BookingSummary({
               {formatDate(selectedDate)}
             </p>
             <p className="text-sm text-slate-600 dark:text-slate-300">
-              Time: {selectedTime}
+              Time: {formatTimeRange(selectedTime, duration, 'Asia/Dubai')}
             </p>
             <p className="text-sm text-slate-600 dark:text-slate-300">
               Duration: {duration} hour{duration > 1 ? 's' : ''}

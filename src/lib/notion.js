@@ -264,12 +264,12 @@ export async function createNotionLeadEntry(lead) {
       },
       Status: {
         select: {
-          name: lead.status || 'New',
+          name: 'New',
         },
       },
       Source: {
         select: {
-          name: lead.source || 'Website',
+          name: 'Website',
         },
       },
       Created: {
@@ -319,22 +319,10 @@ export async function createNotionContactEntry(contactData) {
         email: contactData.email,
       },
       Phone: {
-        rich_text: createRichText(
-          `${contactData.countryCode} ${contactData.phoneNumber}`.trim()
-        ),
+        rich_text: createRichText(`+${contactData.phone}`.trim()),
       },
       Message: {
         rich_text: createRichText(contactData.message),
-      },
-      Status: {
-        select: {
-          name: 'New',
-        },
-      },
-      Created: {
-        date: {
-          start: new Date().toISOString(),
-        },
       },
     }
 
@@ -349,7 +337,7 @@ export async function createNotionContactEntry(contactData) {
     return response
   } catch (error) {
     console.error('❌ Error creating Notion contact entry:', error)
-    return null
+    throw new Error(error.message)
   }
 }
 
