@@ -153,6 +153,9 @@ export const ERROR_MESSAGES = {
     TYPE_NOT_ALLOWED: 'File type not allowed',
     SIZE_EXCEEDED: 'File size exceeded',
   },
+  CONTACT: {
+    FAILED: 'Failed to submit contact form',
+  },
 } as const
 
 // ========== SUCCESS MESSAGES ==========

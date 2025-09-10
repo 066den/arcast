@@ -10,7 +10,11 @@ export async function GET(
 ) {
   const { id } = await context.params
   const { searchParams } = new URL(request.url)
-  const { date, view = 'day' } = Object.fromEntries(searchParams)
+  const {
+    date,
+    view = 'day',
+    duration = '1',
+  } = Object.fromEntries(searchParams)
 
   try {
     // Parse date string and create date at midnight in UTC
@@ -40,7 +44,11 @@ export async function GET(
     }
 
     if (view === 'day') {
-      const availability = await generateDayAvailability(studio, targetDate)
+      const availability = await generateDayAvailability(
+        studio,
+        targetDate,
+        parseInt(duration)
+      )
       return NextResponse.json({ success: true, studio, availability })
     }
 
@@ -126,7 +134,11 @@ const getStudioWithBookings = async (
 }
 
 // Helper method to generate day availability
-const generateDayAvailability = async (studio: Studio, targetDate: Date) => {
+const generateDayAvailability = async (
+  studio: Studio,
+  targetDate: Date,
+  duration: number = 1
+) => {
   // Get current time in Dubai timezone (UTC+4)
   const now = new Date()
   const dubaiNow = new Date(now.getTime() + 4 * 60 * 60 * 1000)
@@ -179,18 +191,23 @@ const generateDayAvailability = async (studio: Studio, targetDate: Date) => {
     targetDate
   )
 
-  // Filter to show only available slots
+  // Filter to show only available slots that can accommodate the duration
   const isToday = isSameDate(targetDate, today)
 
-  const availableTimeSlots = isToday
-    ? timeSlots.filter(slot => {
-        const slotStart = new Date(slot.start)
-        const slotStartDubai = new Date(
-          slotStart.getTime() + 4 * 60 * 60 * 1000
-        )
-        return slot.available && slotStartDubai > dubaiNow
-      })
-    : timeSlots.filter(slot => slot.available)
+  const availableTimeSlots = timeSlots.filter(slot => {
+    // Check if slot is available
+    if (!slot.available) return false
+
+    // Check if slot is in the future (for today)
+    if (isToday) {
+      const slotStart = new Date(slot.start)
+      const slotStartDubai = new Date(slotStart.getTime() + 4 * 60 * 60 * 1000)
+      if (slotStartDubai <= dubaiNow) return false
+    }
+
+    // Check if there are enough consecutive available slots for the duration
+    return hasConsecutiveAvailableSlots(timeSlots, slot, duration, studio)
+  })
 
   return {
     studioId: studio.id,
@@ -340,4 +357,43 @@ const getDayStatus = (availableSlots: number, totalSlots: number) => {
   if (availableSlots === 0) return 'fully-booked'
   if (availableSlots < totalSlots) return 'partially-booked'
   return 'available'
+}
+
+// Helper function to check if there are enough consecutive available slots
+const hasConsecutiveAvailableSlots = (
+  allSlots: TimeSlotList[],
+  startSlot: TimeSlotList,
+  duration: number,
+  studio: Studio
+): boolean => {
+  const startTime = new Date(startSlot.start)
+  const requiredEndTime = new Date(
+    startTime.getTime() + duration * 60 * 60 * 1000
+  )
+
+  // Check if the booking would extend beyond studio closing time
+  const [closeHour, closeMinute] = studio.closingTime.split(':').map(Number)
+  const studioClosingTime = new Date(startTime)
+  studioClosingTime.setUTCHours(closeHour - 4, closeMinute, 0, 0) // Convert Dubai time to UTC
+
+  // If the required end time is after studio closing, this slot is not available
+  if (requiredEndTime > studioClosingTime) {
+    return false
+  }
+
+  // Find all slots that fall within the required duration
+  const slotsInRange = allSlots.filter(slot => {
+    const slotStart = new Date(slot.start)
+    const slotEnd = new Date(slot.end)
+
+    // Check if slot overlaps with the required time range
+    return (
+      (slotStart >= startTime && slotStart < requiredEndTime) ||
+      (slotEnd > startTime && slotEnd <= requiredEndTime) ||
+      (slotStart <= startTime && slotEnd >= requiredEndTime)
+    )
+  })
+
+  // Check if all slots in the range are available
+  return slotsInRange.every(slot => slot.available)
 }
