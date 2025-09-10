@@ -24,15 +24,19 @@ import { ServiceCheckbox } from './ServiceCheckbox'
 import { useStudios } from '../../hooks/storeHooks/useStudios'
 import { PackageCard } from './PackageCard'
 import { useForm } from 'react-hook-form'
-import { Popover, PopoverContent } from '../ui/popover'
-import { PopoverTrigger } from '../ui/popover'
 import SelectTime from './SelectTime'
 import { DurationSelector } from '../ui/DurationSelector'
 import { toast } from 'sonner'
 import { ApiResponseAvailablity } from '../../types/api'
-import { API_ENDPOINTS, ERROR_MESSAGES } from '@/lib/constants'
+import {
+  API_ENDPOINTS,
+  ERROR_MESSAGES,
+  SUCCESS_MESSAGES,
+} from '@/lib/constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LeadSchema, bookingLeadSchema } from '@/lib/schemas'
+import InputPhone from '../ui/InputPhone'
+import { apiRequest } from '@/lib/api'
 
 interface BookingFormProps {
   initialStudios: Studio[]
@@ -56,7 +60,7 @@ const BookingForm = ({
 
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitSuccess, setSubmitSuccess] = useState(false)
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [availableTimes, setAvailableTimes] = useState<TimeSlotList[] | null>(
     null
   )
@@ -77,9 +81,12 @@ const BookingForm = ({
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting, isValid },
+    setValue,
+    trigger,
+    formState: { isSubmitting, isValid, errors },
   } = useForm({
     resolver: zodResolver(bookingLeadSchema),
+    mode: 'onTouched',
     defaultValues: {
       fullName: '',
       email: '',
@@ -88,11 +95,16 @@ const BookingForm = ({
     },
   })
 
+  const handlePhoneChange = (value: string) => {
+    setValue('phoneNumber', value)
+    trigger('phoneNumber')
+  }
+
   const onSubmit = handleSubmit(async (formData: LeadSchema) => {
     setSubmitError(null)
     setSubmitSuccess(false)
     try {
-      const response = await fetch(API_ENDPOINTS.BOOKINGS, {
+      await apiRequest(API_ENDPOINTS.BOOKINGS, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -115,20 +127,16 @@ const BookingForm = ({
         }),
       })
 
-      const data = await response.json()
-
-      if (data.success) {
-        // Reset form
-        reset()
-        setSelectedTime('')
-        setDuration(1)
-        setGuests(1)
-        setSelectedServices([])
-      } else {
-        setSubmitError(data.error || 'Failed to create booking')
-      }
+      // Reset form
+      reset()
+      setSelectedTime('')
+      setDuration(1)
+      setGuests(1)
+      setSelectedServices([])
+      setValue('phoneNumber', '')
+      toast.success(SUCCESS_MESSAGES.BOOKING.CREATED)
     } catch (error) {
-      setSubmitError('Network error. Please try again.')
+      setSubmitError(ERROR_MESSAGES.BOOKING.FAILED)
       console.error('Error submitting booking:', error)
     }
   })
@@ -136,7 +144,11 @@ const BookingForm = ({
   useEffect(() => {
     setStudios(initialStudios)
     setPackages(initialPackages)
-  }, [initialStudios, initialPackages, setStudios, setPackages])
+    // Set initial date after hydration to avoid mismatch
+    if (!selectedDate) {
+      setSelectedDate(new Date())
+    }
+  }, [initialStudios, initialPackages, setStudios, setPackages, selectedDate])
 
   useEffect(() => {
     if (!selectedDate || !selectedStudioId) return
@@ -144,7 +156,7 @@ const BookingForm = ({
     const fetchTimes = async () => {
       try {
         const response = await fetch(
-          `${API_ENDPOINTS.STUDIOS}/${selectedStudioId}?date=${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}&view=day`
+          `${API_ENDPOINTS.STUDIOS}/${selectedStudioId}?date=${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}&view=day&duration=${duration}`
         )
         if (!response.ok) {
           toast.error(ERROR_MESSAGES.STUDIO.FAILED_TO_FETCH_TIMES)
@@ -152,12 +164,19 @@ const BookingForm = ({
         }
         const data: ApiResponseAvailablity = await response.json()
         setAvailableTimes(data.availability.timeSlots)
+        // Clear selected time if it's no longer available
+        if (
+          selectedTime &&
+          !data.availability.timeSlots.some(slot => slot.start === selectedTime)
+        ) {
+          setSelectedTime('')
+        }
       } catch (error) {
         console.error('Error fetching times:', error)
       }
     }
     fetchTimes()
-  }, [selectedDate, selectedStudioId])
+  }, [selectedDate, selectedStudioId, duration, selectedTime])
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -176,22 +195,14 @@ const BookingForm = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="date">Date</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline">Select Date</Button>
-                    </PopoverTrigger>
-                    <PopoverContent align="start">
-                      <Calendar
-                        mode="single"
-                        selected={selectedDate}
-                        onSelect={date => setSelectedDate(date)}
-                        disabled={{ before: new Date() }}
-                      />
-                      <Button variant="outline" size="sm">
-                        Done
-                      </Button>
-                    </PopoverContent>
-                  </Popover>
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={date => setSelectedDate(date)}
+                    disabled={{
+                      before: new Date(new Date().setHours(0, 0, 0, 0)),
+                    }}
+                  />
                 </div>
                 <div>
                   <Label>Start Time</Label>
@@ -310,16 +321,30 @@ const BookingForm = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="fullName">Full Name</Label>
-                    <Input id="fullName" {...register('fullName')} />
+                    <Input
+                      id="fullName"
+                      {...register('fullName')}
+                      error={errors.fullName?.message}
+                    />
                   </div>
                   <div>
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" {...register('email')} />
+                    <Input
+                      id="email"
+                      type="email"
+                      {...register('email')}
+                      error={errors.email?.message}
+                    />
                   </div>
                 </div>
                 <div>
                   <Label htmlFor="phone">Phone Number</Label>
-                  <Input id="phone" type="tel" {...register('phoneNumber')} />
+                  <InputPhone
+                    id="phone"
+                    {...register('phoneNumber')}
+                    error={errors.phoneNumber?.message}
+                    onChangeValue={handlePhoneChange}
+                  />
                 </div>
                 <div>
                   <Label htmlFor="discountCode">Discount Code</Label>

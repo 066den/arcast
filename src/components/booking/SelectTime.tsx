@@ -15,9 +15,8 @@ const SelectTime = ({
   selectedTime,
   onSelectTime,
   duration,
-  studio,
 }: SelectTimeProps) => {
-  // Use times as they come from API (already filtered)
+  // Use times as they come from API (already filtered for duration)
   const availableTimes = times.filter(time => time.available)
 
   return (
@@ -29,13 +28,16 @@ const SelectTime = ({
               type="button"
               variant={selectedTime === time.start ? 'default' : 'secondary'}
               onClick={() => onSelectTime(time.start)}
+              className="w-full"
             >
               {formatTimeRange(time.start, duration, 'Asia/Dubai')}
             </Button>
           </div>
         ))
       ) : (
-        <div>No available times</div>
+        <div className="col-span-4 text-center text-gray-500 py-4">
+          No available times for {duration} hour{duration > 1 ? 's' : ''}
+        </div>
       )}
     </div>
   )
