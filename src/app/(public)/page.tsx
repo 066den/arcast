@@ -7,13 +7,13 @@ import {
 
 import ContactForm from '@/components/common/ContactForm'
 import HeroSection from '@/components/sections/HeroSection'
-import VideoSection from '@/components/sections/VideoSection'
+import HeroVideo from '@/components/sections/HeroVideo'
 
 export default function Home() {
   return (
     <div className="min-h-screen ">
       <HeroSection />
-      <VideoSection />
+      <HeroVideo />
       <section className="container mx-auto px-4 py-20">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">

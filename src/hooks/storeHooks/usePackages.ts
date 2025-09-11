@@ -28,12 +28,12 @@ export function usePackages(): UsePackagesReturn {
     try {
       setLoading(true)
       setError(null)
-      
+
       const response = await fetch('/api/packages')
       if (!response.ok) {
         throw new Error('Failed to fetch packages')
       }
-      
+
       const data = await response.json()
       if (data.success) {
         setPackages(data.packages)
