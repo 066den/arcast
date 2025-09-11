@@ -36,7 +36,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LeadSchema, bookingLeadSchema } from '@/lib/schemas'
 import InputPhone from '../ui/InputPhone'
-import { apiRequest } from '@/lib/api'
+import { ApiError, apiRequest } from '@/lib/api'
 
 interface BookingFormProps {
   initialStudios: Studio[]
@@ -144,7 +144,7 @@ const BookingForm = ({
   useEffect(() => {
     setStudios(initialStudios)
     setPackages(initialPackages)
-    // Set initial date after hydration to avoid mismatch
+
     if (!selectedDate) {
       setSelectedDate(new Date())
     }
@@ -154,17 +154,17 @@ const BookingForm = ({
     if (!selectedDate || !selectedStudioId) return
 
     const fetchTimes = async () => {
+      const slots = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
+
       try {
-        const response = await fetch(
-          `${API_ENDPOINTS.STUDIOS}/${selectedStudioId}?date=${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}&view=day&duration=${duration}`
+        const data = await apiRequest<ApiResponseAvailablity>(
+          `${API_ENDPOINTS.STUDIOS}/${selectedStudioId}?date=${slots}&view=day&duration=${duration}`,
+          {
+            cache: 'no-store',
+          }
         )
-        if (!response.ok) {
-          toast.error(ERROR_MESSAGES.STUDIO.FAILED_TO_FETCH_TIMES)
-          return
-        }
-        const data: ApiResponseAvailablity = await response.json()
+
         setAvailableTimes(data.availability.timeSlots)
-        // Clear selected time if it's no longer available
         if (
           selectedTime &&
           !data.availability.timeSlots.some(slot => slot.start === selectedTime)
@@ -173,6 +173,11 @@ const BookingForm = ({
         }
       } catch (error) {
         console.error('Error fetching times:', error)
+        if (error instanceof ApiError) {
+          toast.error(error.message)
+        } else {
+          toast.error(ERROR_MESSAGES.STUDIO.FAILED_TO_FETCH_TIMES)
+        }
       }
     }
     fetchTimes()
