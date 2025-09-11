@@ -3,10 +3,10 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(1 0 0);
+  --background: hsl(0 0% 100%);
   --foreground: oklch(0.147 0.004 49.25);
-  --primary: oklch(0.71 0.18 50.9);
-  --primary-dark: oklch(0.67 0.18 50.9);
+  --primary: hsl(0 0% 20%);
+  --primary-dark: hsl(0 0% 15%);
   --border: oklch(0.923 0.003 48.717);
   --ring: oklch(0.709 0.01 56.259);
   --sidebar: hsl(0 0% 98%);
