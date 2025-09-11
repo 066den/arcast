@@ -7,7 +7,7 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-  VisibilityState,
+  type VisibilityState,
 } from '@tanstack/react-table'
 import {
   Table,
@@ -28,8 +28,8 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const columns: ColumnDef<Booking>[] = [
     {
-      accessorKey: 'name',
       header: 'Customer',
+      accessorKey: 'name',
       cell: ({ row }) => {
         return <div>{row.original.lead.fullName}</div>
       },
@@ -42,27 +42,6 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
       },
     },
     {
-      header: 'Number of Guests',
-      accessorKey: 'lead.phoneNumber',
-      cell: ({ row }) => {
-        return <div>{row.original.lead.phoneNumber}</div>
-      },
-    },
-    {
-      header: 'Customer Email',
-      accessorKey: 'lead.whatsappNumber',
-      cell: ({ row }) => {
-        return <div>{row.original.discountAmount}</div>
-      },
-    },
-    {
-      header: 'Customer Phone',
-      accessorKey: 'lead.phoneNumber',
-      cell: ({ row }) => {
-        return <div>{row.original.lead.phoneNumber}</div>
-      },
-    },
-    {
       header: 'Setup',
       accessorKey: 'studio.name',
       cell: ({ row }) => {
@@ -70,31 +49,24 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
       },
     },
     {
-      header: 'Package',
-      accessorKey: 'package.name',
-      cell: ({ row }) => {
-        return <div>{row.original.package.name}</div>
-      },
-    },
-    {
-      header: 'Services',
-      accessorKey: 'additionalServices',
-      cell: ({ row }) => {
-        return <div>additionalServices</div>
-      },
-    },
-    {
-      header: 'Payment Method',
+      header: 'Status',
       accessorKey: 'payment.provider',
       cell: ({ row }) => {
         return <div>Payment Method</div>
       },
     },
     {
-      header: 'Status',
-      accessorKey: 'payment.status',
+      header: 'Payment',
+      accessorKey: 'payment',
       cell: ({ row }) => {
-        return <div>Status</div>
+        return <div>Payment cost</div>
+      },
+    },
+    {
+      header: 'Created Date',
+      accessorKey: 'createdAt',
+      cell: ({ row }) => {
+        return <div>{row.original.createdAt}</div>
       },
     },
   ]
