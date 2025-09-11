@@ -156,6 +156,9 @@ export const ERROR_MESSAGES = {
   CONTACT: {
     FAILED: 'Failed to submit contact form',
   },
+  PRISMA: {
+    NOT_INITIALIZED: 'Prisma client is not initialized',
+  },
 } as const
 
 // ========== SUCCESS MESSAGES ==========

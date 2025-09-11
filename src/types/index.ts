@@ -21,6 +21,18 @@ export interface Booking {
   notionEntryId: string
 }
 
+export interface BookingFilters {
+  status?: string
+  dateFrom?: string
+  dateTo?: string
+  studioId?: string
+  packageId?: string
+  limit?: number
+  offset?: number
+  sortBy?: string
+  sortOrder?: string
+}
+
 export interface Lead {
   id: string
   fullName: string
