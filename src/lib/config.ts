@@ -21,7 +21,6 @@ export const siteConfig = {
 } as const
 
 export const navigation = [
-  { name: 'Home', href: '/' },
   { name: 'Studios', href: '/studios', icon: Radio },
   { name: 'Services', href: '/services', icon: Box },
   { name: 'Booking', href: '/booking', icon: Calendar },

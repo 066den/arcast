@@ -1,37 +1,19 @@
-import { Button } from '@/components/ui/button'
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import HeroBackground from '@/components/HeroBackground'
+
 import ContactForm from '@/components/common/ContactForm'
+import HeroSection from '@/components/sections/HeroSection'
+import VideoSection from '@/components/sections/VideoSection'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      {/* Hero Section */}
-      <section className="relative min-h-screen px-4 py-20 text-center overflow-hidden">
-        <HeroBackground />
-        {/* Content */}
-        <div className="relative z-10 max-w-4xl mx-auto">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            Welcome to{' '}
-            <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-              Arcast
-            </span>
-          </h1>
-          <p className="text-xl text-slate-100 dark:text-slate-100 mb-8 max-w-2xl mx-auto">
-            A modern, beautiful, and powerful application built with Next.js,
-            React, Tailwind CSS, and shadcn/ui components.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg">Book Your Session</Button>
-          </div>
-        </div>
-      </section>
-
+    <div className="min-h-screen ">
+      <HeroSection />
+      <VideoSection />
       <section className="container mx-auto px-4 py-20">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
