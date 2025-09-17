@@ -8,14 +8,14 @@ export async function GET() {
         isActive: true,
       },
       orderBy: {
-        order: 'asc',
+        createdAt: 'asc',
       },
     })
 
     // Transform the data to match the frontend expectations
     const transformedServices = services.map(service => ({
       id: service.id,
-      title: service.title,
+      name: service.name,
       description: service.description,
       price: service.price.toString(),
       currency: service.currency,
@@ -23,12 +23,11 @@ export async function GET() {
       type: service.type,
       count: service.count,
       imageUrls: service.imageUrls,
-      videoUrl: service.videoUrl,
     }))
 
-    return NextResponse.json({ 
-      success: true, 
-      services: transformedServices 
+    return NextResponse.json({
+      success: true,
+      services: transformedServices,
     })
   } catch (error) {
     console.error('Error fetching services:', error)
@@ -41,35 +40,24 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const { 
-      title, 
-      type, 
-      price, 
-      currency, 
-      count, 
-      description, 
-      imageUrls, 
-      videoUrl, 
-      order 
-    } = await req.json()
+    const { name, type, price, currency, count, description, imageUrls } =
+      await req.json()
 
     const newService = await prisma.additionalService.create({
       data: {
-        title,
+        name,
         type,
         price: parseFloat(price),
         currency: currency || 'AED',
         count: count || 1,
         description,
         imageUrls: imageUrls || [],
-        videoUrl,
-        order: order || 999,
       },
     })
 
-    return NextResponse.json({ 
-      success: true, 
-      service: newService 
+    return NextResponse.json({
+      success: true,
+      service: newService,
     })
   } catch (error) {
     console.error('Error creating service:', error)

@@ -27,16 +27,16 @@ import { useForm } from 'react-hook-form'
 import SelectTime from './SelectTime'
 import { DurationSelector } from '../ui/DurationSelector'
 import { toast } from 'sonner'
-import { ApiResponseAvailablity } from '../../types/api'
-import {
-  API_ENDPOINTS,
-  ERROR_MESSAGES,
-  SUCCESS_MESSAGES,
-} from '@/lib/constants'
+import { ApiResponseAvailablity, BookingResponse } from '../../types/api'
+import { API_ENDPOINTS, ERROR_MESSAGES } from '@/lib/constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LeadSchema, bookingLeadSchema } from '@/lib/schemas'
 import InputPhone from '../ui/InputPhone'
 import { ApiError, apiRequest } from '@/lib/api'
+import { notificationVariants } from '@/lib/motion-variants'
+import { motion } from 'motion/react'
+import PaymentModal from './PaymentModal'
+import useFlag from '@/hooks/useFlag'
 
 interface BookingFormProps {
   initialStudios: Studio[]
@@ -68,10 +68,13 @@ const BookingForm = ({
   const [selectedTime, setSelectedTime] = useState('')
   const [duration, setDuration] = useState(1)
   const [guests, setGuests] = useState(1)
-
+  const [isPaymentModalOpen, openPaymentModal, closePaymentModal] = useFlag()
   const [selectedServices, setSelectedServices] = useState<AdditionalService[]>(
     []
   )
+  const [paymentUrl, setPaymentUrl] = useState('')
+
+  const [formKey, setFormKey] = useState(0)
 
   const selectedStudio = initialStudios.find(
     studio => studio.id === selectedStudioId
@@ -103,41 +106,56 @@ const BookingForm = ({
   const onSubmit = handleSubmit(async (formData: LeadSchema) => {
     setSubmitError(null)
     setSubmitSuccess(false)
+    if (!selectedTime) {
+      setSubmitError(ERROR_MESSAGES.BOOKING.SELECT_TIME)
+      return
+    }
     try {
-      await apiRequest(API_ENDPOINTS.BOOKINGS, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          studioId: selectedStudioId,
-          packageId: selectedPackageId,
-          numberOfSeats: guests,
-          selectedTime,
-          duration,
-          discountCode: formData.discountCode,
-          lead: {
-            fullName: formData.fullName,
-            email: formData.email,
-            phoneNumber: formData.phoneNumber,
-            whatsappNumber: formData.phoneNumber,
-            recordingLocation: '',
+      const response = await apiRequest<BookingResponse>(
+        API_ENDPOINTS.BOOKINGS,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-          additionalServices: selectedServices,
-        }),
-      })
+          body: JSON.stringify({
+            studioId: selectedStudioId,
+            packageId: selectedPackageId,
+            numberOfSeats: guests,
+            selectedTime,
+            duration,
+            discountCode: formData.discountCode,
+            lead: {
+              fullName: formData.fullName,
+              email: formData.email,
+              phoneNumber: formData.phoneNumber,
+              whatsappNumber: formData.phoneNumber,
+              recordingLocation: '',
+            },
+            additionalServices: selectedServices,
+          }),
+        }
+      )
 
+      if (response.paymentUrl) {
+        setPaymentUrl(response.paymentUrl)
+        openPaymentModal()
+      }
       // Reset form
       reset()
+      setFormKey(prev => prev + 1)
       setSelectedTime('')
       setDuration(1)
       setGuests(1)
       setSelectedServices([])
-      setValue('phoneNumber', '')
-      toast.success(SUCCESS_MESSAGES.BOOKING.CREATED)
+      setSubmitSuccess(true)
     } catch (error) {
-      setSubmitError(ERROR_MESSAGES.BOOKING.FAILED)
-      console.error('Error submitting booking:', error)
+      if (error instanceof ApiError) {
+        setSubmitError(error.message)
+        console.error('Error submitting booking:', error)
+      } else {
+        setSubmitError(ERROR_MESSAGES.BOOKING.FAILED)
+      }
     }
   })
 
@@ -345,6 +363,7 @@ const BookingForm = ({
                 <div>
                   <Label htmlFor="phone">Phone Number</Label>
                   <InputPhone
+                    key={formKey}
                     id="phone"
                     {...register('phoneNumber')}
                     error={errors.phoneNumber?.message}
@@ -360,20 +379,30 @@ const BookingForm = ({
                   />
                 </div>
                 {submitError && (
-                  <div className="bg-red-100 dark:bg-red-900/20 border border-red-300 dark:border-red-700 rounded-lg p-3">
+                  <motion.div
+                    variants={notificationVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="bg-red-100 dark:bg-red-900/20 border border-red-300 dark:border-red-700 rounded-lg p-3"
+                  >
                     <p className="text-red-600 dark:text-red-300 text-sm">
                       {submitError}
                     </p>
-                  </div>
+                  </motion.div>
                 )}
 
                 {submitSuccess && (
-                  <div className="bg-green-100 dark:bg-green-900/20 border border-green-300 dark:border-green-700 rounded-lg p-3">
+                  <motion.div
+                    variants={notificationVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="bg-green-100 dark:bg-green-900/20 border border-green-300 dark:border-green-700 rounded-lg p-3"
+                  >
                     <p className="text-green-600 dark:text-green-300 text-sm">
                       Booking submitted successfully! We&apos;ll contact you
                       soon to confirm your session.
                     </p>
-                  </div>
+                  </motion.div>
                 )}
 
                 <Button
@@ -384,12 +413,23 @@ const BookingForm = ({
                 >
                   {isSubmitting ? 'Submitting...' : 'Book Studio Session'}
                 </Button>
+
+                <Button type="button" onClick={openPaymentModal}>
+                  Pay Now
+                </Button>
+
+                <PaymentModal
+                  isOpen={isPaymentModalOpen}
+                  paymentUrl={paymentUrl}
+                  onClose={closePaymentModal}
+                  totalAmount={440}
+                />
               </div>
             </CardContent>
           </Card>
         </form>
       </div>
-      {/* Sidebar with summary */}
+
       <div className="lg:col-span-1">
         <BookingSummary
           selectedDate={selectedDate}

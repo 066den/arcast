@@ -12,7 +12,14 @@ export function useStudios() {
     selectStudio,
     selectPackage,
   } = useBookingStore()
-  const { studios, setStudios, fetchStudios } = useStudioStore()
+  const {
+    studios,
+    setStudios,
+    fetchStudios,
+    createStudio,
+    updateStudioImage,
+    updateStudio,
+  } = useStudioStore()
 
   useEffect(() => {
     if (!studios.length || !packages.length) return
@@ -44,5 +51,8 @@ export function useStudios() {
     clearBooking,
     onSelectStudio: selectStudio,
     onSelectPackage: selectPackage,
+    createStudio,
+    updateStudioImage,
+    updateStudio,
   }
 }

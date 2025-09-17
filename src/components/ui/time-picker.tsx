@@ -43,6 +43,7 @@ export function TimePicker({
         onClick={() => setIsOpen(!isOpen)}
         disabled={disabled}
         className="w-full justify-between"
+        type="button"
       >
         <span className="flex items-center gap-2">
           <Clock className="h-4 w-4" />

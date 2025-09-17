@@ -17,6 +17,7 @@ export const siteConfig = {
     phone: '+971 50 824 9795',
     whatsapp: '+971 50 824 9795',
     address: 'Dubai, UAE',
+    bookingEmail: 'booking@arcast.studio',
   },
 } as const
 
