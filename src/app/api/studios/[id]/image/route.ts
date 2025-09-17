@@ -1,22 +1,22 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-import { HTTP_STATUS } from '@/lib/constants'
+import { ERROR_MESSAGES, HTTP_STATUS } from '@/lib/constants'
 import { validateFile } from '@/lib/validate'
 import { getUploadedFile } from '@/utils/files'
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   try {
-    const { id } = params
     const formData = await req.formData()
     const file = formData.get('imageFile') as File
 
     if (!file) {
       return NextResponse.json(
-        { error: 'File is required' },
+        { error: ERROR_MESSAGES.INVALID_REQUEST },
         { status: HTTP_STATUS.BAD_REQUEST }
       )
     }
@@ -40,7 +40,10 @@ export async function POST(
     })
 
     if (!existingStudio) {
-      return NextResponse.json({ error: 'Studio not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: ERROR_MESSAGES.STUDIO.NOT_FOUND },
+        { status: 404 }
+      )
     }
 
     const updatedStudio = await prisma.studio.update({
@@ -88,7 +91,10 @@ export async function DELETE(req: Request) {
     })
 
     if (!existingStudio) {
-      return NextResponse.json({ error: 'Studio not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: ERROR_MESSAGES.STUDIO.NOT_FOUND },
+        { status: 404 }
+      )
     }
 
     // Remove studio image (set to null)

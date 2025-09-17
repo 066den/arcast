@@ -46,7 +46,7 @@ export function BookingSummary({
       const pkg = packages.find(p => p.id === selectedPackage)
 
       if (studio && pkg) {
-        total += pkg.price_per_hour * duration
+        total += parseFloat(pkg.price_per_hour.toString()) * duration
       }
     }
 
@@ -124,7 +124,7 @@ export function BookingSummary({
                 const service = additionalServices.find(s => s.id === id)
                 return service ? (
                   <li key={id} className="flex justify-between items-center">
-                    <span>{service.title}</span>
+                    <span>{service.name}</span>
                     <span className="font-medium">
                       {service.price * (quantity || 1)} {service.currency}
                     </span>

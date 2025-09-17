@@ -1,5 +1,5 @@
 // Preloader components
-export { Preloader, PagePreloader, InlinePreloader } from './preloader'
+export { Preloader, PagePreloader, InlinePreloader } from '../preloader'
 
 // Preloader hooks
 export { usePreloader, useAsyncPreloader } from '@/hooks/usePreloader'

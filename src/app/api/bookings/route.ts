@@ -12,6 +12,7 @@ import {
 } from '@/lib/constants'
 import { validateBooking } from '@/lib/schemas'
 import { getPaymentLinkForBooking } from '@/services/paymentServices'
+import { Decimal } from '@prisma/client/runtime/library'
 
 function calculateBaseCost(pricePerHour: number, duration: number): number {
   return parseFloat(pricePerHour.toString()) * duration
@@ -147,7 +148,7 @@ export async function POST(req: Request) {
     }
 
     // Validate discount code
-    let validatedDiscount: { id: string; type: string; value: number } | null =
+    let validatedDiscount: { id: string; type: string; value: Decimal } | null =
       null
 
     if (discountCode) {
@@ -182,14 +183,19 @@ export async function POST(req: Request) {
         }
       }
 
-      validatedDiscount = validDiscount
+      validatedDiscount = {
+        id: validDiscount.id,
+        type: validDiscount.type,
+        value: validDiscount.value,
+      }
     }
 
     // Pre-fetch additional services to validate
     const additionalServicesData: Array<{
-      additionalServiceId: string
+      serviceId: string
       quantity: number
-      price: string
+      unitPrice: number
+      totalPrice: number
     }> = []
     let additionalServicesCost = 0
 
@@ -222,9 +228,10 @@ export async function POST(req: Request) {
         additionalServicesCost += serviceCost
 
         additionalServicesData.push({
-          additionalServiceId: additionalService.id,
+          serviceId: additionalService.id,
           quantity,
-          price: additionalService.price,
+          unitPrice: parseFloat(additionalService.price.toString()),
+          totalPrice: serviceCost,
         })
       }
     }
@@ -237,10 +244,10 @@ export async function POST(req: Request) {
     const totalBeforeDiscount = baseCost + additionalServicesCost
     const discountAmount = validatedDiscount
       ? validatedDiscount.type === DISCOUNT_TYPE.PERCENTAGE
-        ? (totalBeforeDiscount * validatedDiscount.value) / 100
-        : validatedDiscount.value
+        ? (totalBeforeDiscount * Number(validatedDiscount.value)) / 100
+        : Number(validatedDiscount.value)
       : 0
-    const costAfterDiscount = totalBeforeDiscount - discountAmount
+    const costAfterDiscount = totalBeforeDiscount - Number(discountAmount)
     const finalVatAmount = (costAfterDiscount * VAT_RATE) / 100
     const finalTotalCost = costAfterDiscount + finalVatAmount
 
@@ -304,6 +311,7 @@ export async function POST(req: Request) {
             totalCost: finalTotalCost,
             vatAmount: finalVatAmount,
             discountAmount,
+            finalAmount: finalTotalCost,
             discountCodeId: validatedDiscount?.id,
             status: BOOKING_STATUS.PENDING,
             studioId,
@@ -346,16 +354,21 @@ export async function POST(req: Request) {
       startTime: result.startTime,
       endTime: result.endTime,
       totalCost: parseFloat(result.totalCost.toString()),
-      vatAmount: parseFloat(result.vatAmount.toString()),
+      vatAmount: result.vatAmount ? parseFloat(result.vatAmount.toString()) : 0,
       discountAmount: result.discountAmount
         ? parseFloat(result.discountAmount.toString())
         : 0,
+      finalAmount: result.finalAmount
+        ? parseFloat(result.finalAmount.toString())
+        : parseFloat(result.totalCost.toString()),
     }
 
     // Create Notion entry
     try {
       await createNotionBookingEntry(result)
-      await createNotionLeadEntry(result.lead)
+      if (result.lead) {
+        await createNotionLeadEntry(result.lead)
+      }
     } catch (notionError) {
       console.error('Failed to create Notion entry:', notionError)
     }

@@ -61,7 +61,7 @@ export function ServiceCheckbox({
       <div className="flex-1">
         <div className="flex items-start justify-between mb-2">
           <h4 className="font-medium text-slate-900 dark:text-white">
-            {service.title}
+            {service.name}
           </h4>
           <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
             {service.price} {service.currency}
@@ -71,7 +71,7 @@ export function ServiceCheckbox({
         <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
           {service.description}
         </p>
-        {service.type === 'STANDARD_EDIT_SHORT_FORM' && (
+        {service.type === 'STANDARD' && (
           <DurationSelector
             value={duration}
             onChange={handleDurationChange}
