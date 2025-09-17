@@ -1,14 +1,15 @@
+import { ERROR_MESSAGES } from '@/lib/constants'
 import { prisma } from '@/lib/prisma'
 
 export const getAdditionalServices = async () => {
   if (!prisma) {
-    throw new Error('Prisma client is not initialized')
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
   }
 
   try {
     const additionalServices = await prisma.additionalService.findMany({
-      orderBy: {
-        order: 'asc',
+      where: {
+        isActive: true,
       },
     })
     return additionalServices.map(service => ({

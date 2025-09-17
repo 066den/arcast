@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getStudios } from '@/services/studioServices'
 import { validateStudio } from '@/lib/schemas'
+import { ERROR_MESSAGES } from '@/lib/constants'
+import { getUploadedFile } from '@/utils/files'
+import { validateFile } from '@/lib/validate'
 
 export async function GET() {
   try {
@@ -10,163 +13,76 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching studios:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
       { status: 500 }
     )
   }
 }
 
 export async function POST(req: Request) {
-  const {
-    name,
-    location,
-    imageUrl,
-    totalSeats,
-    openingTime,
-    closingTime,
-    packages,
-  } = await req.json()
+  const formData = await req.formData()
+  const data = Object.fromEntries(formData)
 
-  const studio = await prisma.$transaction(async tx => {
-    // 1. Create the studio
-    const newStudio = await tx.studio.create({
-      data: {
-        name,
-        location,
-        imageUrl,
-        totalSeats,
-        openingTime,
-        closingTime,
-      },
-    })
-
-    // Get default packages
-    const defaultPackages = await tx.studioPackage.findMany({
-      where: {
-        studios: {
-          none: {},
-        },
-      },
-    })
-
-    // Connect default packages to the studio
-    await tx.studio.update({
-      where: { id: newStudio.id },
-      data: {
-        packages: {
-          connect: defaultPackages.map(pkg => ({ id: pkg.id })),
-        },
-      },
-    })
-
-    // 2. Create additional custom packages if provided
-    if (packages && packages.length > 0) {
-      await Promise.all(
-        packages.map(
-          async (pkg: {
-            name: string
-            pricePerHour: number | string
-            currency?: string
-            description: string
-            deliveryTime: number
-            perks?: { name: string; count: number }[]
-          }) => {
-            const newPackage = await tx.studioPackage.create({
-              data: {
-                name: pkg.name,
-                price_per_hour: pkg.pricePerHour,
-                currency: pkg.currency || 'AED',
-                description: pkg.description,
-                delivery_time: pkg.deliveryTime,
-                studios: {
-                  connect: { id: newStudio.id },
-                },
-                // Create package perks if provided
-                packagePerks: pkg.perks
-                  ? {
-                      create: pkg.perks.map(
-                        (perk: { name: string; count: number }) => ({
-                          name: perk.name,
-                          count: perk.count,
-                        })
-                      ),
-                    }
-                  : undefined,
-              },
-            })
-            return newPackage
-          }
-        )
-      )
-    }
-
-    // 3. Return the created studio with its packages
-    return tx.studio.findUnique({
-      where: { id: newStudio.id },
-      include: {
-        packages: {
-          include: {
-            packagePerks: true,
-          },
-        },
-      },
-    })
-  })
-
-  return NextResponse.json(studio)
-}
-
-export async function PATCH(req: Request) {
   try {
-    const body = await req.json()
-    const { id, ...updateData } = body
-
-    if (!id) {
-      return NextResponse.json(
-        { error: 'Studio ID is required' },
-        { status: 400 }
-      )
-    }
-
-    // Data validation
-    const validation = validateStudio(updateData)
+    const validation = validateStudio({
+      ...data,
+      totalSeats: parseInt(data.totalSeats as string),
+    })
     if (!validation.success) {
       return NextResponse.json(
         {
-          error: 'Validation failed',
+          error: ERROR_MESSAGES.INVALID_REQUEST,
           details: validation.error.issues,
         },
         { status: 400 }
       )
     }
 
-    // Check if studio exists
-    const existingStudio = await prisma.studio.findUnique({
-      where: { id },
-    })
+    const { name, location, totalSeats, openingTime, closingTime, imageFile } =
+      data
 
-    if (!existingStudio) {
-      return NextResponse.json({ error: 'Studio not found' }, { status: 404 })
+    let imageUrl = null
+
+    if (imageFile) {
+      if (!(imageFile instanceof File)) {
+        return NextResponse.json(
+          { error: 'Invalid image file provided' },
+          { status: 400 }
+        )
+      }
+
+      const validation = validateFile(imageFile)
+
+      if (validation) {
+        return NextResponse.json({ error: validation }, { status: 400 })
+      }
+
+      const uploadedUrl = await getUploadedFile(imageFile, 'studios')
+      if (!uploadedUrl) {
+        return NextResponse.json(
+          { error: 'Failed to upload image' },
+          { status: 400 }
+        )
+      }
+      imageUrl = uploadedUrl
     }
 
-    // Update studio
-    const updatedStudio = await prisma.studio.update({
-      where: { id },
-      data: validation.data,
-      include: {
-        packages: {
-          include: {
-            packagePerks: true,
-          },
-        },
+    const newStudio = await prisma.studio.create({
+      data: {
+        name: name as string,
+        location: location as string,
+        totalSeats: parseInt(totalSeats as string),
+        imageUrl,
+        openingTime: openingTime as string,
+        closingTime: closingTime as string,
       },
     })
 
-    return NextResponse.json(updatedStudio)
+    return NextResponse.json(newStudio)
   } catch (error) {
-    console.error('Error updating studio:', error)
+    console.error('Error creating studio:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
       { status: 500 }
     )
   }
