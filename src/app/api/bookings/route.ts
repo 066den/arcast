@@ -18,6 +18,26 @@ function calculateBaseCost(pricePerHour: number, duration: number): number {
   return parseFloat(pricePerHour.toString()) * duration
 }
 
+export async function GET(req: Request) {
+  try {
+    const bookings = await prisma.booking.findMany({
+      include: {
+        studio: true,
+        package: true,
+        lead: true,
+        additionalServices: true,
+      },
+    })
+    return NextResponse.json({ success: true, data: bookings })
+  } catch (error) {
+    console.error('Error fetching bookings:', error)
+    return NextResponse.json(
+      { success: false, error: ERROR_MESSAGES.BOOKING.FAILED },
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
+    )
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const body: BookingFormData = await req.json()
