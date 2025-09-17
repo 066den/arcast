@@ -467,7 +467,7 @@ export async function testNotionConnection() {
       try {
         const schema = await getDatabaseSchema(DATABASE_ID, false)
         // Database access successful
-        )
+        console.log(schema)
       } catch (dbError) {
         console.error('❌ Database access failed:', dbError.message)
         return {

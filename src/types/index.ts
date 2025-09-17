@@ -13,9 +13,12 @@ export interface Booking {
   totalCost: number | Decimal
   vatAmount: number | Decimal
   discountAmount: number | Decimal | null
+  finalAmount?: number | Decimal | null
   status: BookingStatus
   studioId: string
   packageId: string
+  contentPackageId?: string | null
+  contentTypeId?: string | null
   leadId: string
   discountCodeId: string | null
   createdAt: Date
@@ -61,7 +64,7 @@ export interface StudioPackage {
   price_per_hour: number | Decimal
   currency: string
   description: string
-  delivery_time: number
+  delivery_time: number | null
   packagePerks?: PackagePerk[]
   createdAt: Date
   updatedAt: Date
@@ -76,11 +79,11 @@ export interface PackagePerk {
 
 export interface AdditionalService {
   id: string
-  title: string
-  type: 'STANDARD_EDIT_SHORT_FORM' | 'BY_THREE'
+  name: string
+  type: 'STANDARD' | 'BY_THREE'
   price: number
   currency: string
-  description: string
+  description: string | null
   imageUrls: string[]
   quantity?: number
   isActive?: boolean

@@ -62,6 +62,7 @@ export interface BookingResponse {
   totalCost: number
   vatAmount: number
   discountAmount: number
+  finalAmount?: number
   studio?: Studio
   package?: StudioPackage
   lead?: Lead

@@ -29,16 +29,9 @@ export const getPaymentLinkForBooking = async (bookingId: string) => {
 
     const existingPayment = await prisma.payment.findUnique({
       where: { bookingId: booking.id },
-      include: {
-        paymentLink: true,
-      },
     })
 
-    if (
-      existingPayment &&
-      existingPayment.paymentLink &&
-      existingPayment.status !== PAYMENT_STATUS.FAILED
-    ) {
+    if (existingPayment && existingPayment.status !== PAYMENT_STATUS.FAILED) {
       return {
         success: false,
         error: ERROR_MESSAGES.PAYMENT.ALREADY_EXISTS,
@@ -46,47 +39,25 @@ export const getPaymentLinkForBooking = async (bookingId: string) => {
       }
     }
 
-    const createdPaymentLink = await createPaymentLink(booking, booking.lead)
+    const createdPaymentLink = await createPaymentLink(
+      booking as Booking,
+      booking.lead
+    )
     if (!createdPaymentLink) {
       throw new Error('Failed to create payment link')
     }
 
-    const paymentLink = await prisma.paymentLink.create({
+    const payment = await prisma.payment.create({
       data: {
-        url: createdPaymentLink.payment_url,
-        externalId: createdPaymentLink.id,
-        provider: 'MAMO_PAY',
+        bookingId: booking.id,
         amount: booking.totalCost,
-        currency: booking.package.currency || 'AED',
-        title: createdPaymentLink.title,
-        description: createdPaymentLink.description,
+        currency: booking.package?.currency || 'AED',
+        status: PAYMENT_STATUS.PENDING,
+        provider: 'MAMO_PAY',
+        externalId: createdPaymentLink.id,
         metadata: createdPaymentLink,
       },
     })
-
-    let payment
-    if (existingPayment) {
-      payment = await prisma.payment.update({
-        where: { id: existingPayment.id },
-        data: {
-          status: PAYMENT_STATUS.PENDING,
-          paymentLinkId: paymentLink.id,
-          metadata: createdPaymentLink,
-        },
-      })
-    } else {
-      payment = await prisma.payment.create({
-        data: {
-          bookingId: booking.id,
-          amount: booking.totalCost,
-          currency: booking.package.currency || 'AED',
-          status: PAYMENT_STATUS.PENDING,
-          provider: 'MAMO_PAY',
-          paymentLinkId: paymentLink.id,
-          metadata: createdPaymentLink,
-        },
-      })
-    }
 
     return { payment, paymentLink: createdPaymentLink }
   } catch (error) {

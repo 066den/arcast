@@ -77,9 +77,9 @@ export async function GET(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params
+  const { id } = await context.params
   try {
     const body = await req.json()
     const { updateData } = body
@@ -107,7 +107,10 @@ export async function PATCH(
     })
 
     if (!existingStudio) {
-      return NextResponse.json({ error: 'Studio not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: ERROR_MESSAGES.STUDIO.NOT_FOUND },
+        { status: 404 }
+      )
     }
 
     const updatedStudio = await prisma.studio.update({
@@ -126,7 +129,7 @@ export async function PATCH(
   } catch (error) {
     console.error('Error updating studio:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
       { status: 500 }
     )
   }

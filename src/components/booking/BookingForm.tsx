@@ -420,7 +420,7 @@ const BookingForm = ({
 
                 <PaymentModal
                   isOpen={isPaymentModalOpen}
-                  paymentUrl="https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-343bf5?embedded=true&parent_origin=http://localhost:3000&enable_postmessage=true"
+                  paymentUrl={paymentUrl}
                   onClose={closePaymentModal}
                   totalAmount={440}
                 />

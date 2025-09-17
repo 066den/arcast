@@ -50,7 +50,7 @@ export function PackageCard({ pkg, isSelected, onClick }: PackageCardProps) {
       <div className="mb-4">
         <div className="flex items-baseline gap-2">
           <span className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-            {pkg.price_per_hour}
+            {parseFloat(pkg.price_per_hour.toString())}
           </span>
           <span className="text-slate-500 text-lg">{pkg.currency}/hour</span>
         </div>
@@ -61,7 +61,7 @@ export function PackageCard({ pkg, isSelected, onClick }: PackageCardProps) {
           Includes:
         </h4>
         <ul className="space-y-2">
-          {pkg.packagePerks.map((perk: PackagePerk, index: number) => (
+          {pkg.packagePerks?.map((perk: PackagePerk, index: number) => (
             <li
               key={index}
               className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300"
