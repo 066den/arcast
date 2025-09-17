@@ -1,6 +1,6 @@
 'use client'
 
-import { formatDateConsistent } from '@/utils/dateFormat'
+import { formatDateDubai } from '@/utils/dateFormat'
 import { formatTimeRange } from '@/utils/time'
 import {
   Card,
@@ -62,7 +62,7 @@ export function BookingSummary({
 
   const formatDate = (dateString: Date | undefined) => {
     if (!dateString) return ''
-    return formatDateConsistent(new Date(dateString))
+    return formatDateDubai(new Date(dateString))
   }
 
   return (

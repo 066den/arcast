@@ -16,7 +16,6 @@ export async function apiRequest<T>(
   try {
     const response = await fetch(url, {
       headers: {
-        'Content-Type': 'application/json',
         ...options.headers,
       },
       ...options,

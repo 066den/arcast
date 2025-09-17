@@ -78,22 +78,14 @@ export const studioSchema = z.object({
   name: z
     .string()
     .min(2, { message: 'Name must be at least 2 characters' })
-    .max(100, { message: 'Name must be less than 100 characters' })
-    .regex(VALIDATION.NAME_REGEX, {
-      message: 'Name must only contain letters and spaces',
-    }),
+    .max(100, { message: 'Name must be less than 100 characters' }),
   location: z
     .string()
     .min(2, { message: 'Location must be at least 2 characters' })
-    .max(100, { message: 'Location must be less than 100 characters' }),
-  openingTime: z
-    .string()
-    .min(2, { message: 'Opening time must be at least 2 characters' })
-    .max(100, { message: 'Opening time must be less than 100 characters' }),
-  closingTime: z
-    .string()
-    .min(2, { message: 'Closing time must be at least 2 characters' })
-    .max(100, { message: 'Closing time must be less than 100 characters' }),
+    .max(100, { message: 'Location must be less than 100 characters' })
+    .optional(),
+  openingTime: z.string(),
+  closingTime: z.string(),
   totalSeats: z.number(),
 })
 

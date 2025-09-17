@@ -18,7 +18,7 @@ export function ServiceCheckbox({
 }: ServiceCheckboxProps) {
   const [duration, setDuration] = useState(3)
   const isChecked = selectedServices.some(({ id }) => id === service.id)
-  const step = service.type === 'STANDARD_EDIT_SHORT_FORM' ? 3 : 1
+  const step = service.type === 'BY_THREE' ? 3 : 1
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {

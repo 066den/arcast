@@ -22,12 +22,8 @@ export const getStudios = async () => {
   //throw new Error('test')
   try {
     const studios = await prisma.studio.findMany({
+      orderBy: [{ createdAt: 'asc' }, { name: 'asc' }],
       include: {
-        packages: {
-          include: {
-            packagePerks: true,
-          },
-        },
         bookings: {
           where: {
             AND: [
@@ -49,41 +45,10 @@ export const getStudios = async () => {
 
     // Add availability information to each studio
     const studiosWithAvailability = studios.map(studio => {
-      // Determine the end date based on studio type
-      //const endDate =
-      //studio.name === 'Mobile Studio Service' ? targetFriday : twoWeeksFromNow
-
-      // Filter bookings within the relevant date range
-      // const relevantBookings = studio.bookings?.filter((booking: Booking) => {
-      //   const bookingStart = new Date(booking.startTime)
-      //   const bookingEnd = new Date(booking.endTime)
-      //   return (
-      //     // Check if booking overlaps with the date range
-      //     (bookingStart >= today && bookingStart <= endDate) ||
-      //     (bookingEnd >= today && bookingEnd <= endDate) ||
-      //     (bookingStart <= today && bookingEnd >= endDate)
-      //   )
-      // })
-
-      // Generate time slots with the proper end date
-      // const timeSlots = generateAvailableTimeSlots(
-      //   studio.openingTime,
-      //   studio.closingTime,
-      //   relevantBookings,
-      //   endDate
-      // )
-
-      // Calculate actual availability
-      //const availableSlots = timeSlots.filter(slot => slot.available).length
-      //console.log(studio)
-      // Transform studio data to match frontend expectations
-
       return {
         ...studio,
-        packages: [],
         description: `Professional recording studio with ${studio.totalSeats} seats, located in ${studio.location}. Available from ${studio.openingTime} to ${studio.closingTime}.`,
         capacity: studio.totalSeats,
-
         // Exclude bookings from response to reduce payload size
         bookings: [],
       }

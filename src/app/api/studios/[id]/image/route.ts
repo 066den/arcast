@@ -1,38 +1,50 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { validateStudioImageUpload } from '@/lib/schemas'
+
 import { HTTP_STATUS } from '@/lib/constants'
+import { validateFile } from '@/lib/validate'
+import { getUploadedFile } from '@/utils/files'
 
-export async function POST(req: Request) {
+export async function POST(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   try {
-    const body = await req.json()
+    const { id } = params
+    const formData = await req.formData()
+    const file = formData.get('imageFile') as File
 
-    // Data validation
-    const validation = validateStudioImageUpload(body)
-    if (!validation.success) {
+    if (!file) {
       return NextResponse.json(
-        {
-          error: 'Validation failed',
-          details: validation.error.issues,
-        },
+        { error: 'File is required' },
         { status: HTTP_STATUS.BAD_REQUEST }
       )
     }
 
-    const { studioId, imageUrl } = validation.data
+    const validation = validateFile(file)
 
-    // Check if studio exists
+    if (validation) {
+      return NextResponse.json({ error: validation }, { status: 400 })
+    }
+
+    const imageUrl = await getUploadedFile(file, 'studios')
+    if (!imageUrl) {
+      return NextResponse.json(
+        { error: 'Failed to upload image' },
+        { status: 400 }
+      )
+    }
+
     const existingStudio = await prisma.studio.findUnique({
-      where: { id: studioId },
+      where: { id },
     })
 
     if (!existingStudio) {
       return NextResponse.json({ error: 'Studio not found' }, { status: 404 })
     }
 
-    // Update studio image
     const updatedStudio = await prisma.studio.update({
-      where: { id: studioId },
+      where: { id },
       data: { imageUrl },
       include: {
         packages: {

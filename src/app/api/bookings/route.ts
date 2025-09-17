@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { BookingFormData } from '@/types/api'
+import { BookingFormData, BookingResponse } from '@/types/api'
 import { isSlotWithinWorkingHours } from '@/utils/time'
 import { createNotionBookingEntry, createNotionLeadEntry } from '@/lib/notion'
 import {
@@ -11,6 +11,7 @@ import {
   VAT_RATE,
 } from '@/lib/constants'
 import { validateBooking } from '@/lib/schemas'
+import { getPaymentLinkForBooking } from '@/services/paymentServices'
 
 function calculateBaseCost(pricePerHour: number, duration: number): number {
   return parseFloat(pricePerHour.toString()) * duration
@@ -148,7 +149,7 @@ export async function POST(req: Request) {
     // Validate discount code
     let validatedDiscount: { id: string; type: string; value: number } | null =
       null
-    console.log(discountCode)
+
     if (discountCode) {
       const validDiscount = await prisma.discountCode.findUnique({
         where: { code: discountCode },
@@ -246,7 +247,6 @@ export async function POST(req: Request) {
     // 2. Now start a shorter transaction that only does essential writes
     const result = await prisma.$transaction(
       async tx => {
-        // Handle lead creation/update
         let bookingLead
         if (lead.email) {
           const existingLead = await tx.lead.findFirst({
@@ -341,22 +341,7 @@ export async function POST(req: Request) {
       }
     )
 
-    // Format the response
-    const formattedAdditionalServices = result.additionalServices.map(
-      service => ({
-        id: service.id,
-        quantity: service.quantity,
-        price: service.price,
-        service: {
-          id: service.additionalService.id,
-          title: service.additionalService.title,
-          type: service.additionalService.type,
-          description: service.additionalService.description,
-        },
-      })
-    )
-
-    const response = {
+    const response: BookingResponse = {
       id: result.id,
       startTime: result.startTime,
       endTime: result.endTime,
@@ -365,21 +350,6 @@ export async function POST(req: Request) {
       discountAmount: result.discountAmount
         ? parseFloat(result.discountAmount.toString())
         : 0,
-      studio: {
-        id: result.studio.id,
-        name: result.studio.name,
-      },
-      package: {
-        id: result.package.id,
-        name: result.package.name,
-      },
-      lead: {
-        id: result.lead.id,
-        fullName: result.lead.fullName,
-        email: result.lead.email,
-        phoneNumber: result.lead.phoneNumber,
-      },
-      additionalServices: formattedAdditionalServices,
     }
 
     // Create Notion entry
@@ -390,7 +360,16 @@ export async function POST(req: Request) {
       console.error('Failed to create Notion entry:', notionError)
     }
 
-    return NextResponse.json({ success: true, data: response })
+    try {
+      const paymentLink = await getPaymentLinkForBooking(result.id)
+      if (paymentLink) {
+        response.paymentUrl = `${paymentLink.paymentLink?.payment_url}?embedded=true&parent_origin=${process.env.NEXT_PUBLIC_APP_URL}&enable_postmessage=true`
+      }
+    } catch (error) {
+      console.error('Failed to create payment link:', error)
+    }
+
+    return NextResponse.json(response)
   } catch (error) {
     console.error('Error creating booking:', error)
     return NextResponse.json(
