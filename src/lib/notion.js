@@ -140,7 +140,6 @@ export async function createNotionBookingEntry(booking) {
 
     // Get database schema for validation (optional)
     // const schema = await getDatabaseSchema(DATABASE_ID)
-    // console.log('📊 Database schema loaded')
 
     // Prepare properties object
     const properties = {
@@ -286,7 +285,6 @@ export async function createNotionLeadEntry(lead) {
       properties,
     })
 
-    console.log('✅ Successfully created Notion lead entry:', response.id)
     return response
   } catch (error) {
     console.error('❌ Error creating Notion lead entry:', error)
@@ -333,7 +331,6 @@ export async function createNotionContactEntry(contactData) {
       properties,
     })
 
-    console.log('✅ Successfully created Notion contact entry:', response.id)
     return response
   } catch (error) {
     console.error('❌ Error creating Notion contact entry:', error)
@@ -387,7 +384,6 @@ export async function updateNotionBookingStatus(
       properties,
     })
 
-    console.log(`✅ Updated Notion booking status to: ${status}`)
     return response
   } catch (error) {
     console.error('❌ Error updating Notion booking status:', error)
@@ -465,16 +461,13 @@ export async function getNotionBookings(filters = {}) {
 export async function testNotionConnection() {
   try {
     const user = await notion.users.me()
-    console.log('✅ Notion connection successful:', user.name)
 
     // Test database access
     if (DATABASE_ID) {
       try {
         const schema = await getDatabaseSchema(DATABASE_ID, false)
-        console.log(
-          '✅ Database access successful, fields:',
-          Object.keys(schema).length
-        )
+        // Database access successful
+        console.log(schema)
       } catch (dbError) {
         console.error('❌ Database access failed:', dbError.message)
         return {

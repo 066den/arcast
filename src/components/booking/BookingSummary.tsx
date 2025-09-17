@@ -1,6 +1,6 @@
 'use client'
 
-import { formatDateConsistent } from '@/utils/dateFormat'
+import { formatDateDubai } from '@/utils/dateFormat'
 import { formatTimeRange } from '@/utils/time'
 import {
   Card,
@@ -46,7 +46,7 @@ export function BookingSummary({
       const pkg = packages.find(p => p.id === selectedPackage)
 
       if (studio && pkg) {
-        total += pkg.price_per_hour * duration
+        total += parseFloat(pkg.price_per_hour.toString()) * duration
       }
     }
 
@@ -62,7 +62,7 @@ export function BookingSummary({
 
   const formatDate = (dateString: Date | undefined) => {
     if (!dateString) return ''
-    return formatDateConsistent(new Date(dateString))
+    return formatDateDubai(new Date(dateString))
   }
 
   return (
@@ -124,7 +124,7 @@ export function BookingSummary({
                 const service = additionalServices.find(s => s.id === id)
                 return service ? (
                   <li key={id} className="flex justify-between items-center">
-                    <span>{service.title}</span>
+                    <span>{service.name}</span>
                     <span className="font-medium">
                       {service.price * (quantity || 1)} {service.currency}
                     </span>

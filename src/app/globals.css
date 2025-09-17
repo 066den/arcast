@@ -9,6 +9,7 @@
   --primary-dark: hsl(0 0% 15%);
   --accent: hsl(16 88% 57%);
   --accent-dark: hsl(16 88% 52%);
+  --white-smoke: hsl(0 0% 95%);
   --border: oklch(0.923 0.003 48.717);
   --ring: oklch(0.709 0.01 56.259);
   --sidebar: hsl(0 0% 98%);
@@ -33,6 +34,7 @@
   --color-primary-dark: var(--primary-dark);
   --color-accent: var(--accent);
   --color-accent-dark: var(--accent-dark);
+  --color-accent-foreground: var(--white-smoke);
   --color-border: var(--border);
   --color-ring: var(--ring);
   --color-sidebar-ring: var(--sidebar-ring);
