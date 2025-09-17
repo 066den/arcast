@@ -1,7 +1,6 @@
 import { ERROR_MESSAGES } from '@/lib/constants'
 import { prisma } from '@/lib/prisma'
 import { BookingFilters } from '@/types'
-import { ERROR_MESSAGES } from '@/lib/constants'
 
 export const getAdditionalServices = async () => {
   if (!prisma) {

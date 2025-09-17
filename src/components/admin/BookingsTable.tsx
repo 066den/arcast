@@ -8,6 +8,10 @@ import {
   getCoreRowModel,
   useReactTable,
   type VisibilityState,
+  type Row,
+  type Cell,
+  type HeaderGroup,
+  type Header,
 } from '@tanstack/react-table'
 import {
   Table,
@@ -30,43 +34,43 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
     {
       header: 'Customer',
       accessorKey: 'name',
-      cell: ({ row }) => {
-        return <div>{row.original.lead.fullName}</div>
+      cell: ({ row }: { row: Row<Booking> }) => {
+        return <div>{row.original.lead?.fullName || 'N/A'}</div>
       },
     },
     {
       header: 'Booking Date',
       accessorKey: 'email',
-      cell: ({ row }) => {
-        return <div>{row.original.lead.email}</div>
+      cell: ({ row }: { row: Row<Booking> }) => {
+        return <div>{row.original.lead?.email || 'N/A'}</div>
       },
     },
     {
       header: 'Setup',
       accessorKey: 'studio.name',
-      cell: ({ row }) => {
-        return <div>{row.original.studio.name}</div>
+      cell: ({ row }: { row: Row<Booking> }) => {
+        return <div>{row.original.studio?.name || 'N/A'}</div>
       },
     },
     {
       header: 'Status',
       accessorKey: 'payment.provider',
-      cell: ({ row }) => {
+      cell: ({ row }: { row: Row<Booking> }) => {
         return <div>Payment Method</div>
       },
     },
     {
       header: 'Payment',
       accessorKey: 'payment',
-      cell: ({ row }) => {
+      cell: ({ row }: { row: Row<Booking> }) => {
         return <div>Payment cost</div>
       },
     },
     {
       header: 'Created Date',
       accessorKey: 'createdAt',
-      cell: ({ row }) => {
-        return <div>{row.original.createdAt}</div>
+      cell: ({ row }: { row: Row<Booking> }) => {
+        return <div>{row.original.createdAt.toLocaleDateString()}</div>
       },
     },
   ]
@@ -84,9 +88,9 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
     <div className="overflow-hidden rounded-md border">
       <Table>
         <TableHeader>
-          {table.getHeaderGroups().map(headerGroup => (
+          {table.getHeaderGroups().map((headerGroup: HeaderGroup<Booking>) => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map(header => (
+              {headerGroup.headers.map((header: Header<Booking, unknown>) => (
                 <TableHead key={header.id}>
                   {header.isPlaceholder
                     ? null
@@ -100,9 +104,9 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows.map(row => (
+          {table.getRowModel().rows.map((row: Row<Booking>) => (
             <TableRow key={row.id}>
-              {row.getVisibleCells().map(cell => (
+              {row.getVisibleCells().map((cell: Cell<Booking, unknown>) => (
                 <TableCell key={cell.id}>{cell.getValue() as string}</TableCell>
               ))}
             </TableRow>
