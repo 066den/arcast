@@ -1,10 +1,10 @@
 'use client'
 
-import { PackagePerk, StudioPackage } from '../../types'
+import { Package } from '../../types'
 import { Check } from 'lucide-react'
 
 interface PackageCardProps {
-  pkg: StudioPackage
+  pkg: Package
   isSelected: boolean
   onClick: () => void
 }
@@ -50,7 +50,7 @@ export function PackageCard({ pkg, isSelected, onClick }: PackageCardProps) {
       <div className="mb-4">
         <div className="flex items-baseline gap-2">
           <span className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-            {parseFloat(pkg.price_per_hour.toString())}
+            {parseFloat(pkg.basePrice.toString())}
           </span>
           <span className="text-slate-500 text-lg">{pkg.currency}/hour</span>
         </div>
@@ -58,19 +58,11 @@ export function PackageCard({ pkg, isSelected, onClick }: PackageCardProps) {
 
       <div className="space-y-2">
         <h4 className="font-medium text-slate-900 dark:text-white text-sm">
-          Includes:
+          Description:
         </h4>
-        <ul className="space-y-2">
-          {pkg.packagePerks?.map((perk: PackagePerk, index: number) => (
-            <li
-              key={index}
-              className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300"
-            >
-              <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-              <span>{perk.name}</span>
-            </li>
-          ))}
-        </ul>
+        <p className="text-sm text-slate-600 dark:text-slate-300">
+          {pkg.description || 'Professional recording package'}
+        </p>
       </div>
     </div>
   )

@@ -15,16 +15,15 @@ export interface Booking {
   discountAmount: number | Decimal | null
   finalAmount?: number | Decimal | null
   status: BookingStatus
-  studioId: string
-  packageId: string
-  contentPackageId?: string | null
-  contentTypeId?: string | null
+  studioId: string | null
+  contentPackageId: string | null
+  serviceId?: string | null
   leadId: string
   discountCodeId: string | null
   createdAt: Date
   updatedAt: Date
   studio?: Studio
-  package?: StudioPackage
+  contentPackage?: Package
   lead?: Lead
   discountCode?: string
   notionEntryId?: string
@@ -58,14 +57,13 @@ export type Studio = {
   //packages?: StudioPackage[]
 }
 
-export interface StudioPackage {
+export interface Package {
   id: string
   name: string
-  price_per_hour: number | Decimal
+  basePrice: number | Decimal
   currency: string
-  description: string
-  delivery_time: number | null
-  packagePerks?: PackagePerk[]
+  description: string | null
+  isActive: boolean
   createdAt: Date
   updatedAt: Date
 }

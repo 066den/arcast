@@ -136,7 +136,7 @@ export async function POST(req: Request) {
     }
 
     // Get package price
-    const packageData = await prisma.studioPackage.findUnique({
+    const packageData = await prisma.package.findUnique({
       where: { id: packageId },
     })
 
@@ -238,7 +238,7 @@ export async function POST(req: Request) {
 
     // Calculate costs
     const baseCost = calculateBaseCost(
-      parseFloat(packageData.price_per_hour.toString()),
+      parseFloat(packageData.basePrice.toString()),
       duration
     )
     const totalBeforeDiscount = baseCost + additionalServicesCost
@@ -315,20 +315,20 @@ export async function POST(req: Request) {
             discountCodeId: validatedDiscount?.id,
             status: BOOKING_STATUS.PENDING,
             studioId,
-            packageId,
+            contentPackageId: packageId,
             leadId: bookingLead.id,
-            additionalServices: {
+            bookingAdditionalServices: {
               create: additionalServicesData,
             },
           },
           include: {
             studio: true,
-            package: true,
+            contentPackage: true,
             lead: true,
             discountCode: true,
-            additionalServices: {
+            bookingAdditionalServices: {
               include: {
-                additionalService: true,
+                service: true,
               },
             },
           },

@@ -69,22 +69,22 @@ export const getPackages = async () => {
     throw new Error('Prisma client is not initialized')
   }
 
-  try {
-    const packages = await prisma.studioPackage.findMany({
-      include: {
-        packagePerks: true,
-      },
-    })
+  // try {
+  //   const packages = await prisma.studioPackage.findMany({
+  //     include: {
+  //       packagePerks: true,
+  //     },
+  //   })
 
-    return packages.map(pkg => ({
-      ...pkg,
-      price_per_hour: Number(pkg.price_per_hour),
-    }))
-  } catch (error) {
-    console.error('Error fetching packages:', error)
-    if (error instanceof Error) {
-      throw new Error(`Failed to fetch packages: ${error.message}`)
-    }
-    throw new Error('Failed to fetch packages')
-  }
+  //   return packages.map(pkg => ({
+  //     ...pkg,
+  //     basePrice: Number(pkg.price_per_hour),
+  //   }))
+  // } catch (error) {
+  //   console.error('Error fetching packages:', error)
+  //   if (error instanceof Error) {
+  //     throw new Error(`Failed to fetch packages: ${error.message}`)
+  //   }
+  //   throw new Error('Failed to fetch packages')
+  // }
 }

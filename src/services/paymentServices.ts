@@ -19,7 +19,7 @@ export const getPaymentLinkForBooking = async (bookingId: string) => {
       where: { id: bookingId },
       include: {
         lead: true,
-        package: true,
+        contentPackage: true,
       },
     })
 
@@ -51,7 +51,7 @@ export const getPaymentLinkForBooking = async (bookingId: string) => {
       data: {
         bookingId: booking.id,
         amount: booking.totalCost,
-        currency: booking.package?.currency || 'AED',
+        currency: booking.contentPackage?.currency || 'AED',
         status: PAYMENT_STATUS.PENDING,
         provider: 'MAMO_PAY',
         externalId: createdPaymentLink.id,
@@ -71,7 +71,8 @@ const createPaymentLink = async (booking: Booking, lead: Lead) => {
       title: PAYMENT_PROVIDER.TITLE,
       description: `Studio booking for ${formatDateDubai(booking.startTime)} at ${formatTimeDubai(booking.startTime)}`,
       amount: Number(booking.totalCost),
-      amount_currency: booking.package?.currency || PAYMENT_PROVIDER.CURRENCY,
+      amount_currency:
+        booking.contentPackage?.currency || PAYMENT_PROVIDER.CURRENCY,
       return_url: PAYMENT_PROVIDER.RETURN_URL,
       failure_return_url: PAYMENT_PROVIDER.FAILURE_RETURN_URL,
       link_type: 'inline',
@@ -84,7 +85,7 @@ const createPaymentLink = async (booking: Booking, lead: Lead) => {
       custom_data: {
         bookingId: booking.id,
         studio: booking.studioId,
-        packageId: booking.packageId,
+        packageId: booking.contentPackageId,
       },
     }
 

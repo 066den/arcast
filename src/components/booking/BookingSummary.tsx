@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from '../ui/card'
 import { Studio } from '../../types'
-import { StudioPackage } from '../../types'
+import { Package } from '../../types'
 import { AdditionalService } from '../../types'
 
 interface BookingSummaryProps {
@@ -22,7 +22,7 @@ interface BookingSummaryProps {
   selectedPackage: string
   selectedServices: AdditionalService[]
   studios: Studio[]
-  packages: StudioPackage[]
+  packages?: Package[]
   additionalServices: AdditionalService[]
 }
 
@@ -43,11 +43,11 @@ export function BookingSummary({
 
     if (selectedStudio && selectedPackage) {
       const studio = studios.find(s => s.id === selectedStudio)
-      const pkg = packages.find(p => p.id === selectedPackage)
+      //const pkg = packages.find(p => p.id === selectedPackage)
 
-      if (studio && pkg) {
-        total += parseFloat(pkg.price_per_hour.toString()) * duration
-      }
+      // if (studio && pkg) {
+      //   total += parseFloat(pkg.basePrice.toString()) * duration
+      // }
     }
 
     selectedServices.forEach(service => {
@@ -89,7 +89,7 @@ export function BookingSummary({
               Selected Package
             </h4>
             <p className="text-sm text-slate-600 dark:text-slate-300">
-              {packages.find(p => p.id === selectedPackage)?.name}
+              {/* {packages.find(p => p.id === selectedPackage)?.name} */}
             </p>
           </div>
         )}

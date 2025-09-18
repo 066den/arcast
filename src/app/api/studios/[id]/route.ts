@@ -116,13 +116,6 @@ export async function PATCH(
     const updatedStudio = await prisma.studio.update({
       where: { id },
       data: validation.data,
-      include: {
-        packages: {
-          include: {
-            packagePerks: true,
-          },
-        },
-      },
     })
 
     return NextResponse.json(updatedStudio)

@@ -13,12 +13,7 @@ import { Button } from '@/components/ui/button'
 import { MapPin, CreditCard } from 'lucide-react'
 import { Calendar } from '@/components/ui/calendar'
 import { BookingSummary } from './BookingSummary'
-import {
-  Studio,
-  AdditionalService,
-  StudioPackage,
-  TimeSlotList,
-} from '../../types'
+import { Studio, AdditionalService, Package, TimeSlotList } from '../../types'
 import { StudioCard } from '../common/StudioCard'
 import { ServiceCheckbox } from './ServiceCheckbox'
 import { useStudios } from '../../hooks/storeHooks/useStudios'
@@ -40,13 +35,13 @@ import useFlag from '@/hooks/useFlag'
 
 interface BookingFormProps {
   initialStudios: Studio[]
-  initialPackages: StudioPackage[]
+  // initialPackages: Package[]
   initialServices: AdditionalService[]
 }
 
 const BookingForm = ({
   initialStudios,
-  initialPackages,
+  //initialPackages,
   initialServices,
 }: BookingFormProps) => {
   const {
@@ -161,12 +156,12 @@ const BookingForm = ({
 
   useEffect(() => {
     setStudios(initialStudios)
-    setPackages(initialPackages)
+    //setPackages(initialPackages)
 
     if (!selectedDate) {
       setSelectedDate(new Date())
     }
-  }, [initialStudios, initialPackages, setStudios, setPackages, selectedDate])
+  }, [initialStudios, setStudios, setPackages, selectedDate])
 
   useEffect(() => {
     if (!selectedDate || !selectedStudioId) return
@@ -299,14 +294,14 @@ const BookingForm = ({
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {initialPackages?.map(pkg => (
+                {/* {initialPackages?.map(pkg => (
                   <PackageCard
                     key={pkg.id}
                     pkg={pkg}
                     isSelected={selectedPackageId === pkg.id}
                     onClick={() => onSelectPackage(pkg.id)}
                   />
-                ))}
+                ))} */}
               </div>
             </CardContent>
           </Card>
@@ -440,7 +435,7 @@ const BookingForm = ({
           selectedPackage={selectedPackageId}
           selectedServices={selectedServices}
           studios={initialStudios}
-          packages={initialPackages}
+          //packages={initialPackages}
           additionalServices={initialServices}
         />
       </div>
