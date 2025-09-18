@@ -34,7 +34,7 @@ import { LeadSchema, bookingLeadSchema } from '@/lib/schemas'
 import InputPhone from '../ui/InputPhone'
 import { ApiError, apiRequest } from '@/lib/api'
 import { notificationVariants } from '@/lib/motion-variants'
-import { motion } from 'motion/react'
+import { motion } from 'framer-motion'
 import PaymentModal from './PaymentModal'
 import useFlag from '@/hooks/useFlag'
 

@@ -34,6 +34,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "framer-motion": "^12.23.15",
     "libphonenumber-js": "^1.12.15",
     "lucide-react": "^0.539.0",
     "motion": "^12.23.12",

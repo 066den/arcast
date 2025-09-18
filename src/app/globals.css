@@ -4,13 +4,13 @@
 
 :root {
   --background: hsl(0 0% 100%);
-  --foreground: oklch(0.147 0.004 49.25);
+  --foreground: hsl(0 0% 20%);
   --primary: hsl(0 0% 20%);
   --primary-dark: hsl(0 0% 15%);
   --accent: hsl(16 88% 57%);
   --accent-dark: hsl(16 88% 52%);
   --white-smoke: hsl(0 0% 95%);
-  --border: oklch(0.923 0.003 48.717);
+  --border: hsl(0 0% 90%);
   --ring: oklch(0.709 0.01 56.259);
   --sidebar: hsl(0 0% 98%);
   --sidebar-foreground: hsl(240 5.3% 26.1%);
@@ -24,7 +24,8 @@
   --card-foreground: oklch(0.147 0.004 49.25);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.147 0.004 49.25);
-  --muted: oklch(0.97 0.001 106.424);
+  --muted: hsl(0 0% 96%);
+  --dark-mode: hsl(220 1% 14%);
 }
 
 @theme inline {
@@ -56,6 +57,7 @@
   --color-destructive-light: var(--color-red-100);
   --font-hanken-grotesk: var(--font-hanken-grotesk);
   --font-nunito-sans: var(--font-nunito-sans);
+  --color-dark-mode: var(--dark-mode);
 }
 
 .dark {
@@ -91,8 +93,13 @@
     scrollbar-width: thin;
     scrollbar-color: #ededed transparent;
   }
+  html {
+    scrollbar-gutter: stable both-edges;
+    overflow-y: scroll;
+    line-height: 1.35;
+  }
   body {
-    @apply bg-background text-foreground font-hanken-grotesk;
+    @apply bg-background text-foreground;
   }
 
   ::-webkit-scrollbar {
@@ -108,9 +115,29 @@
   ::-webkit-scrollbar-track {
     background-color: transparent;
   }
+
+  h1,
+  h2 {
+    @apply font-hanken-grotesk font-medium text-[4em] tracking-[-0.04em];
+  }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-hanken-grotesk font-medium tracking-[-0.02em];
+  }
+
+  .text-secondary {
+    color: hsl(0 0% 55%);
+    letter-spacing: -0.04em;
+  }
+
+  .section-title {
+    @apply uppercase text-accent font-bold mb-2 font-hanken-grotesk;
+  }
 }
 
-/* Image loading optimizations */
 @layer utilities {
   .image-loading-optimized {
     will-change: transform;
@@ -133,7 +160,88 @@
     );
   }
 
+  .video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+  }
+
+  .video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0.5) 100%
+    );
+    z-index: 1;
+  }
+
+  video {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  @media (max-width: 768px) {
+    .video-background {
+      filter: brightness(0.8);
+    }
+  }
+
   .next-video-alert {
     display: none;
+  }
+
+  /* Hero section animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(50px) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes fadeInUpDelayed {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+  }
+
+  .animate-fade-in-up-delayed {
+    animation: fadeInUpDelayed 0.6s ease-out 0.6s both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    video {
+      animation: none;
+      transition: none;
+    }
+
+    .animate-fade-in-up,
+    .animate-fade-in-up-delayed {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
   }
 }
