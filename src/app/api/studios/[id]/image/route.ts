@@ -49,13 +49,6 @@ export async function POST(
     const updatedStudio = await prisma.studio.update({
       where: { id },
       data: { imageUrl },
-      include: {
-        packages: {
-          include: {
-            packagePerks: true,
-          },
-        },
-      },
     })
 
     return NextResponse.json({
@@ -101,13 +94,6 @@ export async function DELETE(req: Request) {
     const updatedStudio = await prisma.studio.update({
       where: { id: studioId },
       data: { imageUrl: '' },
-      include: {
-        packages: {
-          include: {
-            packagePerks: true,
-          },
-        },
-      },
     })
 
     return NextResponse.json({

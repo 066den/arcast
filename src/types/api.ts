@@ -1,4 +1,4 @@
-import { AdditionalService, Lead, StudioPackage, TimeSlotList, Studio } from '.'
+import { AdditionalService, Lead, Package, TimeSlotList, Studio } from '.'
 
 export interface ApiResponse<T> {
   success: boolean
@@ -64,7 +64,7 @@ export interface BookingResponse {
   discountAmount: number
   finalAmount?: number
   studio?: Studio
-  package?: StudioPackage
+  package?: Package
   lead?: Lead
   additionalServices?: AdditionalService[]
   paymentUrl?: string
