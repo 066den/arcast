@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Hanken_Grotesk, Nunito_Sans } from 'next/font/google'
+import { Hanken_Grotesk, Nunito_Sans, Geist } from 'next/font/google'
 import { seoConfig } from '@/lib/config'
 import { Toaster } from '@/components/ui/sonner'
 
@@ -17,6 +17,13 @@ const nunitoSans = Nunito_Sans({
   variable: '--font-nunito-sans',
   display: 'swap',
 })
+const geist = Geist({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-geist',
+  display: 'swap',
+})
+
 const { title, description } = seoConfig
 
 export const metadata: Metadata = {
@@ -51,7 +58,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${hankenGrotesk.variable} ${nunitoSans.variable}`}
+      className={`${hankenGrotesk.variable} ${nunitoSans.variable} ${geist.variable}`}
     >
       <head>
         <link
@@ -61,7 +68,7 @@ export default function RootLayout({
           type="image/svg+xml"
         />
       </head>
-      <body className={nunitoSans.className}>
+      <body className={geist.className}>
         {children}
         <Toaster position="top-center" richColors />
       </body>

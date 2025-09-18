@@ -22,11 +22,12 @@ export const siteConfig = {
 } as const
 
 export const navigation = [
-  { name: 'Studios', href: '/studios', icon: Radio },
   { name: 'Services', href: '/services', icon: Box },
-  { name: 'Booking', href: '/booking', icon: Calendar },
+  { name: 'Case Studies', href: '/studios', icon: Radio },
+  { name: 'Content Factory', href: '/content-factory', icon: Calendar },
+  { name: 'Blog', href: '/blog', icon: User },
   { name: 'About Us', href: '/about', icon: User },
-  { name: 'Contact Us', href: '/contact', icon: Phone },
+  { name: 'For Business', href: '/business', icon: Calendar },
 ] as const
 
 export const adminNavigation = [
@@ -35,34 +36,27 @@ export const adminNavigation = [
   { name: 'Services', href: '/services', icon: Box },
 ] as const
 
-export const features = [
+export const aboutFeatures = [
   {
-    title: 'Professional Equipment',
+    title: 'Full-cycle production',
     description:
-      'State-of-the-art recording equipment including Shure SM7B microphones, professional audio interfaces, and studio monitors.',
-    icon: '🎙️',
-    color: 'blue',
+      'Conversations that break the surface and explore what really matters. Episodes that spark thoughts and challenge perspectives.',
+    image: '/assets/images/production.webp',
+    url: '/services/full-cycle-production',
   },
   {
-    title: 'Flexible Scheduling',
+    title: 'Strategy & competitor analysis',
     description:
-      '24/7 online booking system with real-time availability and instant confirmation for your convenience.',
-    icon: '📅',
-    color: 'purple',
+      'Conversations that break the surface and explore what really matters. Episodes that spark thoughts and challenge perspectives.',
+    image: '/assets/images/strategy.webp',
+    url: '/services/strategy-and-competitor-analysis',
   },
   {
-    title: 'Studio Quality',
+    title: 'Publishing & growth support',
     description:
-      'Professionally treated acoustic environments and sound isolation for crystal-clear podcast recordings.',
-    icon: '🎧',
-    color: 'green',
-  },
-  {
-    title: 'Expert Support',
-    description:
-      'Technical assistance and guidance from experienced audio engineers to ensure perfect sound quality.',
-    icon: '👨‍🔬',
-    color: 'orange',
+      'Conversations that break the surface and explore what really matters. Episodes that spark thoughts and challenge perspectives.',
+    image: '/assets/images/publishing.webp',
+    url: '/services/publishing-and-growth-support',
   },
 ] as const
 
@@ -156,7 +150,7 @@ export const seoConfig = {
 
 // Export types for TypeScript
 export type NavigationItem = (typeof navigation)[number]
-export type Feature = (typeof features)[number]
+export type AboutFeature = (typeof aboutFeatures)[number]
 export type Testimonial = (typeof testimonials)[number]
 export type SocialLink = (typeof socialLinks)[number]
 
@@ -164,7 +158,7 @@ export type SocialLink = (typeof socialLinks)[number]
 export default {
   siteConfig,
   navigation,
-  features,
+  aboutFeatures,
   testimonials,
   socialLinks,
   seoConfig,
