@@ -55,12 +55,36 @@ export const getServicesByType = async (serviceTypeId: string) => {
   }
 }
 
-export const getServicesTypes = async () => {
+export const getServiceTypes = async () => {
   if (!prisma) {
     throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
   }
   try {
-    const servicesTypes = await prisma.serviceType.findMany()
+    // Fetch all active service types, including only their active services
+    const servicesTypes = await prisma.serviceType.findMany({
+      where: {
+        isActive: true,
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        isActive: true,
+        services: {
+          where: {
+            isActive: true,
+          },
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            imageUrl: true,
+            price: true,
+            currency: true,
+          },
+        },
+      },
+    })
     return servicesTypes
   } catch (error) {
     console.error('Error fetching services types:', error)

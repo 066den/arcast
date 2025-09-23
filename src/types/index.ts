@@ -99,13 +99,18 @@ export interface PackagePerk {
 export interface Service {
   id: string
   name: string
-  title?: string
   description: string | null
-  content?: string | null
   imageUrl: string | null
-  price?: number
-  currency?: string
+  price: Decimal | number
+  currency: string
+}
+
+export interface ServiceType {
+  id: string
+  name: string
+  description: string | null
   isActive: boolean
+  services: Service[]
 }
 
 export interface AdditionalService {

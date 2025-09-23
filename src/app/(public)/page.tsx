@@ -2,7 +2,7 @@ import HeroSection from '@/components/sections/HeroSection'
 import IntroSection from '@/components/sections/IntroSection'
 import AboutSection from '@/components/sections/AboutSection'
 import EpisodeSection from '@/components/sections/EpisodeSection'
-import { getServices } from '@/services/servicesServices'
+import { getServiceTypes } from '@/services/servicesServices'
 import { getClients, getSamples } from '@/services/studioServices'
 import TestimonialsSection from '@/components/sections/TestimonialsSection'
 import PackagesSection from '@/components/sections/PackagesSection'
@@ -10,8 +10,8 @@ import Marquee from '@/components/ui/marquee'
 import videoUrl from 'https://res.cloudinary.com/deuvbiekl/video/upload/v1747050218/desk_bgzsdy.mp4'
 
 export default async function Home() {
-  const [services, samples, clients] = await Promise.all([
-    getServices(),
+  const [serviceTypes, samples, clients] = await Promise.all([
+    getServiceTypes(),
     getSamples(),
     getClients(),
   ])
@@ -20,7 +20,10 @@ export default async function Home() {
       <HeroSection videoUrl={videoUrl} />
       <IntroSection />
       <AboutSection />
-      <EpisodeSection initialServices={services} initialSamples={samples} />
+      <EpisodeSection
+        initialServiceTypes={serviceTypes}
+        initialSamples={samples}
+      />
       <div className="w-full py-8">
         <Marquee className="outline-text" direction="left" speed={10}>
           become the next shining star
@@ -28,7 +31,10 @@ export default async function Home() {
       </div>
 
       <TestimonialsSection initialClients={clients} />
-      <PackagesSection initialServices={services} initialPackages={[]} />
+      <PackagesSection
+        initialServiceTypes={serviceTypes}
+        initialPackages={[]}
+      />
     </div>
   )
 }

@@ -1,21 +1,16 @@
 'use client'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
-import {
-  serviceButtonVariants,
-  serviceButtonItemVariants,
-} from '@/lib/motion-variants'
 
-import { Package, Service } from '@/types'
-import ServiceButton from '../servicesPage/ServiceButton'
+import { Package, ServiceType } from '@/types'
+import ServiceTypesList from '../servicesPage/ServiceTypesList'
 
 interface PackagesSectionProps {
-  initialServices: Service[]
+  initialServiceTypes: ServiceType[]
   initialPackages: Package[]
 }
 
 const PackagesSection = ({
-  initialServices,
+  initialServiceTypes,
   initialPackages,
 }: PackagesSectionProps) => {
   return (
@@ -44,20 +39,7 @@ const PackagesSection = ({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <motion.div
-          className="flex flex-col gap-5"
-          variants={serviceButtonVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          {initialServices &&
-            initialServices.map(service => (
-              <motion.div key={service.id} variants={serviceButtonItemVariants}>
-                <ServiceButton title={service.name} />
-              </motion.div>
-            ))}
-        </motion.div>
+        <ServiceTypesList initialServiceTypes={initialServiceTypes} />
       </div>
     </section>
   )
