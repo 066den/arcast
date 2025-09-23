@@ -1,5 +1,4 @@
 'use client'
-import { Service } from '@/types'
 import Headline from '../common/Headline'
 import ReactMarkdown from 'react-markdown'
 import { motion } from 'framer-motion'
@@ -7,7 +6,13 @@ import { containerVariants, itemVariants } from '@/lib/motion-variants'
 import remarkBreaks from 'remark-breaks'
 
 interface ServiceContentProps {
-  service: Service
+  service: {
+    id: string
+    title: string
+    description: string
+    content: string
+    imageUrl: string
+  }
   index: number
 }
 

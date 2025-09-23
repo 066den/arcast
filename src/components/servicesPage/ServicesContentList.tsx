@@ -1,11 +1,16 @@
 'use client'
-import { Service } from '@/types'
 import ServiceContent from './ServiceContent'
 import { motion } from 'framer-motion'
 import { containerVariants } from '@/lib/motion-variants'
 
 interface ServicesContentListProps {
-  initialServices: Service[]
+  initialServices: {
+    id: string
+    title: string
+    description: string
+    content: string
+    imageUrl: string
+  }[]
 }
 
 const ServicesContentList = ({ initialServices }: ServicesContentListProps) => {
