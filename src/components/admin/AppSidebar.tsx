@@ -37,7 +37,7 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
               {adminNavigation.map(item => (
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton asChild isActive={item.href === pathname}>
-                    <Link href={item.href}>
+                    <Link href={item.href} className="flex items-center gap-2">
                       <item.icon />
                       <span>{item.name}</span>
                     </Link>
