@@ -1,0 +1,2 @@
+-- This is a baseline migration for existing production database
+-- No changes needed as the database is already in sync
