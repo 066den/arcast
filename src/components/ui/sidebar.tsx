@@ -294,8 +294,10 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <PanelLeftIcon />
-      <span className="sr-only">Toggle Sidebar</span>
+      <span className="flex items-center gap-2">
+        <PanelLeftIcon />
+        <span className="sr-only">Toggle Sidebar</span>
+      </span>
     </Button>
   )
 }
