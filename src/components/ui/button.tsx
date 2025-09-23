@@ -62,11 +62,17 @@ function Button({
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     >
-      {children}
-      {icon && (
-        <span className="group-hover:translate-x-1 transition-transform duration-200 ease-in-out">
-          {icon}
-        </span>
+      {asChild ? (
+        children
+      ) : (
+        <>
+          {children}
+          {icon && (
+            <span className="group-hover:translate-x-1 transition-transform duration-200 ease-in-out">
+              {icon}
+            </span>
+          )}
+        </>
       )}
     </Comp>
   )
