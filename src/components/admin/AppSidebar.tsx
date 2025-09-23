@@ -34,18 +34,16 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {adminNavigation.map(item => (
+              {/* {adminNavigation.map(item => (
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton asChild isActive={item.href === pathname}>
-                    <Link href={item.href}>
-                      <span className="flex items-center gap-2">
-                        <item.icon />
-                        <span>{item.name}</span>
-                      </span>
+                    <Link href={item.href} className="flex items-center gap-2">
+                      <item.icon />
+                      <span>{item.name}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
+              ))} */}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
