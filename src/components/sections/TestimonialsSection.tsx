@@ -35,6 +35,19 @@ const TestimonialsSection = ({
     return initialClients.filter(client => client.testimonial)
   }, [initialClients])
 
+  // Safe handlers for mouse events
+  const handleMouseEnter = () => {
+    if (plugins.current && plugins.current[0]) {
+      plugins.current[0].stop()
+    }
+  }
+
+  const handleMouseLeave = () => {
+    if (plugins.current && plugins.current[0]) {
+      plugins.current[0].play()
+    }
+  }
+
   return (
     <motion.section
       className="py-20"
@@ -95,8 +108,8 @@ const TestimonialsSection = ({
           <motion.div variants={containerVariants}>
             <Carousel
               plugins={plugins.current}
-              onMouseEnter={() => plugins.current[0].stop()}
-              onMouseLeave={() => plugins.current[0].play()}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
               opts={{
                 align: 'start',
                 skipSnaps: false,
