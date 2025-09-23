@@ -84,8 +84,10 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
               size="sm"
               onClick={() => setIsEditing(true)}
             >
-              <Edit className="h-4 w-4 mr-2" />
-              Edit
+              <span className="flex items-center gap-2">
+                <Edit className="h-4 w-4" />
+                <span>Edit</span>
+              </span>
             </Button>
           ) : (
             <div className="flex gap-2">
@@ -95,8 +97,10 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
                 type="submit"
                 disabled={!isValid}
               >
-                <Save className="h-4 w-4 mr-2" />
-                Save
+                <span className="flex items-center gap-2">
+                  <Save className="h-4 w-4" />
+                  <span>Save</span>
+                </span>
               </Button>
               <Button
                 variant="ghost"
@@ -104,8 +108,10 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
                 size="sm"
                 onClick={handleCancel}
               >
-                <X className="h-4 w-4 mr-2" />
-                Cancel
+                <span className="flex items-center gap-2">
+                  <X className="h-4 w-4" />
+                  <span>Cancel</span>
+                </span>
               </Button>
             </div>
           )}

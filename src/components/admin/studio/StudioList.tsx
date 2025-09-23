@@ -46,9 +46,10 @@ const StudioList = ({ initialStudios }: StudioListProps) => {
           {isLoading ? (
             'Processing...'
           ) : (
-            <>
-              <Plus className="w-4 h-4" /> Add New Studio
-            </>
+            <span className="flex items-center gap-2">
+              <Plus className="w-4 h-4" />
+              <span>Add New Studio</span>
+            </span>
           )}
         </Button>
       </CardHeader>

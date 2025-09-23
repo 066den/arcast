@@ -1,12 +1,12 @@
-import { getStudios } from '@/services/studioServices'
+'use client'
+
 import StudioList from '@/components/admin/studio/StudioList'
 
-export default async function StudiosPage() {
-  const studios = await getStudios()
-
+export default function StudiosPage() {
   return (
     <div className="p-4 flex-1">
-      <StudioList initialStudios={studios} />
+      <h1 className="text-2xl font-bold mb-4">Studios</h1>
+      <StudioList initialStudios={[]} />
     </div>
   )
 }
