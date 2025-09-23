@@ -59,6 +59,7 @@ export interface Client {
   jobTitle?: string | null
   showTitle?: string | null
   testimonial: string | null
+  featured: boolean
 }
 
 export type Studio = {

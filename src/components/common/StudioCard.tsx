@@ -18,17 +18,17 @@ export function StudioCard({ studio, isSelected, onClick }: StudioCardProps) {
     <div
       className={`p-6 border-2 rounded-xl cursor-pointer transition-all hover:shadow-lg ${
         isSelected
-          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-lg'
-          : 'border-slate-200 hover:border-slate-300 bg-white dark:bg-slate-800'
+          ? 'border-blue-500 bg-blue-50 bg-blue-900/20 shadow-lg'
+          : 'border-slate-200 hover:border-slate-300 bg-white bg-slate-800'
       }`}
       onClick={handleClick}
     >
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h3 className="font-bold text-xl text-slate-900 dark:text-white mb-2">
+          <h3 className="font-bold text-xl text-slate-900 text-white mb-2">
             {studio.name}
           </h3>
-          <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+          <p className="text-slate-600 text-slate-300 text-sm leading-relaxed">
             {studio.description}
           </p>
         </div>
@@ -50,17 +50,17 @@ export function StudioCard({ studio, isSelected, onClick }: StudioCardProps) {
       </div>
 
       <div className="space-y-3">
-        <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+        <div className="flex items-center gap-2 text-sm text-slate-600 text-slate-300">
           <Users className="h-4 w-4" />
           <span>Capacity: {studio.capacity} people</span>
         </div>
 
-        <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+        <div className="flex items-center gap-2 text-sm text-slate-600 text-slate-300">
           <MapPin className="h-4 w-4" />
           <span>Location: {studio.location}</span>
         </div>
 
-        <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+        <div className="flex items-center gap-2 text-sm text-slate-600 text-slate-300">
           <Star className="h-4 w-4" />
           <span>Rating: 4.8/5</span>
         </div>

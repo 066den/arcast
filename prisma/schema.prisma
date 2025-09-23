@@ -269,7 +269,7 @@ model CaseStudy {
   tagline   String?
   mainText  String?
   content   Json?
-  featured  Boolean  @default(true)
+  isActive  Boolean  @default(true)
   imageUrls String[]
 
   // Relations
@@ -310,6 +310,7 @@ model Client {
   showTitle   String?
   jobTitle    String?
   testimonial String?
+  featured    Boolean  @default(false)
   imageUrl    String?
 
   // Relations

@@ -73,53 +73,53 @@ export function BookingSummary({
       </CardHeader>
       <CardContent className="space-y-4">
         {selectedStudio && (
-          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
-            <h4 className="font-medium mb-2 text-slate-900 dark:text-white">
+          <div className="p-3 bg-slate-50 bg-slate-800 rounded-lg">
+            <h4 className="font-medium mb-2 text-slate-900 text-white">
               Selected Studio
             </h4>
-            <p className="text-sm text-slate-600 dark:text-slate-300">
+            <p className="text-sm text-slate-600 text-slate-300">
               {studios.find(s => s.id === selectedStudio)?.name}
             </p>
           </div>
         )}
 
         {selectedPackage && (
-          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
-            <h4 className="font-medium mb-2 text-slate-900 dark:text-white">
+          <div className="p-3 bg-slate-50 bg-slate-800 rounded-lg">
+            <h4 className="font-medium mb-2 text-slate-900 text-white">
               Selected Package
             </h4>
-            <p className="text-sm text-slate-600 dark:text-slate-300">
+            <p className="text-sm text-slate-600 text-slate-300">
               {/* {packages.find(p => p.id === selectedPackage)?.name} */}
             </p>
           </div>
         )}
 
         {selectedDate && selectedTime && (
-          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
-            <h4 className="font-medium mb-2 text-slate-900 dark:text-white">
+          <div className="p-3 bg-slate-50 bg-slate-800 rounded-lg">
+            <h4 className="font-medium mb-2 text-slate-900 text-white">
               Session Details
             </h4>
-            <p className="text-sm text-slate-600 dark:text-slate-300">
+            <p className="text-sm text-slate-600 text-slate-300">
               {formatDate(selectedDate)}
             </p>
-            <p className="text-sm text-slate-600 dark:text-slate-300">
+            <p className="text-sm text-slate-600 text-slate-300">
               Time: {formatTimeRange(selectedTime, duration, 'Asia/Dubai')}
             </p>
-            <p className="text-sm text-slate-600 dark:text-slate-300">
+            <p className="text-sm text-slate-600 text-slate-300">
               Duration: {duration} hour{duration > 1 ? 's' : ''}
             </p>
-            <p className="text-sm text-slate-600 dark:text-slate-300">
+            <p className="text-sm text-slate-600 text-slate-300">
               Guests: {guests}
             </p>
           </div>
         )}
 
         {selectedServices.length > 0 && (
-          <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
-            <h4 className="font-medium mb-2 text-slate-900 dark:text-white">
+          <div className="p-3 bg-slate-50 bg-slate-800 rounded-lg">
+            <h4 className="font-medium mb-2 text-slate-900 text-white">
               Additional Services
             </h4>
-            <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
+            <ul className="text-sm text-slate-600 text-slate-300 space-y-1">
               {selectedServices.map(({ id, quantity }) => {
                 const service = additionalServices.find(s => s.id === id)
                 return service ? (
@@ -138,7 +138,7 @@ export function BookingSummary({
         <div className="border-t pt-4">
           <div className="flex justify-between items-center text-lg font-semibold">
             <span>Total Cost:</span>
-            <span className="text-blue-600 dark:text-blue-400">
+            <span className="text-blue-600 text-blue-400">
               {calculateTotal()} AED
             </span>
           </div>
