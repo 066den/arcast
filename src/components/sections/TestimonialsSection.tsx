@@ -32,7 +32,9 @@ const TestimonialsSection = ({
   ])
   const clientTestimonials = useMemo(() => {
     if (!initialClients) return []
-    return initialClients.filter(client => client.testimonial)
+    return initialClients.filter(
+      client => client.testimonial && client.featured
+    )
   }, [initialClients])
 
   // Safe handlers for mouse events

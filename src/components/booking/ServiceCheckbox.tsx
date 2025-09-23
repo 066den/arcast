@@ -39,7 +39,7 @@ export function ServiceCheckbox({
   }
 
   return (
-    <label className="flex items-start gap-3 p-4 border border-slate-200 dark:border-slate-700 rounded-lg cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+    <label className="flex items-start gap-3 p-4 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors">
       <div className="relative">
         <input
           type="checkbox"
@@ -49,9 +49,7 @@ export function ServiceCheckbox({
         />
         <div
           className={`w-5 h-5 border-2 rounded flex items-center justify-center transition-colors ${
-            isChecked
-              ? 'border-blue-500 bg-blue-500'
-              : 'border-slate-300 dark:border-slate-600'
+            isChecked ? 'border-blue-500 bg-blue-500' : 'border-slate-300'
           }`}
         >
           {isChecked && <Check className="w-3 h-3 text-white" />}
@@ -60,17 +58,13 @@ export function ServiceCheckbox({
 
       <div className="flex-1">
         <div className="flex items-start justify-between mb-2">
-          <h4 className="font-medium text-slate-900 dark:text-white">
-            {service.name}
-          </h4>
-          <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
+          <h4 className="font-medium text-slate-900">{service.name}</h4>
+          <span className="text-sm font-medium text-blue-600">
             {service.price} {service.currency}
           </span>
         </div>
 
-        <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
-          {service.description}
-        </p>
+        <p className="text-sm text-slate-600 mb-2">{service.description}</p>
         {service.type === 'STANDARD' && (
           <DurationSelector
             value={duration}

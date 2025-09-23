@@ -14,19 +14,17 @@ export function PackageCard({ pkg, isSelected, onClick }: PackageCardProps) {
     <div
       className={`p-6 border-2 rounded-xl cursor-pointer transition-all hover:shadow-lg ${
         isSelected
-          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-lg'
-          : 'border-slate-200 hover:border-slate-300 bg-white dark:bg-slate-800'
+          ? 'border-blue-500 bg-blue-50 shadow-lg'
+          : 'border-slate-200 hover:border-slate-300 bg-white'
       }`}
       onClick={onClick}
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <h3 className="font-bold text-xl text-slate-900 dark:text-white">
-              {pkg.name}
-            </h3>
+            <h3 className="font-bold text-xl text-slate-900">{pkg.name}</h3>
           </div>
-          <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+          <p className="text-slate-600 text-sm leading-relaxed">
             {pkg.description}
           </p>
         </div>
@@ -49,7 +47,7 @@ export function PackageCard({ pkg, isSelected, onClick }: PackageCardProps) {
 
       <div className="mb-4">
         <div className="flex items-baseline gap-2">
-          <span className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+          <span className="text-3xl font-bold text-blue-600">
             {parseFloat(pkg.basePrice.toString())}
           </span>
           <span className="text-slate-500 text-lg">{pkg.currency}/hour</span>
@@ -57,10 +55,8 @@ export function PackageCard({ pkg, isSelected, onClick }: PackageCardProps) {
       </div>
 
       <div className="space-y-2">
-        <h4 className="font-medium text-slate-900 dark:text-white text-sm">
-          Description:
-        </h4>
-        <p className="text-sm text-slate-600 dark:text-slate-300">
+        <h4 className="font-medium text-slate-900 text-sm">Description:</h4>
+        <p className="text-sm text-slate-600">
           {pkg.description || 'Professional recording package'}
         </p>
       </div>

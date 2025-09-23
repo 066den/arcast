@@ -1,14 +1,10 @@
 @import 'tailwindcss';
 
-@custom-variant dark (&:is(.dark *));
-
 :root {
   --background: hsl(0 0% 100%);
   --foreground: hsl(0 0% 20%);
   --primary: hsl(0 0% 20%);
-  --primary-dark: hsl(0 0% 15%);
   --accent: hsl(16 88% 57%);
-  --accent-dark: hsl(16 88% 52%);
   --white-smoke: hsl(0 0% 95%);
   --border: hsl(0 0% 90%);
   --ring: oklch(0.709 0.01 56.259);
@@ -25,16 +21,13 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.147 0.004 49.25);
   --muted: hsl(0 0% 96%);
-  --dark-mode: hsl(220 1% 14%);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
-  --color-primary-dark: var(--primary-dark);
   --color-accent: var(--accent);
-  --color-accent-dark: var(--accent-dark);
   --color-accent-foreground: var(--white-smoke);
   --color-border: var(--border);
   --color-ring: var(--ring);
@@ -57,34 +50,6 @@
   --color-destructive-light: var(--color-red-100);
   --font-hanken-grotesk: var(--font-hanken-grotesk);
   --font-nunito-sans: var(--font-nunito-sans);
-  --color-dark-mode: var(--dark-mode);
-}
-
-.dark {
-  --background: oklch(0.147 0.004 49.25);
-  --foreground: oklch(0.985 0.001 106.423);
-  --border: oklch(1 0 0 / 10%);
-  --ring: oklch(0.553 0.013 58.071);
-  --sidebar: hsl(240 5.9% 10%);
-  --sidebar-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-primary: hsl(224.3 76.3% 48%);
-  --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(240 3.7% 15.9%);
-  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-border: hsl(240 3.7% 15.9%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
-  --color-muted: var(--muted);
-  --color-destructive: var(--color-red-500);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-destructive-dark: var(--color-red-600);
-  --color-destructive-light: var(--color-red-100);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 @layer base {

@@ -11,7 +11,7 @@ import { usePathname } from 'next/navigation'
 const Header = () => {
   const pathname = usePathname()
   return (
-    <header className="sticky top-0 left-0 right-0 z-50 bg-transparent backdrop-blur-xs dark:bg-slate-900/80">
+    <header className="sticky top-0 left-0 right-0 z-50 bg-transparent backdrop-blur-xs">
       <div className="px-4 xl:px-8 py-3 flex items-center justify-between">
         <div className="flex items-center px-4 space-x-4 md:space-x-16">
           <Link href="/" className="text-xl font-bold">
@@ -28,7 +28,7 @@ const Header = () => {
                 key={item.name}
                 href={item.href}
                 className={cn(
-                  'py-2 px-4 tracking-[-0.02em] font-nunito-sans hover:text-accent dark:text-slate-300 dark:hover:text-white transition-colors',
+                  'py-2 px-4 tracking-[-0.02em] font-nunito-sans hover:text-accent transition-colors',
                   {
                     'underline underline-offset-4 decoration-accent decoration-2':
                       item.href === pathname,

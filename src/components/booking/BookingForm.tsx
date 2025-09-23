@@ -378,9 +378,9 @@ const BookingForm = ({
                     variants={notificationVariants}
                     initial="hidden"
                     animate="visible"
-                    className="bg-red-100 dark:bg-red-900/20 border border-red-300 dark:border-red-700 rounded-lg p-3"
+                    className="bg-red-100 bg-red-900/20 border border-red-300 border-red-700 rounded-lg p-3"
                   >
-                    <p className="text-red-600 dark:text-red-300 text-sm">
+                    <p className="text-red-600 text-red-300 text-sm">
                       {submitError}
                     </p>
                   </motion.div>
@@ -391,9 +391,9 @@ const BookingForm = ({
                     variants={notificationVariants}
                     initial="hidden"
                     animate="visible"
-                    className="bg-green-100 dark:bg-green-900/20 border border-green-300 dark:border-green-700 rounded-lg p-3"
+                    className="bg-green-100 bg-green-900/20 border border-green-300 border-green-700 rounded-lg p-3"
                   >
-                    <p className="text-green-600 dark:text-green-300 text-sm">
+                    <p className="text-green-600 text-green-300 text-sm">
                       Booking submitted successfully! We&apos;ll contact you
                       soon to confirm your session.
                     </p>
