@@ -1,5 +1,5 @@
-// Prisma schema
-// Learn more: https://pris.ly/d/prisma-schema
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
@@ -10,102 +10,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Example model. You can remove or modify it as needed.
-model Studio {
-  id          String          @id @default(uuid())
-  name        String
-  location    String
-  imageUrl    String?
-  totalSeats  Int
-  openingTime String // Store as "HH:mm" format
-  closingTime String // Store as "HH:mm" format
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  bookings    Booking[]
-  packages    StudioPackage[]
-}
-
-model StudioPackage {
-  id             String        @id @default(uuid())
-  name           String
-  price_per_hour Decimal       @db.Decimal(10, 2)
-  currency       String        @default("AED")
-  description    String
-  delivery_time  Int
-  studios        Studio[] // Changed to allow multiple studios
-  bookings       Booking[]
-  packagePerks   PackagePerk[]
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-}
-
-model PackagePerk {
-  id        String        @id @default(uuid())
-  name      String
-  count     Int? // Optional count for items like "3x Sony cameras"
-  packageId String
-  package   StudioPackage @relation(fields: [packageId], references: [id])
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-}
-
-model DiscountCode {
-  id            String       @id @default(cuid())
-  code          String       @unique
-  type          DiscountType
-  value         Float
-  maxUses       Int?
-  usedCount     Int          @default(0)
-  startDate     DateTime
-  endDate       DateTime
-  isActive      Boolean      @default(true)
-  minAmount     Float? // Minimum booking amount required
-  firstTimeOnly Boolean      @default(false) // Flag to indicate if this code is for first-time clients only
-  bookings      Booking[] // Relation to bookings that used this code
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-
-  @@index([code])
-}
-
+// Enums
 enum DiscountType {
   PERCENTAGE
   FIXED_AMOUNT
-}
-
-model Booking {
-  id                 String                     @id @default(uuid())
-  startTime          DateTime
-  endTime            DateTime
-  numberOfSeats      Int
-  totalCost          Decimal                    @db.Decimal(10, 2)
-  vatAmount          Decimal                    @db.Decimal(10, 2)
-  discountAmount     Decimal?                   @db.Decimal(10, 2)
-  status             BookingStatus              @default(PENDING)
-  studioId           String
-  studio             Studio                     @relation(fields: [studioId], references: [id])
-  packageId          String
-  package            StudioPackage              @relation(fields: [packageId], references: [id])
-  leadId             String
-  lead               Lead                       @relation(fields: [leadId], references: [id])
-  discountCodeId     String?
-  discountCode       DiscountCode?              @relation(fields: [discountCodeId], references: [id])
-  additionalServices BookingAdditionalService[]
-  payment            Payment? // Relation to payment
-  createdAt          DateTime                   @default(now())
-  updatedAt          DateTime                   @updatedAt
-}
-
-model Lead {
-  id                String    @id @default(uuid())
-  fullName          String
-  email             String? // Made optional
-  phoneNumber       String? // Made optional
-  whatsappNumber    String? // Optional WhatsApp number
-  recordingLocation String?
-  bookings          Booking[]
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
 }
 
 enum BookingStatus {
@@ -116,52 +24,10 @@ enum BookingStatus {
 }
 
 enum AdditionalServiceType {
-  STANDARD_EDIT_SHORT_FORM
-  CUSTOM_EDIT_SHORT_FORM
-  STANDARD_EDIT_LONG_FORM
-  CUSTOM_EDIT_LONG_FORM
-  LIVE_VIDEO_CUTTING
-  SUBTITLES
-  TELEPROMPTER_SUPPORT
-  MULTI_CAM_RECORDING
-  EPISODE_TRAILER_LONG_FORM
-  EPISODE_TRAILER_SHORT_FORM
-  WARDROBE_STYLING_CONSULTATION
-  PODCAST_DISTRIBUTION
+  STANDARD
+  BY_THREE
 }
 
-model AdditionalService {
-  id              String                     @id @default(uuid())
-  title           String
-  type            AdditionalServiceType
-  price           Decimal                    @db.Decimal(10, 2)
-  currency        String                     @default("AED")
-  count           Int                        @default(1)
-  description     String
-  imageUrls       String[] // Array of image URLs
-  videoUrl        String? // Optional video URL
-  isActive        Boolean                    @default(true)
-  order           Int                        @default(999) // Controls display order on frontend, default high value for existing records
-  createdAt       DateTime                   @default(now())
-  updatedAt       DateTime                   @updatedAt
-  bookingServices BookingAdditionalService[]
-}
-
-model BookingAdditionalService {
-  id                  String            @id @default(uuid())
-  bookingId           String
-  booking             Booking           @relation(fields: [bookingId], references: [id])
-  additionalServiceId String
-  additionalService   AdditionalService @relation(fields: [additionalServiceId], references: [id])
-  quantity            Int               @default(1)
-  price               Decimal           @db.Decimal(10, 2)
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
-
-  @@unique([bookingId, additionalServiceId])
-}
-
-// Payment-related models
 enum PaymentStatus {
   PENDING
   COMPLETED
@@ -169,52 +35,330 @@ enum PaymentStatus {
   REFUNDED
 }
 
-enum PaymentProvider {
-  MAMO_PAY
-  // Can add other payment providers in the future
+// Models
+model Studio {
+  id          String   @id @default(cuid())
+  name        String
+  location    String   @default("Dubai")
+  imageUrl    String?
+  totalSeats  Int
+  openingTime String   // HH:MM format
+  closingTime String   // HH:MM format
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  bookings Booking[]
+
+  @@map("studios")
+}
+
+model ServiceType {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  services Service[]
+
+  @@map("service_types")
+}
+
+model Service {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  description   String?
+  includes      String?
+  imageUrl      String?
+  serviceTypeId String
+  isPopular     Boolean  @default(false)
+  isActive      Boolean  @default(true)
+  price         Decimal  @db.Decimal(10, 2)
+  currency      String   @default("AED")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  serviceType                   ServiceType                     @relation(fields: [serviceTypeId], references: [id])
+  bookings                      Booking[]
+  servicePackageRecords         ServicePackageRecord[]
+
+  @@map("services")
+}
+
+model ServicePackageRecord {
+  id                       String @id @default(cuid())
+  parentContentPackageId   String
+  includedServiceId        String
+  serviceQuantity          Int
+
+  // Relations
+  package         Package @relation(fields: [parentContentPackageId], references: [id])
+  includedService Service @relation(fields: [includedServiceId], references: [id])
+
+  @@map("service_packages_records")
+}
+
+model AddServicePackageRecord {
+  id                       String @id @default(cuid())
+  parentContentPackageId   String
+  includedServiceId        String
+  serviceQuantity          Int
+
+  // Relations
+  package                  Package           @relation(fields: [parentContentPackageId], references: [id])
+  includedAdditionalService AdditionalService @relation(fields: [includedServiceId], references: [id])
+
+  @@map("add_service_packages_records")
+}
+
+model Package {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  basePrice   Decimal  @db.Decimal(10, 2)
+  currency    String   @default("AED")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  bookings                     Booking[]
+  servicePackageRecords        ServicePackageRecord[]
+  addServicePackageRecords     AddServicePackageRecord[]
+
+  @@map("packages")
+}
+
+model DiscountCode {
+  id                     String       @id @default(cuid())
+  code                   String       @unique
+  type                   DiscountType
+  value                  Decimal      @db.Decimal(10, 2)
+  currency               String       @default("AED")
+  isActive               Boolean      @default(true)
+  startDate              DateTime     @default(now())
+  endDate                DateTime
+  usageLimit             Int?
+  usedCount              Int          @default(0)
+  firstTimeOnly          Boolean      @default(false)
+  minOrderAmount         Decimal?     @db.Decimal(10, 2)
+  applicableContentTypes String[]     // array of content type ids or names
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+
+  // Relations
+  bookings Booking[]
+
+  @@map("discount_codes")
+}
+
+model Booking {
+  id               String         @id @default(cuid())
+  startTime        DateTime
+  endTime          DateTime
+  numberOfSeats    Int
+  totalCost        Decimal        @db.Decimal(10, 2)
+  vatAmount        Decimal?       @db.Decimal(10, 2)
+  discountAmount   Decimal?       @db.Decimal(10, 2)
+  finalAmount      Decimal?       @db.Decimal(10, 2)
+  status           BookingStatus  @default(PENDING)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  studioId         String?
+  contentPackageId String?
+  serviceId        String?
+  leadId           String
+  discountCodeId   String?
+
+  // Relations
+  studio                      Studio?                       @relation(fields: [studioId], references: [id])
+  contentPackage              Package?                      @relation(fields: [contentPackageId], references: [id])
+  service                     Service?                      @relation(fields: [serviceId], references: [id])
+  lead                        Lead                          @relation(fields: [leadId], references: [id])
+  discountCode                DiscountCode?                 @relation(fields: [discountCodeId], references: [id])
+  bookingAdditionalServices   BookingAdditionalService[]
+  payment                     Payment?
+
+  @@map("bookings")
+}
+
+model Lead {
+  id                String   @id @default(cuid())
+  fullName          String
+  email             String?
+  phoneNumber       String?
+  whatsappNumber    String?
+  recordingLocation String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  bookings Booking[]
+
+  @@map("leads")
+}
+
+model AdditionalService {
+  id          String                  @id @default(cuid())
+  name        String
+  type        AdditionalServiceType   @default(STANDARD)
+  price       Decimal                 @db.Decimal(10, 2)
+  currency    String                  @default("AED")
+  count       Int                     @default(1)
+  description String?
+  imageUrls   String[]
+  isActive    Boolean                 @default(true)
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+
+  // Relations
+  bookingAdditionalServices    BookingAdditionalService[]
+  addServicePackageRecords     AddServicePackageRecord[]
+
+  @@map("additional_services")
+}
+
+model BookingAdditionalService {
+  id         String   @id @default(cuid())
+  bookingId  String
+  serviceId  String
+  quantity   Int      @default(1)
+  unitPrice  Decimal  @db.Decimal(10, 2)
+  totalPrice Decimal  @db.Decimal(10, 2)
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  // Relations
+  booking Booking           @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  service AdditionalService @relation(fields: [serviceId], references: [id])
+
+  @@unique([bookingId, serviceId])
+  @@map("booking_additional_services")
 }
 
 model Payment {
-  id            String          @id @default(uuid())
-  bookingId     String          @unique
-  booking       Booking         @relation(fields: [bookingId], references: [id])
-  amount        Decimal         @db.Decimal(10, 2)
-  currency      String          @default("AED")
-  status        PaymentStatus   @default(PENDING)
-  provider      PaymentProvider @default(MAMO_PAY)
-  externalId    String? // ID from payment provider
-  paymentLinkId String? // ID of the payment link in our system
-  paymentLink   PaymentLink?    @relation(fields: [paymentLinkId], references: [id])
-  metadata      Json? // Additional metadata about the payment
-  completedAt   DateTime? // When the payment was completed
-  refundedAt    DateTime? // When the payment was refunded (if applicable)
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id            String        @id @default(cuid())
+  bookingId     String        @unique
+  amount        Decimal       @db.Decimal(10, 2)
+  currency      String        @default("AED")
+  status        PaymentStatus @default(PENDING)
+  provider      String        @default("MAMO_PAY")
+  externalId    String?
+  paymentLinkId String?
+  metadata      Json?
+  completedAt   DateTime?
+  refundedAt    DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
 }
 
-model PaymentLink {
-  id          String          @id @default(uuid())
-  url         String // Payment link URL
-  externalId  String? // ID from payment provider
-  provider    PaymentProvider @default(MAMO_PAY)
-  amount      Decimal         @db.Decimal(10, 2)
-  currency    String          @default("AED")
-  title       String // Title of the payment
-  description String? // Description of what is being paid for
-  metadata    Json? // Additional metadata about the payment link
-  expiresAt   DateTime? // Optional expiration date
-  payments    Payment[] // Relation to payments made with this link
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+model CaseStudy {
+  id        String   @id @default(cuid())
+  clientId  String?
+  title     String?
+  tagline   String?
+  mainText  String?
+  content   Json?
+  featured  Boolean  @default(true)
+  imageUrls String[]
+
+  // Relations
+  client        Client?         @relation(fields: [clientId], references: [id])
+  caseStaff     CaseStaff[]
+  caseEquipment CaseEquipment[]
+
+  @@map("case_studies")
 }
 
-model WebhookEvent {
-  id          String          @id @default(uuid())
-  provider    PaymentProvider @default(MAMO_PAY)
-  eventType   String // Type of event (payment.completed, payment.failed, etc.)
-  payload     Json // Raw webhook payload
-  processedAt DateTime? // When the webhook was processed
-  status      String // Status of webhook processing (successful, failed, pending)
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+model Equipment {
+  id          String  @id @default(cuid())
+  name        String?
+  description String?
+  imageUrl    String?
+
+  // Relations
+  caseEquipment CaseEquipment[]
+
+  @@map("equipment")
+}
+
+model Staff {
+  id       String  @id @default(cuid())
+  name     String?
+  role     String?
+  imageUrl String?
+
+  // Relations
+  caseStaff CaseStaff[]
+
+  @@map("staff")
+}
+
+model Client {
+  id          String  @id @default(cuid())
+  name        String?
+  showTitle   String?
+  jobTitle    String?
+  testimonial String?
+  imageUrl    String?
+
+  // Relations
+  caseStudies CaseStudy[]
+
+  @@map("clients")
+}
+
+model CaseStaff {
+  id          String @id @default(cuid())
+  caseStudyId String
+  staffId     String
+
+  // Relations
+  caseStudy CaseStudy @relation(fields: [caseStudyId], references: [id])
+  staff     Staff     @relation(fields: [staffId], references: [id])
+
+  @@map("case_staff")
+}
+
+model CaseEquipment {
+  id          String @id @default(cuid())
+  caseStudyId String
+  equipmentId String
+
+  // Relations
+  caseStudy CaseStudy @relation(fields: [caseStudyId], references: [id])
+  equipment Equipment @relation(fields: [equipmentId], references: [id])
+
+  @@map("case_equipment")
+}
+
+model Sample {
+  id       String  @id @default(cuid())
+  name     String?
+  thumbUrl String?
+  videoUrl String?
+
+  @@map("samples")
+}
+
+model BlogRecord {
+  id        String   @id @default(cuid())
+  title     String?
+  tagline   String?
+  mainText  String?
+  imageUrls String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("blog_records")
 }

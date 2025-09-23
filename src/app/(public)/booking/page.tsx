@@ -24,7 +24,7 @@ export default async function BookingPage() {
         </div>
         <BookingForm
           initialStudios={studios}
-          initialPackages={packages}
+          //initialPackages={packages}
           initialServices={additionalServices}
         />
       </div>

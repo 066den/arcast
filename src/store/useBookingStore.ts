@@ -1,11 +1,11 @@
 import { create } from 'zustand'
-import { StudioPackage } from '../types'
+import { Package } from '../types'
 import { persist } from 'zustand/middleware'
 
 interface BookingStore {
   // State
   currentStep: number
-  packages: StudioPackage[]
+  packages: Package[]
   selectedIndices: {
     studio: string
     package: string
@@ -23,7 +23,7 @@ interface BookingStore {
   createBooking: () => Promise<void>
 
   // Computed
-  setPackages: (packages: StudioPackage[]) => void
+  setPackages: (packages: Package[]) => void
   clearBooking: () => void
   totalPrice: () => number
 }
@@ -49,7 +49,7 @@ const useBookingStore = create<BookingStore>()(
         set({
           selectedIndices: { ...get().selectedIndices, package: packageId },
         }),
-      setPackages: (packages: StudioPackage[]) => set({ packages }),
+      setPackages: (packages: Package[]) => set({ packages }),
       createBooking: async () => {
         // const booking = await createBooking()
         // set({ booking })

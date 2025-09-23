@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { generateSimpleTimeSlots } from '../../../../utils/time'
 import { Studio, TimeSlotList } from '../../../../types'
 import { BOOKING_STATUS, ERROR_MESSAGES, HTTP_STATUS } from '@/lib/constants'
+import { validateStudio } from '@/lib/schemas'
 
 export async function GET(
   request: NextRequest,
@@ -70,6 +71,59 @@ export async function GET(
     return NextResponse.json(
       { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
+    )
+  }
+}
+
+export async function PATCH(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id } = await context.params
+  try {
+    const body = await req.json()
+    const { updateData } = body
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Studio ID is required' },
+        { status: 400 }
+      )
+    }
+
+    const validation = validateStudio(updateData)
+    if (!validation.success) {
+      return NextResponse.json(
+        {
+          error: 'Validation failed',
+          details: validation.error.issues,
+        },
+        { status: 400 }
+      )
+    }
+
+    const existingStudio = await prisma.studio.findUnique({
+      where: { id },
+    })
+
+    if (!existingStudio) {
+      return NextResponse.json(
+        { error: ERROR_MESSAGES.STUDIO.NOT_FOUND },
+        { status: 404 }
+      )
+    }
+
+    const updatedStudio = await prisma.studio.update({
+      where: { id },
+      data: validation.data,
+    })
+
+    return NextResponse.json(updatedStudio)
+  } catch (error) {
+    console.error('Error updating studio:', error)
+    return NextResponse.json(
+      { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
+      { status: 500 }
     )
   }
 }

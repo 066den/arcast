@@ -1,11 +1,29 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Hanken_Grotesk, Nunito_Sans, Geist } from 'next/font/google'
 import { seoConfig } from '@/lib/config'
 import { Toaster } from '@/components/ui/sonner'
 
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const hankenGrotesk = Hanken_Grotesk({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-hanken-grotesk',
+  display: 'swap',
+})
+const nunitoSans = Nunito_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-nunito-sans',
+  display: 'swap',
+})
+const geist = Geist({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-geist',
+  display: 'swap',
+})
+
 const { title, description } = seoConfig
 
 export const metadata: Metadata = {
@@ -38,9 +56,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${hankenGrotesk.variable} ${nunitoSans.variable} ${geist.variable}`}
+    >
       <head>
-        {/* Preload critical resources */}
         <link
           rel="preload"
           as="image"
@@ -48,7 +68,7 @@ export default function RootLayout({
           type="image/svg+xml"
         />
       </head>
-      <body className={inter.className}>
+      <body className={geist.className}>
         {children}
         <Toaster position="top-center" richColors />
       </body>

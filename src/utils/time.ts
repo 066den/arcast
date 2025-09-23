@@ -35,8 +35,8 @@ export const createDubaiDate = (
   hour: number,
   minute: number
 ): Date => {
-  // Create date in local timezone - this will represent Dubai time
-  return new Date(year, month - 1, day, hour, minute, 0)
+  const utcDate = new Date(Date.UTC(year, month - 1, day, hour - 4, minute, 0))
+  return utcDate
 }
 
 export const generateAvailableTimeSlots = (
@@ -353,7 +353,6 @@ export const isSlotWithinWorkingHours = (
     closeHour,
     closeMinute
   )
-
   return start >= openTime && end <= closeTime
 }
 

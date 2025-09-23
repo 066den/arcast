@@ -16,11 +16,22 @@ export async function apiRequest<T>(
   try {
     const response = await fetch(url, {
       headers: {
-        'Content-Type': 'application/json',
         ...options.headers,
       },
       ...options,
     })
+
+    // Check if response is HTML (error page) instead of JSON
+    const contentType = response.headers.get('content-type')
+    if (contentType && !contentType.includes('application/json')) {
+      const text = await response.text()
+      console.error('Received non-JSON response:', text.substring(0, 200))
+      throw new ApiError(
+        'Server returned HTML instead of JSON. This usually indicates a server error.',
+        response.status,
+        'INVALID_RESPONSE_TYPE'
+      )
+    }
 
     const data = await response.json()
     if (!response.ok) {
@@ -34,6 +45,14 @@ export async function apiRequest<T>(
   } catch (error) {
     if (error instanceof ApiError) {
       throw error
+    }
+    // Handle JSON parsing errors specifically
+    if (error instanceof SyntaxError && error.message.includes('JSON')) {
+      throw new ApiError(
+        'Invalid JSON response from server. This usually indicates a server error.',
+        0,
+        'INVALID_JSON'
+      )
     }
     throw new ApiError('Network error', 0, 'NETWORK_ERROR')
   }

@@ -3,42 +3,61 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
-    const packages = await prisma.studioPackage.findMany({
+    // Check if Prisma client is available
+    if (!prisma) {
+      return NextResponse.json(
+        { success: false, error: 'Database not configured' },
+        { status: 503 }
+      )
+    }
+
+    const packages = await prisma.package.findMany({
       include: {
-        packagePerks: true,
-        studios: {
-          select: {
-            id: true,
-            name: true,
+        servicePackageRecords: {
+          include: {
+            includedService: true,
           },
         },
       },
       orderBy: {
-        price_per_hour: 'asc',
+        basePrice: 'asc',
       },
     })
-
     // Transform the data to match the frontend expectations
     const transformedPackages = packages.map(pkg => ({
       id: pkg.id,
       name: pkg.name,
-      pricePerHour: pkg.price_per_hour.toString(),
+      pricePerHour: pkg.basePrice.toString(),
       currency: pkg.currency,
       description: pkg.description,
-      deliveryTime: pkg.delivery_time,
-      features: pkg.packagePerks.map(perk => 
-        perk.count ? `${perk.count}x ${perk.name}` : perk.name
+      deliveryTime: '24-48 hours', // Default delivery time
+      features: pkg.servicePackageRecords.map(record =>
+        record.serviceQuantity > 1
+          ? `${record.serviceQuantity}x ${record.includedService.name}`
+          : record.includedService.name
       ),
       popular: false, // You can add logic to determine popularity
-      studioIds: pkg.studios.map(studio => studio.id),
+      studioIds: [], // Packages are not directly linked to studios in current schema
     }))
-
-    return NextResponse.json({ 
-      success: true, 
-      packages: transformedPackages 
+    return NextResponse.json({
+      success: true,
+      packages: transformedPackages,
     })
   } catch (error) {
     console.error('Error fetching packages:', error)
+
+    // If it's a database connection error, return a more specific message
+    if (error instanceof Error && error.message.includes('connect')) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            'Database connection failed. Please check your database configuration.',
+        },
+        { status: 503 }
+      )
+    }
+
     return NextResponse.json(
       { success: false, error: 'Failed to fetch packages' },
       { status: 500 }
@@ -48,51 +67,34 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const { name, pricePerHour, currency, description, deliveryTime, features, studioIds } = await req.json()
-
+    const {
+      name,
+      pricePerHour,
+      currency,
+      description,
+      deliveryTime,
+      features,
+      studioIds,
+    } = await req.json()
     const packageData = {
       name,
-      price_per_hour: parseFloat(pricePerHour),
+      basePrice: parseFloat(pricePerHour),
       currency: currency || 'AED',
       description,
-      delivery_time: deliveryTime,
-      studios: studioIds ? {
-        connect: studioIds.map((id: string) => ({ id }))
-      } : undefined,
-      packagePerks: features ? {
-        create: features.map((feature: string) => {
-          // Parse feature like "3x Sony cameras" or just "Sony cameras"
-          const match = feature.match(/^(\d+)x\s+(.+)$/)
-          if (match) {
-            return {
-              name: match[2].trim(),
-              count: parseInt(match[1])
-            }
-          }
-          return {
-            name: feature,
-            count: 1
-          }
-        })
-      } : undefined,
     }
-
-    const newPackage = await prisma.studioPackage.create({
+    const newPackage = await prisma.package.create({
       data: packageData,
       include: {
-        packagePerks: true,
-        studios: {
-          select: {
-            id: true,
-            name: true,
+        servicePackageRecords: {
+          include: {
+            includedService: true,
           },
         },
       },
     })
-
-    return NextResponse.json({ 
-      success: true, 
-      package: newPackage 
+    return NextResponse.json({
+      success: true,
+      package: newPackage,
     })
   } catch (error) {
     console.error('Error creating package:', error)

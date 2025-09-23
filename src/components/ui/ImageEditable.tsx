@@ -3,14 +3,14 @@ import {
   DropzoneContent,
   DropzoneEmptyState,
 } from '@/components/ui/dropzone'
-import { MAX_FILE_SIZE, SUCCESS_MESSAGES } from '@/lib/constants'
-import { validateFile } from '@/utils/files'
+import { MAX_FILE_SIZE } from '@/lib/constants'
 import { ImageCropper } from './ImageCropper'
 
 import { toast } from 'sonner'
 import Image from 'next/image'
 import { UploadIcon } from 'lucide-react'
 import { useState } from 'react'
+import { validateFile } from '@/lib/validate'
 
 interface ImageEditableProps {
   src?: string
@@ -31,9 +31,9 @@ const ImageEditable = ({
 }: ImageEditableProps) => {
   const [cropImage, setCropImage] = useState<string | null>(null)
   const [isCropping, setIsCropping] = useState(false)
+  const [imgUrl, setImgUrl] = useState<string>(src || '')
 
   const handleDrop = async (files: File[]) => {
-    console.log(files)
     const file = files[0]
     const validation = validateFile(file)
     if (validation) {
@@ -47,14 +47,12 @@ const ImageEditable = ({
       setCropImage(imageUrl)
       setIsCropping(true)
     } else {
-      await onUpload?.(file)
-      toast.success(SUCCESS_MESSAGES.FILE.UPLOADED)
+      onSelectFile(file)
     }
   }
 
   const handleCropComplete = async (croppedFile: File) => {
-    await onUpload?.(croppedFile)
-    toast.success(SUCCESS_MESSAGES.FILE.UPLOADED)
+    onSelectFile(croppedFile)
     setIsCropping(false)
     setCropImage(null)
   }
@@ -67,12 +65,23 @@ const ImageEditable = ({
     }
   }
 
+  const onSelectFile = (file: File) => {
+    const imgUrl = URL.createObjectURL(file)
+    setImgUrl(imgUrl)
+    onUpload?.(file)
+  }
+
+  const handleError = (error: Error) => {
+    toast.error(error.message)
+  }
+
   return (
     <div className={className}>
       <Dropzone
         onDrop={handleDrop}
         accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
         maxSize={MAX_FILE_SIZE.IMAGE}
+        onError={handleError}
       >
         <DropzoneEmptyState>
           <div className="flex w-full items-center gap-4 p-8">
@@ -82,19 +91,20 @@ const ImageEditable = ({
             <div className="text-left">
               <p className="font-medium text-sm">Upload a file</p>
               <p className="text-muted-foreground text-xs">
-                Drag and drop or click to upload
+                Drag and drop or click to upload <br /> between 1.00KB and
+                5.00MB
               </p>
             </div>
           </div>
         </DropzoneEmptyState>
-        {src && (
-          <div className="h-[102px] w-full">
+        {imgUrl && (
+          <div className="w-full">
             <Image
               alt={alt || 'Preview'}
               className="absolute top-0 left-0 h-full w-full object-cover"
-              width={102}
-              height={102}
-              src={src}
+              width={350}
+              height={350}
+              src={imgUrl}
               priority
             />
           </div>

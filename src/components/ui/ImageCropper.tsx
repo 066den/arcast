@@ -59,26 +59,42 @@ export const ImageCropper = ({
     try {
       const image = imgRef.current
 
-      // Create canvas with the dimensions of the cropped image
+      // Calculate scale from rendered size to natural size
+      const scaleX = image.naturalWidth / image.width
+      const scaleY = image.naturalHeight / image.height
+
+      // Account for device pixel ratio for sharper result
+      const pixelRatio = window.devicePixelRatio || 1
+
+      // Create canvas with the dimensions of the cropped image in natural pixels
       const croppedCanvas = document.createElement('canvas')
       const ctx = croppedCanvas.getContext('2d')
 
       if (!ctx) return
 
-      croppedCanvas.width = completedCrop.width
-      croppedCanvas.height = completedCrop.height
+      const cropWidth = Math.round(completedCrop.width * scaleX)
+      const cropHeight = Math.round(completedCrop.height * scaleY)
+      const cropX = Math.round(completedCrop.x * scaleX)
+      const cropY = Math.round(completedCrop.y * scaleY)
 
-      // Draw the cropped part of the image
+      croppedCanvas.width = Math.max(1, Math.floor(cropWidth * pixelRatio))
+      croppedCanvas.height = Math.max(1, Math.floor(cropHeight * pixelRatio))
+
+      // Ensure drawing scales back down for display size
+      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
+      ctx.imageSmoothingQuality = 'high'
+
+      // Draw the cropped part of the image from the natural-sized coordinates
       ctx.drawImage(
         image,
-        completedCrop.x,
-        completedCrop.y,
-        completedCrop.width,
-        completedCrop.height,
+        cropX,
+        cropY,
+        cropWidth,
+        cropHeight,
         0,
         0,
-        completedCrop.width,
-        completedCrop.height
+        cropWidth,
+        cropHeight
       )
 
       // Convert canvas to Blob, then to File
@@ -106,6 +122,7 @@ export const ImageCropper = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="relative max-w-4xl max-h-[90vh] bg-white rounded-lg p-6">
         <Button
+          type="button"
           variant="ghost"
           size="sm"
           className="absolute top-2 right-2 z-10"
@@ -139,16 +156,21 @@ export const ImageCropper = ({
           </ReactCrop>
 
           <div className="flex gap-2">
-            <Button onClick={handleCropComplete} disabled={!completedCrop}>
+            <Button
+              onClick={handleCropComplete}
+              type="button"
+              disabled={!completedCrop}
+            >
               Apply Crop
             </Button>
-            <Button variant="outline" onClick={onCancel}>
+            <Button variant="outline" onClick={onCancel} type="button">
               Cancel
             </Button>
           </div>
         </div>
 
         {/* Hidden canvas for preview */}
+
         <canvas
           ref={previewCanvasRef}
           style={{
