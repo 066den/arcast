@@ -1,3 +1,5 @@
+'use client'
+
 import {
   SidebarInset,
   SidebarProvider,
@@ -20,8 +22,9 @@ export default function AdminLayout({
         <header className="flex items-center justify-between p-4 border-b">
           <SidebarTrigger />
           <Button asChild variant="outline" className="mr-4">
-            <Link href="/" target="_blank">
-              Visit Site <ArrowRightIcon className="w-4 h-4" />
+            <Link href="/" target="_blank" className="flex items-center gap-2">
+              <span>Visit Site</span>
+              <ArrowRightIcon className="w-4 h-4" />
             </Link>
           </Button>
         </header>
