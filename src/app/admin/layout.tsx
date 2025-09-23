@@ -21,14 +21,13 @@ export default function AdminLayout({
       <SidebarInset>
         <header className="flex items-center justify-between p-4 border-b">
           <SidebarTrigger />
-          <Button asChild variant="outline" className="mr-4">
-            <Link href="/" target="_blank">
-              <span className="flex items-center gap-2">
-                <span>Visit Site</span>
-                <ArrowRightIcon className="w-4 h-4" />
-              </span>
-            </Link>
-          </Button>
+
+          <Link href="/" target="_blank">
+            <span className="flex items-center gap-2">
+              <span>Visit Site</span>
+              <ArrowRightIcon className="w-4 h-4" />
+            </span>
+          </Link>
         </header>
         {children}
       </SidebarInset>
