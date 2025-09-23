@@ -1,21 +1,27 @@
-import {
-  ALLOWED_FILE_TYPES,
-  ERROR_MESSAGES,
-  MAX_FILE_SIZE,
-} from '@/lib/constants'
+import { join } from 'path'
+import { v4 as uuidv4 } from 'uuid'
+import { mkdir, writeFile } from 'fs/promises'
 
-export const validateFile = (file: File): string | null => {
-  if (
-    !ALLOWED_FILE_TYPES.IMAGES.includes(
-      file.type as (typeof ALLOWED_FILE_TYPES.IMAGES)[number]
-    )
-  ) {
-    return ERROR_MESSAGES.FILE.TYPE_NOT_ALLOWED
+export const getUploadedFile = async (
+  file: File,
+  nameDir: string = 'images'
+) => {
+  const fileExtension = file.name.split('.').pop()
+  const fileName = `${uuidv4()}.${fileExtension}`
+
+  const uploadDir = join(process.cwd(), 'public', 'uploads', nameDir)
+  const filePath = join(uploadDir, fileName)
+
+  try {
+    await mkdir(uploadDir, { recursive: true })
+  } catch (error) {
+    // Error creating directory
   }
 
-  if (file.size > MAX_FILE_SIZE.IMAGE) {
-    return ERROR_MESSAGES.FILE.SIZE_EXCEEDED
-  }
+  const bytes = await file.arrayBuffer()
+  const buffer = Buffer.from(bytes)
 
-  return null
+  await writeFile(filePath, buffer)
+
+  return `/uploads/${nameDir}/${fileName}`
 }

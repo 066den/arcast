@@ -64,3 +64,44 @@ export function getConsistentMonthName(date: Date): string {
     timeZone: 'UTC',
   })
 }
+
+/**
+ * Format a date consistently for Dubai timezone
+ * @param date - The date to format
+ * @param options - Intl.DateTimeFormatOptions
+ * @returns Formatted date string in Dubai timezone
+ */
+export function formatDateDubai(
+  date: Date,
+  options: Intl.DateTimeFormatOptions = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }
+): string {
+  return date.toLocaleDateString('en-US', {
+    ...options,
+    timeZone: 'Asia/Dubai', // Use Dubai timezone
+  })
+}
+
+/**
+ * Format a time consistently for Dubai timezone
+ * @param date - The date to format
+ * @param options - Intl.DateTimeFormatOptions
+ * @returns Formatted time string in Dubai timezone
+ */
+export function formatTimeDubai(
+  date: Date,
+  options: Intl.DateTimeFormatOptions = {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }
+): string {
+  return date.toLocaleTimeString('en-US', {
+    ...options,
+    timeZone: 'Asia/Dubai', // Use Dubai timezone
+  })
+}

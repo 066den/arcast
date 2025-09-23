@@ -1,5 +1,5 @@
 import { getStudios } from '@/services/studioServices'
-import StudioList from '@/components/admin/StudioList'
+import StudioList from '@/components/admin/studio/StudioList'
 
 export default async function StudiosPage() {
   const studios = await getStudios()

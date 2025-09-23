@@ -1,4 +1,4 @@
-import { AdditionalService, Studio, TimeSlotList } from '.'
+import { AdditionalService, Lead, Package, TimeSlotList, Studio } from '.'
 
 export interface ApiResponse<T> {
   success: boolean
@@ -39,9 +39,33 @@ export interface BookingFormData {
 
 export interface StudioFormData {
   name: string
-  location: string
-  imageUrl?: string
+  location?: string
+  imageFile?: File | null
   openingTime: string
   closingTime: string
-  totalSeats: number
+  totalSeats?: number
+}
+
+export interface MamoPaymentLinkResponse {
+  id: string
+  payment_url: string
+  title: string
+  description: string
+  amount: number
+  amount_currency: string
+}
+
+export interface BookingResponse {
+  id: string
+  startTime: Date
+  endTime: Date
+  totalCost: number
+  vatAmount: number
+  discountAmount: number
+  finalAmount?: number
+  studio?: Studio
+  package?: Package
+  lead?: Lead
+  additionalServices?: AdditionalService[]
+  paymentUrl?: string
 }

@@ -17,10 +17,10 @@ export const BOOKING_STATUS = {
 } as const
 
 export const PAYMENT_STATUS = {
-  UNPAID: 'UNPAID',
-  PAID: 'PAID',
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
   REFUNDED: 'REFUNDED',
-  PARTIAL: 'PARTIAL',
 } as const
 
 export const PAYMENT_METHODS = {
@@ -88,7 +88,7 @@ export const API_ENDPOINTS = {
   STUDIOS: '/api/studios',
   PACKAGES: '/api/packages',
   CONTACT: '/api/contact',
-  PAYMENT: '/api/payment',
+  PAYMENT_LINK: '/api/payment-link',
 } as const
 
 export const HTTP_STATUS = {
@@ -120,6 +120,7 @@ export const ERROR_MESSAGES = {
     CONFLICT: 'Selected time conflicts with existing bookings',
     FAILED: 'Failed to create booking',
     PAST_DATE: 'Cannot book slots for past dates',
+    SELECT_TIME: 'Please select a time',
   },
   STUDIO: {
     NOT_FOUND: 'Studio not found',
@@ -129,10 +130,12 @@ export const ERROR_MESSAGES = {
     FAILED_TO_FETCH_TIMES: 'Failed to fetch times',
     FAILED_TO_FETCH_STUDIOS: 'Failed to fetch studios',
     FAILED_TO_UPDATE_STUDIO: 'Failed to update studio',
+    FAILED_TO_CREATE_STUDIO: 'Failed to create studio',
   },
   PAYMENT: {
     FAILED: 'Payment processing failed',
     INVALID_AMOUNT: 'Invalid payment amount',
+    ALREADY_EXISTS: 'Payment already exists',
   },
   NOTION: {
     CONNECTION_FAILED: 'Failed to connect to Notion',
@@ -155,6 +158,9 @@ export const ERROR_MESSAGES = {
   },
   CONTACT: {
     FAILED: 'Failed to submit contact form',
+  },
+  PRISMA: {
+    NOT_INITIALIZED: 'Prisma client is not initialized',
   },
 } as const
 
@@ -189,7 +195,7 @@ export const VALIDATION = {
   MAX_MESSAGE_LENGTH: 1000,
 } as const
 
-// ========== CURRENCY CONSTANTS ==========
+// ========== PAYMENT CONSTANTS ==========
 
 export const CURRENCIES = {
   AED: 'AED',
@@ -201,6 +207,15 @@ export const CURRENCY_SYMBOLS = {
   AED: 'AED',
   USD: '$',
   EUR: '€',
+} as const
+
+// ========== MAMO PAY CONSTANTS ==========
+
+export const PAYMENT_PROVIDER = {
+  TITLE: 'ARcast Booking',
+  CURRENCY: 'AED',
+  RETURN_URL: `${process.env.NEXT_PUBLIC_APP_URL}/booking/sucess`,
+  FAILURE_RETURN_URL: `${process.env.NEXT_PUBLIC_APP_URL}/booking/failed`,
 } as const
 
 // ========== FILE CONSTANTS ==========
@@ -240,6 +255,7 @@ export type LeadSource = keyof typeof LEAD_SOURCES
 export type ContactStatus = keyof typeof CONTACT_STATUS
 export type Currency = keyof typeof CURRENCIES
 export type AspectRatio = keyof typeof ASPECT_RATIOS
+export type PaymentProvider = keyof typeof PAYMENT_PROVIDER
 
 // ========== DEFAULT EXPORT ==========
 

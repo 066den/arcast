@@ -1,34 +1,64 @@
 import { BOOKING_STATUS } from '@/lib/constants'
+import { Decimal } from '@prisma/client/runtime/library'
+
+type BookingStatus = (typeof BOOKING_STATUS)[keyof typeof BOOKING_STATUS]
+
+export type NoneToVoidFunction = () => void
+
 export interface Booking {
   id: string
-  startTime: string // ISO 8601 format "YYYY-MM-DDTHH:mm:ss.sssZ"
-  endTime: string // ISO 8601 format
+  startTime: Date
+  endTime: Date
   numberOfSeats: number
-  totalCost: number // Assuming it's a string (e.g., "3800"), change to number if needed
-  vatAmount: number
-  discountAmount: number
-  status: typeof BOOKING_STATUS // Enum-like restriction
-  studioId: string
-  packageId: string
+  totalCost: number | Decimal
+  vatAmount: number | Decimal
+  discountAmount: number | Decimal | null
+  finalAmount?: number | Decimal | null
+  status: BookingStatus
+  studioId: string | null
+  contentPackageId: string | null
+  serviceId?: string | null
   leadId: string
   discountCodeId: string | null
-  createdAt: string
-  updatedAt: string
-  studio: Studio
-  package: StudioPackage
-  lead: Lead
-  discountCode: string | null
-  notionEntryId: string
+  createdAt: Date
+  updatedAt: Date
+  studio?: Studio
+  contentPackage?: Package
+  lead?: Lead
+  discountCode?: string
+  notionEntryId?: string
+}
+
+export interface BookingFilters {
+  status?: string
+  dateFrom?: string
+  dateTo?: string
+  studioId?: string
+  packageId?: string
+  limit?: number
+  offset?: number
+  sortBy?: string
+  sortOrder?: string
 }
 
 export interface Lead {
   id: string
   fullName: string
-  email: string
-  phoneNumber: string
-  recordingLocation: string
-  createdAt: string
-  updatedAt: string
+  email: string | null
+  phoneNumber: string | null
+  whatsappNumber: string | null
+  recordingLocation: string | null
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface Client {
+  id: string
+  name: string | null
+  imageUrl: string | null
+  jobTitle?: string | null
+  showTitle?: string | null
+  testimonial: string | null
 }
 
 export type Studio = {
@@ -45,17 +75,18 @@ export type Studio = {
   // availableSlots: number
   // totalSlots: number
   bookings?: Booking[]
-  packages?: StudioPackage[]
+  //packages?: StudioPackage[]
 }
 
-export interface StudioPackage {
+export interface Package {
   id: string
   name: string
-  price_per_hour: number
+  basePrice: number | Decimal
   currency: string
-  description: string
-  delivery_time: number
-  packagePerks: PackagePerk[]
+  description: string | null
+  isActive: boolean
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface PackagePerk {
@@ -65,25 +96,25 @@ export interface PackagePerk {
   count?: number | null
 }
 
+export interface Service {
+  id: string
+  name: string
+  title?: string
+  description: string | null
+  content?: string | null
+  imageUrl: string | null
+  price?: number
+  currency?: string
+  isActive: boolean
+}
+
 export interface AdditionalService {
   id: string
-  title: string
-  type:
-    | 'STANDARD_EDIT_SHORT_FORM'
-    | 'CUSTOM_EDIT_SHORT_FORM'
-    | 'STANDARD_EDIT_LONG_FORM'
-    | 'CUSTOM_EDIT_LONG_FORM'
-    | 'LIVE_VIDEO_CUTTING'
-    | 'SUBTITLES'
-    | 'TELEPROMPTER_SUPPORT'
-    | 'MULTI_CAM_RECORDING'
-    | 'EPISODE_TRAILER_LONG_FORM'
-    | 'EPISODE_TRAILER_SHORT_FORM'
-    | 'WARDROBE_STYLING_CONSULTATION'
-    | 'PODCAST_DISTRIBUTION'
+  name: string
+  type: 'STANDARD' | 'BY_THREE'
   price: number
   currency: string
-  description: string
+  description: string | null
   imageUrls: string[]
   quantity?: number
   isActive?: boolean
@@ -126,4 +157,11 @@ export interface TimeSlotList {
   end: string
   start: string
   duration?: number
+}
+
+export interface Sample {
+  id: string
+  name: string | null
+  thumbUrl: string | null
+  videoUrl: string | null
 }
