@@ -23,9 +23,7 @@ export async function GET(req: Request) {
     const bookings = await prisma.booking.findMany({
       include: {
         studio: true,
-        package: true,
         lead: true,
-        additionalServices: true,
       },
     })
     return NextResponse.json({ success: true, data: bookings })
