@@ -44,13 +44,11 @@ export const getStudios = async () => {
       },
     })
 
-    // Add availability information to each studio
     const studiosWithAvailability = studios.map(studio => {
       return {
         ...studio,
         description: `Professional recording studio with ${studio.totalSeats} seats, located in ${studio.location}. Available from ${studio.openingTime} to ${studio.closingTime}.`,
         capacity: studio.totalSeats,
-        // Exclude bookings from response to reduce payload size
         bookings: [],
       }
     })
