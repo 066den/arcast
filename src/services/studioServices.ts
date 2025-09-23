@@ -1,3 +1,4 @@
+import { ERROR_MESSAGES } from '@/lib/constants'
 import { prisma } from '@/lib/prisma'
 //import { generateAvailableTimeSlots } from '../utils/time'
 //import { Booking } from '../types'
@@ -17,7 +18,7 @@ export const getStudios = async () => {
   targetFriday.setHours(0, 0, 0, 0)
 
   if (!prisma) {
-    throw new Error('Prisma client is not initialized')
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
   }
   //throw new Error('test')
   try {
@@ -69,22 +70,88 @@ export const getPackages = async () => {
     throw new Error('Prisma client is not initialized')
   }
 
-  // try {
-  //   const packages = await prisma.studioPackage.findMany({
-  //     include: {
-  //       packagePerks: true,
-  //     },
-  //   })
+  try {
+    const packages = await prisma.package.findMany({
+      include: {
+        servicePackageRecords: {
+          include: {
+            includedService: true,
+          },
+        },
+      },
+      orderBy: {
+        basePrice: 'asc',
+      },
+    })
 
-  //   return packages.map(pkg => ({
-  //     ...pkg,
-  //     basePrice: Number(pkg.price_per_hour),
-  //   }))
-  // } catch (error) {
-  //   console.error('Error fetching packages:', error)
-  //   if (error instanceof Error) {
-  //     throw new Error(`Failed to fetch packages: ${error.message}`)
-  //   }
-  //   throw new Error('Failed to fetch packages')
-  // }
+    return packages.map(pkg => ({
+      id: pkg.id,
+      name: pkg.name,
+      pricePerHour: pkg.basePrice.toString(),
+      currency: pkg.currency,
+      description: pkg.description,
+      deliveryTime: '24-48 hours', // Default delivery time
+      features: pkg.servicePackageRecords.map(record =>
+        record.serviceQuantity > 1
+          ? `${record.serviceQuantity}x ${record.includedService.name}`
+          : record.includedService.name
+      ),
+      popular: false, // You can add logic to determine popularity
+      studioIds: [], // Packages are not directly linked to studios in current schema
+    }))
+  } catch (error) {
+    console.error('Error fetching packages:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch packages: ${error.message}`)
+    }
+    throw new Error('Failed to fetch packages')
+  }
+}
+
+export const getSamples = async () => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+  try {
+    const samples = await prisma.sample.findMany()
+    return samples
+  } catch (error) {
+    console.error('Error fetching samples:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch samples: ${error.message}`)
+    }
+    throw new Error('Failed to fetch samples')
+  }
+}
+
+export const getCases = async () => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+  try {
+    const cases = await prisma.caseStudy.findMany()
+    return cases
+  } catch (error) {
+    console.error('Error fetching cases:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch cases: ${error.message}`)
+    }
+    throw new Error('Failed to fetch cases')
+  }
+}
+
+export const getClients = async () => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+  try {
+    const clients = await prisma.client.findMany()
+    return clients
+  } catch (error) {
+    console.error('Error fetching clients:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch clients: ${error.message}`)
+    }
+    throw new Error('Failed to fetch clients')
+  }
 }

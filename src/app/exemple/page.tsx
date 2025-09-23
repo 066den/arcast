@@ -1,5 +1,9 @@
 import { PreloaderDemo } from '@/components/examples/PreloaderDemo'
 
 export default function ExemplePage() {
-  return <PreloaderDemo />
+  return (
+    <div className="min-h-screen bg-white">
+      <PreloaderDemo />
+    </div>
+  )
 }

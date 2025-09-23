@@ -1,4 +1,4 @@
-import { Box, Calendar, User, Phone, Radio } from 'lucide-react'
+import { Box, Calendar, User, Radio } from 'lucide-react'
 
 export const siteConfig = {
   name: 'ARcast',
@@ -34,6 +34,17 @@ export const adminNavigation = [
   { name: 'Bookings', href: '/admin', icon: Calendar },
   { name: 'Studios', href: '/admin/studios', icon: Radio },
   { name: 'Services', href: '/services', icon: Box },
+] as const
+
+export const legalNavigation = [
+  { name: 'Terms & Conditions', href: '/terms-and-conditions' },
+  { name: 'Privacy Policy', href: '/privacy-policy' },
+  { name: 'Term of Use', href: '/term-of-use' },
+  { name: 'Deletion Policy', href: '/deletion-policy' },
+] as const
+
+export const supportNavigation = [
+  { name: 'Contact Us', href: '/contact-us' },
 ] as const
 
 export const aboutFeatures = [

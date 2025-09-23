@@ -31,7 +31,19 @@ export function usePackages(): UsePackagesReturn {
 
       const response = await fetch('/api/packages')
       if (!response.ok) {
-        throw new Error('Failed to fetch packages')
+        throw new Error(
+          `Failed to fetch packages: ${response.status} ${response.statusText}`
+        )
+      }
+
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type')
+      if (contentType && !contentType.includes('application/json')) {
+        const text = await response.text()
+        console.error('Received non-JSON response:', text.substring(0, 200))
+        throw new Error(
+          'Server returned HTML instead of JSON. This usually indicates a server error.'
+        )
       }
 
       const data = await response.json()

@@ -1,3 +1,5 @@
+import { Variants } from 'framer-motion'
+
 export const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -96,113 +98,66 @@ export const pagePreloaderVariants = {
   },
 }
 
-export const heroVariants = {
-  container: {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.8,
-        ease: 'easeOut',
-        staggerChildren: 0.3,
-      },
+export const fadeVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.8,
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.3, ease: 'easeOut' },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.8,
+    transition: { duration: 0.3, ease: 'easeOut' },
+  },
+}
+
+export const textVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 30,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+  },
+  exit: {
+    opacity: 0,
+    y: 30,
+    transition: { duration: 0.6, delay: 0.4, ease: 'easeOut' },
+  },
+}
+
+export const serviceButtonVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.3,
     },
   },
-  video: {
-    hidden: {
-      opacity: 0,
-      scale: 1.1,
-      filter: 'blur(10px)',
-    },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      filter: 'blur(0px)',
-      transition: {
-        duration: 1.2,
-        ease: 'easeOut',
-        delay: 0.2,
-      },
-    },
+}
+
+export const serviceButtonItemVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    x: -50,
+    scale: 0.8,
   },
-  image: {
-    hidden: {
-      opacity: 0,
-      scale: 1.05,
-      filter: 'blur(5px)',
-    },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      filter: 'blur(0px)',
-      transition: {
-        duration: 1,
-        ease: 'easeOut',
-        delay: 0.1,
-      },
-    },
-  },
-  overlay: {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        ease: 'easeOut',
-        delay: 0.4,
-      },
-    },
-  },
-  title: {
-    hidden: {
-      opacity: 0,
-      y: 50,
-      scale: 0.9,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.8,
-        ease: 'easeOut',
-        delay: 0.6,
-      },
-    },
-  },
-  description: {
-    hidden: {
-      opacity: 0,
-      y: 30,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: 'easeOut',
-        delay: 0.8,
-      },
-    },
-  },
-  floating: {
-    animate: {
-      y: [-10, 10, -10],
-      transition: {
-        duration: 4,
-        repeat: Infinity,
-        ease: 'easeInOut',
-      },
-    },
-  },
-  pulse: {
-    animate: {
-      scale: [1, 1.02, 1],
-      transition: {
-        duration: 3,
-        repeat: Infinity,
-        ease: 'easeInOut',
-      },
+  visible: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: {
+      duration: 0.6,
+      ease: 'easeOut',
+      type: 'spring',
+      stiffness: 100,
+      damping: 15,
     },
   },
 }

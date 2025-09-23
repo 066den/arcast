@@ -1,45 +1,45 @@
 'use client'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import ServiceButton from '../servicesPage/ServiceButton'
-import { Sample, Service } from '@/types'
-import SmoothOverlappingCarousel from '../ui/smooth-overlapping-carousel'
 import {
   serviceButtonVariants,
   serviceButtonItemVariants,
 } from '@/lib/motion-variants'
 
-interface EpisodeSectionProps {
+import { Package, Service } from '@/types'
+import ServiceButton from '../servicesPage/ServiceButton'
+
+interface PackagesSectionProps {
   initialServices: Service[]
-  initialSamples: Sample[]
+  initialPackages: Package[]
 }
 
-const EpisodeSection = ({
+const PackagesSection = ({
   initialServices,
-  initialSamples,
-}: EpisodeSectionProps) => {
+  initialPackages,
+}: PackagesSectionProps) => {
   return (
     <section className="py-20">
-      <div className="section-title">what we&apos;ve made</div>
+      <div className="section-title">what do we provide</div>
       <div className="flex justify-between gap-4 mb-25">
         <div className="mt-2">
           <h2 className="text-6xl mb-4">
-            See our work in <span className="text-accent">action</span>
+            Fully packed <span className="text-accent">services</span>
           </h2>
           <h2 className="text-6xl flex items-center gap-3">
             <Image
-              src="/assets/images/pre-explore.png"
-              alt="Explore the latest jewels"
+              src="/assets/images/pre-beneficial.jpg"
+              alt="Beneficial packages"
               width={105}
               height={48}
               className="rounded-full h-12"
             />
-            Explore the latest <span className="text-accent">jewels</span>
+            Beneficial <span className="text-accent">packages</span>
           </h2>
         </div>
         <p className="text-secondary max-w-xs">
-          Dive into handpicked examples of our work regarding different types of
-          media and content creation.
+          Choose a definite service you need, or let us provide a full service
+          as a service package.
         </p>
       </div>
 
@@ -58,11 +58,9 @@ const EpisodeSection = ({
               </motion.div>
             ))}
         </motion.div>
-
-        {initialSamples && <SmoothOverlappingCarousel items={initialSamples} />}
       </div>
     </section>
   )
 }
 
-export default EpisodeSection
+export default PackagesSection

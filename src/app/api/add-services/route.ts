@@ -12,7 +12,6 @@ export async function GET() {
       },
     })
 
-    // Transform the data to match the frontend expectations
     const transformedServices = services.map(service => ({
       id: service.id,
       name: service.name,

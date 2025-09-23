@@ -71,11 +71,11 @@ model ServiceType {
 model Service {
   id            String   @id @default(cuid())
   name          String   @unique
-  title         String
   description   String?
-  content       String?
+  includes      String?
   imageUrl      String?
   serviceTypeId String
+  isPopular     Boolean  @default(false)
   isActive      Boolean  @default(true)
   price         Decimal  @db.Decimal(10, 2)
   currency      String   @default("AED")
@@ -268,6 +268,8 @@ model CaseStudy {
   title     String?
   tagline   String?
   mainText  String?
+  content   Json?
+  featured  Boolean  @default(true)
   imageUrls String[]
 
   // Relations
@@ -305,6 +307,8 @@ model Staff {
 model Client {
   id          String  @id @default(cuid())
   name        String?
+  showTitle   String?
+  jobTitle    String?
   testimonial String?
   imageUrl    String?
 

@@ -118,7 +118,7 @@
 
   h1,
   h2 {
-    @apply font-hanken-grotesk font-medium text-[4em] tracking-[-0.04em];
+    @apply font-hanken-grotesk font-medium xl:text-[4em] text-[3.5em] tracking-[-0.04em];
   }
 
   h3,
@@ -128,13 +128,57 @@
     @apply font-hanken-grotesk font-medium tracking-[-0.02em];
   }
 
+  h3 {
+    @apply xl:text-[2.75rem] text-[2.25rem];
+  }
+
+  section {
+    @apply container mx-auto px-4;
+  }
+
   .text-secondary {
     color: hsl(0 0% 55%);
     letter-spacing: -0.04em;
   }
 
+  .text-content {
+    p {
+      margin-bottom: 1.25em;
+      letter-spacing: -0.04em;
+    }
+    p:last-of-type {
+      margin-bottom: 0;
+    }
+    ul {
+      list-style-type: disc;
+      margin-left: 1.5em;
+      margin-bottom: 1.25em;
+      letter-spacing: -0.04em;
+    }
+    ul:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+
   .section-title {
     @apply uppercase text-accent font-bold mb-2 font-hanken-grotesk;
+  }
+
+  .colored-text {
+    strong {
+      @apply text-accent;
+      font-weight: inherit;
+    }
+  }
+
+  .outline-text {
+    font-size: 12.5em;
+    line-height: 1.18;
+    color: white;
+    paint-order: stroke fill;
+    -webkit-text-stroke: 0.5rem var(--color-accent);
+    font-weight: 700;
+    font-family: var(--font-hanken-grotesk);
   }
 }
 
@@ -244,4 +288,13 @@
       transform: none;
     }
   }
+}
+
+/* Smooth Overlapping Carousel Styles */
+.smooth-overlapping-item {
+  position: absolute;
+  transition:
+    transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, opacity;
 }

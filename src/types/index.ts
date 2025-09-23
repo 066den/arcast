@@ -52,6 +52,15 @@ export interface Lead {
   updatedAt: Date
 }
 
+export interface Client {
+  id: string
+  name: string | null
+  imageUrl: string | null
+  jobTitle?: string | null
+  showTitle?: string | null
+  testimonial: string | null
+}
+
 export type Studio = {
   id: string
   name: string
@@ -85,6 +94,18 @@ export interface PackagePerk {
   name: string
   packageId: string
   count?: number | null
+}
+
+export interface Service {
+  id: string
+  name: string
+  title?: string
+  description: string | null
+  content?: string | null
+  imageUrl: string | null
+  price?: number
+  currency?: string
+  isActive: boolean
 }
 
 export interface AdditionalService {
@@ -136,4 +157,11 @@ export interface TimeSlotList {
   end: string
   start: string
   duration?: number
+}
+
+export interface Sample {
+  id: string
+  name: string | null
+  thumbUrl: string | null
+  videoUrl: string | null
 }
