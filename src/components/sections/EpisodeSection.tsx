@@ -1,21 +1,16 @@
 'use client'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
-import ServiceButton from '../servicesPage/ServiceButton'
-import { Sample, Service } from '@/types'
+import { Sample, ServiceType } from '@/types'
 import SmoothOverlappingCarousel from '../ui/smooth-overlapping-carousel'
-import {
-  serviceButtonVariants,
-  serviceButtonItemVariants,
-} from '@/lib/motion-variants'
+import ServiceTypesList from '../servicesPage/ServiceTypesList'
 
 interface EpisodeSectionProps {
-  initialServices: Service[]
+  initialServiceTypes: ServiceType[]
   initialSamples: Sample[]
 }
 
 const EpisodeSection = ({
-  initialServices,
+  initialServiceTypes,
   initialSamples,
 }: EpisodeSectionProps) => {
   return (
@@ -44,20 +39,7 @@ const EpisodeSection = ({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <motion.div
-          className="flex flex-col gap-5"
-          variants={serviceButtonVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          {initialServices &&
-            initialServices.map(service => (
-              <motion.div key={service.id} variants={serviceButtonItemVariants}>
-                <ServiceButton title={service.name} />
-              </motion.div>
-            ))}
-        </motion.div>
+        <ServiceTypesList initialServiceTypes={initialServiceTypes} />
 
         {initialSamples && <SmoothOverlappingCarousel items={initialSamples} />}
       </div>
