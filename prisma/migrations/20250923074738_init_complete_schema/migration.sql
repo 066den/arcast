@@ -5,7 +5,7 @@ CREATE TYPE "public"."DiscountType" AS ENUM ('PERCENTAGE', 'FIXED_AMOUNT');
 CREATE TYPE "public"."BookingStatus" AS ENUM ('PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED');
 
 -- CreateEnum
-CREATE TYPE "public"."AdditionalServiceType" AS ENUM ('STANDARD_EDIT_SHORT_FORM', 'BY_THREE');
+CREATE TYPE "public"."AdditionalServiceType" AS ENUM ('STANDARD', 'BY_THREE');
 
 -- CreateEnum
 CREATE TYPE "public"."PaymentStatus" AS ENUM ('PENDING', 'COMPLETED', 'FAILED', 'REFUNDED');
@@ -14,7 +14,7 @@ CREATE TYPE "public"."PaymentStatus" AS ENUM ('PENDING', 'COMPLETED', 'FAILED', 
 CREATE TABLE "public"."studios" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "location" TEXT NOT NULL,
+    "location" TEXT NOT NULL DEFAULT 'Dubai',
     "imageUrl" TEXT,
     "totalSeats" INTEGER NOT NULL,
     "openingTime" TEXT NOT NULL,
@@ -27,73 +27,67 @@ CREATE TABLE "public"."studios" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."content_types" (
+CREATE TABLE "public"."service_types" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
-    "category" TEXT NOT NULL,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "content_types_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "service_types_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "public"."content_packages" (
+CREATE TABLE "public"."services" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
-    "contentTypeId" TEXT NOT NULL,
-    "serviceType" TEXT NOT NULL,
+    "includes" TEXT,
+    "imageUrl" TEXT,
+    "serviceTypeId" TEXT NOT NULL,
+    "isPopular" BOOLEAN NOT NULL DEFAULT false,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "price" DECIMAL(10,2) NOT NULL,
+    "currency" TEXT NOT NULL DEFAULT 'AED',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "services_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."service_packages_records" (
+    "id" TEXT NOT NULL,
+    "parentContentPackageId" TEXT NOT NULL,
+    "includedServiceId" TEXT NOT NULL,
+    "serviceQuantity" INTEGER NOT NULL,
+
+    CONSTRAINT "service_packages_records_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."add_service_packages_records" (
+    "id" TEXT NOT NULL,
+    "parentContentPackageId" TEXT NOT NULL,
+    "includedServiceId" TEXT NOT NULL,
+    "serviceQuantity" INTEGER NOT NULL,
+
+    CONSTRAINT "add_service_packages_records_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."packages" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
     "basePrice" DECIMAL(10,2) NOT NULL,
     "currency" TEXT NOT NULL DEFAULT 'AED',
-    "includesPublishing" BOOLEAN NOT NULL DEFAULT false,
-    "publishingPrice" DECIMAL(10,2),
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "content_packages_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "public"."studio_packages" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "price_per_hour" DECIMAL(10,2) NOT NULL,
-    "currency" TEXT NOT NULL DEFAULT 'AED',
-    "description" TEXT NOT NULL,
-    "delivery_time" INTEGER,
-    "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "studio_packages_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "public"."package_perks" (
-    "id" TEXT NOT NULL,
-    "packageId" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "count" INTEGER,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "package_perks_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "public"."content_package_perks" (
-    "id" TEXT NOT NULL,
-    "contentPackageId" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "count" INTEGER,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "content_package_perks_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "packages_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -131,9 +125,8 @@ CREATE TABLE "public"."bookings" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "studioId" TEXT,
-    "packageId" TEXT,
     "contentPackageId" TEXT,
-    "contentTypeId" TEXT,
+    "serviceId" TEXT,
     "leadId" TEXT NOT NULL,
     "discountCodeId" TEXT,
 
@@ -158,7 +151,7 @@ CREATE TABLE "public"."leads" (
 CREATE TABLE "public"."additional_services" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "type" "public"."AdditionalServiceType" NOT NULL,
+    "type" "public"."AdditionalServiceType" NOT NULL DEFAULT 'STANDARD',
     "price" DECIMAL(10,2) NOT NULL,
     "currency" TEXT NOT NULL DEFAULT 'AED',
     "count" INTEGER NOT NULL DEFAULT 1,
@@ -179,6 +172,8 @@ CREATE TABLE "public"."booking_additional_services" (
     "quantity" INTEGER NOT NULL DEFAULT 1,
     "unitPrice" DECIMAL(10,2) NOT NULL,
     "totalPrice" DECIMAL(10,2) NOT NULL,
+    "createdAt" TIMESTAMP(3),
+    "updatedAt" TIMESTAMP(3),
 
     CONSTRAINT "booking_additional_services_pkey" PRIMARY KEY ("id")
 );
@@ -203,23 +198,97 @@ CREATE TABLE "public"."payments" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."_StudioToStudioPackage" (
-    "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL,
+CREATE TABLE "public"."case_studies" (
+    "id" TEXT NOT NULL,
+    "clientId" TEXT,
+    "title" TEXT,
+    "tagline" TEXT,
+    "mainText" TEXT,
+    "content" JSONB,
+    "featured" BOOLEAN NOT NULL DEFAULT true,
+    "imageUrls" TEXT[],
 
-    CONSTRAINT "_StudioToStudioPackage_AB_pkey" PRIMARY KEY ("A","B")
+    CONSTRAINT "case_studies_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "public"."_ContentPackageToStudio" (
-    "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL,
+CREATE TABLE "public"."equipment" (
+    "id" TEXT NOT NULL,
+    "name" TEXT,
+    "description" TEXT,
+    "imageUrl" TEXT,
 
-    CONSTRAINT "_ContentPackageToStudio_AB_pkey" PRIMARY KEY ("A","B")
+    CONSTRAINT "equipment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."staff" (
+    "id" TEXT NOT NULL,
+    "name" TEXT,
+    "role" TEXT,
+    "imageUrl" TEXT,
+
+    CONSTRAINT "staff_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."clients" (
+    "id" TEXT NOT NULL,
+    "name" TEXT,
+    "showTitle" TEXT,
+    "jobTitle" TEXT,
+    "testimonial" TEXT,
+    "imageUrl" TEXT,
+
+    CONSTRAINT "clients_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."case_staff" (
+    "id" TEXT NOT NULL,
+    "caseStudyId" TEXT NOT NULL,
+    "staffId" TEXT NOT NULL,
+
+    CONSTRAINT "case_staff_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."case_equipment" (
+    "id" TEXT NOT NULL,
+    "caseStudyId" TEXT NOT NULL,
+    "equipmentId" TEXT NOT NULL,
+
+    CONSTRAINT "case_equipment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."samples" (
+    "id" TEXT NOT NULL,
+    "name" TEXT,
+    "thumbUrl" TEXT,
+    "videoUrl" TEXT,
+
+    CONSTRAINT "samples_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."blog_records" (
+    "id" TEXT NOT NULL,
+    "title" TEXT,
+    "tagline" TEXT,
+    "mainText" TEXT,
+    "imageUrls" TEXT[],
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "blog_records_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "content_types_name_key" ON "public"."content_types"("name");
+CREATE UNIQUE INDEX "service_types_name_key" ON "public"."service_types"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "services_name_key" ON "public"."services"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "discount_codes_code_key" ON "public"."discount_codes"("code");
@@ -230,32 +299,29 @@ CREATE UNIQUE INDEX "booking_additional_services_bookingId_serviceId_key" ON "pu
 -- CreateIndex
 CREATE UNIQUE INDEX "payments_bookingId_key" ON "public"."payments"("bookingId");
 
--- CreateIndex
-CREATE INDEX "_StudioToStudioPackage_B_index" ON "public"."_StudioToStudioPackage"("B");
-
--- CreateIndex
-CREATE INDEX "_ContentPackageToStudio_B_index" ON "public"."_ContentPackageToStudio"("B");
+-- AddForeignKey
+ALTER TABLE "public"."services" ADD CONSTRAINT "services_serviceTypeId_fkey" FOREIGN KEY ("serviceTypeId") REFERENCES "public"."service_types"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."content_packages" ADD CONSTRAINT "content_packages_contentTypeId_fkey" FOREIGN KEY ("contentTypeId") REFERENCES "public"."content_types"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."service_packages_records" ADD CONSTRAINT "service_packages_records_parentContentPackageId_fkey" FOREIGN KEY ("parentContentPackageId") REFERENCES "public"."packages"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."package_perks" ADD CONSTRAINT "package_perks_packageId_fkey" FOREIGN KEY ("packageId") REFERENCES "public"."studio_packages"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."service_packages_records" ADD CONSTRAINT "service_packages_records_includedServiceId_fkey" FOREIGN KEY ("includedServiceId") REFERENCES "public"."services"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."content_package_perks" ADD CONSTRAINT "content_package_perks_contentPackageId_fkey" FOREIGN KEY ("contentPackageId") REFERENCES "public"."content_packages"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."add_service_packages_records" ADD CONSTRAINT "add_service_packages_records_parentContentPackageId_fkey" FOREIGN KEY ("parentContentPackageId") REFERENCES "public"."packages"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."add_service_packages_records" ADD CONSTRAINT "add_service_packages_records_includedServiceId_fkey" FOREIGN KEY ("includedServiceId") REFERENCES "public"."additional_services"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."bookings" ADD CONSTRAINT "bookings_studioId_fkey" FOREIGN KEY ("studioId") REFERENCES "public"."studios"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."bookings" ADD CONSTRAINT "bookings_packageId_fkey" FOREIGN KEY ("packageId") REFERENCES "public"."studio_packages"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."bookings" ADD CONSTRAINT "bookings_contentPackageId_fkey" FOREIGN KEY ("contentPackageId") REFERENCES "public"."packages"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."bookings" ADD CONSTRAINT "bookings_contentPackageId_fkey" FOREIGN KEY ("contentPackageId") REFERENCES "public"."content_packages"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."bookings" ADD CONSTRAINT "bookings_contentTypeId_fkey" FOREIGN KEY ("contentTypeId") REFERENCES "public"."content_types"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."bookings" ADD CONSTRAINT "bookings_serviceId_fkey" FOREIGN KEY ("serviceId") REFERENCES "public"."services"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."bookings" ADD CONSTRAINT "bookings_leadId_fkey" FOREIGN KEY ("leadId") REFERENCES "public"."leads"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -273,13 +339,16 @@ ALTER TABLE "public"."booking_additional_services" ADD CONSTRAINT "booking_addit
 ALTER TABLE "public"."payments" ADD CONSTRAINT "payments_bookingId_fkey" FOREIGN KEY ("bookingId") REFERENCES "public"."bookings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."_StudioToStudioPackage" ADD CONSTRAINT "_StudioToStudioPackage_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."studios"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."case_studies" ADD CONSTRAINT "case_studies_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "public"."clients"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."_StudioToStudioPackage" ADD CONSTRAINT "_StudioToStudioPackage_B_fkey" FOREIGN KEY ("B") REFERENCES "public"."studio_packages"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."case_staff" ADD CONSTRAINT "case_staff_caseStudyId_fkey" FOREIGN KEY ("caseStudyId") REFERENCES "public"."case_studies"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."_ContentPackageToStudio" ADD CONSTRAINT "_ContentPackageToStudio_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."content_packages"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."case_staff" ADD CONSTRAINT "case_staff_staffId_fkey" FOREIGN KEY ("staffId") REFERENCES "public"."staff"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."_ContentPackageToStudio" ADD CONSTRAINT "_ContentPackageToStudio_B_fkey" FOREIGN KEY ("B") REFERENCES "public"."studios"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."case_equipment" ADD CONSTRAINT "case_equipment_caseStudyId_fkey" FOREIGN KEY ("caseStudyId") REFERENCES "public"."case_studies"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."case_equipment" ADD CONSTRAINT "case_equipment_equipmentId_fkey" FOREIGN KEY ("equipmentId") REFERENCES "public"."equipment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
