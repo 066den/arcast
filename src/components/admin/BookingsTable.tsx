@@ -70,7 +70,13 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
       header: 'Created Date',
       accessorKey: 'createdAt',
       cell: ({ row }: { row: Row<Booking> }) => {
-        return <div>{row.original.createdAt.toLocaleDateString()}</div>
+        return (
+          <div>
+            {row.original.createdAt
+              ? new Date(row.original.createdAt).toLocaleDateString()
+              : 'N/A'}
+          </div>
+        )
       },
     },
   ]
@@ -107,7 +113,9 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
           {table.getRowModel().rows.map((row: Row<Booking>) => (
             <TableRow key={row.id}>
               {row.getVisibleCells().map((cell: Cell<Booking, unknown>) => (
-                <TableCell key={cell.id}>{cell.getValue() as string}</TableCell>
+                <TableCell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
               ))}
             </TableRow>
           ))}

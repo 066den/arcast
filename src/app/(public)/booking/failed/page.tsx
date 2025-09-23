@@ -7,9 +7,9 @@ import PaymentModal from '@/components/booking/PaymentModal'
 import useFlag from '@/hooks/useFlag'
 import { apiRequest } from '@/lib/api'
 import { API_ENDPOINTS } from '@/lib/constants'
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 
-export default function FailedPage() {
+function FailedPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isPaymentModalOpen, openPaymentModal, closePaymentModal] = useFlag()
@@ -77,5 +77,13 @@ export default function FailedPage() {
         totalAmount={100}
       />
     </div>
+  )
+}
+
+export default function FailedPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <FailedPageContent />
+    </Suspense>
   )
 }
