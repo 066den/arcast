@@ -4,8 +4,8 @@ import { Asset } from 'next-video/dist/assets.js'
 import Image from 'next/image'
 
 interface HeroSectionProps {
-  title?: string
-  description?: string
+  title?: string | null
+  description?: string | null
   image?: string
   videoUrl?: Asset
 }
@@ -19,7 +19,7 @@ const HeroSection = ({
   return (
     <div
       className={cn(
-        'relative rounded-3xl overflow-hidden',
+        'relative rounded-3xl overflow-hidden  m-4',
         image &&
           'max-h-[700px] before:content-[""] before:absolute before:inset-0 before:bg-black/80'
       )}

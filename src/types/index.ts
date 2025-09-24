@@ -170,4 +170,50 @@ export interface Sample {
   name: string | null
   thumbUrl: string | null
   videoUrl: string | null
+  serviceTypeId: string | null
+  serviceType?: ServiceType | null
+}
+
+export interface CaseStudyContentItem {
+  title: string
+  text?: string[]
+  list?: string[]
+}
+
+export interface CaseStudyContent {
+  id: string
+  caseStudyId: string
+  title: string
+  text: string[]
+  list: string[]
+  imageUrl: string
+  order: number
+}
+
+export interface CaseStudyEquipment {
+  id: string
+  name?: string | null
+  description?: string | null
+  imageUrl?: string | null
+}
+
+export interface CaseStudyStaff {
+  id: string
+  name: string | null
+  role?: string | null
+  imageUrl?: string | null
+}
+
+export interface CaseStudy {
+  id: string
+  clientId: string | null
+  title: string | null
+  tagline: string | null
+  mainText: string | null
+  featured: boolean
+  imageUrls: string[]
+  client?: Client | null
+  caseContent?: CaseStudyContent[]
+  equipment?: CaseStudyEquipment[]
+  staff?: CaseStudyStaff[]
 }

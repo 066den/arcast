@@ -25,11 +25,12 @@ const TestimonialsSection = ({
   isVideo,
   initialClients,
 }: TestimonialsSectionProps) => {
-  const plugins = useRef([
+  const autoplayPlugin = useRef(
     Autoplay({
       delay: 2000,
-    }),
-  ])
+    })
+  )
+
   const clientTestimonials = useMemo(() => {
     if (!initialClients) return []
     return initialClients.filter(
@@ -39,14 +40,14 @@ const TestimonialsSection = ({
 
   // Safe handlers for mouse events
   const handleMouseEnter = () => {
-    if (plugins.current && plugins.current[0]) {
-      plugins.current[0].stop()
+    if (autoplayPlugin.current) {
+      autoplayPlugin.current.stop()
     }
   }
 
   const handleMouseLeave = () => {
-    if (plugins.current && plugins.current[0]) {
-      plugins.current[0].play()
+    if (autoplayPlugin.current) {
+      autoplayPlugin.current.play()
     }
   }
 
@@ -109,7 +110,7 @@ const TestimonialsSection = ({
           </motion.div>
           <motion.div variants={containerVariants}>
             <Carousel
-              plugins={plugins.current}
+              plugins={[autoplayPlugin.current]}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
               opts={{

@@ -71,7 +71,7 @@ const ServiceContent = ({ service, index }: ServiceContentProps) => {
 
   return (
     <motion.section
-      className="py-8"
+      className="py-12"
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"

@@ -8,7 +8,7 @@ export default async function ServicesPage() {
   const clients = await getClients()
   const services = servicesContent
   return (
-    <div className="py-4">
+    <>
       <HeroSection
         title="Services"
         description="Providing full-cycled content production services"
@@ -16,6 +16,6 @@ export default async function ServicesPage() {
       />
       <ServicesContentList initialServices={services} />
       <TestimonialsSection initialClients={clients} />
-    </div>
+    </>
   )
 }

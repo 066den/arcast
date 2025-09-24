@@ -50,6 +50,7 @@
   --color-destructive-light: var(--color-red-100);
   --font-hanken-grotesk: var(--font-hanken-grotesk);
   --font-nunito-sans: var(--font-nunito-sans);
+  --radius-5xl: 2.5rem;
 }
 
 @layer base {
@@ -109,7 +110,7 @@
   .text-content {
     p {
       margin-bottom: 1.25em;
-      letter-spacing: -0.04em;
+      letter-spacing: -0.02em;
     }
     p:last-of-type {
       margin-bottom: 0;

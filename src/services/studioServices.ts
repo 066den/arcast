@@ -111,10 +111,26 @@ export const getSamples = async () => {
     throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
   }
   try {
-    const samples = await prisma.sample.findMany()
+    const samples = await prisma.sample.findMany({})
     return samples
   } catch (error) {
     console.error('Error fetching samples:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch samples: ${error.message}`)
+    }
+    throw new Error('Failed to fetch samples')
+  }
+}
+
+export const getSamplesByServiceType = async (serviceTypeId: string) => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+  try {
+    const samples = await prisma.sample.findMany({})
+    return samples
+  } catch (error) {
+    console.error('Error fetching samples by service type:', error)
     if (error instanceof Error) {
       throw new Error(`Failed to fetch samples: ${error.message}`)
     }
@@ -127,7 +143,21 @@ export const getCases = async () => {
     throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
   }
   try {
-    const cases = await prisma.caseStudy.findMany()
+    const cases = await prisma.caseStudy.findMany({
+      where: {
+        isActive: true,
+      },
+      include: {
+        client: true,
+        equipment: true, // Direct relation to equipment
+        staff: true, // Direct relation to staff
+        caseContent: {
+          orderBy: {
+            order: 'asc',
+          },
+        },
+      },
+    })
     return cases
   } catch (error) {
     console.error('Error fetching cases:', error)
@@ -135,6 +165,34 @@ export const getCases = async () => {
       throw new Error(`Failed to fetch cases: ${error.message}`)
     }
     throw new Error('Failed to fetch cases')
+  }
+}
+
+export const getCaseById = async (id: string) => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+  try {
+    const caseStudy = await prisma.caseStudy.findUnique({
+      where: { id },
+      include: {
+        client: true,
+        equipment: true, // Direct relation to equipment
+        staff: true, // Direct relation to staff
+        caseContent: {
+          orderBy: {
+            order: 'asc',
+          },
+        },
+      },
+    })
+    return caseStudy
+  } catch (error) {
+    console.error('Error fetching case:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch case: ${error.message}`)
+    }
+    throw new Error('Failed to fetch case')
   }
 }
 
