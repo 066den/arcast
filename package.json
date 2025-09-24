@@ -15,7 +15,9 @@
     "prisma:studio": "prisma studio",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev --name init",
-    "db:seed": "tsx prisma/seed.ts",
+    "db:seed": "node prisma/seed.js",
+    "db:backup": "node scripts/backup-db.js",
+    "db:restore": "node scripts/restore-db.js",
     "postinstall": "prisma generate",
     "vercel-build": "prisma db push --accept-data-loss && next build"
   },

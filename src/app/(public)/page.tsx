@@ -16,7 +16,7 @@ export default async function Home() {
     getClients(),
   ])
   return (
-    <div className="py-4">
+    <>
       <HeroSection videoUrl={videoUrl} />
       <IntroSection />
       <AboutSection />
@@ -25,8 +25,8 @@ export default async function Home() {
         initialSamples={samples}
       />
       <div className="w-full py-8">
-        <Marquee className="outline-text" direction="left" speed={10}>
-          become the next shining star
+        <Marquee className="outline-text" direction="left" speed={300}>
+          become the next shining star&nbsp;
         </Marquee>
       </div>
 
@@ -35,6 +35,6 @@ export default async function Home() {
         initialServiceTypes={serviceTypes}
         initialPackages={[]}
       />
-    </div>
+    </>
   )
 }

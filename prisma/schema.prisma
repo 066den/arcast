@@ -64,6 +64,7 @@ model ServiceType {
 
   // Relations
   services Service[]
+  samples  Sample[]
 
   @@map("service_types")
 }
@@ -268,16 +269,31 @@ model CaseStudy {
   title     String?
   tagline   String?
   mainText  String?
-  content   Json?
   isActive  Boolean  @default(true)
   imageUrls String[]
 
   // Relations
-  client        Client?         @relation(fields: [clientId], references: [id])
-  caseStaff     CaseStaff[]
-  caseEquipment CaseEquipment[]
+  client      Client?           @relation(fields: [clientId], references: [id])
+  staff       Staff[]           // Direct many-to-many relation
+  equipment   Equipment[]       // Direct many-to-many relation
+  caseContent CaseStudyContent[]
 
   @@map("case_studies")
+}
+
+model CaseStudyContent {
+  id          String   @id @default(cuid())
+  caseStudyId String
+  title       String   
+  text        String[] 
+  list        String[] 
+  imageUrl    String
+  order       Int      
+  
+  // Relations
+  caseStudy CaseStudy @relation(fields: [caseStudyId], references: [id], onDelete: Cascade)
+
+  @@map("case_study_content")
 }
 
 model Equipment {
@@ -287,7 +303,7 @@ model Equipment {
   imageUrl    String?
 
   // Relations
-  caseEquipment CaseEquipment[]
+  caseStudies CaseStudy[] // Direct many-to-many relation
 
   @@map("equipment")
 }
@@ -299,7 +315,7 @@ model Staff {
   imageUrl String?
 
   // Relations
-  caseStaff CaseStaff[]
+  caseStudies CaseStudy[] // Direct many-to-many relation
 
   @@map("staff")
 }
@@ -319,35 +335,15 @@ model Client {
   @@map("clients")
 }
 
-model CaseStaff {
-  id          String @id @default(cuid())
-  caseStudyId String
-  staffId     String
-
-  // Relations
-  caseStudy CaseStudy @relation(fields: [caseStudyId], references: [id])
-  staff     Staff     @relation(fields: [staffId], references: [id])
-
-  @@map("case_staff")
-}
-
-model CaseEquipment {
-  id          String @id @default(cuid())
-  caseStudyId String
-  equipmentId String
-
-  // Relations
-  caseStudy CaseStudy @relation(fields: [caseStudyId], references: [id])
-  equipment Equipment @relation(fields: [equipmentId], references: [id])
-
-  @@map("case_equipment")
-}
-
 model Sample {
-  id       String  @id @default(cuid())
-  name     String?
-  thumbUrl String?
-  videoUrl String?
+  id            String  @id @default(cuid())
+  name          String?
+  thumbUrl      String?
+  videoUrl      String?
+  serviceTypeId String?
+
+  // Relations
+  serviceType ServiceType? @relation(fields: [serviceTypeId], references: [id])
 
   @@map("samples")
 }

@@ -65,6 +65,9 @@ export const getServiceTypes = async () => {
       where: {
         isActive: true,
       },
+      orderBy: {
+        createdAt: 'asc',
+      },
       select: {
         id: true,
         name: true,
