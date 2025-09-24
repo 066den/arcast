@@ -4,7 +4,7 @@ import BookingsTable from '@/components/admin/BookingsTable'
 import { redirect } from 'next/navigation'
 
 export default function AdminPage() {
-  //TODO: Remove this after testing
+  //TODO: Remove this after development
   redirect('/')
   return (
     <div className="p-4">
