@@ -1,4 +1,4 @@
-import { withNextVideo } from "next-video/process";
+import { withNextVideo } from 'next-video/process'
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
@@ -17,9 +17,19 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // experimental: {
-  //   optimizeCss: true,
-  // },
+  experimental: {
+    optimizeCss: false, // Disable CSS optimization for TailwindCSS v4 compatibility
+  },
+  // Ensure proper CSS handling for TailwindCSS v4
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      }
+    }
+    return config
+  },
 }
 
-export default withNextVideo(nextConfig);
+export default withNextVideo(nextConfig)
