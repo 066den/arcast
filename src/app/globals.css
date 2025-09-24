@@ -51,6 +51,10 @@
   --font-hanken-grotesk: var(--font-hanken-grotesk);
   --font-nunito-sans: var(--font-nunito-sans);
   --radius-5xl: 2.5rem;
+  --breakpoint-xl: 1280px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-md: 768px;
+  --breakpoint-sm: 640px;
 }
 
 @layer base {
