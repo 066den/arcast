@@ -60,7 +60,7 @@ export function ServiceCheckbox({
         <div className="flex items-start justify-between mb-2">
           <h4 className="font-medium text-slate-900">{service.name}</h4>
           <span className="text-sm font-medium text-blue-600">
-            {service.price} {service.currency}
+            {Number(service.price)} {service.currency}
           </span>
         </div>
 
