@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { Sample, ServiceType } from '@/types'
 import SmoothOverlappingCarousel from '../ui/smooth-overlapping-carousel'
 import ServiceTypesList from '../servicesPage/ServiceTypesList'
+import { useState } from 'react'
 
 interface EpisodeSectionProps {
   initialServiceTypes: ServiceType[]
@@ -13,6 +14,7 @@ const EpisodeSection = ({
   initialServiceTypes,
   initialSamples,
 }: EpisodeSectionProps) => {
+  const [typePackages, setTypePackages] = useState<string>('podcast')
   return (
     <section className="py-20">
       <div className="section-title">what we&apos;ve made</div>
@@ -39,7 +41,11 @@ const EpisodeSection = ({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ServiceTypesList initialServiceTypes={initialServiceTypes} />
+        <ServiceTypesList
+          typePackages={typePackages}
+          initialServiceTypes={initialServiceTypes}
+          setTypePackages={setTypePackages}
+        />
 
         {initialSamples && <SmoothOverlappingCarousel items={initialSamples} />}
       </div>

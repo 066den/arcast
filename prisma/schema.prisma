@@ -58,6 +58,8 @@ model ServiceType {
   id          String   @id @default(cuid())
   name        String   @unique
   description String?
+  slug        String   @unique  
+  sortOrder   Int      @default(0) 
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -73,7 +75,7 @@ model Service {
   id            String   @id @default(cuid())
   name          String   @unique
   description   String?
-  includes      String?
+  includes      String[] @default([])
   imageUrl      String?
   serviceTypeId String
   isPopular     Boolean  @default(false)

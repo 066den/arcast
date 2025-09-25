@@ -51,10 +51,6 @@
   --font-hanken-grotesk: var(--font-hanken-grotesk);
   --font-nunito-sans: var(--font-nunito-sans);
   --radius-5xl: 2.5rem;
-  --breakpoint-xl: 1280px;
-  --breakpoint-lg: 1024px;
-  --breakpoint-md: 768px;
-  --breakpoint-sm: 640px;
 }
 
 @layer base {
@@ -237,12 +233,17 @@
     }
   }
 
-  .animate-fade-in-up {
-    animation: fadeInUp 0.8s ease-out 0.3s both;
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-in-out;
   }
 
-  .animate-fade-in-up-delayed {
-    animation: fadeInUpDelayed 0.6s ease-out 0.6s both;
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -252,7 +253,8 @@
     }
 
     .animate-fade-in-up,
-    .animate-fade-in-up-delayed {
+    .animate-fade-in-up-delayed,
+    .animate-fade-in {
       animation: none;
       opacity: 1;
       transform: none;

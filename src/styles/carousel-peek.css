@@ -1,0 +1,54 @@
+/* Additional styles for carousel peek effect */
+.carousel-peek-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-peek-gradient {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 3rem;
+  pointer-events: none;
+  z-index: 10;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.05) 30%,
+    rgba(0, 0, 0, 0.1) 70%,
+    rgba(0, 0, 0, 0.15) 100%
+  );
+}
+
+.carousel-peek-shadow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 1.5rem;
+  pointer-events: none;
+  z-index: 20;
+  background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.03));
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .carousel-peek-gradient {
+    width: 2rem;
+  }
+
+  .carousel-peek-shadow {
+    width: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-peek-gradient {
+    width: 1.5rem;
+  }
+
+  .carousel-peek-shadow {
+    width: 0.75rem;
+  }
+}

@@ -101,14 +101,19 @@ export interface Service {
   id: string
   name: string
   description: string | null
+  includes: string[]
   imageUrl: string | null
-  price: Decimal | number
+  price: number | Decimal
   currency: string
+  isPopular: boolean
+  type: string
 }
 
 export interface ServiceType {
   id: string
   name: string
+  slug: string
+  sortOrder: number
   description: string | null
   isActive: boolean
   services: Service[]
@@ -118,7 +123,7 @@ export interface AdditionalService {
   id: string
   name: string
   type: 'STANDARD' | 'BY_THREE'
-  price: number
+  price: number | Decimal
   currency: string
   description: string | null
   imageUrls: string[]

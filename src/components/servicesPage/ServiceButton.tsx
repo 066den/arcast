@@ -6,17 +6,24 @@ interface ServiceButtonProps {
   icon?: React.ReactNode
   title: string
   isActive?: boolean
+  onClick: () => void
 }
 
-const ServiceButton = ({ icon, title, isActive }: ServiceButtonProps) => {
+const ServiceButton = ({
+  icon,
+  title,
+  isActive,
+  onClick,
+}: ServiceButtonProps) => {
   return (
     <Button
       size="custom"
       variant="outline"
       className={cn(
         'justify-between w-full max-w-sm h-15 rounded-full font-medium text-dark-mode font-geist tracking-tight hover:bg-white hover:text-accent shadow-none text-xl p-1',
-        isActive && 'bg-muted text-primary'
+        isActive && 'bg-muted text-primary hover:bg-muted'
       )}
+      onClick={onClick}
     >
       <div className="flex items-center gap-4 px-4">
         <svg

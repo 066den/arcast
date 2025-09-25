@@ -172,5 +172,43 @@ export const cardVariants: Variants = {
     opacity: 1,
     y: 0,
     scale: 1,
+    transition: {
+      duration: 0.3,
+    },
   },
+  exit: {
+    opacity: 0,
+    y: -30,
+    scale: 0.95,
+    transition: {
+      duration: 0.3,
+      ease: 'easeIn',
+    },
+  },
+}
+
+export const slideVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 300 : -300,
+    opacity: 0,
+    scale: 0.9,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.6,
+      ease: [0.34, 1.56, 0.64, 1],
+    },
+  },
+  exit: (direction: number) => ({
+    x: direction < 0 ? 300 : -300,
+    opacity: 0,
+    scale: 0.9,
+    transition: {
+      duration: 0.4,
+      ease: 'easeIn',
+    },
+  }),
 }

@@ -45,7 +45,13 @@ export const getServicesByType = async (serviceTypeId: string) => {
         isActive: true,
       },
     })
-    return services
+
+    const processedServices = services.map(service => ({
+      ...service,
+      price: service.price ? Number(service.price) : 0,
+    }))
+
+    return processedServices
   } catch (error) {
     console.error('Error fetching services by type:', error)
     if (error instanceof Error) {
@@ -60,35 +66,39 @@ export const getServiceTypes = async () => {
     throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
   }
   try {
-    // Fetch all active service types, including only their active services
     const servicesTypes = await prisma.serviceType.findMany({
       where: {
         isActive: true,
       },
       orderBy: {
-        createdAt: 'asc',
+        sortOrder: 'asc',
       },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        isActive: true,
+      include: {
         services: {
           where: {
             isActive: true,
           },
-          select: {
-            id: true,
-            name: true,
-            description: true,
-            imageUrl: true,
-            price: true,
-            currency: true,
+          include: {
+            serviceType: {
+              select: {
+                slug: true,
+              },
+            },
           },
         },
       },
     })
-    return servicesTypes
+
+    const processedServiceTypes = servicesTypes.map(serviceType => ({
+      ...serviceType,
+      services: serviceType.services.map(service => ({
+        ...service,
+        price: service.price ? Number(service.price) : 0,
+        type: service.serviceType.slug,
+      })),
+    }))
+
+    return processedServiceTypes
   } catch (error) {
     console.error('Error fetching services types:', error)
     if (error instanceof Error) {

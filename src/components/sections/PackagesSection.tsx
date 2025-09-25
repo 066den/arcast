@@ -1,8 +1,9 @@
 'use client'
+import { useState } from 'react'
 import Image from 'next/image'
-
 import { Package, ServiceType } from '@/types'
 import ServiceTypesList from '../servicesPage/ServiceTypesList'
+import ServicesCarousel from '../servicesPage/ServiceCarousel'
 
 interface PackagesSectionProps {
   initialServiceTypes: ServiceType[]
@@ -13,6 +14,9 @@ const PackagesSection = ({
   initialServiceTypes,
   initialPackages,
 }: PackagesSectionProps) => {
+  console.log(initialServiceTypes)
+  const [typePackages, setTypePackages] = useState<string>('podcast')
+
   return (
     <section className="py-20">
       <div className="section-title">what do we provide</div>
@@ -38,8 +42,16 @@ const PackagesSection = ({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ServiceTypesList initialServiceTypes={initialServiceTypes} />
+      <div className="flex items-center justify-between gap-10">
+        <ServiceTypesList
+          typePackages={typePackages}
+          initialServiceTypes={initialServiceTypes}
+          setTypePackages={setTypePackages}
+        />
+        <ServicesCarousel
+          serviceType={initialServiceTypes}
+          typePackages={typePackages}
+        />
       </div>
     </section>
   )
