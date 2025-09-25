@@ -39,7 +39,7 @@ export function BookingSummary({
   additionalServices,
 }: BookingSummaryProps) {
   const calculateTotal = () => {
-    let total = 0
+    //let total = 0
 
     if (selectedStudio && selectedPackage) {
       const studio = studios.find(s => s.id === selectedStudio)
@@ -50,14 +50,15 @@ export function BookingSummary({
       // }
     }
 
-    selectedServices.forEach(service => {
-      const selectedService = additionalServices.find(s => s.id === service.id)
-      if (selectedService) {
-        total += selectedService.price * (service.quantity || 1)
-      }
-    })
+    // selectedServices.forEach(service => {
+    //   const selectedService = additionalServices.find(s => s.id === service.id)
+    //   if (selectedService) {
+    //     total += selectedService.price * (service.quantity || 1)
+    //   }
+    // })
 
-    return total
+    // return total
+    return 0
   }
 
   const formatDate = (dateString: Date | undefined) => {
@@ -126,7 +127,8 @@ export function BookingSummary({
                   <li key={id} className="flex justify-between items-center">
                     <span>{service.name}</span>
                     <span className="font-medium">
-                      {service.price * (quantity || 1)} {service.currency}
+                      {Number(service.price) * (quantity || 1)}{' '}
+                      {service.currency}
                     </span>
                   </li>
                 ) : null
