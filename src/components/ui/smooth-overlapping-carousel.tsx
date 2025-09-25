@@ -159,7 +159,6 @@ const SmoothOverlappingCarousel = ({
         })}
       </div>
 
-      {/* Navigation buttons */}
       <div className="absolute flex gap-4 right-0 top-0 -translate-y-[8em] z-20 ">
         <Button
           size="icon"

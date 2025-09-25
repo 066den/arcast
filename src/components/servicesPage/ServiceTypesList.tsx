@@ -8,9 +8,19 @@ import {
 
 interface ServiceTypesListProps {
   initialServiceTypes: ServiceType[]
+  setTypePackages: (typePackages: string) => void
+  typePackages: string
 }
 
-const ServiceTypesList = ({ initialServiceTypes }: ServiceTypesListProps) => {
+const ServiceTypesList = ({
+  initialServiceTypes,
+  setTypePackages,
+  typePackages,
+}: ServiceTypesListProps) => {
+  const handleSetTypePackages = (typePackages: string) => {
+    setTypePackages(typePackages)
+  }
+
   return (
     <motion.div
       className="flex flex-col gap-4"
@@ -22,7 +32,11 @@ const ServiceTypesList = ({ initialServiceTypes }: ServiceTypesListProps) => {
       {initialServiceTypes &&
         initialServiceTypes.map(serviceType => (
           <motion.div key={serviceType.id} variants={serviceButtonItemVariants}>
-            <ServiceButton title={serviceType.name} />
+            <ServiceButton
+              title={serviceType.name}
+              isActive={typePackages === serviceType.slug}
+              onClick={() => handleSetTypePackages(serviceType.slug)}
+            />
           </motion.div>
         ))}
     </motion.div>
