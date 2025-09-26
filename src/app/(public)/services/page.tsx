@@ -1,6 +1,6 @@
 import HeroSection from '@/components/sections/HeroSection'
 import TestimonialsSection from '@/components/sections/TestimonialsSection'
-import ServicesContentList from '@/components/servicesPage/ServicesContentList'
+import ServicesContentList from '@/components/servicesComponents/ServicesContentList'
 import servicesContent from '@/data/servicesContent.json'
 import { getClients } from '@/services/studioServices'
 

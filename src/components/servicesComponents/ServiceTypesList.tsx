@@ -5,17 +5,22 @@ import {
   serviceButtonVariants,
   serviceButtonItemVariants,
 } from '@/lib/motion-variants'
+import { cn } from '@/lib/utils'
 
 interface ServiceTypesListProps {
   initialServiceTypes: ServiceType[]
   setTypePackages: (typePackages: string) => void
   typePackages: string
+  withBenefits?: boolean
+  isHorizontal?: boolean
 }
 
 const ServiceTypesList = ({
   initialServiceTypes,
   setTypePackages,
   typePackages,
+  withBenefits = false,
+  isHorizontal = false,
 }: ServiceTypesListProps) => {
   const handleSetTypePackages = (typePackages: string) => {
     setTypePackages(typePackages)
@@ -23,7 +28,7 @@ const ServiceTypesList = ({
 
   return (
     <motion.div
-      className="flex flex-col gap-4"
+      className={cn('flex flex-col gap-4', isHorizontal && 'flex-row')}
       variants={serviceButtonVariants}
       initial="hidden"
       whileInView="visible"
@@ -35,10 +40,21 @@ const ServiceTypesList = ({
             <ServiceButton
               title={serviceType.name}
               isActive={typePackages === serviceType.slug}
+              isHorizontal={isHorizontal}
               onClick={() => handleSetTypePackages(serviceType.slug)}
             />
           </motion.div>
         ))}
+      {withBenefits && (
+        <motion.div key={'benefits'} variants={serviceButtonItemVariants}>
+          <ServiceButton
+            title="Beneficial packages"
+            isActive={typePackages === 'beneficial'}
+            isHorizontal={isHorizontal}
+            onClick={() => handleSetTypePackages('beneficial')}
+          />
+        </motion.div>
+      )}
     </motion.div>
   )
 }

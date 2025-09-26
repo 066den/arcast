@@ -1,8 +1,8 @@
 import HeroSection from '@/components/sections/HeroSection'
 import CaseStudiesList from '@/components/common/CaseStudiesList'
-import { getCases, getPackages } from '@/services/studioServices'
+import { getCases } from '@/services/studioServices'
 import PackagesSection from '@/components/sections/PackagesSection'
-import { getServiceTypes } from '@/services/servicesServices'
+import { getPackages, getServiceTypes } from '@/services/servicesServices'
 import { CaseStudy } from '@/types'
 
 export default async function CaseStudiesPage() {
@@ -24,7 +24,7 @@ export default async function CaseStudiesPage() {
       </section>
       <PackagesSection
         initialServiceTypes={initialServiceTypes}
-        initialPackages={[]}
+        initialPackages={initialPackages}
       />
     </>
   )

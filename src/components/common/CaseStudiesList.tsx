@@ -8,7 +8,7 @@ interface CaseStudiesListProps {
   cases: CaseStudy[]
 }
 
-export default function CaseStudiesList({ cases }: CaseStudiesListProps) {
+const CaseStudiesList = ({ cases }: CaseStudiesListProps) => {
   return (
     <motion.div
       className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 py-8"
@@ -24,3 +24,5 @@ export default function CaseStudiesList({ cases }: CaseStudiesListProps) {
     </motion.div>
   )
 }
+
+export default CaseStudiesList

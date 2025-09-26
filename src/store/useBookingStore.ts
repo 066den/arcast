@@ -1,29 +1,23 @@
 import { create } from 'zustand'
-import { Package } from '../types'
 import { persist } from 'zustand/middleware'
 
 interface BookingStore {
   // State
-  currentStep: number
-  packages: Package[]
   selectedIndices: {
     studio: string
+    service: string
     package: string
   }
   isLoading: boolean
 
   // Actions
-  setStep: (step: number) => void
-  nextStep: () => void
-  prevStep: () => void
   selectStudio: (studioId: string) => void
+  selectService: (serviceId: string) => void
   selectPackage: (packageId: string) => void
-
   // Async actions
   createBooking: () => Promise<void>
 
   // Computed
-  setPackages: (packages: Package[]) => void
   clearBooking: () => void
   totalPrice: () => number
 }
@@ -31,25 +25,32 @@ interface BookingStore {
 const useBookingStore = create<BookingStore>()(
   persist(
     (set, get) => ({
-      currentStep: 0,
-      packages: [],
       selectedIndices: {
         studio: '',
+        service: '',
         package: '',
       },
       isLoading: false,
-      setStep: (step: number) => set({ currentStep: step }),
-      nextStep: () => set(state => ({ currentStep: state.currentStep + 1 })),
-      prevStep: () => set(state => ({ currentStep: state.currentStep - 1 })),
       selectStudio: (studioId: string) =>
         set({
           selectedIndices: { ...get().selectedIndices, studio: studioId },
         }),
+      selectService: (serviceId: string) =>
+        set({
+          selectedIndices: {
+            ...get().selectedIndices,
+            service: serviceId,
+            package: '',
+          },
+        }),
       selectPackage: (packageId: string) =>
         set({
-          selectedIndices: { ...get().selectedIndices, package: packageId },
+          selectedIndices: {
+            ...get().selectedIndices,
+            package: packageId,
+            service: '',
+          },
         }),
-      setPackages: (packages: Package[]) => set({ packages }),
       createBooking: async () => {
         // const booking = await createBooking()
         // set({ booking })
@@ -57,8 +58,7 @@ const useBookingStore = create<BookingStore>()(
 
       clearBooking: () => {
         set({
-          selectedIndices: { studio: '', package: '' },
-          currentStep: 0,
+          selectedIndices: { studio: '', service: '', package: '' },
         })
       },
 
@@ -74,7 +74,6 @@ const useBookingStore = create<BookingStore>()(
     {
       name: 'booking-store',
       partialize: state => ({
-        currentStep: state.currentStep,
         selectedIndices: state.selectedIndices,
       }),
     }

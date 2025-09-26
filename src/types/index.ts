@@ -90,6 +90,32 @@ export interface Package {
   updatedAt: Date
 }
 
+export interface PackageService {
+  id: string
+  name: string
+  description: string
+  price: number
+  quantity: number
+}
+
+export interface PackageAdditionalService {
+  id: string
+  name: string
+  type: 'STANDARD' | 'BY_THREE'
+  price: number
+  currency: string
+  count: number
+  description: string | null
+  imageUrls: string[]
+  isActive: boolean
+  quantity: number
+}
+
+export interface PackageWithServices extends Package {
+  services: PackageService[]
+  additionalServices: PackageAdditionalService[]
+}
+
 export interface PackagePerk {
   id: string
   name: string

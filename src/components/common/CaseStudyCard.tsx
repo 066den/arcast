@@ -7,7 +7,7 @@ interface CaseStudyCardProps {
   caseStudy: CaseStudy
 }
 
-export default function CaseStudyCard({ caseStudy }: CaseStudyCardProps) {
+const CaseStudyCard = ({ caseStudy }: CaseStudyCardProps) => {
   const router = useRouter()
   const mainImage =
     caseStudy.client?.imageUrl || '/assets/images/case-banner.jpg'
@@ -46,3 +46,5 @@ export default function CaseStudyCard({ caseStudy }: CaseStudyCardProps) {
     </div>
   )
 }
+
+export default CaseStudyCard

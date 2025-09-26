@@ -19,7 +19,7 @@ const HeroSection = ({
   return (
     <div
       className={cn(
-        'relative rounded-3xl overflow-hidden m-4',
+        'relative rounded-3xl overflow-hidden mx-2 mb-4 lg:m-4',
         image && 'max-h-[700px]'
       )}
     >

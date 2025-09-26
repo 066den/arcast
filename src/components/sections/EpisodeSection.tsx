@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import { Sample, ServiceType } from '@/types'
 import SmoothOverlappingCarousel from '../ui/smooth-overlapping-carousel'
-import ServiceTypesList from '../servicesPage/ServiceTypesList'
+import ServiceTypesList from '../servicesComponents/ServiceTypesList'
 import { useState } from 'react'
 
 interface EpisodeSectionProps {

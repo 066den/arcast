@@ -1,20 +1,20 @@
 # Preloader Components
 
-Современные компоненты прелоадера с анимациями для Next.js приложения.
+Modern preloader components with animations for Next.js applications.
 
-## Компоненты
+## Components
 
 ### Preloader
 
-Базовый компонент прелоадера с различными вариантами анимации.
+Basic preloader component with various animation variants.
 
 ```tsx
 import { Preloader } from '@/components/ui/preloader'
 
-// Базовое использование
+// Basic usage
 <Preloader />
 
-// С текстом и вариантом
+// With text and variant
 <Preloader
   variant="dots"
   size="lg"
@@ -24,29 +24,27 @@ import { Preloader } from '@/components/ui/preloader'
 
 ### PagePreloader
 
-Полноэкранный прелоадер для загрузки страниц.
+Full-screen preloader for page loading.
 
 ```tsx
 import { PagePreloader } from '@/components/ui/preloader'
-
 ;<PagePreloader text="Loading page..." variant="spinner" size="lg" />
 ```
 
 ### InlinePreloader
 
-Встроенный прелоадер для контентных областей.
+Inline preloader for content areas.
 
 ```tsx
 import { InlinePreloader } from '@/components/ui/preloader'
-
 ;<InlinePreloader text="Loading content..." variant="wave" size="md" />
 ```
 
-## Хуки
+## Hooks
 
 ### usePreloader
 
-Хук для управления состоянием прелоадера.
+Hook for managing preloader state.
 
 ```tsx
 import { usePreloader } from '@/hooks/usePreloader'
@@ -56,7 +54,7 @@ function MyComponent() {
 
   const handleLoad = () => {
     preloader.show({ text: 'Loading...', variant: 'dots' })
-    // ... выполнение операции
+    // ... perform operation
     preloader.hide()
   }
 
@@ -73,7 +71,7 @@ function MyComponent() {
 
 ### useAsyncPreloader
 
-Хук для автоматического управления состоянием загрузки при асинхронных операциях.
+Hook for automatic loading state management during async operations.
 
 ```tsx
 import { useAsyncPreloader } from '@/hooks/usePreloader'
@@ -106,38 +104,38 @@ function MyComponent() {
 }
 ```
 
-## Параметры
+## Parameters
 
 ### variant
 
-Тип анимации прелоадера:
+Type of preloader animation:
 
-- `spinner` - вращающийся спиннер (по умолчанию)
-- `dots` - анимированные точки
-- `pulse` - пульсирующий круг
-- `wave` - волновая анимация
+- `spinner` - rotating spinner (default)
+- `dots` - animated dots
+- `pulse` - pulsing circle
+- `wave` - wave animation
 
 ### size
 
-Размер прелоадера:
+Preloader size:
 
-- `sm` - маленький
-- `md` - средний (по умолчанию)
-- `lg` - большой
-- `xl` - очень большой
+- `sm` - small
+- `md` - medium (default)
+- `lg` - large
+- `xl` - extra large
 
 ### text
 
-Текст, отображаемый под прелоадером (опционально).
+Text displayed below the preloader (optional).
 
-## Стилизация
+## Styling
 
-Компоненты используют CSS переменные из вашей темы и автоматически адаптируются к светлой/темной теме.
+Components use CSS variables from your theme and automatically adapt to light/dark themes.
 
-## Анимации
+## Animations
 
-Все анимации используют Framer Motion для плавных переходов. Анимации оптимизированы для производительности и доступности.
+All animations use Framer Motion for smooth transitions. Animations are optimized for performance and accessibility.
 
-## Примеры использования
+## Usage Examples
 
-См. файл `src/components/examples/PreloaderDemo.tsx` для полных примеров использования всех компонентов и хуков.
+See `src/components/examples/PreloaderDemo.tsx` file for complete usage examples of all components and hooks.

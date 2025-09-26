@@ -100,9 +100,10 @@ model ServicePackageRecord {
   serviceQuantity          Int
 
   // Relations
-  package         Package @relation(fields: [parentContentPackageId], references: [id])
-  includedService Service @relation(fields: [includedServiceId], references: [id])
+  package         Package @relation(fields: [parentContentPackageId], references: [id], onDelete: Cascade)
+  includedService Service @relation(fields: [includedServiceId], references: [id], onDelete: Cascade)
 
+  @@unique([parentContentPackageId, includedServiceId])
   @@map("service_packages_records")
 }
 
@@ -113,9 +114,10 @@ model AddServicePackageRecord {
   serviceQuantity          Int
 
   // Relations
-  package                  Package           @relation(fields: [parentContentPackageId], references: [id])
-  includedAdditionalService AdditionalService @relation(fields: [includedServiceId], references: [id])
+  package                  Package           @relation(fields: [parentContentPackageId], references: [id], onDelete: Cascade)
+  includedAdditionalService AdditionalService @relation(fields: [includedServiceId], references: [id], onDelete: Cascade)
 
+  @@unique([parentContentPackageId, includedServiceId])
   @@map("add_service_packages_records")
 }
 

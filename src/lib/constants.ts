@@ -91,6 +91,16 @@ export const API_ENDPOINTS = {
   PAYMENT_LINK: '/api/payment-link',
 } as const
 
+export const ROUTES = {
+  BOOKING: '/booking',
+  SERVICES: '/services',
+  CASE_STUDIES: '/case-studies',
+  CONTENT_FACTORY: '/content-factory',
+  BLOG: '/blog',
+  ABOUT_US: '/about-us',
+  FOR_BUSINESS: '/business',
+} as const
+
 export const HTTP_STATUS = {
   OK: 200,
   CREATED: 201,
