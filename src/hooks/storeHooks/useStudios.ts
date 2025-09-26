@@ -3,6 +3,7 @@ import useStudioStore from '../../store/useStudioStore'
 export function useStudios() {
   const {
     studios,
+    isLoading,
     setStudios,
     fetchStudios,
     createStudio,
@@ -12,6 +13,7 @@ export function useStudios() {
 
   return {
     studios,
+    isLoading,
     setStudios,
     fetchStudios,
     createStudio,
