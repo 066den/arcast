@@ -1,4 +1,5 @@
-import { Box, Calendar, User, Radio } from 'lucide-react'
+import { Box, Calendar, Radio } from 'lucide-react'
+import { ROUTES } from './constants'
 
 export const siteConfig = {
   name: 'ARcast',
@@ -22,12 +23,12 @@ export const siteConfig = {
 } as const
 
 export const navigation = [
-  { name: 'Services', href: '/services' },
-  { name: 'Case Studies', href: '/case-studies' },
-  { name: 'Content Factory', href: '/content-factory' },
-  { name: 'Blog', href: '/blog' },
-  { name: 'About Us', href: '/about-us' },
-  { name: 'For Business', href: '/business' },
+  { name: 'Services', href: ROUTES.SERVICES },
+  { name: 'Case Studies', href: ROUTES.CASE_STUDIES },
+  { name: 'Content Factory', href: ROUTES.CONTENT_FACTORY },
+  { name: 'Blog', href: ROUTES.BLOG },
+  { name: 'About Us', href: ROUTES.ABOUT_US },
+  { name: 'For Business', href: ROUTES.FOR_BUSINESS },
 ] as const
 
 export const adminNavigation = [

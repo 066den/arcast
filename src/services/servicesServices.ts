@@ -1,5 +1,6 @@
 import { ERROR_MESSAGES } from '@/lib/constants'
 import { prisma } from '@/lib/prisma'
+import { PackageWithServices } from '@/types'
 
 export const getServices = async () => {
   if (!prisma) {
@@ -105,5 +106,65 @@ export const getServiceTypes = async () => {
       throw new Error(`Failed to fetch services types: ${error.message}`)
     }
     throw new Error('Failed to fetch services types')
+  }
+}
+
+export const getPackages = async (): Promise<PackageWithServices[]> => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+  try {
+    const packages = await prisma.package.findMany({
+      where: {
+        isActive: true,
+      },
+      include: {
+        servicePackageRecords: {
+          include: {
+            includedService: true,
+          },
+        },
+        addServicePackageRecords: {
+          include: {
+            includedAdditionalService: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    })
+
+    const processedPackages = packages.map(pkg => ({
+      ...pkg,
+      basePrice: pkg.basePrice ? Number(pkg.basePrice) : 0,
+      services: pkg.servicePackageRecords.map(record => ({
+        id: record.includedService.id,
+        name: record.includedService.name,
+        description: record.includedService.description || '',
+        price: record.includedService.price
+          ? Number(record.includedService.price)
+          : 0,
+        quantity: record.serviceQuantity,
+      })),
+      additionalServices: pkg.addServicePackageRecords.map(record => ({
+        ...record.includedAdditionalService,
+        price: record.includedAdditionalService.price
+          ? Number(record.includedAdditionalService.price)
+          : 0,
+        quantity: record.serviceQuantity,
+      })),
+      // Remove the raw records as we've processed them
+      servicePackageRecords: undefined,
+      addServicePackageRecords: undefined,
+    }))
+
+    return processedPackages
+  } catch (error) {
+    console.error('Error fetching packages:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch packages: ${error.message}`)
+    }
+    throw new Error('Failed to fetch packages')
   }
 }

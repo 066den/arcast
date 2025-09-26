@@ -178,7 +178,7 @@ export const cardVariants: Variants = {
   },
   exit: {
     opacity: 0,
-    y: -30,
+    y: 30,
     scale: 0.95,
     transition: {
       duration: 0.3,
