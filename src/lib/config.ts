@@ -1,4 +1,4 @@
-import { Box, Calendar, Radio } from 'lucide-react'
+import { Book, Box, Calendar, Radio } from 'lucide-react'
 import { ROUTES } from './constants'
 
 export const siteConfig = {
@@ -32,9 +32,10 @@ export const navigation = [
 ] as const
 
 export const adminNavigation = [
-  { name: 'Bookings', href: '/admin', icon: Calendar },
-  { name: 'Studios', href: '/admin/studios', icon: Radio },
-  { name: 'Services', href: '/services', icon: Box },
+  { name: 'Bookings', href: ROUTES.ADMIN, icon: Calendar },
+  { name: 'Studios', href: ROUTES.ADMIN + '/studios', icon: Radio },
+  { name: 'Services', href: ROUTES.ADMIN + '/services', icon: Box },
+  { name: 'Blog', href: ROUTES.ADMIN + '/blog', icon: Book },
 ] as const
 
 export const legalNavigation = [

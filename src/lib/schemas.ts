@@ -89,6 +89,12 @@ export const studioSchema = z.object({
   totalSeats: z.number(),
 })
 
+export const blogRecordSchema = z.object({
+  title: z.string().min(1, { message: 'Title is required' }),
+  tagline: z.string().min(1, { message: 'Tagline is required' }),
+  mainText: z.string().min(1, { message: 'Main text is required' }),
+})
+
 export const studioImageUploadSchema = z.object({
   studioId: z.string().min(1, { message: 'Studio ID is required' }),
   imageUrl: z.url({ message: 'Invalid image URL' }),
@@ -110,7 +116,12 @@ export const validateContactForm = (data: unknown) => {
   return contactFormSchema.safeParse(data)
 }
 
+export const validateBlogRecord = (data: unknown) => {
+  return blogRecordSchema.safeParse(data)
+}
+
 export type LeadSchema = z.infer<typeof bookingLeadSchema>
 export type StudioSchema = z.infer<typeof studioSchema>
 export type StudioImageUploadSchema = z.infer<typeof studioImageUploadSchema>
 export type ContactFormSchema = z.infer<typeof contactFormSchema>
+export type BlogRecordSchema = z.infer<typeof blogRecordSchema>

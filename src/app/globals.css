@@ -61,7 +61,6 @@
   }
   html {
     scrollbar-gutter: stable both-edges;
-    overflow-y: scroll;
     line-height: 1.35;
   }
   body {
@@ -123,6 +122,20 @@
     }
     ul:last-of-type {
       margin-bottom: 0;
+    }
+  }
+
+  .blog-text-content {
+    p {
+      font-family: var(--font-nunito-sans);
+      font-size: 2em;
+    }
+    ul {
+      font-family: var(--font-nunito-sans);
+      font-size: 2em;
+    }
+    ul:last-of-type {
+      margin-bottom: 1.25em;
     }
   }
 
@@ -292,4 +305,8 @@
     transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
     opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
   will-change: transform, opacity;
+}
+
+.ProseMirror {
+  outline: none;
 }

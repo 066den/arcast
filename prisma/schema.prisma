@@ -354,10 +354,10 @@ model Sample {
 
 model BlogRecord {
   id        String   @id @default(cuid())
-  title     String?
-  tagline   String?
-  mainText  String?
-  imageUrls String[]
+  title     String
+  tagline   String
+  mainText  String
+  mainImageUrl String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
