@@ -3,10 +3,9 @@
 import Image from 'next/image'
 import { Button } from '../ui/button'
 import { ChevronRightIcon } from 'lucide-react'
-import remarkBreaks from 'remark-breaks'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import ReactMarkdown from 'react-markdown'
+import ReactHtmlParser from 'html-react-parser'
 
 interface HeadlineProps {
   title: string
@@ -50,22 +49,14 @@ const Headline = ({
           {title}
         </motion.h2>
 
-        <motion.h3
+        <motion.div
           className="colored-text"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.4, ease: 'easeOut' }}
         >
-          <ReactMarkdown
-            remarkPlugins={[remarkBreaks]}
-            components={{
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              p: ({ node, ...props }) => <span {...props} />,
-            }}
-          >
-            {description}
-          </ReactMarkdown>
-        </motion.h3>
+          {ReactHtmlParser(description)}
+        </motion.div>
 
         <motion.div
           className="flex gap-4"

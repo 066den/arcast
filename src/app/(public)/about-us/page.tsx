@@ -25,6 +25,52 @@ export default async function AboutPage() {
         description="Who we are and what can we do for you"
         image="/assets/images/about-banner.webp"
       />
+      <section className="py-14 text-content blog-text-content">
+        <h2 className="text-accent mb-6">Why a Content Factory Matters?</h2>
+        <p>
+          Two years ago, I started creating content in Dubai. I wanted to grow
+          my personal brand, launch projects, and scale.
+        </p>
+        <p>
+          But I quickly realized: without content and an audience, it’s nearly
+          impossible to move forward. You can be a great expert, but if no one
+          knows you — it’s like you don’t exist.
+        </p>
+        <p>
+          I visited dozens of studios. Hired videographers, freelancers,
+          scriptwriters. Spent a whole year experimenting — and nothing worked.
+        </p>
+        <p>
+          Turns out, most studios just rent you a room with a camera. No
+          guidance. No support. You stand in front of the camera — stressed,
+          unsure of what to say or how to act.
+        </p>
+        <p>That’s when the idea for Arcast was born.</p>
+        <p>
+          Arcast isn’t just a studio. It’s a space where your content becomes
+          stronger — with real support.
+        </p>
+        <ul>
+          <li>We help you clarify your goal</li>
+          <li>Find the right format</li>
+          <li>Support you during filming</li>
+          <li>Guide you from idea to final result</li>
+        </ul>
+        <p>
+          We have a cameraman, and I’m personally involved in the process. We
+          create an atmosphere where it’s easy to be yourself.
+        </p>
+        <p>
+          And I truly believe that podcasts are digital journals. In 10–20
+          years, you’ll be able to look back and hear how you used to think.
+          That’s memory. That’s legacy. That’s something that stays.
+        </p>
+        <p>
+          Now you can record content with ease — and real support. While others
+          rent cameras, you create results. Message us — and start speaking so
+          that people actually listen.
+        </p>
+      </section>
       <StudiosSection
         initialStudios={studios.status === 'fulfilled' ? studios.value : []}
       />

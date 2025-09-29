@@ -89,6 +89,7 @@ export const API_ENDPOINTS = {
   PACKAGES: '/api/packages',
   CONTACT: '/api/contact',
   PAYMENT_LINK: '/api/payment-link',
+  BLOG: '/api/blog',
 } as const
 
 export const ROUTES = {
@@ -99,6 +100,7 @@ export const ROUTES = {
   BLOG: '/blog',
   ABOUT_US: '/about-us',
   FOR_BUSINESS: '/business',
+  ADMIN: '/admin',
 } as const
 
 export const HTTP_STATUS = {
@@ -171,6 +173,9 @@ export const ERROR_MESSAGES = {
   },
   PRISMA: {
     NOT_INITIALIZED: 'Prisma client is not initialized',
+  },
+  ARTICLE: {
+    NOT_FOUND: 'Article not found',
   },
 } as const
 

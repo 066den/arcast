@@ -248,3 +248,13 @@ export interface CaseStudy {
   equipment?: CaseStudyEquipment[]
   staff?: CaseStudyStaff[]
 }
+
+export interface BlogRecord {
+  id: string
+  title: string | null
+  tagline: string | null
+  mainText: string | null
+  mainImageUrl?: string | null
+  createdAt: Date
+  updatedAt: Date
+}
