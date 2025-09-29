@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 import { ROUTES } from '@/lib/constants'
-import BurgerButton from './BurgerButton'
+import BurgerButton from '../ui/BurgerButton'
 import MobileMenu from './MobileMenu'
 
 const Header = () => {

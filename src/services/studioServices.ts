@@ -211,3 +211,35 @@ export const getClients = async () => {
     throw new Error('Failed to fetch clients')
   }
 }
+
+export const getStaff = async () => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+  try {
+    const staff = await prisma.staff.findMany()
+    return staff
+  } catch (error) {
+    console.error('Error fetching staff:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch staff: ${error.message}`)
+    }
+    throw new Error('Failed to fetch staff')
+  }
+}
+
+export const getEquipment = async () => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+  try {
+    const equipment = await prisma.equipment.findMany()
+    return equipment
+  } catch (error) {
+    console.error('Error fetching equipment:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch equipment: ${error.message}`)
+    }
+    throw new Error('Failed to fetch equipment')
+  }
+}

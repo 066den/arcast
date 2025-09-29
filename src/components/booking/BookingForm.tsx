@@ -189,6 +189,7 @@ const BookingForm = ({
           <StudioCard
             key={studio.id}
             studio={studio}
+            isSelection
             isSelected={selectStudioId === studio.id}
             onClick={selectStudio}
           />
