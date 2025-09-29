@@ -1,13 +1,20 @@
+import { cn } from '@/lib/utils'
 import { Studio } from '../../types'
 import Image from 'next/image'
 
 interface StudioCardProps {
   studio: Studio
-  isSelected: boolean
+  isSelected?: boolean
+  isSelection?: boolean
   onClick: (id: string) => void
 }
 
-export function StudioCard({ studio, isSelected, onClick }: StudioCardProps) {
+export function StudioCard({
+  studio,
+  isSelected,
+  isSelection,
+  onClick,
+}: StudioCardProps) {
   const { name, imageUrl } = studio
   const handleClick = () => {
     onClick(studio.id)
@@ -16,7 +23,10 @@ export function StudioCard({ studio, isSelected, onClick }: StudioCardProps) {
   return (
     <div className="flex justify-center w-full">
       <div
-        className="group relative aspect-[4/3] w-full max-w-[440px] overflow-hidden rounded-5xl cursor-pointer bg-white shadow-lg transition-transform duration-300 hover:shadow-xl"
+        className={cn(
+          'group relative aspect-[4/3] w-full overflow-hidden rounded-5xl cursor-pointer bg-white shadow-lg transition-transform duration-300 hover:shadow-xl',
+          isSelection ? 'max-w-[440px]' : 'max-w-[540px]'
+        )}
         onClick={handleClick}
       >
         <Image
@@ -34,9 +44,11 @@ export function StudioCard({ studio, isSelected, onClick }: StudioCardProps) {
           </div>
         </div>
 
-        <div className="absolute top-4 right-4 size-11 flex items-center justify-center bg-primary rounded-full border-3 border-white">
-          {isSelected && <div className="size-8 bg-accent rounded-full" />}
-        </div>
+        {isSelection && (
+          <div className="absolute top-4 right-4 size-11 flex items-center justify-center bg-primary rounded-full border-3 border-white">
+            {isSelected && <div className="size-8 bg-accent rounded-full" />}
+          </div>
+        )}
       </div>
     </div>
   )
