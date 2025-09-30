@@ -95,7 +95,7 @@ const SmoothOverlappingCarousel = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative w-full h-full flex items-center justify-center">
+      <div className="relative w-full h-full flex items-center justify-center -ml-8">
         {items.map((item, index) => {
           let relativeIndex = index - currentIndex
 

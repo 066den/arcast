@@ -27,7 +27,12 @@ const ServiceButton = ({
       )}
       onClick={onClick}
     >
-      <div className="flex items-center gap-4 px-4">
+      <div
+        className={cn(
+          'flex items-center gap-4 px-2 2xl:px-4',
+          isHorizontal && 'justify-center'
+        )}
+      >
         {!isHorizontal && (
           <svg
             xmlns="http://www.w3.org/2000/svg"

@@ -6,6 +6,7 @@ interface BookingStore {
   selectedIndices: {
     studio: string
     service: string
+    serviceType: string
     package: string
   }
   isLoading: boolean
@@ -13,6 +14,7 @@ interface BookingStore {
   // Actions
   selectStudio: (studioId: string) => void
   selectService: (serviceId: string) => void
+  selectServiceType: (serviceTypeId: string) => void
   selectPackage: (packageId: string) => void
   // Async actions
   createBooking: () => Promise<void>
@@ -28,7 +30,8 @@ const useBookingStore = create<BookingStore>()(
       selectedIndices: {
         studio: '',
         service: '',
-        package: '',
+        serviceType: '',
+        package: 'podcast',
       },
       isLoading: false,
       selectStudio: (studioId: string) =>
@@ -51,6 +54,13 @@ const useBookingStore = create<BookingStore>()(
             service: '',
           },
         }),
+      selectServiceType: (slug: string) =>
+        set({
+          selectedIndices: {
+            ...get().selectedIndices,
+            serviceType: slug,
+          },
+        }),
       createBooking: async () => {
         // const booking = await createBooking()
         // set({ booking })
@@ -58,7 +68,12 @@ const useBookingStore = create<BookingStore>()(
 
       clearBooking: () => {
         set({
-          selectedIndices: { studio: '', service: '', package: '' },
+          selectedIndices: {
+            studio: '',
+            service: '',
+            serviceType: '',
+            package: '',
+          },
         })
       },
 

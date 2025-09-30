@@ -27,15 +27,16 @@ const ChooseServiceOrPackage = ({
         Choose <span className="text-accent">service</span> or{' '}
         <span className="text-accent">package</span>
       </h2>
-      <div className="flex flex-col items-center gap-16 py-6">
+      <div className="flex flex-col items-center gap-18 py-6">
         <ServiceTypesList
           withBenefits
-          isHorizontal
+          isBooking
           typePackages={typePackages}
           initialServiceTypes={initialServiceTypes}
           setTypePackages={setTypePackages}
         />
         <ServicesCarousel
+          isBooking
           serviceType={initialServiceTypes}
           typePackages={typePackages}
           packages={initialPackages}

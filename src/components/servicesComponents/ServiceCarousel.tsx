@@ -12,21 +12,30 @@ import ServiceCard from './ServiceCard'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cardVariants } from '@/lib/motion-variants'
 import PackageCard from './PackageCard'
+import { useBooking } from '@/hooks/storeHooks/useBooking'
+import { cn } from '@/lib/utils'
 
 interface ServicesCarousel {
   serviceType: ServiceType[]
   packages: PackageWithServices[]
   typePackages: string
+  isBooking?: boolean
 }
 const ServicesCarousel = ({
   serviceType,
   typePackages,
   packages,
+  isBooking = false,
 }: ServicesCarousel) => {
+  const { selectServiceTypeSlug } = useBooking()
   const services = useMemo(() => {
-    const selectedType = serviceType.find(type => type.slug === typePackages)
+    const selectedType = serviceType.find(type =>
+      isBooking
+        ? type.slug === selectServiceTypeSlug
+        : type.slug === typePackages
+    )
     return selectedType?.services || []
-  }, [serviceType, typePackages])
+  }, [serviceType, typePackages, isBooking, selectServiceTypeSlug])
 
   return (
     <div className="w-full">
@@ -35,13 +44,18 @@ const ServicesCarousel = ({
           align: 'start',
         }}
       >
-        <CarouselContent className="justify-center">
+        <CarouselContent
+          className={cn(
+            'w-full',
+            isBooking ? 'justify-center' : 'justify-start 2xl:justify-center'
+          )}
+        >
           <AnimatePresence mode="popLayout">
             {services.length > 0 ? (
               services.map((service, index) => (
                 <CarouselItem
                   key={service.id}
-                  className="basis-1/3 max-w-[325px]"
+                  className="max-w-[300px] 2xl:max-w-[325px]"
                 >
                   <motion.div
                     variants={cardVariants}
@@ -56,11 +70,14 @@ const ServicesCarousel = ({
                   </motion.div>
                 </CarouselItem>
               ))
-            ) : packages.length > 0 && typePackages === 'beneficial' ? (
+            ) : packages.length > 0 &&
+              (isBooking
+                ? selectServiceTypeSlug === 'beneficial'
+                : typePackages === 'beneficial') ? (
               packages.map(packageData => (
                 <CarouselItem
                   key={packageData.id}
-                  className="basis-1/3 max-w-[325px]"
+                  className="max-w-[300px] 2xl:max-w-[325px]"
                 >
                   <PackageCard package={packageData} />
                 </CarouselItem>
@@ -76,13 +93,19 @@ const ServicesCarousel = ({
             )}
           </AnimatePresence>
         </CarouselContent>
-        {(services.length > 3 ||
-          (packages.length > 3 && typePackages === 'beneficial')) && (
-          <div className="absolute flex gap-5 right-0 top-0 -translate-y-[5em] z-20 ">
-            <CarouselPrevious className="static" />
-            <CarouselNext className="static" />
-          </div>
-        )}
+
+        <div
+          className={cn(
+            'absolute gap-5 right-0 top-0 -translate-y-[5em] z-20 ',
+            isBooking ? '-translate-y-[4em]' : '-translate-y-[5em]',
+            services.length < 4 || packages.length < 4
+              ? 'flex 2xl:hidden'
+              : 'flex'
+          )}
+        >
+          <CarouselPrevious className="static translate-none" />
+          <CarouselNext className="static translate-none" />
+        </div>
       </Carousel>
     </div>
   )

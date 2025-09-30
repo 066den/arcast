@@ -6,13 +6,14 @@ import {
   serviceButtonItemVariants,
 } from '@/lib/motion-variants'
 import { cn } from '@/lib/utils'
+import { useBooking } from '@/hooks/storeHooks/useBooking'
 
 interface ServiceTypesListProps {
   initialServiceTypes: ServiceType[]
   setTypePackages: (typePackages: string) => void
   typePackages: string
   withBenefits?: boolean
-  isHorizontal?: boolean
+  isBooking?: boolean
 }
 
 const ServiceTypesList = ({
@@ -20,15 +21,17 @@ const ServiceTypesList = ({
   setTypePackages,
   typePackages,
   withBenefits = false,
-  isHorizontal = false,
+  isBooking = false,
 }: ServiceTypesListProps) => {
+  const { selectServiceType, selectServiceTypeSlug } = useBooking()
   const handleSetTypePackages = (typePackages: string) => {
     setTypePackages(typePackages)
+    selectServiceType(typePackages)
   }
 
   return (
     <motion.div
-      className={cn('flex flex-col gap-4', isHorizontal && 'flex-row')}
+      className={cn('flex flex-col gap-4', isBooking && 'flex-row')}
       variants={serviceButtonVariants}
       initial="hidden"
       whileInView="visible"
@@ -39,8 +42,12 @@ const ServiceTypesList = ({
           <motion.div key={serviceType.id} variants={serviceButtonItemVariants}>
             <ServiceButton
               title={serviceType.name}
-              isActive={typePackages === serviceType.slug}
-              isHorizontal={isHorizontal}
+              isActive={
+                isBooking
+                  ? selectServiceTypeSlug === serviceType.slug
+                  : typePackages === serviceType.slug
+              }
+              isHorizontal={isBooking}
               onClick={() => handleSetTypePackages(serviceType.slug)}
             />
           </motion.div>
@@ -49,8 +56,12 @@ const ServiceTypesList = ({
         <motion.div key={'benefits'} variants={serviceButtonItemVariants}>
           <ServiceButton
             title="Beneficial packages"
-            isActive={typePackages === 'beneficial'}
-            isHorizontal={isHorizontal}
+            isActive={
+              isBooking
+                ? selectServiceTypeSlug === 'beneficial'
+                : typePackages === 'beneficial'
+            }
+            isHorizontal={isBooking}
             onClick={() => handleSetTypePackages('beneficial')}
           />
         </motion.div>

@@ -126,13 +126,12 @@
   }
 
   .blog-text-content {
-    p {
-      font-family: var(--font-nunito-sans);
-      font-size: 2em;
+    h2 {
+      @apply text-accent;
     }
+    p,
     ul {
-      font-family: var(--font-nunito-sans);
-      font-size: 2em;
+      @apply font-nunito-sans text-[2em];
     }
     ul:last-of-type {
       margin-bottom: 1.25em;
