@@ -9,6 +9,7 @@ import {
 import StudiosSection from '@/components/sections/StudiosSection'
 import ItemCard from '@/components/common/ItemCard'
 import { CaseStudyEquipment, CaseStudyStaff } from '@/types'
+import Headline from '@/components/common/Headline'
 
 export default async function AboutPage() {
   const [clients, studios, staff, equipment] = await Promise.allSettled([
@@ -25,12 +26,15 @@ export default async function AboutPage() {
         description="Who we are and what can we do for you"
         image="/assets/images/about-banner.webp"
       />
+
       <section className="py-14 text-content blog-text-content">
-        <h2 className="text-accent mb-6">Why a Content Factory Matters?</h2>
-        <p>
-          Two years ago, I started creating content in Dubai. I wanted to grow
-          my personal brand, launch projects, and scale.
-        </p>
+        <Headline
+          title="Hi, I’m Alexey Redkin,<br />Founder of Arcast"
+          description="<h3>Two years ago, I started creating content in Dubai. <br /> I wanted to grow my personal brand, launch projects, and scale.</h3>"
+          image="/assets/images/alex.jpg"
+          actionSection={[]}
+        />
+
         <p>
           But I quickly realized: without content and an audience, it’s nearly
           impossible to move forward. You can be a great expert, but if no one

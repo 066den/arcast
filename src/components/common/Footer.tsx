@@ -74,8 +74,10 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="container mx-auto flex justify-between border-t py-10">
-        <p>© 2025 ARcast All rights reserved.</p>
+      <div className="border-t py-10">
+        <div className="container mx-auto flex justify-between">
+          <p>© 2025 ARcast All rights reserved.</p>
+        </div>
       </div>
     </footer>
   )

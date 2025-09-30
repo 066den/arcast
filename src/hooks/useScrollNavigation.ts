@@ -10,8 +10,9 @@ export const SCROLL_TARGETS = {
     FORM: 'form',
   },
   SERVICES: {
-    CAROUSEL: 'carousel',
-    TYPES: 'types',
+    FULL: 'full-cycle',
+    REELS: 'reels',
+    MEDIA: 'media',
   },
   CASE_STUDIES: {
     LIST: 'list',

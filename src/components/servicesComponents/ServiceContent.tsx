@@ -4,6 +4,13 @@ import ReactMarkdown from 'react-markdown'
 import { motion } from 'framer-motion'
 import { containerVariants, itemVariants } from '@/lib/motion-variants'
 import remarkBreaks from 'remark-breaks'
+import { ROUTES } from '@/lib/constants'
+import {
+  SCROLL_TARGETS,
+  useScrollNavigation,
+} from '@/hooks/useScrollNavigation'
+
+import { useBooking } from '@/hooks/storeHooks/useBooking'
 
 interface ServiceContentProps {
   service: {
@@ -18,6 +25,14 @@ interface ServiceContentProps {
 
 const ServiceContent = ({ service, index }: ServiceContentProps) => {
   const { title, description, content, imageUrl } = service
+  const { selectService } = useBooking()
+
+  const { navigateWithScroll } = useScrollNavigation()
+
+  const handleBookNow = () => {
+    //selectService(service.id)
+    navigateWithScroll(ROUTES.BOOKING, SCROLL_TARGETS.BOOKING.SERVICES)
+  }
 
   const actionSection = () => {
     switch (index) {
@@ -26,7 +41,7 @@ const ServiceContent = ({ service, index }: ServiceContentProps) => {
           {
             label: 'Fire up your Podcast',
             event: () => {
-              console.log('Book Now')
+              handleBookNow()
             },
           },
         ]
@@ -35,7 +50,7 @@ const ServiceContent = ({ service, index }: ServiceContentProps) => {
           {
             label: 'Reach your Viewers',
             event: () => {
-              console.log('Book Now')
+              handleBookNow()
             },
           },
         ]
@@ -44,7 +59,7 @@ const ServiceContent = ({ service, index }: ServiceContentProps) => {
           {
             label: 'Let us call George Lucas',
             event: () => {
-              console.log('Book Now')
+              handleBookNow()
             },
           },
         ]
@@ -53,7 +68,7 @@ const ServiceContent = ({ service, index }: ServiceContentProps) => {
           {
             label: 'Reach your Viewers',
             event: () => {
-              console.log('Book Now')
+              handleBookNow()
             },
           },
         ]
@@ -62,7 +77,7 @@ const ServiceContent = ({ service, index }: ServiceContentProps) => {
           {
             label: 'Book Now',
             event: () => {
-              console.log('Book Now')
+              handleBookNow()
             },
           },
         ]
@@ -72,6 +87,15 @@ const ServiceContent = ({ service, index }: ServiceContentProps) => {
   return (
     <motion.section
       className="py-12"
+      id={
+        index === 0
+          ? 'full-cycle'
+          : index === 1
+            ? 'reels'
+            : index === 2
+              ? 'media'
+              : ''
+      }
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"

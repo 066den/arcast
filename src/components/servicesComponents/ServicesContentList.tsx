@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { containerVariants } from '@/lib/motion-variants'
 
 interface ServicesContentListProps {
-  initialServices: {
+  servicesDescription: {
     id: string
     title: string
     description: string
@@ -13,7 +13,9 @@ interface ServicesContentListProps {
   }[]
 }
 
-const ServicesContentList = ({ initialServices }: ServicesContentListProps) => {
+const ServicesContentList = ({
+  servicesDescription,
+}: ServicesContentListProps) => {
   return (
     <motion.div
       variants={containerVariants}
@@ -21,7 +23,7 @@ const ServicesContentList = ({ initialServices }: ServicesContentListProps) => {
       whileInView="visible"
       viewport={{ once: true, margin: '-50px' }}
     >
-      {initialServices.map((service, index) => (
+      {servicesDescription.map((service, index) => (
         <ServiceContent key={service.id} service={service} index={index} />
       ))}
     </motion.div>

@@ -55,21 +55,21 @@ export const aboutFeatures = [
     description:
       'Conversations that break the surface and explore what really matters. Episodes that spark thoughts and challenge perspectives.',
     image: '/assets/images/production.webp',
-    url: '/services/full-cycle-production',
+    url: '/services#full-cycle',
   },
   {
     title: 'Strategy & competitor analysis',
     description:
       'Conversations that break the surface and explore what really matters. Episodes that spark thoughts and challenge perspectives.',
     image: '/assets/images/strategy.webp',
-    url: '/services/strategy-and-competitor-analysis',
+    url: '/services#reels',
   },
   {
     title: 'Publishing & growth support',
     description:
       'Conversations that break the surface and explore what really matters. Episodes that spark thoughts and challenge perspectives.',
     image: '/assets/images/publishing.webp',
-    url: '/services/publishing-and-growth-support',
+    url: '/services#media',
   },
 ] as const
 

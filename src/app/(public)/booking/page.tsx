@@ -2,7 +2,6 @@ import { getStudios } from '@/services/studioServices'
 import { getPackages, getServiceTypes } from '@/services/servicesServices'
 import BookingForm from '@/components/booking/BookingForm'
 import ChooseServiceOrPackage from '@/components/booking/ChooseServiceOrPackage'
-import { SCROLL_TARGETS } from '@/hooks/useScrollNavigation'
 
 export default async function BookingPage() {
   const [initialServiceTypes, initialPackages] = await Promise.all([

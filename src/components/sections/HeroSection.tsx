@@ -29,8 +29,8 @@ const HeroSection = ({
           controls={false}
           muted
           loop
-          //autoPlay
-          //playsInline
+          autoPlay
+          playsInline
           poster="/assets/images/heronew.png"
         />
       )}
