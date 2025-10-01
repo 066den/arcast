@@ -18,7 +18,7 @@ const EpisodeSection = ({
   return (
     <section className="py-10 xl:py-20">
       <div className="section-title">what we&apos;ve made</div>
-      <div className="flex justify-between gap-4 lg:mb-18 mb-10">
+      <div className="flex flex-col md:flex-row justify-between gap-4 lg:mb-18 mb-10">
         <div className="mt-2">
           <h2>
             See our work in <span className="text-accent">action</span>

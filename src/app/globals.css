@@ -94,7 +94,7 @@
   }
 
   h3 {
-    @apply xl:text-[2.75rem] lg:text-[2.25rem] text-3xl;
+    @apply xl:text-[2.75rem] lg:text-[2.25rem] md:text-3xl text-2xl;
   }
 
   section {
@@ -108,7 +108,7 @@
 
   .text-content {
     p {
-      @apply lg:mb-10 mb-6;
+      @apply lg:mb-10 md:mb-6 mb-4;
       letter-spacing: -0.02em;
     }
     p:last-of-type {
@@ -131,7 +131,7 @@
     }
     p,
     ul {
-      @apply font-nunito-sans lg:text-[2em] text-[1.5em];
+      @apply font-nunito-sans lg:text-[2em] md:text-[1.5em] text-[1.25em];
     }
     ul:last-of-type {
       margin-bottom: 1.25em;

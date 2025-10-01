@@ -35,6 +35,7 @@ export default async function Home() {
       </div>
 
       <TestimonialsSection
+        isVideo
         initialClients={clients.status === 'fulfilled' ? clients.value : []}
       />
       <PackagesSection

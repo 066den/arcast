@@ -27,7 +27,7 @@ export default async function AboutPage() {
         image="/assets/images/about-banner.webp"
       />
 
-      <section className="py-14 text-content blog-text-content">
+      <section className="lg:py-14 py-6 text-content blog-text-content">
         <Headline
           title="Hi, I’m Alexey Redkin,<br />Founder of Arcast"
           description="<h3>Two years ago, I started creating content in Dubai. <br /> I wanted to grow my personal brand, launch projects, and scale.</h3>"

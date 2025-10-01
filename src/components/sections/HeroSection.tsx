@@ -20,7 +20,7 @@ const HeroSection = ({
     <div
       className={cn(
         'relative rounded-3xl overflow-hidden mx-2 mb-4 xl:m-4',
-        image && 'max-h-[700px]'
+        image && 'md:max-h-[700px] max-h-[300px]'
       )}
     >
       {videoUrl && (
