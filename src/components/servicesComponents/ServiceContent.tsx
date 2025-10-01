@@ -86,7 +86,7 @@ const ServiceContent = ({ service, index }: ServiceContentProps) => {
 
   return (
     <motion.section
-      className="py-12"
+      className="lg:py-12 py-6"
       id={
         index === 0
           ? 'full-cycle'
@@ -114,7 +114,7 @@ const ServiceContent = ({ service, index }: ServiceContentProps) => {
       {content && (
         <motion.div
           variants={itemVariants}
-          className="text-[2em] font-medium font-nunito-sans pt-12 text-content"
+          className="lg:pt-12 pt-6 text-content blog-text-content"
         >
           <ReactMarkdown remarkPlugins={[remarkBreaks]}>
             {content}
