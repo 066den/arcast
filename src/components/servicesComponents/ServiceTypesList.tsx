@@ -31,7 +31,10 @@ const ServiceTypesList = ({
 
   return (
     <motion.div
-      className={cn('flex flex-col gap-4', isBooking && 'flex-row')}
+      className={cn(
+        'flex flex-row justify-center gap-2 xl:gap-5',
+        isBooking ? 'flex-row flex-wrap' : 'flex-col xl:flex-col '
+      )}
       variants={serviceButtonVariants}
       initial="hidden"
       whileInView="visible"

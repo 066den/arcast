@@ -87,10 +87,10 @@ const TestimonialsSection = ({
             FREE YOURSELF FROM PRODUCTION ROUTINE
           </motion.div>
           <motion.h2
-            className="text-6xl leading-tight max-w-xl mb-4"
+            className="leading-tight max-w-2xl mb-4"
             variants={textVariants}
           >
-            This is how we&apos;ve already helped talents like you!
+            This is how we&apos;ve <br /> already helped talents like you!
           </motion.h2>
           <motion.div variants={itemVariants}>
             <Button
@@ -123,7 +123,7 @@ const TestimonialsSection = ({
                 {clientTestimonials.map((client, index) => (
                   <CarouselItem
                     key={client.id}
-                    className="basis-1/2 border-e-2 px-6"
+                    className="xl:basis-1/2 border-e-2 px-6"
                   >
                     <motion.div variants={itemVariants} custom={index}>
                       <blockquote className="text-xl font-nunito-sans font-medium mb-6">{`"${client.testimonial}"`}</blockquote>

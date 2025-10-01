@@ -28,7 +28,7 @@ export default async function Home() {
         }
         initialSamples={samples.status === 'fulfilled' ? samples.value : []}
       />
-      <div className="w-full py-8">
+      <div className="w-full xl:py-8">
         <Marquee className="outline-text" direction="left" speed={300}>
           become the next shining star&nbsp;
         </Marquee>

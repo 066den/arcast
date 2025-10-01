@@ -11,7 +11,7 @@ interface CaseStudiesListProps {
 const CaseStudiesList = ({ cases }: CaseStudiesListProps) => {
   return (
     <motion.div
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 py-8"
+      className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 py-8"
       variants={containerVariants}
       initial="hidden"
       animate="visible"

@@ -22,14 +22,14 @@ const ServiceButton = ({
       size="custom"
       variant="outline"
       className={cn(
-        'justify-between w-full max-w-sm h-15 rounded-full font-medium text-dark-mode font-geist tracking-tight hover:bg-white hover:text-accent shadow-none text-xl px-4 has-[svg]:px-1',
+        'justify-between w-full max-w-[400px] h-14 xl:h-15 rounded-full font-medium text-dark-mode font-geist tracking-tight hover:bg-white hover:text-accent shadow-none text-base xl:text-xl px-4 has-[svg]:px-1',
         isActive && 'bg-muted text-accent hover:bg-muted'
       )}
       onClick={onClick}
     >
       <div
         className={cn(
-          'flex items-center gap-4 px-2 2xl:px-4',
+          'flex items-center gap-1 xl:gap-4 px-2 2xl:px-4',
           isHorizontal && 'justify-center'
         )}
       >
@@ -50,7 +50,7 @@ const ServiceButton = ({
       {!isHorizontal && (
         <span
           className={cn(
-            'flex items-center justify-center rounded-full bg-muted p-3',
+            'flex items-center justify-center rounded-full bg-muted p-2 lg:p-3',
             isActive && 'bg-accent'
           )}
         >
