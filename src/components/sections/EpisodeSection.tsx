@@ -42,7 +42,7 @@ const EpisodeSection = ({
         </p>
       </div>
 
-      <div className="lg:flex lg:flex-row items-center gap-4">
+      <div className="lg:flex lg:flex-row items-center gap-4 overflow-hidden">
         <div className="lg:w-1/3 w-full lg:pr-4 mb-14 lg:mb-0">
           <ServiceTypesList
             typePackages={typePackages}

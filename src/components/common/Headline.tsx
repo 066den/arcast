@@ -24,7 +24,7 @@ const Headline = ({
 }: HeadlineProps) => {
   return (
     <div
-      className={cn('flex gap-10 py-8', {
+      className={cn('flex gap-10 lg:py-8 py-4', {
         'lg:flex-row-reverse': isReverse,
       })}
     >
