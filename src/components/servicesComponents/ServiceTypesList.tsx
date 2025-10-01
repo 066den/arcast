@@ -32,8 +32,8 @@ const ServiceTypesList = ({
   return (
     <motion.div
       className={cn(
-        'flex flex-row justify-center gap-2 xl:gap-5',
-        isBooking ? 'flex-row flex-wrap' : 'flex-col xl:flex-col '
+        'flex justify-center gap-2 xl:gap-5',
+        isBooking ? 'flex-row flex-wrap' : 'lg:flex-col flex-wrap'
       )}
       variants={serviceButtonVariants}
       initial="hidden"
@@ -42,7 +42,11 @@ const ServiceTypesList = ({
     >
       {initialServiceTypes &&
         initialServiceTypes.map(serviceType => (
-          <motion.div key={serviceType.id} variants={serviceButtonItemVariants}>
+          <motion.div
+            key={serviceType.id}
+            variants={serviceButtonItemVariants}
+            className="flex-1"
+          >
             <ServiceButton
               title={serviceType.name}
               isActive={
@@ -56,7 +60,11 @@ const ServiceTypesList = ({
           </motion.div>
         ))}
       {withBenefits && (
-        <motion.div key={'benefits'} variants={serviceButtonItemVariants}>
+        <motion.div
+          key={'benefits'}
+          variants={serviceButtonItemVariants}
+          className="flex-1"
+        >
           <ServiceButton
             title="Beneficial packages"
             isActive={

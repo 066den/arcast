@@ -22,7 +22,7 @@ const ServiceButton = ({
       size="custom"
       variant="outline"
       className={cn(
-        'justify-between w-full max-w-[400px] h-14 xl:h-15 rounded-full font-medium text-dark-mode font-geist tracking-tight hover:bg-white hover:text-accent shadow-none text-base xl:text-xl px-4 has-[svg]:px-1',
+        'justify-center lg:justify-between w-full max-w-[400px] h-14 xl:h-15 rounded-full font-medium text-dark-mode font-geist tracking-tight hover:bg-white hover:text-accent shadow-none text-base xl:text-xl px-4 has-[svg]:px-1',
         isActive && 'bg-muted text-accent hover:bg-muted'
       )}
       onClick={onClick}
@@ -40,6 +40,7 @@ const ServiceButton = ({
             height="10"
             fill="none"
             viewBox="0 0 16 10"
+            className="lg:block hidden"
           >
             <circle cx="5" cy="5" r="5" fill="#FDAEA7" />
             <circle cx="11" cy="5" r="5" fill="#F26430" />
@@ -50,7 +51,7 @@ const ServiceButton = ({
       {!isHorizontal && (
         <span
           className={cn(
-            'flex items-center justify-center rounded-full bg-muted p-2 lg:p-3',
+            'hidden lg:flex items-center justify-center rounded-full bg-muted p-3',
             isActive && 'bg-accent'
           )}
         >

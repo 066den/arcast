@@ -159,7 +159,7 @@ const SmoothOverlappingCarousel = ({
         })}
       </div>
 
-      <div className="absolute flex gap-4 right-0 top-0 -translate-y-[3.5em] xl:-translate-y-[6.5em] z-20 ">
+      <div className="absolute flex gap-4 right-0 top-0 -translate-y-[2.5em] lg:-translate-y-[3.5em] xl:-translate-y-[6.5em] z-20 ">
         <Button
           size="icon"
           className="rounded-full w-11 h-11 bg-border group hover:bg-primary"
