@@ -13,7 +13,7 @@ export default async function BookingPage() {
 
   return (
     <>
-      <section className="py-16">
+      <section className="lg:py-16 py-10">
         <div className="text-center">
           <h1 className="text-accent mb-8">Book Your Studio Session</h1>
           <h3 className="">

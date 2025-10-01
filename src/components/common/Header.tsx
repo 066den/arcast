@@ -75,7 +75,7 @@ const Header = () => {
           <BurgerButton
             isOpen={isMobileMenuOpen}
             onClick={toggleMobileMenu}
-            className="lg:hidden mr-6"
+            className="lg:hidden mr-4"
           />
         </div>
       </div>

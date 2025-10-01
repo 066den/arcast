@@ -41,7 +41,7 @@ const PackagesSection = ({
         </p>
       </div>
 
-      <div className="flex items-center justify-between gap-10">
+      <div className="flex flex-col lg:flex-row items-center lg:justify-between gap-10">
         <ServiceTypesList
           withBenefits
           typePackages={typePackages}

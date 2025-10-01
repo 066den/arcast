@@ -21,12 +21,12 @@ const AboutSection = () => {
         why arcast
       </motion.div>
       <motion.div
-        className="grid grid-cols-1 lg:grid-cols-4 mb-8 xl:mb-16"
+        className="grid grid-cols-1 md:grid-cols-4 mb-8 xl:mb-16"
         variants={containerVariants}
       >
         <motion.div className="max-w-2xs" variants={itemVariants}>
           <motion.div
-            className="text-7xl font-medium py-4"
+            className="lg:text-7xl text-5xl font-medium py-4"
             variants={textVariants}
           >
             40K+
@@ -37,7 +37,7 @@ const AboutSection = () => {
           </motion.p>
         </motion.div>
         <motion.h3
-          className="lg:col-span-3 max-w-5xl lg:px-10"
+          className="md:col-span-3 max-w-5xl lg:px-10"
           variants={textVariants}
         >
           We provided solid technical and creative background for the talents.

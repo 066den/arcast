@@ -27,7 +27,7 @@ const ChooseServiceOrPackage = ({
         Choose <span className="text-accent">service</span> or{' '}
         <span className="text-accent">package</span>
       </h2>
-      <div className="flex flex-col items-center gap-18 py-6">
+      <div className="flex flex-col items-start lg:items-center lg:gap-18 gap-10 py-6">
         <ServiceTypesList
           withBenefits
           isBooking

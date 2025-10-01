@@ -53,7 +53,7 @@ const TestimonialsSection = ({
 
   return (
     <motion.section
-      className="py-20"
+      className="lg:py-20 py-10"
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"

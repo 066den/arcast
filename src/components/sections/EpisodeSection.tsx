@@ -18,7 +18,7 @@ const EpisodeSection = ({
   return (
     <section className="py-10 xl:py-20">
       <div className="section-title">what we&apos;ve made</div>
-      <div className="flex justify-between gap-4 mb-18">
+      <div className="flex justify-between gap-4 lg:mb-18 mb-10">
         <div className="mt-2">
           <h2>
             See our work in <span className="text-accent">action</span>
@@ -42,8 +42,8 @@ const EpisodeSection = ({
         </p>
       </div>
 
-      <div className="flex flex-row items-center gap-4">
-        <div className="w-1/3 pr-4">
+      <div className="lg:flex lg:flex-row items-center gap-4">
+        <div className="lg:w-1/3 w-full lg:pr-4 mb-14 lg:mb-0">
           <ServiceTypesList
             typePackages={typePackages}
             initialServiceTypes={initialServiceTypes}

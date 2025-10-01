@@ -64,7 +64,7 @@
     line-height: 1.35;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-x-hidden;
   }
 
   ::-webkit-scrollbar {
@@ -83,7 +83,7 @@
 
   h1,
   h2 {
-    @apply font-hanken-grotesk font-medium xl:text-[4em] text-[3.5em] tracking-[-0.04em];
+    @apply font-hanken-grotesk font-medium xl:text-[4em] lg:text-5xl text-4xl tracking-[-0.04em];
   }
 
   h3,
@@ -94,7 +94,7 @@
   }
 
   h3 {
-    @apply xl:text-[2.75rem] text-[2.25rem];
+    @apply xl:text-[2.75rem] lg:text-[2.25rem] text-3xl;
   }
 
   section {
@@ -173,7 +173,7 @@
   }
 
   .outline-text {
-    @apply text-white xl:text-[12.5em] text-[8.5em] leading-[1.18] font-hanken-grotesk font-bold;
+    @apply text-white xl:text-[12.5em] lg:text-[8.5em] text-[7em] leading-[1.18] font-hanken-grotesk font-bold;
     line-height: 1.18;
     paint-order: stroke fill;
     -webkit-text-stroke: 0.5rem var(--color-accent);

@@ -179,7 +179,7 @@ const BookingForm = ({
   }, [selectedDate, selectStudioId, duration, selectedTime])
 
   return (
-    <section id={SCROLL_TARGETS.BOOKING.FORM} className="py-16">
+    <section id={SCROLL_TARGETS.BOOKING.FORM} className="lg:py-16 py-10">
       <h2>
         Choose <span className="text-accent">studio</span>
       </h2>

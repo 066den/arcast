@@ -46,8 +46,8 @@ const ServicesCarousel = ({
       >
         <CarouselContent
           className={cn(
-            'w-full',
-            isBooking ? 'justify-center' : 'justify-start 2xl:justify-center'
+            'w-full justify-start',
+            isBooking ? 'lg:justify-center' : '2xl:justify-center'
           )}
         >
           <AnimatePresence mode="popLayout">
@@ -55,7 +55,7 @@ const ServicesCarousel = ({
               services.map((service, index) => (
                 <CarouselItem
                   key={service.id}
-                  className="max-w-[300px] 2xl:max-w-[325px]"
+                  className="md:max-w-[280px] lg:max-w-[300px] 2xl:max-w-[325px]"
                 >
                   <motion.div
                     variants={cardVariants}
@@ -77,7 +77,7 @@ const ServicesCarousel = ({
               packages.map(packageData => (
                 <CarouselItem
                   key={packageData.id}
-                  className="max-w-[300px] 2xl:max-w-[325px]"
+                  className="md:max-w-[280px] lg:max-w-[300px] 2xl:max-w-[325px]"
                 >
                   <PackageCard package={packageData} />
                 </CarouselItem>
@@ -96,11 +96,9 @@ const ServicesCarousel = ({
 
         <div
           className={cn(
-            'absolute gap-5 right-0 top-0 -translate-y-[5em] z-20 ',
-            isBooking ? '-translate-y-[4em]' : '-translate-y-[5em]',
-            services.length < 4 || packages.length < 4
-              ? 'flex 2xl:hidden'
-              : 'flex'
+            'absolute gap-5 right-0 top-0 z-20 hidden lg:flex',
+            isBooking ? 'lg:-translate-y-[4em]' : 'lg:-translate-y-[5em]',
+            (services.length < 4 || packages.length < 4) && '2xl:hidden'
           )}
         >
           <CarouselPrevious className="static translate-none" />
