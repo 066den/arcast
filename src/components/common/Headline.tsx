@@ -24,7 +24,7 @@ const Headline = ({
 }: HeadlineProps) => {
   return (
     <div
-      className={cn('flex flex-col md:flex-row lg:gap-10 gap-6 lg:py-8 py-4', {
+      className={cn('flex flex-row lg:gap-10 gap-6 lg:py-8 py-4', {
         'lg:flex-row-reverse': isReverse,
       })}
     >
@@ -32,7 +32,7 @@ const Headline = ({
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="aspect-[21/9] md:aspect-[4/5] w-full md:max-w-[280px] overflow-hidden rounded-[2.5rem] relative"
+        className="aspect-[4/5] w-full max-w-[180px] md:max-w-[280px] overflow-hidden rounded-[2.5rem] relative"
       >
         {image && (
           <Image src={image} alt={title} fill className="object-cover" />

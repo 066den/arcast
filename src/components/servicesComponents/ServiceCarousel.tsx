@@ -55,7 +55,7 @@ const ServicesCarousel = ({
               services.map((service, index) => (
                 <CarouselItem
                   key={service.id}
-                  className="md:max-w-[280px] lg:max-w-[300px] 2xl:max-w-[325px]"
+                  className="max-w-[280px] lg:max-w-[300px] 2xl:max-w-[325px]"
                 >
                   <motion.div
                     variants={cardVariants}
@@ -77,7 +77,7 @@ const ServicesCarousel = ({
               packages.map(packageData => (
                 <CarouselItem
                   key={packageData.id}
-                  className="md:max-w-[280px] lg:max-w-[300px] 2xl:max-w-[325px]"
+                  className="max-w-[280px] lg:max-w-[300px] 2xl:max-w-[325px]"
                 >
                   <PackageCard package={packageData} />
                 </CarouselItem>
