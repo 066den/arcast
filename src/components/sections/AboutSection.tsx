@@ -11,7 +11,7 @@ import {
 const AboutSection = () => {
   return (
     <motion.section
-      className="py-14"
+      className="py-6 xl:py-14"
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
@@ -21,7 +21,7 @@ const AboutSection = () => {
         why arcast
       </motion.div>
       <motion.div
-        className="grid grid-cols-1 xl:grid-cols-4 mb-16"
+        className="grid grid-cols-1 lg:grid-cols-4 mb-8 xl:mb-16"
         variants={containerVariants}
       >
         <motion.div className="max-w-2xs" variants={itemVariants}>

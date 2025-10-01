@@ -91,11 +91,11 @@ const SmoothOverlappingCarousel = ({
 
   return (
     <div
-      className={cn('relative w-full', className)}
+      className={cn('relative h-full', className)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative w-full h-full flex items-center justify-center -ml-8">
+      <div className="relative h-full flex items-center justify-center xl:justify-end">
         {items.map((item, index) => {
           let relativeIndex = index - currentIndex
 
@@ -159,7 +159,7 @@ const SmoothOverlappingCarousel = ({
         })}
       </div>
 
-      <div className="absolute flex gap-4 right-0 top-0 -translate-y-[8em] z-20 ">
+      <div className="absolute flex gap-4 right-0 top-0 -translate-y-[3.5em] xl:-translate-y-[6.5em] z-20 ">
         <Button
           size="icon"
           className="rounded-full w-11 h-11 bg-border group hover:bg-primary"

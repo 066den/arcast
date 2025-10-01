@@ -17,7 +17,7 @@ const PackagesSection = ({
   const [typePackages, setTypePackages] = useState<string>('podcast')
 
   return (
-    <section className="py-20">
+    <section className="py-10 xl:py-20">
       <div className="section-title">what do we provide</div>
       <div className="flex justify-between gap-4 mb-16">
         <div className="mt-2">

@@ -46,7 +46,7 @@ const Headline = ({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2, ease: 'easeOut' }}
         >
-          {title}
+          {ReactHtmlParser(title)}
         </motion.h2>
 
         <motion.div

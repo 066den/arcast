@@ -173,13 +173,10 @@
   }
 
   .outline-text {
-    font-size: 12.5em;
+    @apply text-white xl:text-[12.5em] text-[8.5em] leading-[1.18] font-hanken-grotesk font-bold;
     line-height: 1.18;
-    color: white;
     paint-order: stroke fill;
     -webkit-text-stroke: 0.5rem var(--color-accent);
-    font-weight: 700;
-    font-family: var(--font-hanken-grotesk);
   }
 }
 
