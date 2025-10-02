@@ -86,7 +86,7 @@ const ServiceContent = ({ service, index }: ServiceContentProps) => {
 
   return (
     <motion.section
-      className="lg:py-12 py-6"
+      className="lg:py-12 md:py-6 py-2"
       id={
         index === 0
           ? 'full-cycle'

@@ -20,7 +20,7 @@ const CaseStudyCard = ({ caseStudy }: CaseStudyCardProps) => {
 
   return (
     <div
-      className="group relative aspect-[9/8] w-full overflow-hidden rounded-5xl cursor-pointer bg-white shadow-lg transition-transform duration-300 hover:shadow-xl"
+      className="group relative aspect-[9/8] w-full overflow-hidden md:rounded-5xl rounded-3xl cursor-pointer bg-white shadow-lg transition-transform duration-300 hover:shadow-xl"
       onClick={handleClick}
     >
       <Image
@@ -30,14 +30,14 @@ const CaseStudyCard = ({ caseStudy }: CaseStudyCardProps) => {
         className="object-cover transition-transform duration-300 group-hover:scale-105"
       />
 
-      <div className="absolute bottom-0 left-0 right-0 bg-primary py-5 px-8">
+      <div className="absolute bottom-0 left-0 right-0 bg-primary lg:py-5 md:py-4 py-2 lg:px-8 md:px-6 px-4">
         <div className="flex flex-col space-y-2">
-          <h3 className="text-[2.75em] font-nunito-sans font-bold text-white leading-tight">
+          <h3 className="lg:text-[2.75em] text-[2em] font-nunito-sans font-bold text-white leading-tight">
             {clientName}
           </h3>
 
           {clientTagline && (
-            <p className="text-xl font-nunito-sans text-accent font-bold leading-tight">
+            <p className="lg:text-xl md:text-lg text-base font-nunito-sans text-accent font-bold leading-tight">
               {clientTagline}
             </p>
           )}

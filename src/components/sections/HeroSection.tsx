@@ -20,7 +20,7 @@ const HeroSection = ({
     <div
       className={cn(
         'relative rounded-3xl overflow-hidden mx-2 mb-4 xl:m-4',
-        image && 'md:max-h-[700px] max-h-[300px]'
+        image && 'lg:max-h-[700px] max-h-[350px]'
       )}
     >
       {videoUrl && (
@@ -46,7 +46,7 @@ const HeroSection = ({
       )}
 
       {title && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-black/80">
+        <div className="absolute inset-0 flex flex-col lg:gap-4 gap-2 items-center justify-center p-4 bg-black/80">
           <h1 className="text-white text-center animate-fade-in-up">{title}</h1>
           {description && (
             <h3 className="text-accent text-center animate-fade-in-up-delayed">

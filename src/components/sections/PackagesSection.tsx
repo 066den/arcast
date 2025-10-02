@@ -19,12 +19,12 @@ const PackagesSection = ({
   return (
     <section className="py-10 xl:py-20">
       <div className="section-title">what do we provide</div>
-      <div className="flex justify-between gap-4 mb-16">
+      <div className="flex flex-col sm:flex-row justify-between gap-4 lg:mb-16 mb-8">
         <div className="mt-2">
           <h2>
             Fully packed <span className="text-accent">services</span>
           </h2>
-          <h2 className="flex items-center gap-3">
+          <h2 className="flex items-center flex-wrap sm:flex-nowrap gap-3">
             <Image
               src="/assets/images/pre-beneficial.jpg"
               alt="Beneficial packages"

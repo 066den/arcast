@@ -19,7 +19,7 @@ export default async function CaseStudiesPage() {
         description="How have we solved the real issues of our clients"
         image="/assets/images/case-banner.jpg"
       />
-      <section className="py-4 xl:py-10">
+      <section className="xl:py-10">
         <CaseStudiesList cases={cases as unknown as CaseStudy[]} />
       </section>
       <PackagesSection

@@ -127,7 +127,7 @@
 
   .blog-text-content {
     h2 {
-      @apply text-accent;
+      @apply text-accent mb-4;
     }
     p,
     ul {

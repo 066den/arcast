@@ -27,7 +27,7 @@ export default function ItemCard({
         )}
       </div>
 
-      <div className="p-4 text-xl text-center font-nunito-sans leading-none">
+      <div className="sm:p-4 py-2 sm:text-xl text-base text-center font-nunito-sans leading-none">
         {name && <h4 className="font-medium text-accent mb-2">{name}</h4>}
         {description && <p>{description}</p>}
       </div>

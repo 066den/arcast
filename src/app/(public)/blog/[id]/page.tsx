@@ -25,7 +25,7 @@ const BlogPage = async ({ params }: { params: Promise<{ id: string }> }) => {
         description={stripHtml(tagline)}
         image={mainImageUrl ?? '/assets/images/blog-banner.webp'}
       />
-      <section className="py-14">
+      <section className="lg:py-14 py-6">
         <div className="text-content blog-text-content">
           {ReactHtmlParser(mainText)}
         </div>

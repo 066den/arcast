@@ -79,9 +79,9 @@ export default async function AboutPage() {
         initialStudios={studios.status === 'fulfilled' ? studios.value : []}
       />
       {staff.status === 'fulfilled' && staff.value.length > 0 && (
-        <section className="py-12">
+        <section className="lg:py-12 py-6">
           <h2 className="text-accent mb-6">Our talent support team</h2>
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
+          <div className="grid sm:grid-cols-3 grid-cols-2 md:grid-cols-4 lg:grid-cols-5 sm:gap-8 gap-4">
             {staff.value?.map(
               ({ id, name, role, imageUrl }: CaseStudyStaff) => (
                 <ItemCard
@@ -97,9 +97,9 @@ export default async function AboutPage() {
       )}
 
       {equipment.status === 'fulfilled' && equipment.value.length > 0 && (
-        <section className="py-12">
+        <section className="lg:py-12 py-6">
           <h2 className="text-accent mb-6">Equipment we use</h2>
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
+          <div className="grid sm:grid-cols-3 grid-cols-2 md:grid-cols-4 lg:grid-cols-5 sm:gap-8 gap-4">
             {equipment.value?.map(
               ({ id, name, description, imageUrl }: CaseStudyEquipment) => (
                 <ItemCard

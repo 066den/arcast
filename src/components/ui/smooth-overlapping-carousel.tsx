@@ -125,7 +125,7 @@ const SmoothOverlappingCarousel = ({
               }}
             >
               <div
-                className="relative cursor-pointer w-[325px] h-[360px]"
+                className="relative cursor-pointer sm:w-[325px] w-[260px] sm:h-[360px] h-[300px]"
                 onClick={() => item.videoUrl && playVideo(item.videoUrl)}
               >
                 <Image

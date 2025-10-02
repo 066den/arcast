@@ -22,7 +22,7 @@ const ServiceButton = ({
       size="custom"
       variant="outline"
       className={cn(
-        'justify-center lg:justify-between w-full max-w-[400px] h-14 xl:h-15 rounded-full font-medium text-dark-mode font-geist tracking-tight hover:bg-white hover:text-accent shadow-none text-base xl:text-xl px-4 has-[svg]:px-1',
+        'justify-center lg:justify-between w-full max-w-[400px] sm:h-14 h-12 xl:h-15 rounded-full font-medium text-dark-mode font-geist tracking-tight hover:bg-white hover:text-accent shadow-none text-base xl:text-xl px-4 has-[svg]:px-1',
         isActive && 'bg-muted text-accent hover:bg-muted'
       )}
       onClick={onClick}
