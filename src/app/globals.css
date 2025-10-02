@@ -107,7 +107,8 @@
   }
 
   .text-content {
-    p {
+    p,
+    blockquote {
       @apply lg:mb-10 md:mb-6 mb-4;
       letter-spacing: -0.02em;
     }
