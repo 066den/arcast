@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '../ui/button'
 import Image from 'next/image'
 import { navigation, siteConfig } from '@/lib/config'
@@ -17,6 +17,27 @@ const Header = () => {
   const pathname = usePathname()
   const router = useRouter()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const scrollPositionRef = useRef(0)
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      scrollPositionRef.current = window.scrollY
+      document.body.style.position = 'fixed'
+      document.body.style.top = `-${scrollPositionRef.current}px`
+      document.body.style.width = '100%'
+    } else {
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+      window.scrollTo(0, scrollPositionRef.current)
+    }
+
+    return () => {
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+    }
+  }, [isMobileMenuOpen])
 
   const handleGetStarted = () => {
     router.push(ROUTES.BOOKING)

@@ -24,22 +24,25 @@ const Headline = ({
 }: HeadlineProps) => {
   return (
     <div
-      className={cn('flex flex-row lg:gap-10 gap-6 lg:py-8 py-4', {
-        'lg:flex-row-reverse': isReverse,
-      })}
+      className={cn(
+        'flex flex-col sm:flex-row lg:gap-10 sm:gap-6 gap-2 lg:py-8 py-4',
+        {
+          'lg:flex-row-reverse': isReverse,
+        }
+      )}
     >
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="aspect-[4/5] w-full max-w-[180px] md:max-w-[280px] overflow-hidden rounded-[2.5rem] relative"
+        className="aspect-[4/5] w-full max-w-[180px] md:max-w-[280px] overflow-hidden sm:rounded-[2.5rem] rounded-3xl relative"
       >
         {image && (
           <Image src={image} alt={title} fill className="object-cover" />
         )}
       </motion.div>
 
-      <div className="flex-1 flex flex-col justify-between gap-8 pb-2">
+      <div className="flex-1 flex flex-col justify-between sm:gap-8 gap-4 pb-2">
         <motion.h2
           className=" text-accent"
           initial={{ opacity: 0, y: 30 }}
@@ -59,7 +62,7 @@ const Headline = ({
         </motion.div>
 
         <motion.div
-          className="flex gap-4"
+          className="flex flex-col sm:flex-row gap-4"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.6, ease: 'easeOut' }}

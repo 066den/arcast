@@ -33,20 +33,20 @@ export default async function CaseStudyPage({
         description={tagline}
         image="/assets/images/case-banner.jpg"
       />
-      <section className="py-24">
+      <section className="lg:py-24 py-6">
         <h3 className="text-accent">{mainText}</h3>
       </section>
-      <section className="py-16 space-y-24">
+      <section className="lg:py-16 py-6 lg:space-y-24 space-y-12">
         {caseContent?.map((item, index) => (
           <div key={item.id}>
             <h2 className="text-accent mb-6">{item.title}</h2>
             <div
-              className={cn('flex gap-10', {
-                'lg:flex-row-reverse': index % 2 === 1 && item.imageUrl,
+              className={cn('flex flex-col md:flex-row lg:gap-10 gap-4', {
+                'md:flex-row-reverse': index % 2 === 1 && item.imageUrl,
               })}
             >
               {item.imageUrl && (
-                <div className="aspect-[5/4] w-full max-w-[426px] overflow-hidden rounded-[2.5rem] relative">
+                <div className="aspect-[5/4] w-full xl:max-w-[426px] max-w-[220px] overflow-hidden rounded-[2.5rem] relative">
                   <Image
                     src={item.imageUrl}
                     alt={item.title}
@@ -56,7 +56,7 @@ export default async function CaseStudyPage({
                 </div>
               )}
               {item.text && item.text.length > 0 && (
-                <div className="text-content text-3xl font-nunito-sans leading-normal">
+                <div className="text-content lg:text-3xl sm:text-2xl text-xl font-nunito-sans leading-normal">
                   {item.text.map((textItem: string, textIndex: number) => (
                     <ReactMarkdown key={textIndex}>{textItem}</ReactMarkdown>
                   ))}
@@ -67,13 +67,14 @@ export default async function CaseStudyPage({
                 <ul className="space-y-6">
                   {item.list.map((listItem: string, listIndex: number) => (
                     <li key={listIndex} className="flex items-start">
-                      <span className="mr-5 mt-0.5">
+                      <span className="sm:mr-5 mr-2 mt-0.5">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="27"
                           height="40"
                           fill="none"
                           viewBox="0 0 27 40"
+                          className="w-6 h-6 sm:w-auto sm:h-auto"
                         >
                           <path
                             fill="#FF8C42"
@@ -81,7 +82,7 @@ export default async function CaseStudyPage({
                           />
                         </svg>
                       </span>
-                      <span className="text-3xl font-nunito-sans leading-normal">
+                      <span className="lg:text-3xl sm:text-2xl text-xl font-nunito-sans leading-normal">
                         {listItem}
                       </span>
                     </li>
@@ -94,9 +95,9 @@ export default async function CaseStudyPage({
       </section>
 
       {staff && staff.length > 0 && (
-        <section className="py-16">
+        <section className="lg:py-16 py-6">
           <h2 className="text-accent mb-6">This case talent support team</h2>
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
+          <div className="grid sm:grid-cols-3 grid-cols-2 md:grid-cols-4 lg:grid-cols-5 lg:gap-8 gap-4">
             {staff?.map(({ id, name, role, imageUrl }: CaseStudyStaff) => (
               <ItemCard
                 key={id}
@@ -110,9 +111,9 @@ export default async function CaseStudyPage({
       )}
 
       {equipment && equipment.length > 0 && (
-        <section className="py-16">
+        <section className="lg:py-16 py-6">
           <h2 className="text-accent mb-6">Equipment used in this case</h2>
-          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
+          <div className="grid sm:grid-cols-3 grid-cols-2 md:grid-cols-4 lg:grid-cols-5 lg:gap-8 gap-4">
             {equipment?.map(
               ({ id, name, description, imageUrl }: CaseStudyEquipment) => (
                 <ItemCard

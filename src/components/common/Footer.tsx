@@ -12,7 +12,7 @@ import Link from 'next/link'
 const Footer = () => {
   return (
     <footer>
-      <section className="flex gap-14 pb-20">
+      <section className="flex flex-col sm:flex-row lg:gap-14 gap-6 lg:pb-20 pb-10">
         <div className="aspect-[16/9] md:w-3/5 rounded-3xl overflow-hidden hover:bg-black/10 transition-all duration-300 relative group">
           <Image
             src="/assets/images/map-Dubai.jpg"
@@ -74,7 +74,7 @@ const Footer = () => {
           </div>
         </div>
       </section>
-      <div className="border-t py-10">
+      <div className="border-t lg:py-10 py-6">
         <section className="flex justify-between">
           <p>© 2025 ARcast All rights reserved.</p>
         </section>

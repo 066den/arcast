@@ -59,7 +59,7 @@ const TestimonialsSection = ({
       whileInView="visible"
       viewport={{ once: true, margin: '-100px' }}
     >
-      <div className="grid grid-cols-5 md:gap-10 gap-2">
+      <div className="grid sm:grid-cols-5 grid-cols-1 md:gap-10 gap-2">
         <div className="aspect-[3/4] md:col-span-2 col-span-1 md:max-w-xl rounded-3xl overflow-hidden">
           {isVideo ? (
             <Video
@@ -84,7 +84,7 @@ const TestimonialsSection = ({
         </div>
         <motion.div
           variants={containerVariants}
-          className="md:col-span-3 col-span-4 px-6"
+          className="md:col-span-3 sm:col-span-4 col-span-1 lg:px-6"
         >
           <motion.div className="section-title" variants={itemVariants}>
             FREE YOURSELF FROM PRODUCTION ROUTINE
