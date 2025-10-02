@@ -7,7 +7,6 @@ type SelectTimeProps = {
   selectedTime: string
   onSelectTime: (time: string) => void
   duration: number
-  studio?: Studio
 }
 
 const SelectTime = ({

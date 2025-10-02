@@ -115,8 +115,7 @@
       margin-bottom: 0;
     }
     ul {
-      list-style-type: disc;
-      margin-left: 1.5em;
+      @apply list-disc md:ml-[1.5em] ml-[1em];
       margin-bottom: 1.25em;
       letter-spacing: -0.04em;
     }
@@ -144,21 +143,21 @@
   }
 
   .custom-list li {
-    @apply relative mb-8;
+    @apply relative md:mb-8 mb-4;
   }
 
   .custom-list li:before {
     content: '';
     position: absolute;
     right: 100%;
-    top: -2px;
+    top: 0;
     width: 1.65rem;
     height: 2.5rem;
-    margin-right: 1.125rem;
     background-image: url('/icons/list-icon.svg');
     background-size: contain;
     background-repeat: no-repeat;
     z-index: -1;
+    @apply md:w-6 w-4 md:h-10 h-8 md:mr-[1.125rem] mr-1.5 sm:mt-1 mt-0.5 md:-mt-0.5;
   }
 
   .section-title {

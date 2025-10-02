@@ -30,6 +30,7 @@ import useFlag from '@/hooks/useFlag'
 import { useBooking } from '@/hooks/storeHooks/useBooking'
 import { CreditCard } from 'lucide-react'
 import { SCROLL_TARGETS } from '@/hooks/useScrollNavigation'
+import SelectTime from './SelectTime'
 
 interface BookingFormProps {
   initialStudios: Studio[]
@@ -196,7 +197,7 @@ const BookingForm = ({
         ))}
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-4 hidden">
+      <form onSubmit={onSubmit} className="space-y-4">
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -222,17 +223,16 @@ const BookingForm = ({
               <div>
                 <Label>Start Time</Label>
 
-                {/* {availableTimes ? (
+                {availableTimes ? (
                   <SelectTime
                     times={availableTimes}
                     selectedTime={selectedTime}
                     onSelectTime={setSelectedTime}
                     duration={duration}
-                    studio={selectSt}
                   />
                 ) : (
                   <p>No available times</p>
-                )} */}
+                )}
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
