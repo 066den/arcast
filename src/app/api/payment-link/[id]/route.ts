@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { getPaymentLink } from '@/services/paymentServices'
-import { BASE_URL } from '@/lib/constants'
 
 export async function GET(
   req: Request,
@@ -13,7 +12,7 @@ export async function GET(
     if (createdPaymentLink) {
       return NextResponse.json({
         success: true,
-        paymentLink: `${createdPaymentLink.payment_url}?embedded=true&parent_origin=${BASE_URL}&enable_postmessage=true`,
+        paymentLink: `${createdPaymentLink.payment_url}?embedded=true&parent_origin=${process.env.NEXT_PUBLIC_APP_URL}&enable_postmessage=true`,
       })
     }
 
