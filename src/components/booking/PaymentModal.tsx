@@ -45,7 +45,7 @@ const PaymentModal = ({
       title="Payment"
       description="Complete your payment to proceed with the booking"
       size="lg"
-      contentClassName="h-full max-h-[calc(100vh-100px)]"
+      contentClassName="h-full sm:max-h-[calc(100vh-100px)]"
       footer={
         <div className="flex items-center gap-2 justify-between text-sm p-4 pt-0 text-gray-500">
           Powered by{' '}

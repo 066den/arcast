@@ -131,7 +131,7 @@ const BookingForm = ({
           }),
         }
       )
-
+      console.log(response)
       if (response.paymentUrl) {
         setPaymentUrl(response.paymentUrl)
         setTotalAmount(response.finalAmount || response.totalCost)
