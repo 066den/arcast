@@ -436,8 +436,11 @@ export async function POST(req: Request) {
         error: error instanceof Error ? error.message : error,
         stack: error instanceof Error ? error.stack : undefined,
       })
-      // Don't fail the entire booking creation if payment link fails
-      // The booking is still created and can be paid later
+
+      return NextResponse.json(
+        { success: false, error: ERROR_MESSAGES.PAYMENT.FAILED },
+        { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
+      )
     }
 
     return NextResponse.json(response)
