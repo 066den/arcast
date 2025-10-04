@@ -184,198 +184,202 @@ const BookingForm = ({
   return (
     <section id={SCROLL_TARGETS.BOOKING.FORM} className="lg:py-16 py-10">
       <form onSubmit={onSubmit} className="space-y-24">
-        <div className="space-y-12">
-          <h2>
-            Choose preferred <span className="text-accent">date</span> &{' '}
-            <span className="text-accent">time</span>
-          </h2>
+        <div className="grid grid-cols-3 gap-4">
+          <div className="col-span-2">
+            <div className="space-y-12">
+              <h2>
+                Choose preferred <span className="text-accent">date</span> &{' '}
+                <span className="text-accent">time</span>
+              </h2>
 
-          <div className="flex justify-center gap-10">
-            <Card className="rounded-2xl border-none py-2 overflow-hidden shadow-2xl/10">
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={date => setSelectedDate(date)}
-                disabled={{
-                  before: new Date(new Date().setHours(0, 0, 0, 0)),
-                }}
-              />
-            </Card>
-            <Card className="rounded-2xl flex items-center justify-center border-none px-4 py-6 overflow-hidden shadow-2xl/10 min-w-[410px]">
-              {availableTimes ? (
-                <SelectTime
-                  times={availableTimes}
-                  selectedTime={selectedTime}
-                  onSelectTime={setSelectedTime}
-                  duration={duration}
-                />
-              ) : (
-                <p>No available times</p>
+              <div className="flex justify-center gap-10">
+                <Card className="rounded-2xl border-none py-2 overflow-hidden shadow-2xl/10">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={date => setSelectedDate(date)}
+                    disabled={{
+                      before: new Date(new Date().setHours(0, 0, 0, 0)),
+                    }}
+                  />
+                </Card>
+                <Card className="rounded-2xl flex items-center justify-center border-none px-4 py-6 overflow-hidden shadow-2xl/10 min-w-[410px]">
+                  {availableTimes ? (
+                    <SelectTime
+                      times={availableTimes}
+                      selectedTime={selectedTime}
+                      onSelectTime={setSelectedTime}
+                      duration={duration}
+                    />
+                  ) : (
+                    <p>No available times</p>
+                  )}
+                </Card>
+                <div className="flex flex-col justify-center items-center gap-8 min-w-[320px]">
+                  <div className="space-y-6">
+                    <Label
+                      className="font-hanken-grotesk font-medium text-3xl"
+                      htmlFor="duration"
+                    >
+                      Number of <span className="text-accent">guests</span>
+                    </Label>
+                    <DurationSelector value={guests} onChange={setGuests} />
+                  </div>
+                  <div className="space-y-6">
+                    <Label
+                      className="font-hanken-grotesk font-medium text-3xl"
+                      htmlFor="duration"
+                    >
+                      Duration <span className="text-accent">hours</span>
+                    </Label>
+                    <DurationSelector value={duration} onChange={setDuration} />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-12">
+              <h2>
+                Choose <span className="text-accent">studio</span>
+              </h2>
+
+              <div className="grid sm:grid-cols-2 lg:gap-16 gap-6 py-6 justify-items-center max-w-7xl mx-auto">
+                {initialStudios.map(studio => (
+                  <StudioCard
+                    key={studio.id}
+                    studio={studio}
+                    isSelection
+                    isSelected={selectStudioId === studio.id}
+                    onClick={selectStudio}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="space-y-12">
+              <h2>
+                Chose preffered{' '}
+                <span className="text-accent">additional services</span>
+              </h2>
+              {initialAdditionalServices?.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 justify-items-center gap-y-8 gap-x-16 max-w-7xl mx-auto">
+                  {initialAdditionalServices.map(service => (
+                    <ServiceCheckbox
+                      key={service.id}
+                      service={service}
+                      onChange={setAdditionalServices}
+                      selectedServices={additionalServices}
+                    />
+                  ))}
+                </div>
               )}
-            </Card>
-            <div className="flex flex-col justify-center items-center gap-8 min-w-[320px]">
-              <div className="space-y-6">
-                <Label
-                  className="font-hanken-grotesk font-medium text-3xl"
-                  htmlFor="duration"
-                >
-                  Number of <span className="text-accent">guests</span>
-                </Label>
-                <DurationSelector value={guests} onChange={setGuests} />
-              </div>
-              <div className="space-y-6">
-                <Label
-                  className="font-hanken-grotesk font-medium text-3xl"
-                  htmlFor="duration"
-                >
-                  Duration <span className="text-accent">hours</span>
-                </Label>
-                <DurationSelector value={duration} onChange={setDuration} />
+            </div>
+
+            <div className="space-y-12">
+              <h2>
+                Leave your <span className="text-accent">contact data</span>
+              </h2>
+
+              <div className="space-y-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <Label htmlFor="fullName">Full name</Label>
+                    <Input
+                      id="fullName"
+                      {...register('fullName')}
+                      placeholder="John Doe"
+                      error={errors.fullName?.message}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      {...register('email')}
+                      placeholder="john@example.com"
+                      error={errors.email?.message}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="phone">Phone</Label>
+                    <InputPhone
+                      key={formKey}
+                      id="phone"
+                      {...register('phoneNumber')}
+                      error={errors.phoneNumber?.message}
+                      onChangeValue={handlePhoneChange}
+                    />
+                  </div>
+                  <div className="space-y-2 col-span-1">
+                    <Label htmlFor="discountCode">
+                      Discount code (optional)
+                    </Label>
+                    <Input
+                      id="discountCode"
+                      {...register('discountCode')}
+                      placeholder="Discount code"
+                      error={errors.discountCode?.message}
+                    />
+                  </div>
+                </div>
+
+                {submitError && (
+                  <motion.div
+                    variants={notificationVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="bg-red-100 border rounded-lg p-3"
+                  >
+                    <p className="text-red-600">{submitError}</p>
+                  </motion.div>
+                )}
+
+                {submitSuccess && (
+                  <motion.div
+                    variants={notificationVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="bg-green-100 border border-green-300 rounded-lg p-3"
+                  >
+                    <p className="text-green-600">
+                      Booking submitted successfully! We&apos;ll contact you
+                      soon to confirm your session.
+                    </p>
+                  </motion.div>
+                )}
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="space-y-12">
-          <h2>
-            Choose <span className="text-accent">studio</span>
-          </h2>
-
-          <div className="grid sm:grid-cols-2 lg:gap-16 gap-6 py-6 justify-items-center max-w-7xl mx-auto">
-            {initialStudios.map(studio => (
-              <StudioCard
-                key={studio.id}
-                studio={studio}
-                isSelection
-                isSelected={selectStudioId === studio.id}
-                onClick={selectStudio}
+          <div className="col-span-1 pt-18">
+            <div className="space-y-12 sticky top-20">
+              <BookingSummary
+                selectedDate={selectedDate}
+                selectedTime={selectedTime}
+                duration={duration}
+                guests={guests}
+                selectedStudio={selectStudioId}
+                selectedService={selectServiceId}
+                selectedPackage={selectPackageId}
+                selectedAdditionalServices={additionalServices}
+                studios={initialStudios}
+                packages={initialPackages}
+                initialServiceTypes={initialServiceTypes || []}
+                additionalServices={initialAdditionalServices}
               />
-            ))}
-          </div>
-        </div>
-        <div className="space-y-12">
-          <h2>
-            Chose preffered{' '}
-            <span className="text-accent">additional services</span>
-          </h2>
-          {initialAdditionalServices?.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 justify-items-center gap-y-8 gap-x-16 max-w-7xl mx-auto">
-              {initialAdditionalServices.map(service => (
-                <ServiceCheckbox
-                  key={service.id}
-                  service={service}
-                  onChange={setAdditionalServices}
-                  selectedServices={additionalServices}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="space-y-12">
-          <h2>
-            Leave your <span className="text-accent">contact data</span>
-          </h2>
-
-          <div className="space-y-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-3">
-                <Label htmlFor="fullName">Full name</Label>
-                <Input
-                  id="fullName"
-                  {...register('fullName')}
-                  placeholder="John Doe"
-                  error={errors.fullName?.message}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  {...register('email')}
-                  placeholder="john@example.com"
-                  error={errors.email?.message}
-                />
+              <div className="flex justify-center">
+                <Button
+                  type="submit"
+                  className="text-4xl font-hanken-grotesk font-medium w-full max-w-lg rounded-2xl h-18"
+                  size="custom"
+                  variant="accent"
+                  disabled={isSubmitting || !isValid}
+                >
+                  {isSubmitting ? 'Submitting...' : 'Order Now'}
+                </Button>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2 col-span-2">
-                <Label htmlFor="phone">Phone</Label>
-                <InputPhone
-                  key={formKey}
-                  id="phone"
-                  {...register('phoneNumber')}
-                  error={errors.phoneNumber?.message}
-                  onChangeValue={handlePhoneChange}
-                />
-              </div>
-              <div className="space-y-2 col-span-1">
-                <Label htmlFor="discountCode">Discount code (optional)</Label>
-                <Input
-                  id="discountCode"
-                  {...register('discountCode')}
-                  placeholder="Discount code"
-                  error={errors.discountCode?.message}
-                />
-              </div>
-            </div>
-
-            {submitError && (
-              <motion.div
-                variants={notificationVariants}
-                initial="hidden"
-                animate="visible"
-                className="bg-red-100 border rounded-lg p-3"
-              >
-                <p className="text-red-600">{submitError}</p>
-              </motion.div>
-            )}
-
-            {submitSuccess && (
-              <motion.div
-                variants={notificationVariants}
-                initial="hidden"
-                animate="visible"
-                className="bg-green-100 border border-green-300 rounded-lg p-3"
-              >
-                <p className="text-green-600">
-                  Booking submitted successfully! We&apos;ll contact you soon to
-                  confirm your session.
-                </p>
-              </motion.div>
-            )}
-          </div>
-        </div>
-
-        <div className="space-y-12">
-          <h2>
-            Booking <span className="text-accent">summary</span>
-          </h2>
-          <BookingSummary
-            selectedDate={selectedDate}
-            selectedTime={selectedTime}
-            duration={duration}
-            guests={guests}
-            selectedStudio={selectStudioId}
-            selectedService={selectServiceId}
-            selectedPackage={selectPackageId}
-            selectedAdditionalServices={additionalServices}
-            studios={initialStudios}
-            packages={initialPackages}
-            initialServiceTypes={initialServiceTypes || []}
-            additionalServices={initialAdditionalServices}
-          />
-          <div className="flex justify-center">
-            <Button
-              type="submit"
-              className="text-4xl font-hanken-grotesk font-medium w-full max-w-lg rounded-2xl h-18"
-              size="custom"
-              variant="accent"
-              disabled={isSubmitting || !isValid}
-            >
-              {isSubmitting ? 'Submitting...' : 'Order Now'}
-            </Button>
           </div>
         </div>
 
