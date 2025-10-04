@@ -12,19 +12,62 @@ export async function GET(
     const createdPaymentLink = await getPaymentLink(id)
     if (createdPaymentLink) {
       return NextResponse.json({
+        success: true,
         paymentLink: `${createdPaymentLink.payment_url}?embedded=true&parent_origin=${BASE_URL}&enable_postmessage=true`,
       })
     }
 
     return NextResponse.json(
-      { error: 'Payment link not found' },
+      {
+        success: false,
+        error: 'Payment link not found',
+        message: 'No payment link found for this booking',
+        code: 'PAYMENT_LINK_NOT_FOUND',
+      },
       { status: 404 }
     )
   } catch (error) {
     console.error('Failed to create payment link:', error)
+
+    // Определяем тип ошибки и соответствующий HTTP статус
+    let statusCode = 500
+    let errorMessage = 'Failed to create payment link'
+    let errorCode = 'PAYMENT_LINK_ERROR'
+    let details = null
+
+    if (error instanceof Error) {
+      // Проверяем на специфические ошибки
+      if (error.message.includes('Booking not found')) {
+        statusCode = 404
+        errorMessage = 'Booking not found'
+        errorCode = 'BOOKING_NOT_FOUND'
+      } else if (error.message.includes('Payment service configuration')) {
+        statusCode = 503
+        errorMessage = 'Payment service is not properly configured'
+        errorCode = 'PAYMENT_SERVICE_CONFIG_ERROR'
+      } else if (error.message.includes('MAMO API')) {
+        statusCode = 502
+        errorMessage = 'Payment provider is currently unavailable'
+        errorCode = 'PAYMENT_PROVIDER_ERROR'
+      } else if (error.message.includes('Database')) {
+        statusCode = 503
+        errorMessage = 'Database connection error'
+        errorCode = 'DATABASE_ERROR'
+      } else {
+        errorMessage = error.message
+      }
+    }
+
     return NextResponse.json(
-      { error: 'Failed to create payment link' },
-      { status: 500 }
+      {
+        success: false,
+        error: errorMessage,
+        code: errorCode,
+        details:
+          process.env.NODE_ENV === 'development' ? error?.toString() : null,
+        timestamp: new Date().toISOString(),
+      },
+      { status: statusCode }
     )
   }
 }
