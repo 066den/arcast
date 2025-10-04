@@ -18,7 +18,7 @@ function calculateBaseCost(pricePerHour: number, duration: number): number {
   return parseFloat(pricePerHour.toString()) * duration
 }
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const bookings = await prisma.booking.findMany({
       include: {
@@ -422,12 +422,22 @@ export async function POST(req: Request) {
     }
 
     try {
+      console.log('Creating payment link for booking:', result.id)
       const paymentLink = await getPaymentLinkForBooking(result.id)
-      if (paymentLink) {
-        response.paymentUrl = `${paymentLink.paymentLink?.payment_url}?embedded=true&parent_origin=${process.env.NEXT_PUBLIC_APP_URL}&enable_postmessage=true`
+      if (paymentLink && paymentLink.paymentLink) {
+        response.paymentUrl = `${paymentLink.paymentLink.payment_url}?embedded=true&parent_origin=${process.env.NEXT_PUBLIC_APP_URL}&enable_postmessage=true`
+        console.log('Payment URL created successfully:', response.paymentUrl)
+      } else {
+        console.warn('Payment link creation returned null or undefined')
       }
     } catch (error) {
-      console.error('Failed to create payment link:', error)
+      console.error('Failed to create payment link:', {
+        bookingId: result.id,
+        error: error instanceof Error ? error.message : error,
+        stack: error instanceof Error ? error.stack : undefined,
+      })
+      // Don't fail the entire booking creation if payment link fails
+      // The booking is still created and can be paid later
     }
 
     return NextResponse.json(response)
