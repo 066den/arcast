@@ -38,29 +38,40 @@ const useBookingStore = create<BookingStore>()(
         set({
           selectedIndices: { ...get().selectedIndices, studio: studioId },
         }),
-      selectService: (serviceId: string) =>
+
+      selectService: (serviceId: string) => {
+        set({ isLoading: true })
         set({
           selectedIndices: {
             ...get().selectedIndices,
             service: serviceId,
             package: '',
           },
-        }),
-      selectPackage: (packageId: string) =>
+        })
+        set({ isLoading: false })
+      },
+
+      selectPackage: (packageId: string) => {
         set({
           selectedIndices: {
             ...get().selectedIndices,
             package: packageId,
             service: '',
           },
-        }),
-      selectServiceType: (slug: string) =>
+        })
+      },
+
+      selectServiceType: (slug: string) => {
+        set({ isLoading: true })
         set({
           selectedIndices: {
             ...get().selectedIndices,
             serviceType: slug,
           },
-        }),
+        })
+        set({ isLoading: false })
+      },
+
       createBooking: async () => {
         // const booking = await createBooking()
         // set({ booking })

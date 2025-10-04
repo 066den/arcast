@@ -47,7 +47,7 @@ export function ServiceCheckbox({
       )}
     >
       <div className="flex-1 flex flex-col justify-between space-y-4">
-        <h4 className="text-3xl">{service.name}</h4>
+        <h4 className="lg:text-3xl text-2xl">{service.name}</h4>
 
         <p className="font-nunito-sans">{service.description}</p>
         {/* {service.type === 'STANDARD' && (

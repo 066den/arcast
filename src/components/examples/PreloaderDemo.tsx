@@ -23,7 +23,7 @@ export function PreloaderDemo() {
 
   const handleAsyncOperation = async () => {
     try {
-      const result = await asyncPreloader.execute(simulateAsyncOperation, {
+      await asyncPreloader.execute(simulateAsyncOperation, {
         text: 'Processing data...',
         variant: 'wave',
       })
@@ -178,7 +178,7 @@ export function PreloaderDemo() {
       {/* Inline Preloader Example */}
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold text-foreground">
-          Inline Preloader
+          Inline Preloader with Smooth Animations
         </h2>
         <Button
           onClick={() => setShowInlinePreloader(!showInlinePreloader)}
@@ -187,9 +187,12 @@ export function PreloaderDemo() {
           Toggle Inline Preloader
         </Button>
 
-        {showInlinePreloader && (
-          <InlinePreloader text="Loading content..." variant="dots" size="md" />
-        )}
+        <InlinePreloader
+          text="Loading content..."
+          variant="dots"
+          size="md"
+          show={showInlinePreloader}
+        />
       </section>
     </div>
   )
