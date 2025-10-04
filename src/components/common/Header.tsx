@@ -20,6 +20,8 @@ const Header = () => {
   const scrollPositionRef = useRef(0)
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     if (isMobileMenuOpen) {
       scrollPositionRef.current = window.scrollY
       document.body.style.position = 'fixed'

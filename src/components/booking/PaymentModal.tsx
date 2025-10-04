@@ -20,6 +20,8 @@ const PaymentModal = ({
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const handleMessage = (event: MessageEvent) => {
       const allowedOrigins = [process.env.MAMO_BASE_URL]
       if (!allowedOrigins.includes(event.origin)) {
