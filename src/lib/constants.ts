@@ -229,7 +229,7 @@ export const CURRENCY_SYMBOLS = {
 export const PAYMENT_PROVIDER = {
   TITLE: 'ARcast Booking',
   CURRENCY: 'AED',
-  RETURN_URL: `${process.env.NEXT_PUBLIC_APP_URL}/booking/sucсess`,
+  RETURN_URL: `${process.env.NEXT_PUBLIC_APP_URL}/booking/success`,
   FAILURE_RETURN_URL: `${process.env.NEXT_PUBLIC_APP_URL}/booking/failed`,
 } as const
 
