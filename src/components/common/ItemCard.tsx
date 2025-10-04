@@ -20,6 +20,7 @@ export default function ItemCard({
             src={imageUrl}
             alt={name || 'Staff member'}
             fill
+            sizes="160px"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (

@@ -1,19 +1,25 @@
 import { getStudios } from '@/services/studioServices'
-import { getPackages, getServiceTypes } from '@/services/servicesServices'
+import {
+  getAdditionalServices,
+  getPackages,
+  getServiceTypes,
+} from '@/services/servicesServices'
 import BookingForm from '@/components/booking/BookingForm'
 import ChooseServiceOrPackage from '@/components/booking/ChooseServiceOrPackage'
 
 export default async function BookingPage() {
-  const [initialServiceTypes, initialPackages] = await Promise.all([
-    getServiceTypes(),
-    getPackages(),
-  ])
+  const [initialServiceTypes, initialPackages, initialAdditionalServices] =
+    await Promise.all([
+      getServiceTypes(),
+      getPackages(),
+      getAdditionalServices(),
+    ])
 
   const [studios] = await Promise.all([getStudios()])
 
   return (
     <>
-      <section className="lg:py-16 py-10">
+      <section className="py-16">
         <div className="text-center">
           <h1 className="text-accent mb-8">Book Your Studio Session</h1>
           <h3 className="">
@@ -32,8 +38,9 @@ export default async function BookingPage() {
       />
       <BookingForm
         initialStudios={studios}
-        //initialPackages={initialPackages}
-        initialServices={[]}
+        initialAdditionalServices={initialAdditionalServices}
+        initialPackages={initialPackages}
+        initialServiceTypes={initialServiceTypes}
       />
     </>
   )

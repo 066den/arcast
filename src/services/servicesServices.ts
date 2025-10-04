@@ -168,3 +168,27 @@ export const getPackages = async (): Promise<PackageWithServices[]> => {
     throw new Error('Failed to fetch packages')
   }
 }
+
+export const getAdditionalServices = async () => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+  try {
+    const additionalServices = await prisma.additionalService.findMany({
+      where: {
+        isActive: true,
+      },
+    })
+
+    return additionalServices.map(service => ({
+      ...service,
+      price: service.price ? Number(service.price) : 0,
+    }))
+  } catch (error) {
+    console.error('Error fetching additional services:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch additional services: ${error.message}`)
+    }
+    throw new Error('Failed to fetch additional services')
+  }
+}

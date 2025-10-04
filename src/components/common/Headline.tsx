@@ -38,7 +38,13 @@ const Headline = ({
         className="aspect-[4/5] w-full max-w-[180px] md:max-w-[280px] overflow-hidden sm:rounded-[2.5rem] rounded-3xl relative"
       >
         {image && (
-          <Image src={image} alt={title} fill className="object-cover" />
+          <Image
+            src={image}
+            alt={title}
+            fill
+            sizes="(max-width: 768px) 180px, 280px"
+            className="object-cover"
+          />
         )}
       </motion.div>
 

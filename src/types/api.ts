@@ -22,7 +22,8 @@ export interface ApiResponseAvailablity {
 
 export interface BookingFormData {
   studioId: string
-  packageId: string
+  packageId: string | null
+  serviceId: string | null
   numberOfSeats: number
   selectedTime: string
   duration: number

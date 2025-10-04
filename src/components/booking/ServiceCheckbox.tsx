@@ -4,6 +4,7 @@ import { Check } from 'lucide-react'
 import { AdditionalService } from '../../types'
 import { useState } from 'react'
 import { DurationSelector } from '../ui/DurationSelector'
+import { cn } from '@/lib/utils'
 
 interface ServiceCheckboxProps {
   service: AdditionalService
@@ -39,33 +40,17 @@ export function ServiceCheckbox({
   }
 
   return (
-    <label className="flex items-start gap-3 p-4 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50 transition-colors">
-      <div className="relative">
-        <input
-          type="checkbox"
-          checked={isChecked}
-          onChange={handleChange}
-          className="sr-only"
-        />
-        <div
-          className={`w-5 h-5 border-2 rounded flex items-center justify-center transition-colors ${
-            isChecked ? 'border-blue-500 bg-blue-500' : 'border-slate-300'
-          }`}
-        >
-          {isChecked && <Check className="w-3 h-3 text-white" />}
-        </div>
-      </div>
+    <label
+      className={cn(
+        'flex gap-3 p-6 rounded-[1.25rem] shadow-xl/20 hover:shadow-xl/30 transition-all duration-300 cursor-pointer min-h-[165px] max-w-[540px]',
+        isChecked && 'shadow-xl/30'
+      )}
+    >
+      <div className="flex-1 flex flex-col justify-between space-y-4">
+        <h4 className="text-3xl">{service.name}</h4>
 
-      <div className="flex-1">
-        <div className="flex items-start justify-between mb-2">
-          <h4 className="font-medium text-slate-900">{service.name}</h4>
-          <span className="text-sm font-medium text-blue-600">
-            {Number(service.price)} {service.currency}
-          </span>
-        </div>
-
-        <p className="text-sm text-slate-600 mb-2">{service.description}</p>
-        {service.type === 'STANDARD' && (
+        <p className="font-nunito-sans">{service.description}</p>
+        {/* {service.type === 'STANDARD' && (
           <DurationSelector
             value={duration}
             onChange={handleDurationChange}
@@ -73,7 +58,23 @@ export function ServiceCheckbox({
             max={30}
             step={step}
           />
-        )}
+        )} */}
+      </div>
+      <div className="flex flex-col items-end justify-between">
+        <input
+          type="checkbox"
+          checked={isChecked}
+          onChange={handleChange}
+          className="sr-only"
+        />
+        <div className="md:size-12 size-8 flex items-center justify-center bg-input rounded-full border-3 border-primary">
+          {isChecked && (
+            <div className="md:size-8 size-6 bg-accent rounded-full" />
+          )}
+        </div>
+        <h4 className="text-2xl font-medium">
+          {Number(service.price)} {service.currency}
+        </h4>
       </div>
     </label>
   )

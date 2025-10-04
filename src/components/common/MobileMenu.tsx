@@ -49,20 +49,15 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
             transition={{ type: 'tween', duration: 0.3 }}
             className="fixed top-0 right-0 h-full w-80 max-w-[80vw] bg-white z-50 lg:hidden shadow-2xl"
           >
-            <div className="flex flex-col h-full">
-              <div className="flex items-center justify-between bg-white p-4 border-b">
-                <h2 className="text-lg font-semibold">Menu</h2>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onClose}
-                  className="p-2"
-                >
-                  <X className="h-5 w-5" />
+            <div className="flex flex-col h-screen bg-white">
+              <div className="flex items-center justify-between px-4 py-2 border-b">
+                <h2 className="text-lg font-semibold ml-4">Menu</h2>
+                <Button variant="ghost" size="icon" onClick={onClose}>
+                  <X className="size-5" />
                 </Button>
               </div>
 
-              <nav className="flex-1 p-4 bg-white">
+              <nav className="p-4">
                 <ul className="space-y-2">
                   {navigation.map(item => (
                     <li key={item.name}>
