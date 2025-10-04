@@ -54,7 +54,7 @@ function FailedPageContent() {
   }
 
   return (
-    <div className="px-4">
+    <div className="px-4 min-h-screen">
       <div className="w-full mt-5">
         <Button onClick={onClose} variant="outline">
           <ArrowLeftIcon className="w-4 h-4" />

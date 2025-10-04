@@ -28,13 +28,11 @@ export async function GET(
   } catch (error) {
     console.error('Failed to create payment link:', error)
 
-    // Определяем тип ошибки и соответствующий HTTP статус
     let statusCode = 500
     let errorMessage = 'Failed to create payment link'
     let errorCode = 'PAYMENT_LINK_ERROR'
 
     if (error instanceof Error) {
-      // Проверяем на специфические ошибки
       if (error.message.includes('Booking not found')) {
         statusCode = 404
         errorMessage = 'Booking not found'
