@@ -84,7 +84,7 @@ export function Modal({
           </DialogHeader>
         )}
 
-        <div className={cn('p-4 flex-1 overflow-y-auto', className)}>
+        <div className={cn('px-4 flex-1 overflow-y-auto', className)}>
           {children}
         </div>
 

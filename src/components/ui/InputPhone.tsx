@@ -34,13 +34,12 @@ const InputPhone = ({ onChangeValue, error }: InputPhoneProps) => {
 
   return (
     <div className="space-y-1">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-4">
         <div className="relative">
           <Button
-            variant="outline"
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="w-full justify-between"
+            className="w-full justify-between bg-input h-18 text-2xl rounded-2xl hover:bg-input shadow-none hover:shadow-none text-primary min-w-[105px]"
             disabled={!countryes}
           >
             <span className="flex items-center gap-2">
@@ -62,15 +61,15 @@ const InputPhone = ({ onChangeValue, error }: InputPhoneProps) => {
           </Button>
 
           {isOpen && (
-            <div className="absolute z-50 mt-1 bg-white bg-slate-800 border border-slate-200 border-slate-700 rounded-md shadow-lg max-h-60 overflow-auto">
+            <div className="absolute z-50 mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
               {countryes?.map(({ code, country }) => (
                 <button
                   key={country}
                   onClick={() => handleCountryCodeSelect(code)}
-                  className={`w-full p-2 text-left whitespace-nowrap hover:bg-slate-100 hover:bg-slate-700 transition-colors ${
+                  className={`w-full p-2 text-left whitespace-nowrap transition-colors ${
                     code === countryCode
-                      ? 'bg-blue-100 bg-blue-900 text-blue-900 text-blue-100'
-                      : 'text-slate-900 text-slate-100'
+                      ? 'bg-primary text-white'
+                      : 'text-primary'
                   }`}
                 >
                   {code} {country}
@@ -84,6 +83,7 @@ const InputPhone = ({ onChangeValue, error }: InputPhoneProps) => {
           autoComplete="tel"
           value={customValue}
           onChange={handleInputChange}
+          placeholder="Phone number"
         />
       </div>
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}

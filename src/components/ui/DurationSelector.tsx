@@ -32,20 +32,22 @@ export const DurationSelector = ({
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 space-x-2">
       <Button
         type="button"
-        variant="outline"
         size="icon"
+        variant="outline"
         onClick={handleDecrement}
         disabled={value <= min}
-        className="h-10 w-10 rounded-full"
+        className="size-15 border-none shadow-lg/20 hover:bg-white"
       >
-        <Minus className="h-4 w-4" />
+        <Minus className="size-7 text-accent" />
       </Button>
 
-      <div className="flex items-center justify-center min-w-[60px] h-10 px-3 bg-muted rounded-md border">
-        <span className="text-lg font-semibold">{value}</span>
+      <div className="flex items-center justify-center min-w-[112px] h-15 px-3 bg-muted rounded-lg inset-shadow-sm">
+        <span className="text-3xl font-medium font-hanken-grotesk">
+          {value}
+        </span>
       </div>
 
       <Button
@@ -54,9 +56,9 @@ export const DurationSelector = ({
         size="icon"
         onClick={handleIncrement}
         disabled={value >= max}
-        className="h-10 w-10 rounded-full"
+        className="size-15 border-none shadow-lg/20 hover:bg-white"
       >
-        <Plus className="h-4 w-4" />
+        <Plus className="size-7 text-accent" />
       </Button>
     </div>
   )

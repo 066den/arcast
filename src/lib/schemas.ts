@@ -2,38 +2,48 @@ import z from 'zod'
 import { VALIDATION } from './constants'
 
 // Validate server side data
-export const bookingSchema = z.object({
-  studioId: z.string(),
-  packageId: z.string(),
-  numberOfSeats: z.number(),
-  selectedTime: z.string(),
-  duration: z.number(),
-  discountCode: z.string().nullable(),
-  additionalServices: z.array(
-    z.object({
-      id: z.string(),
-      quantity: z.number().optional(),
-    })
-  ),
-  lead: z.object({
-    fullName: z.string(),
-    email: z.string(),
-    phoneNumber: z.string().optional(),
-    whatsappNumber: z.string().optional(),
-    recordingLocation: z.string().optional(),
-  }),
-})
+export const bookingSchema = z
+  .object({
+    studioId: z.string(),
+    packageId: z.string().nullable(),
+    serviceId: z.string().nullable(),
+    numberOfSeats: z.number(),
+    selectedTime: z.string(),
+    duration: z.number(),
+    discountCode: z.string().nullable(),
+    additionalServices: z.array(
+      z.object({
+        id: z.string(),
+        quantity: z.number().optional(),
+      })
+    ),
+    lead: z.object({
+      fullName: z.string(),
+      email: z.string(),
+      phoneNumber: z.string().optional(),
+      whatsappNumber: z.string().optional(),
+      recordingLocation: z.string().optional(),
+    }),
+  })
+  .refine(data => data.packageId || data.serviceId, {
+    message: 'Either packageId or serviceId must be provided',
+    path: ['packageId'],
+  })
 
 // Validate client side data
 export const bookingLeadSchema = z.object({
   fullName: z
     .string()
+    .nonempty({ message: 'Full name is required' })
     .min(2, { message: 'Full name must be at least 2 characters' })
     .max(100, { message: 'Full name must be less than 100 characters' })
     .regex(VALIDATION.NAME_REGEX, {
       message: 'Full name must only contain letters and spaces',
     }),
-  email: z.email({ message: 'Invalid email address' }),
+  email: z
+    .string()
+    .nonempty({ message: 'Email is required' })
+    .email({ message: 'Invalid email address' }),
   phoneNumber: z
     .string()
     .regex(VALIDATION.PHONE_REGEX, { message: 'Invalid phone number' })

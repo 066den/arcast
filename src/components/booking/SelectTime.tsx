@@ -19,19 +19,20 @@ const SelectTime = ({
   const availableTimes = times.filter(time => time.available)
 
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-3 gap-x-4 gap-y-8">
       {availableTimes?.length > 0 ? (
         availableTimes.map(time => (
-          <div key={time.start}>
-            <Button
-              type="button"
-              variant={selectedTime === time.start ? 'default' : 'secondary'}
-              onClick={() => onSelectTime(time.start)}
-              className="w-full"
-            >
+          <Button
+            key={time.start}
+            type="button"
+            variant={selectedTime === time.start ? 'accent' : 'secondary'}
+            onClick={() => onSelectTime(time.start)}
+            className="w-full rounded-xl p-2 h-8"
+          >
+            <span className="text-base">
               {formatTimeRange(time.start, duration, 'Asia/Dubai')}
-            </Button>
-          </div>
+            </span>
+          </Button>
         ))
       ) : (
         <div className="col-span-4 text-center text-gray-500 py-4">

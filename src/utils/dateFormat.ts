@@ -66,6 +66,33 @@ export function getConsistentMonthName(date: Date): string {
 }
 
 /**
+ * Get a consistent month name for calendar (with custom abbreviations)
+ * @param date - The date to format
+ * @returns Short month name with custom abbreviations
+ */
+export function getCalendarMonthName(date: Date): string {
+  const month = date.getMonth()
+  const year = date.getFullYear()
+
+  const monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ]
+
+  return `${monthNames[month]} ${year}`
+}
+
+/**
  * Format a date consistently for Dubai timezone
  * @param date - The date to format
  * @param options - Intl.DateTimeFormatOptions
