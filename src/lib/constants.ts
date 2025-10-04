@@ -1,7 +1,14 @@
-export const BASE_URL =
-  window.location.hostname === 'localhost'
+export const getBaseUrl = () => {
+  if (typeof window === 'undefined') {
+    return process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+  }
+
+  return window.location.hostname === 'localhost'
     ? 'http://localhost:3000'
     : `https://${window.location.origin}`
+}
+
+export const BASE_URL = getBaseUrl()
 
 // ========== BUSINESS CONSTANTS ==========
 

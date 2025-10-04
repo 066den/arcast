@@ -64,7 +64,8 @@ export const ImageCropper = ({
       const scaleY = image.naturalHeight / image.height
 
       // Account for device pixel ratio for sharper result
-      const pixelRatio = window.devicePixelRatio || 1
+      const pixelRatio =
+        typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1
 
       // Create canvas with the dimensions of the cropped image in natural pixels
       const croppedCanvas = document.createElement('canvas')
