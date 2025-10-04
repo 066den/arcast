@@ -156,7 +156,15 @@ const BookingForm = ({
   })
 
   useEffect(() => {
-    if (!selectedDate || !selectStudioId) return
+    if (!selectedDate) {
+      setSelectedDate(new Date())
+      return
+    }
+
+    if (!selectStudioId) {
+      toast.error('Please select a studio')
+      return
+    }
 
     const fetchTimes = async () => {
       const slots = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
