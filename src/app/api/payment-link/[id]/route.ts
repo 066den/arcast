@@ -33,7 +33,6 @@ export async function GET(
     let statusCode = 500
     let errorMessage = 'Failed to create payment link'
     let errorCode = 'PAYMENT_LINK_ERROR'
-    let details = null
 
     if (error instanceof Error) {
       // Проверяем на специфические ошибки
@@ -64,7 +63,9 @@ export async function GET(
         error: errorMessage,
         code: errorCode,
         details:
-          process.env.NODE_ENV === 'development' ? error?.toString() : null,
+          process.env.NODE_ENV === 'development'
+            ? error?.toString()
+            : undefined,
         timestamp: new Date().toISOString(),
       },
       { status: statusCode }
