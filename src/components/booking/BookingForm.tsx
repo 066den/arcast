@@ -31,6 +31,7 @@ import { useBooking } from '@/hooks/storeHooks/useBooking'
 import { SCROLL_TARGETS } from '@/hooks/useScrollNavigation'
 import SelectTime from './SelectTime'
 import { BookingSummary } from './BookingSummary'
+import { Preloader } from '../ui/preloader'
 
 interface BookingFormProps {
   initialStudios: Studio[]
@@ -45,8 +46,13 @@ const BookingForm = ({
   initialPackages,
   initialServiceTypes,
 }: BookingFormProps) => {
-  const { selectStudioId, selectServiceId, selectPackageId, selectStudio } =
-    useBooking()
+  const {
+    selectStudioId,
+    selectServiceId,
+    selectPackageId,
+    isBooking,
+    selectStudio,
+  } = useBooking()
 
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [submitSuccess, setSubmitSuccess] = useState(false)
@@ -54,6 +60,7 @@ const BookingForm = ({
   const [availableTimes, setAvailableTimes] = useState<TimeSlotList[] | null>(
     null
   )
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false)
 
   const [selectedTime, setSelectedTime] = useState('')
   const [duration, setDuration] = useState(1)
@@ -155,6 +162,7 @@ const BookingForm = ({
       const slots = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
 
       try {
+        setIsLoadingSlots(true)
         const data = await apiRequest<ApiResponseAvailablity>(
           `${API_ENDPOINTS.STUDIOS}/${selectStudioId}?date=${slots}&view=day&duration=${duration}`,
           {
@@ -176,6 +184,9 @@ const BookingForm = ({
         } else {
           toast.error(ERROR_MESSAGES.STUDIO.FAILED_TO_FETCH_TIMES)
         }
+        setIsLoadingSlots(false)
+      } finally {
+        setIsLoadingSlots(false)
       }
     }
     fetchTimes()
@@ -183,17 +194,17 @@ const BookingForm = ({
 
   return (
     <section id={SCROLL_TARGETS.BOOKING.FORM} className="lg:py-16 py-10">
-      <form onSubmit={onSubmit} className="space-y-24">
-        <div className="grid grid-cols-3 gap-4">
-          <div className="col-span-2">
-            <div className="space-y-12">
+      <form onSubmit={onSubmit} className="lg:space-y-24 space-y-12">
+        {isBooking && (
+          <>
+            <div className="lg:space-y-12 space-y-8">
               <h2>
                 Choose preferred <span className="text-accent">date</span> &{' '}
                 <span className="text-accent">time</span>
               </h2>
 
-              <div className="flex justify-center gap-10">
-                <Card className="rounded-2xl border-none py-2 overflow-hidden shadow-2xl/10">
+              <div className="flex justify-center flex-wrap lg:gap-10 gap-4">
+                <Card className="rounded-2xl border-none py-2 overflow-hidden lg:shadow-2xl/10 shadow-sm">
                   <Calendar
                     mode="single"
                     selected={selectedDate}
@@ -203,7 +214,13 @@ const BookingForm = ({
                     }}
                   />
                 </Card>
-                <Card className="rounded-2xl flex items-center justify-center border-none px-4 py-6 overflow-hidden shadow-2xl/10 min-w-[410px]">
+                <Card className="rounded-2xl flex items-center justify-center border-none px-4 py-6 overflow-hidden lg:shadow-2xl/10 shadow-sm lg:min-w-[410px] sm:min-w-[395px] min-w-[320px] relative">
+                  <Preloader
+                    className="absolute inset-0 w-full h-full bg-background/80 backdrop-blur-sm"
+                    variant="wave"
+                    size="lg"
+                    show={isLoadingSlots}
+                  />
                   {availableTimes ? (
                     <SelectTime
                       times={availableTimes}
@@ -215,7 +232,7 @@ const BookingForm = ({
                     <p>No available times</p>
                   )}
                 </Card>
-                <div className="flex flex-col justify-center items-center gap-8 min-w-[320px]">
+                <div className="flex xl:flex-col md:flex-row flex-col justify-center items-center gap-8 min-w-[320px]">
                   <div className="space-y-6">
                     <Label
                       className="font-hanken-grotesk font-medium text-3xl"
@@ -238,11 +255,10 @@ const BookingForm = ({
               </div>
             </div>
 
-            <div className="space-y-12">
+            <div className="lg:space-y-12 space-y-8">
               <h2>
                 Choose <span className="text-accent">studio</span>
               </h2>
-
               <div className="grid sm:grid-cols-2 lg:gap-16 gap-6 py-6 justify-items-center max-w-7xl mx-auto">
                 {initialStudios.map(studio => (
                   <StudioCard
@@ -255,13 +271,13 @@ const BookingForm = ({
                 ))}
               </div>
             </div>
-            <div className="space-y-12">
+            <div className="lg:space-y-12 space-y-8">
               <h2>
                 Chose preffered{' '}
                 <span className="text-accent">additional services</span>
               </h2>
               {initialAdditionalServices?.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 justify-items-center gap-y-8 gap-x-16 max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 justify-items-center gap-y-8 xl:gap-x-16 lg:gap-x-8 gap-4 max-w-7xl mx-auto">
                   {initialAdditionalServices.map(service => (
                     <ServiceCheckbox
                       key={service.id}
@@ -273,119 +289,111 @@ const BookingForm = ({
                 </div>
               )}
             </div>
+          </>
+        )}
 
-            <div className="space-y-12">
-              <h2>
-                Leave your <span className="text-accent">contact data</span>
-              </h2>
-
-              <div className="space-y-10">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-3">
-                    <Label htmlFor="fullName">Full name</Label>
-                    <Input
-                      id="fullName"
-                      {...register('fullName')}
-                      placeholder="John Doe"
-                      error={errors.fullName?.message}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      {...register('email')}
-                      placeholder="john@example.com"
-                      error={errors.email?.message}
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2 col-span-2">
-                    <Label htmlFor="phone">Phone</Label>
-                    <InputPhone
-                      key={formKey}
-                      id="phone"
-                      {...register('phoneNumber')}
-                      error={errors.phoneNumber?.message}
-                      onChangeValue={handlePhoneChange}
-                    />
-                  </div>
-                  <div className="space-y-2 col-span-1">
-                    <Label htmlFor="discountCode">
-                      Discount code (optional)
-                    </Label>
-                    <Input
-                      id="discountCode"
-                      {...register('discountCode')}
-                      placeholder="Discount code"
-                      error={errors.discountCode?.message}
-                    />
-                  </div>
-                </div>
-
-                {submitError && (
-                  <motion.div
-                    variants={notificationVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="bg-red-100 border rounded-lg p-3"
-                  >
-                    <p className="text-red-600">{submitError}</p>
-                  </motion.div>
-                )}
-
-                {submitSuccess && (
-                  <motion.div
-                    variants={notificationVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="bg-green-100 border border-green-300 rounded-lg p-3"
-                  >
-                    <p className="text-green-600">
-                      Booking submitted successfully! We&apos;ll contact you
-                      soon to confirm your session.
-                    </p>
-                  </motion.div>
-                )}
+        <div className="lg:space-y-12 space-y-8">
+          <h2>
+            Leave your <span className="text-accent">contact data</span>
+          </h2>
+          <div className="md:space-y-10 space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4 gap-8">
+              <div className="space-y-3">
+                <Label htmlFor="fullName">Full name</Label>
+                <Input
+                  id="fullName"
+                  {...register('fullName')}
+                  placeholder="John Doe"
+                  error={errors.fullName?.message}
+                />
+              </div>
+              <div className="space-y-3">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  {...register('email')}
+                  placeholder="john@example.com"
+                  error={errors.email?.message}
+                />
               </div>
             </div>
-          </div>
-          <div className="col-span-1 pt-18">
-            <div className="space-y-12 sticky top-20">
-              <BookingSummary
-                selectedDate={selectedDate}
-                selectedTime={selectedTime}
-                duration={duration}
-                guests={guests}
-                selectedStudio={selectStudioId}
-                selectedService={selectServiceId}
-                selectedPackage={selectPackageId}
-                selectedAdditionalServices={additionalServices}
-                studios={initialStudios}
-                packages={initialPackages}
-                initialServiceTypes={initialServiceTypes || []}
-                additionalServices={initialAdditionalServices}
-              />
-              <div className="flex justify-center">
-                <Button
-                  type="submit"
-                  className="text-4xl font-hanken-grotesk font-medium w-full max-w-lg rounded-2xl h-18"
-                  size="custom"
-                  variant="accent"
-                  disabled={isSubmitting || !isValid}
-                >
-                  {isSubmitting ? 'Submitting...' : 'Order Now'}
-                </Button>
+            <div className="grid grid-cols-1 md:grid-cols-5 md:gap-4 gap-8">
+              <div className="space-y-3 md:col-span-3">
+                <Label htmlFor="phone">Phone</Label>
+                <InputPhone
+                  key={formKey}
+                  id="phone"
+                  {...register('phoneNumber')}
+                  error={errors.phoneNumber?.message}
+                  onChangeValue={handlePhoneChange}
+                />
+              </div>
+              <div className="space-y-3 md:col-span-2">
+                <Label htmlFor="discountCode">Discount code (optional)</Label>
+                <Input
+                  id="discountCode"
+                  {...register('discountCode')}
+                  placeholder="Discount code"
+                  error={errors.discountCode?.message}
+                />
               </div>
             </div>
+
+            {submitError && (
+              <motion.div
+                variants={notificationVariants}
+                initial="hidden"
+                animate="visible"
+                className="bg-red-100 border rounded-lg p-3"
+              >
+                <p className="text-red-600">{submitError}</p>
+              </motion.div>
+            )}
+
+            {submitSuccess && (
+              <motion.div
+                variants={notificationVariants}
+                initial="hidden"
+                animate="visible"
+                className="bg-green-100 border border-green-300 rounded-lg p-3"
+              >
+                <p className="text-green-600">
+                  Booking submitted successfully! We&apos;ll contact you soon to
+                  confirm your session.
+                </p>
+              </motion.div>
+            )}
           </div>
         </div>
 
-        <Button type="button" onClick={openPaymentModal}>
-          Pay Now
-        </Button>
+        <div className="lg:space-y-12 space-y-8 sticky top-20">
+          <BookingSummary
+            selectedDate={selectedDate}
+            selectedTime={selectedTime}
+            duration={duration}
+            guests={guests}
+            selectedStudio={selectStudioId}
+            selectedService={selectServiceId}
+            selectedPackage={selectPackageId}
+            selectedAdditionalServices={additionalServices}
+            studios={initialStudios}
+            packages={initialPackages}
+            initialServiceTypes={initialServiceTypes || []}
+            additionalServices={initialAdditionalServices}
+          />
+          <div className="flex justify-center">
+            <Button
+              type="submit"
+              className="text-4xl font-hanken-grotesk font-medium w-full max-w-lg rounded-2xl h-18"
+              size="custom"
+              variant="accent"
+              disabled={isSubmitting || !isValid}
+            >
+              {isSubmitting ? 'Submitting...' : 'Order Now'}
+            </Button>
+          </div>
+        </div>
 
         <PaymentModal
           isOpen={isPaymentModalOpen}

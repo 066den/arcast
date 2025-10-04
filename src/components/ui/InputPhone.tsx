@@ -34,12 +34,12 @@ const InputPhone = ({ onChangeValue, error }: InputPhoneProps) => {
 
   return (
     <div className="space-y-1">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center md:gap-4 gap-2">
         <div className="relative">
           <Button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="w-full justify-between bg-input h-18 text-2xl rounded-2xl hover:bg-input shadow-none hover:shadow-none text-primary min-w-[105px]"
+            className="w-full justify-between bg-input md:h-18 h-16 md:text-2xl text-xl rounded-2xl hover:bg-input shadow-none hover:shadow-none text-primary md:min-w-[105px]"
             disabled={!countryes}
           >
             <span className="flex items-center gap-2">

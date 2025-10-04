@@ -1,4 +1,5 @@
 import useBookingStore from '@/store/useBookingStore'
+import { useMemo } from 'react'
 
 export function useBooking() {
   const {
@@ -13,6 +14,10 @@ export function useBooking() {
 
   const { studio, service, package: packageId, serviceType } = selectedIndices
 
+  const isBooking = useMemo(() => {
+    return serviceType === 'podcast' || serviceType === 'beneficial'
+  }, [serviceType])
+
   return {
     isLoading,
     selectStudioId: studio,
@@ -24,5 +29,6 @@ export function useBooking() {
     selectService,
     selectPackage,
     selectServiceType,
+    isBooking,
   }
 }

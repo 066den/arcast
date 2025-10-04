@@ -57,7 +57,10 @@ const PackageCard = ({ package: packageData }: PackageCardProps) => {
           icon={
             !isBooking ? <ChevronRightIcon className="size-7" /> : undefined
           }
-          className="group bg-neutral-800"
+          className={cn(
+            'group bg-neutral-800',
+            isActive && isBooking && 'bg-accent'
+          )}
           onClick={handleBookNow}
         >
           {isBooking ? (isActive ? 'Picked' : 'Pick this') : 'Book Now'}
