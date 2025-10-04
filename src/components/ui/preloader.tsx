@@ -139,6 +139,7 @@ export function Preloader({
     <motion.div
       className={cn(
         'flex flex-col items-center justify-center space-y-2',
+        show ? 'visible' : 'invisible',
         className
       )}
       initial={{ opacity: 0 }}
