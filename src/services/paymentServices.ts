@@ -4,10 +4,12 @@ import {
   PAYMENT_PROVIDER,
   PAYMENT_STATUS,
 } from '@/lib/constants'
-import { Booking, Lead } from '@/types'
+import { Lead } from '@/types'
 import { MamoPaymentLinkResponse } from '@/types/api'
 import { formatDateDubai, formatTimeDubai } from '@/utils/dateFormat'
 import { ApiError, apiRequest } from '@/lib/api'
+import { Order } from '@prisma/client'
+import { Decimal } from '@prisma/client/runtime/library'
 
 // Utility function to check payment service configuration
 export const checkPaymentServiceConfig = () => {
@@ -38,8 +40,6 @@ export const getPaymentLinkForBooking = async (bookingId: string) => {
   }
 
   try {
-    console.log('Getting payment link for booking:', bookingId)
-
     const booking = await prisma.booking.findUnique({
       where: { id: bookingId },
       include: {
@@ -53,22 +53,11 @@ export const getPaymentLinkForBooking = async (bookingId: string) => {
       throw new Error(ERROR_MESSAGES.BOOKING.NOT_FOUND)
     }
 
-    console.log('Booking found:', {
-      id: booking.id,
-      totalCost: booking.totalCost,
-      leadEmail: booking.lead?.email,
-      hasContentPackage: !!booking.contentPackage,
-    })
-
     const existingPayment = await prisma.payment.findUnique({
       where: { bookingId: booking.id },
     })
 
     if (existingPayment && existingPayment.status !== PAYMENT_STATUS.FAILED) {
-      console.log('Payment already exists for booking:', {
-        paymentId: existingPayment.id,
-        status: existingPayment.status,
-      })
       return {
         success: false,
         error: ERROR_MESSAGES.PAYMENT.ALREADY_EXISTS,
@@ -76,10 +65,14 @@ export const getPaymentLinkForBooking = async (bookingId: string) => {
       }
     }
 
-    const createdPaymentLink = await createPaymentLink(
-      booking as Booking,
-      booking.lead
-    )
+    const createdPaymentLink = await createPaymentLink({
+      id: booking.id,
+      totalCost: booking.totalCost,
+      currency: booking.contentPackage?.currency || 'AED',
+      startTime: booking.startTime,
+      lead: booking.lead,
+      isBooking: true,
+    })
     if (!createdPaymentLink) {
       throw new Error('Failed to create payment link')
     }
@@ -112,7 +105,95 @@ export const getPaymentLinkForBooking = async (bookingId: string) => {
   }
 }
 
-const createPaymentLink = async (booking: Booking, lead: Lead) => {
+export const getPaymentLinkForOrder = async (orderId: string) => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+
+  try {
+    console.log('Getting payment link for order:', orderId)
+
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        lead: true,
+      },
+    })
+
+    if (!order) {
+      console.error('Order not found:', orderId)
+      throw new Error(ERROR_MESSAGES.ORDER.NOT_FOUND)
+    }
+
+    console.log('Booking found:', {
+      id: order.id,
+      totalCost: order.totalCost,
+      leadEmail: order.lead?.email,
+    })
+
+    const existingPayment = await prisma.orderPayment.findUnique({
+      where: { orderId: order.id },
+    })
+
+    if (existingPayment && existingPayment.status !== PAYMENT_STATUS.FAILED) {
+      return {
+        success: false,
+        error: ERROR_MESSAGES.PAYMENT.ALREADY_EXISTS,
+        payment: existingPayment,
+      }
+    }
+
+    const createdPaymentLink = await createPaymentLink({
+      id: order.id,
+      totalCost: order.totalCost,
+      currency: 'AED',
+      lead: order.lead,
+      isBooking: false,
+    })
+    if (!createdPaymentLink) {
+      throw new Error('Failed to create payment link')
+    }
+
+    const payment = await prisma.orderPayment.create({
+      data: {
+        orderId: order.id,
+        amount: order.totalCost,
+        currency: 'AED',
+        status: PAYMENT_STATUS.PENDING,
+        provider: 'MAMO_PAY',
+        externalId: createdPaymentLink.id,
+        metadata: createdPaymentLink,
+      },
+    })
+
+    return { payment, paymentLink: createdPaymentLink }
+  } catch (error) {
+    console.error('Error in getPaymentLinkForOrder:', {
+      orderId,
+      error: error instanceof Error ? error.message : error,
+      stack: error instanceof Error ? error.stack : undefined,
+    })
+    throw error
+  }
+}
+
+const createPaymentLink = async ({
+  id,
+  totalCost,
+  currency,
+  startTime,
+  serviceName,
+  lead,
+  isBooking = true,
+}: {
+  id: string
+  totalCost: number | Decimal
+  currency: string
+  startTime?: Date
+  serviceName?: string
+  lead: Lead
+  isBooking: boolean
+}) => {
   try {
     // Check payment service configuration
     const configCheck = checkPaymentServiceConfig()
@@ -126,46 +207,27 @@ const createPaymentLink = async (booking: Booking, lead: Lead) => {
       )
     }
 
-    console.log('Creating payment link for booking:', {
-      bookingId: booking.id,
-      totalCost: booking.totalCost,
-      currency: booking.contentPackage?.currency || PAYMENT_PROVIDER.CURRENCY,
-      leadEmail: lead.email,
-      leadName: lead.fullName,
-    })
+    const description = isBooking
+      ? `Studio booking for ${startTime && formatDateDubai(startTime)} at ${startTime && formatTimeDubai(startTime)}`
+      : `Order for ${serviceName}`
 
     const paymentData = {
       title: PAYMENT_PROVIDER.TITLE,
-      description: `Studio booking for ${formatDateDubai(booking.startTime)} at ${formatTimeDubai(booking.startTime)}`,
-      amount: Number(booking.totalCost),
-      amount_currency:
-        booking.contentPackage?.currency || PAYMENT_PROVIDER.CURRENCY,
+      description,
+      amount: Number(totalCost),
+      amount_currency: currency || PAYMENT_PROVIDER.CURRENCY,
       return_url: PAYMENT_PROVIDER.RETURN_URL,
       failure_return_url: PAYMENT_PROVIDER.FAILURE_RETURN_URL,
       link_type: 'inline',
       enable_customer_details: true,
       send_customer_receipt: true,
-      external_id: booking.id,
+      external_id: id,
       first_name: lead.fullName.split(' ')[0] || '',
       last_name: lead.fullName.split(' ').slice(1).join(' ') || '',
       email: lead.email,
-      custom_data: {
-        bookingId: booking.id,
-        studio: booking.studioId,
-        packageId: booking.contentPackageId,
-      },
     }
 
-    console.log('Payment data prepared:', {
-      ...paymentData,
-      // Don't log sensitive data
-      amount: paymentData.amount,
-      amount_currency: paymentData.amount_currency,
-      external_id: paymentData.external_id,
-    })
-
     const apiUrl = `${process.env.MAMO_BASE_URL}/links`
-    console.log('Making request to MAMO API:', apiUrl)
 
     const paymentLink = await apiRequest<MamoPaymentLinkResponse>(apiUrl, {
       method: 'POST',
@@ -176,17 +238,12 @@ const createPaymentLink = async (booking: Booking, lead: Lead) => {
       body: JSON.stringify(paymentData),
     })
 
-    console.log('Payment link created successfully:', {
-      paymentLinkId: paymentLink.id,
-      paymentUrl: paymentLink.payment_url,
-    })
-
     return paymentLink
   } catch (error) {
     console.error('Error creating payment link:', {
       error: error instanceof Error ? error.message : error,
       stack: error instanceof Error ? error.stack : undefined,
-      bookingId: booking.id,
+      bookingId: id,
       leadEmail: lead.email,
     })
 

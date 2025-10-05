@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { MAX_BOOKING_HOURS, MIN_BOOKING_DURATION } from '@/lib/constants'
 import { Minus, Plus } from 'lucide-react'
+import { useEffect } from 'react'
 
 interface DurationSelectorProps {
   value: number
@@ -30,6 +31,12 @@ export const DurationSelector = ({
       onChange(value - step)
     }
   }
+
+  useEffect(() => {
+    if (value && value > max) {
+      onChange(max)
+    }
+  }, [value, max, min, onChange])
 
   return (
     <div className="flex items-center gap-3 space-x-2">

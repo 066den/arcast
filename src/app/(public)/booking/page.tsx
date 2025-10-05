@@ -21,7 +21,7 @@ export default async function BookingPage() {
     <>
       <section className="py-16">
         <div className="text-center">
-          <h1 className="text-accent mb-8">Book Your Studio Session</h1>
+          <h1 className="text-accent mb-8">Choose the services you need</h1>
           <h3 className="">
             Choose a <span className="text-accent">service</span> you need or a{' '}
             <span className="text-accent">package</span>, and{' '}

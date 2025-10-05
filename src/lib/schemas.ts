@@ -30,6 +30,22 @@ export const bookingSchema = z
     path: ['packageId'],
   })
 
+export const orderSchema = z.object({
+  serviceName: z.string().min(1, 'Service name is required'),
+  description: z.string().optional(),
+  requirements: z.string().optional(),
+  totalCost: z.number().positive('Total cost must be positive'),
+  estimatedDays: z.number().optional(),
+  deadline: z.string().optional(),
+  lead: z.object({
+    fullName: z.string().min(1, 'Full name is required'),
+    email: z.string().email().optional(),
+    phoneNumber: z.string().optional(),
+    whatsappNumber: z.string().optional(),
+  }),
+  discountCode: z.string().optional(),
+})
+
 // Validate client side data
 export const bookingLeadSchema = z.object({
   fullName: z

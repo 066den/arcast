@@ -1,7 +1,7 @@
 'use client'
-import Link from 'next/link'
+
 import { motion } from 'framer-motion'
-import { aboutFeatures } from '@/lib/config'
+
 import {
   containerVariants,
   itemVariants,
@@ -21,7 +21,7 @@ const AboutSection = () => {
         why arcast
       </motion.div>
       <motion.div
-        className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-5 mb-8 xl:mb-16"
+        className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-5"
         variants={containerVariants}
       >
         <motion.div
@@ -49,7 +49,7 @@ const AboutSection = () => {
           <span className="text-accent">and we will do the rest!</span>
         </motion.h3>
       </motion.div>
-      <motion.div
+      {/* <motion.div
         className="grid grid-cols-1 lg:grid-cols-3 gap-6"
         variants={containerVariants}
       >
@@ -76,7 +76,7 @@ const AboutSection = () => {
             </div>
           </motion.div>
         ))}
-      </motion.div>
+      </motion.div> */}
     </motion.section>
   )
 }

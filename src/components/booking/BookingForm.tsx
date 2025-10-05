@@ -50,6 +50,7 @@ const BookingForm = ({
     selectStudioId,
     selectServiceId,
     selectPackageId,
+    selectServiceTypeSlug,
     isBooking,
     selectStudio,
   } = useBooking()
@@ -162,7 +163,7 @@ const BookingForm = ({
     }
 
     if (!selectStudioId) {
-      toast.error('Please select a studio')
+      //toast.error('Please select a studio')
       return
     }
 
@@ -200,69 +201,21 @@ const BookingForm = ({
     fetchTimes()
   }, [selectedDate, selectStudioId, duration, selectedTime])
 
+  useEffect(() => {
+    selectStudio('')
+    setSelectedTime('')
+    setDuration(1)
+    setGuests(1)
+    setAdditionalServices([])
+    setSelectedDate(new Date())
+    setAvailableTimes(null)
+  }, [selectServiceTypeSlug, selectStudio])
+
   return (
     <section id={SCROLL_TARGETS.BOOKING.FORM} className="lg:py-16 py-10">
       <form onSubmit={onSubmit} className="lg:space-y-24 space-y-12">
         {isBooking && (
           <>
-            <div className="lg:space-y-12 space-y-8">
-              <h2>
-                Choose preferred <span className="text-accent">date</span> &{' '}
-                <span className="text-accent">time</span>
-              </h2>
-
-              <div className="flex justify-center flex-wrap lg:gap-10 gap-4">
-                <Card className="rounded-2xl border-none py-2 overflow-hidden lg:shadow-2xl/10 shadow-sm">
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={date => setSelectedDate(date)}
-                    disabled={{
-                      before: new Date(new Date().setHours(0, 0, 0, 0)),
-                    }}
-                  />
-                </Card>
-                <Card className="rounded-2xl flex items-center justify-center border-none px-4 py-6 overflow-hidden lg:shadow-2xl/10 shadow-sm lg:min-w-[410px] sm:min-w-[395px] min-w-[320px] relative">
-                  <Preloader
-                    className="absolute inset-0 w-full h-full bg-background/80 backdrop-blur-sm"
-                    variant="wave"
-                    size="lg"
-                    show={isLoadingSlots}
-                  />
-                  {availableTimes ? (
-                    <SelectTime
-                      times={availableTimes}
-                      selectedTime={selectedTime}
-                      onSelectTime={setSelectedTime}
-                      duration={duration}
-                    />
-                  ) : (
-                    <p>No available times</p>
-                  )}
-                </Card>
-                <div className="flex xl:flex-col md:flex-row flex-col justify-center items-center gap-8 min-w-[320px]">
-                  <div className="space-y-6">
-                    <Label
-                      className="font-hanken-grotesk font-medium text-3xl"
-                      htmlFor="duration"
-                    >
-                      Number of <span className="text-accent">guests</span>
-                    </Label>
-                    <DurationSelector value={guests} onChange={setGuests} />
-                  </div>
-                  <div className="space-y-6">
-                    <Label
-                      className="font-hanken-grotesk font-medium text-3xl"
-                      htmlFor="duration"
-                    >
-                      Duration <span className="text-accent">hours</span>
-                    </Label>
-                    <DurationSelector value={duration} onChange={setDuration} />
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <div className="lg:space-y-12 space-y-8">
               <h2>
                 Choose <span className="text-accent">studio</span>
@@ -279,24 +232,97 @@ const BookingForm = ({
                 ))}
               </div>
             </div>
-            <div className="lg:space-y-12 space-y-8">
-              <h2>
-                Chose preffered{' '}
-                <span className="text-accent">additional services</span>
-              </h2>
-              {initialAdditionalServices?.length > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-2 justify-items-center gap-y-8 xl:gap-x-16 lg:gap-x-8 gap-4 max-w-7xl mx-auto">
-                  {initialAdditionalServices.map(service => (
-                    <ServiceCheckbox
-                      key={service.id}
-                      service={service}
-                      onChange={setAdditionalServices}
-                      selectedServices={additionalServices}
-                    />
-                  ))}
+
+            {selectStudioId && (
+              <>
+                <div className="lg:space-y-12 space-y-8">
+                  <h2>
+                    Choose preferred <span className="text-accent">date</span> &{' '}
+                    <span className="text-accent">time</span>
+                  </h2>
+
+                  <div className="flex justify-center flex-wrap lg:gap-10 gap-4">
+                    <Card className="rounded-2xl border-none py-2 overflow-hidden lg:shadow-2xl/10 shadow-sm">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={date => setSelectedDate(date)}
+                        disabled={{
+                          before: new Date(new Date().setHours(0, 0, 0, 0)),
+                        }}
+                      />
+                    </Card>
+                    <Card className="rounded-2xl flex items-center justify-center border-none px-4 py-6 overflow-hidden lg:shadow-2xl/10 shadow-sm lg:min-w-[410px] sm:min-w-[395px] min-w-[320px] relative">
+                      <Preloader
+                        className="absolute inset-0 w-full h-full bg-background/80 backdrop-blur-sm"
+                        variant="wave"
+                        size="lg"
+                        show={isLoadingSlots}
+                      />
+                      {availableTimes ? (
+                        <SelectTime
+                          times={availableTimes}
+                          selectedTime={selectedTime}
+                          onSelectTime={setSelectedTime}
+                          duration={duration}
+                        />
+                      ) : (
+                        <p>No available times</p>
+                      )}
+                    </Card>
+                    <div className="flex xl:flex-col md:flex-row flex-col justify-center items-center gap-8 min-w-[320px]">
+                      <div className="space-y-6">
+                        <Label
+                          className="font-hanken-grotesk font-medium text-3xl"
+                          htmlFor="duration"
+                        >
+                          Number of <span className="text-accent">guests</span>
+                        </Label>
+                        <DurationSelector
+                          value={guests}
+                          max={
+                            initialStudios.find(
+                              studio => studio.id === selectStudioId
+                            )?.totalSeats || 8
+                          }
+                          onChange={setGuests}
+                        />
+                      </div>
+                      <div className="space-y-6">
+                        <Label
+                          className="font-hanken-grotesk font-medium text-3xl"
+                          htmlFor="duration"
+                        >
+                          Duration <span className="text-accent">hours</span>
+                        </Label>
+                        <DurationSelector
+                          value={duration}
+                          onChange={setDuration}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              )}
-            </div>
+                <div className="lg:space-y-12 space-y-8">
+                  <h2>
+                    Chose preffered{' '}
+                    <span className="text-accent">additional services</span>
+                  </h2>
+                  {initialAdditionalServices?.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 justify-items-center gap-y-8 xl:gap-x-16 lg:gap-x-8 gap-4 max-w-7xl mx-auto">
+                      {initialAdditionalServices.map(service => (
+                        <ServiceCheckbox
+                          key={service.id}
+                          service={service}
+                          onChange={setAdditionalServices}
+                          selectedServices={additionalServices}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </>
         )}
 

@@ -15,6 +15,10 @@ const EpisodeSection = ({
   initialSamples,
 }: EpisodeSectionProps) => {
   const [typePackages, setTypePackages] = useState<string>('podcast')
+  const filteredServiceTypes = initialServiceTypes.filter(
+    serviceType => serviceType.slug !== 'social'
+  )
+
   return (
     <section className="py-10 xl:py-20">
       <div className="section-title">what we&apos;ve made</div>
@@ -42,11 +46,11 @@ const EpisodeSection = ({
         </p>
       </div>
 
-      <div className="lg:flex lg:flex-row items-center gap-4 overflow-hidden">
+      <div className="lg:flex lg:flex-row items-center gap-4">
         <div className="lg:w-1/3 w-full lg:pr-4 mb-14 lg:mb-0">
           <ServiceTypesList
             typePackages={typePackages}
-            initialServiceTypes={initialServiceTypes}
+            initialServiceTypes={filteredServiceTypes}
             setTypePackages={setTypePackages}
           />
         </div>

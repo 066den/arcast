@@ -134,6 +134,9 @@ export const ERROR_MESSAGES = {
     PAST_DATE: 'Cannot book slots for past dates',
     SELECT_TIME: 'Please select a time',
   },
+  ORDER: {
+    NOT_FOUND: 'Order not found',
+  },
   STUDIO: {
     NOT_FOUND: 'Studio not found',
     INACTIVE: 'Studio is currently inactive',
