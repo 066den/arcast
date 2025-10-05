@@ -1,3 +1,4 @@
+import { OrderStatus } from '@prisma/client'
 import { AdditionalService, Lead, Package, TimeSlotList, Studio } from '.'
 
 export interface ApiResponse<T> {
@@ -68,5 +69,17 @@ export interface BookingResponse {
   package?: Package
   lead?: Lead
   additionalServices?: AdditionalService[]
+  paymentUrl?: string
+}
+
+export interface OrderResponse {
+  id: string
+  serviceName: string
+  totalCost: number
+  finalAmount?: number
+  discountAmount?: number
+  status: OrderStatus
+  estimatedDays?: number
+  deadline?: Date
   paymentUrl?: string
 }

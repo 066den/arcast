@@ -1,16 +1,12 @@
 import HeroSection from '@/components/sections/HeroSection'
 import CaseStudiesList from '@/components/common/CaseStudiesList'
-import { getCases } from '@/services/studioServices'
-import PackagesSection from '@/components/sections/PackagesSection'
-import { getPackages, getServiceTypes } from '@/services/servicesServices'
+import { getCases, getClients } from '@/services/studioServices'
 import { CaseStudy } from '@/types'
+import TestimonialsSection from '@/components/sections/TestimonialsSection'
 
 export default async function CaseStudiesPage() {
   const cases = await getCases()
-  const [initialServiceTypes, initialPackages] = await Promise.all([
-    getServiceTypes(),
-    getPackages(),
-  ])
+  const clients = await getClients()
 
   return (
     <>
@@ -22,10 +18,7 @@ export default async function CaseStudiesPage() {
       <section className="xl:py-10">
         <CaseStudiesList cases={cases as unknown as CaseStudy[]} />
       </section>
-      <PackagesSection
-        initialServiceTypes={initialServiceTypes}
-        initialPackages={initialPackages}
-      />
+      <TestimonialsSection showButton={false} initialClients={clients} />
     </>
   )
 }

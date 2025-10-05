@@ -6,6 +6,8 @@ import ReactMarkdown from 'react-markdown'
 import { cn } from '@/lib/utils'
 import { CaseStudyEquipment, CaseStudyStaff } from '@/types'
 import ItemCard from '@/components/common/ItemCard'
+import PackagesSection from '@/components/sections/PackagesSection'
+import { getServiceTypes, getPackages } from '@/services/servicesServices'
 
 export async function generateStaticParams() {
   const cases = await getCases()
@@ -21,6 +23,11 @@ export default async function CaseStudyPage({
 }) {
   const { id } = await params
   const caseStudy = await getCaseById(id)
+  const [initialServiceTypes, initialPackages] = await Promise.all([
+    getServiceTypes(),
+    getPackages(),
+  ])
+
   if (!caseStudy) {
     redirect('/case-studies')
   }
@@ -127,6 +134,11 @@ export default async function CaseStudyPage({
           </div>
         </section>
       )}
+
+      <PackagesSection
+        initialServiceTypes={initialServiceTypes}
+        initialPackages={initialPackages}
+      />
     </>
   )
 }

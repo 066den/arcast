@@ -180,8 +180,7 @@ export function BookingSummary({
               {selectedService && services && (
                 <div className="flex justify-between text-xl">
                   <span className="">
-                    {services.find(s => s.id === selectedService)?.name} (
-                    {duration}h)
+                    {services.find(s => s.id === selectedService)?.name}
                   </span>
                   <span className="font-medium">
                     {parseFloat(

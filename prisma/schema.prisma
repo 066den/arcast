@@ -35,6 +35,14 @@ enum PaymentStatus {
   REFUNDED
 }
 
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
 // Models
 model Studio {
   id          String   @id @default(cuid())
@@ -158,6 +166,7 @@ model DiscountCode {
 
   // Relations
   bookings Booking[]
+  orders   Order[]
 
   @@map("discount_codes")
 }
@@ -204,6 +213,7 @@ model Lead {
 
   // Relations
   bookings Booking[]
+  orders   Order[]
 
   @@map("leads")
 }
@@ -362,4 +372,51 @@ model BlogRecord {
   updatedAt DateTime @updatedAt
 
   @@map("blog_records")
+}
+
+model Order {
+  id               String       @id @default(cuid())
+  serviceName      String       
+  description      String?      
+  requirements     String?      
+  totalCost        Decimal      @db.Decimal(10, 2)
+  vatAmount        Decimal?     @db.Decimal(10, 2)
+  discountAmount   Decimal?     @db.Decimal(10, 2)
+  finalAmount      Decimal?     @db.Decimal(10, 2)
+  status           OrderStatus  @default(PENDING)
+  estimatedDays    Int?         
+  deadline         DateTime?    
+  completedAt      DateTime?    
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  leadId           String       
+  discountCodeId   String?      
+  
+  // Relations
+  lead        Lead          @relation(fields: [leadId], references: [id])
+  discountCode DiscountCode? @relation(fields: [discountCodeId], references: [id])
+  payment     OrderPayment?
+
+  @@map("orders")
+}
+
+model OrderPayment {
+  id            String        @id @default(cuid())
+  orderId       String        @unique
+  amount        Decimal       @db.Decimal(10, 2)
+  currency      String        @default("AED")
+  status        PaymentStatus @default(PENDING)
+  provider      String        @default("MAMO_PAY")
+  externalId    String?
+  paymentLinkId String?
+  metadata      Json?
+  completedAt   DateTime?
+  refundedAt    DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_payments")
 }

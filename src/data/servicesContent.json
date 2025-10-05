@@ -3,7 +3,7 @@
     "id": "1",
     "name": "Podcast production",
     "title": "Podcast Full-Scaled Production",
-    "description": "<h3>From <strong>concept</strong> to getting <strong>impressions</strong>. \nChoose We <strong>guide</strong> you through the <strong>entire process</strong>.</h3>",
+    "description": "<h3>From <strong>concept</strong> to getting <strong>impressions</strong>. <br/>We <strong>guide</strong> you through the <strong>entire process</strong>.</h3>",
     "content": "Whether you prefer to take the files and craft your own story or let us handle the entire production, we’ve built the perfect setup for you. \n\nRecord your podcast in one of our four professional stages, with up to four cameras, up to four studio microphones, and a dedicated operator on-site to guide and support you.\n\nChoose the level of involvement that suits you best:\n * **Raw Recording** — You get high-quality footage and audio, ready for your own editing team.\n* **Full Production** — We take care of everything: editing, color grading, sound, cuts, subtitles, thumbnails, teaser videos, and more. You walk away with a polished, ready-to-publish podcast, perfect for YouTube and beyond.",
     "imageUrl": "/assets/images/podcast.jpg",
     "isActive": true

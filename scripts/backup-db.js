@@ -20,8 +20,8 @@ async function backupDatabase() {
         include: {
           client: true,
           caseContent: true,
-          caseStaff: true,
-          caseEquipment: true,
+          staff: true,
+          equipment: true,
         },
       }),
       caseStudyContent: await prisma.caseStudyContent.findMany(),
@@ -43,6 +43,14 @@ async function backupDatabase() {
         },
       }),
       payments: await prisma.payment.findMany(),
+      orders: await prisma.order.findMany({
+        include: {
+          lead: true,
+          discountCode: true,
+          payment: true,
+        },
+      }),
+      orderPayments: await prisma.orderPayment.findMany(),
       blogRecords: await prisma.blogRecord.findMany(),
     }
 
@@ -69,6 +77,9 @@ async function backupDatabase() {
     console.log(`   - Case Studies: ${backup.caseStudies.length}`)
     console.log(`   - Clients: ${backup.clients.length}`)
     console.log(`   - Bookings: ${backup.bookings.length}`)
+    console.log(`   - Orders: ${backup.orders.length}`)
+    console.log(`   - Payments: ${backup.payments.length}`)
+    console.log(`   - Order Payments: ${backup.orderPayments.length}`)
   } catch (error) {
     console.error('❌ Error creating backup:', error)
     process.exit(1)

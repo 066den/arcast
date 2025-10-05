@@ -15,14 +15,18 @@ import {
 } from '@/lib/motion-variants'
 import Autoplay from 'embla-carousel-autoplay'
 import videoUrl from 'https://res.cloudinary.com/deuvbiekl/video/upload/v1747050640/1_sngfk4.mp4'
+import { ROUTES } from '@/lib/constants'
+import Link from 'next/link'
 
 interface TestimonialsSectionProps {
   isVideo?: boolean
+  showButton?: boolean
   initialClients: Client[]
 }
 
 const TestimonialsSection = ({
   isVideo,
+  showButton = true,
   initialClients,
 }: TestimonialsSectionProps) => {
   const autoplayPlugin = useRef(
@@ -38,7 +42,6 @@ const TestimonialsSection = ({
     )
   }, [initialClients])
 
-  // Safe handlers for mouse events
   const handleMouseEnter = () => {
     if (autoplayPlugin.current) {
       autoplayPlugin.current.stop()
@@ -95,16 +98,18 @@ const TestimonialsSection = ({
           >
             This is how we&apos;ve <br /> already helped talents like you!
           </motion.h2>
-          <motion.div variants={itemVariants}>
-            <Button
-              size="lg"
-              variant="primary"
-              className="group"
-              icon={<ChevronRightIcon className="size-7" />}
-            >
-              Check our cases
-            </Button>
-          </motion.div>
+          {showButton && (
+            <motion.div variants={itemVariants}>
+              <Button asChild size="lg" variant="primary" className="group">
+                <Link href={ROUTES.CASE_STUDIES}>
+                  Check our cases{' '}
+                  <span className="group-hover:translate-x-1 transition-transform duration-200 ease-in-out">
+                    <ChevronRightIcon className="size-7" />
+                  </span>
+                </Link>
+              </Button>
+            </motion.div>
+          )}
           <motion.div
             className="border-b font-medium my-10 py-2.5"
             variants={itemVariants}
