@@ -16,6 +16,14 @@ export const BOOKING_STATUS = {
   PAID: 'PAID',
 } as const
 
+export const ORDER_STATUS = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+} as const
+
 export const PAYMENT_STATUS = {
   PENDING: 'PENDING',
   COMPLETED: 'COMPLETED',
@@ -90,6 +98,7 @@ export const API_ENDPOINTS = {
   CONTACT: '/api/contact',
   PAYMENT_LINK: '/api/payment-link',
   BLOG: '/api/blog',
+  ORDERS: '/api/orders',
 } as const
 
 export const ROUTES = {

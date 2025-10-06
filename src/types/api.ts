@@ -39,6 +39,21 @@ export interface BookingFormData {
   additionalServices: AdditionalService[]
 }
 
+export interface OrderFormData {
+  serviceId: string
+  discountCode: string | null
+  requirements: string | null
+  estimatedDays: number | null
+  deadline: string | null
+  lead: {
+    fullName: string
+    email: string
+    phoneNumber: string
+    whatsappNumber: string
+    recordingLocation?: string
+  }
+}
+
 export interface StudioFormData {
   name: string
   location?: string

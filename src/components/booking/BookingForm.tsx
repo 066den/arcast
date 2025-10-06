@@ -17,13 +17,17 @@ import { ServiceCheckbox } from './ServiceCheckbox'
 import { useForm } from 'react-hook-form'
 import { DurationSelector } from '../ui/DurationSelector'
 import { toast } from 'sonner'
-import { ApiResponseAvailablity, BookingResponse } from '../../types/api'
+import {
+  ApiResponseAvailablity,
+  BookingResponse,
+  OrderResponse,
+} from '../../types/api'
 import { API_ENDPOINTS, ERROR_MESSAGES } from '@/lib/constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LeadSchema, bookingLeadSchema } from '@/lib/schemas'
 import InputPhone from '../ui/InputPhone'
 import { ApiError, apiRequest } from '@/lib/api'
-import { notificationVariants } from '@/lib/motion-variants'
+import { cardVariants, notificationVariants } from '@/lib/motion-variants'
 import { motion } from 'framer-motion'
 import PaymentModal from './PaymentModal'
 import useFlag from '@/hooks/useFlag'
@@ -101,14 +105,14 @@ const BookingForm = ({
   const onSubmit = handleSubmit(async (formData: LeadSchema) => {
     setSubmitError(null)
     setSubmitSuccess(false)
-    if (!selectedTime) {
+    if (!selectedTime && isBooking) {
       setSubmitError(ERROR_MESSAGES.BOOKING.SELECT_TIME)
       return
     }
     try {
-      const response = await apiRequest<BookingResponse>(
-        API_ENDPOINTS.BOOKINGS,
-        {
+      let response
+      if (isBooking) {
+        response = await apiRequest<BookingResponse>(API_ENDPOINTS.BOOKINGS, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -130,10 +134,26 @@ const BookingForm = ({
             },
             additionalServices,
           }),
-        }
-      )
+        })
+      } else {
+        response = await apiRequest<OrderResponse>(API_ENDPOINTS.ORDERS, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            serviceId: selectServiceId,
+            discountCode: formData.discountCode || null,
+            lead: {
+              fullName: formData.fullName,
+              email: formData.email,
+              phoneNumber: formData.phoneNumber,
+            },
+          }),
+        })
+      }
 
-      if (response.paymentUrl) {
+      if (response?.paymentUrl) {
         setPaymentUrl(response.paymentUrl)
         setTotalAmount(response.finalAmount || response.totalCost)
         openPaymentModal()
@@ -162,8 +182,7 @@ const BookingForm = ({
       return
     }
 
-    if (!selectStudioId) {
-      //toast.error('Please select a studio')
+    if (!isBooking) {
       return
     }
 
@@ -179,12 +198,18 @@ const BookingForm = ({
           }
         )
 
-        setAvailableTimes(data.availability.timeSlots)
-        if (
-          selectedTime &&
-          !data.availability.timeSlots.some(slot => slot.start === selectedTime)
-        ) {
-          setSelectedTime('')
+        if (data?.availability?.timeSlots) {
+          setAvailableTimes(data.availability.timeSlots)
+          if (
+            selectedTime &&
+            !data.availability.timeSlots.some(
+              slot => slot.start === selectedTime
+            )
+          ) {
+            setSelectedTime('')
+          }
+        } else {
+          setAvailableTimes([])
         }
       } catch (error) {
         console.error('Error fetching times:', error)
@@ -199,7 +224,7 @@ const BookingForm = ({
       }
     }
     fetchTimes()
-  }, [selectedDate, selectStudioId, duration, selectedTime])
+  }, [selectedDate, selectStudioId, duration, selectedTime, isBooking])
 
   useEffect(() => {
     selectStudio('')
@@ -234,7 +259,13 @@ const BookingForm = ({
             </div>
 
             {selectStudioId && (
-              <>
+              <motion.div
+                variants={cardVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                className="lg:space-y-24 space-y-12"
+              >
                 <div className="lg:space-y-12 space-y-8">
                   <h2>
                     Choose preferred <span className="text-accent">date</span> &{' '}
@@ -321,7 +352,7 @@ const BookingForm = ({
                     </div>
                   )}
                 </div>
-              </>
+              </motion.div>
             )}
           </>
         )}
@@ -393,8 +424,9 @@ const BookingForm = ({
                 className="bg-green-100 border border-green-300 rounded-lg p-3"
               >
                 <p className="text-green-600">
-                  Booking submitted successfully! We&apos;ll contact you soon to
-                  confirm your session.
+                  {isBooking
+                    ? "Booking submitted successfully! We'll contact you soon to confirm your session."
+                    : "Order submitted successfully! We'll contact you soon to confirm your order."}
                 </p>
               </motion.div>
             )}
