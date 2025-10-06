@@ -31,19 +31,18 @@ export const bookingSchema = z
   })
 
 export const orderSchema = z.object({
-  serviceName: z.string().min(1, 'Service name is required'),
+  serviceId: z.string(),
   description: z.string().optional(),
   requirements: z.string().optional(),
-  totalCost: z.number().positive('Total cost must be positive'),
   estimatedDays: z.number().optional(),
   deadline: z.string().optional(),
   lead: z.object({
     fullName: z.string().min(1, 'Full name is required'),
-    email: z.string().email().optional(),
+    email: z.email().optional(),
     phoneNumber: z.string().optional(),
     whatsappNumber: z.string().optional(),
   }),
-  discountCode: z.string().optional(),
+  discountCode: z.string().nullable(),
 })
 
 // Validate client side data
@@ -57,9 +56,8 @@ export const bookingLeadSchema = z.object({
       message: 'Full name must only contain letters and spaces',
     }),
   email: z
-    .string()
-    .nonempty({ message: 'Email is required' })
-    .email({ message: 'Invalid email address' }),
+    .email({ message: 'Invalid email address' })
+    .nonempty({ message: 'Email is required' }),
   phoneNumber: z
     .string()
     .regex(VALIDATION.PHONE_REGEX, { message: 'Invalid phone number' })
@@ -130,6 +128,10 @@ export const validateBooking = (data: unknown) => {
   return bookingSchema.safeParse(data)
 }
 
+export const validateOrder = (data: unknown) => {
+  return orderSchema.safeParse(data)
+}
+
 export const validateStudio = (data: unknown) => {
   return studioSchema.safeParse(data)
 }
@@ -151,3 +153,4 @@ export type StudioSchema = z.infer<typeof studioSchema>
 export type StudioImageUploadSchema = z.infer<typeof studioImageUploadSchema>
 export type ContactFormSchema = z.infer<typeof contactFormSchema>
 export type BlogRecordSchema = z.infer<typeof blogRecordSchema>
+export type OrderSchema = z.infer<typeof orderSchema>

@@ -9,6 +9,7 @@ const notion = new Client({
 const DATABASE_ID = process.env.NOTION_DATABASE_ID
 const LEADS_DATABASE_ID = process.env.NOTION_LEADS_DATABASE_ID
 const CONTACT_DATABASE_ID = process.env.NOTION_CONTACT_DATABASE_ID
+const ORDERS_DATABASE_ID = process.env.NOTION_ORDERS_DATABASE_ID
 
 // Cache for database schemas
 const schemaCache = new Map()
@@ -240,6 +241,13 @@ export async function createNotionOrderEntry(order) {
       return null
     }
 
+    if (!ORDERS_DATABASE_ID) {
+      console.warn(
+        'NOTION_ORDERS_DATABASE_ID not configured, skipping Notion order entry'
+      )
+      return null
+    }
+
     const properties = {
       Name: {
         title: createTitle(`${order.serviceName} - ${order.lead.fullName}`),
@@ -259,7 +267,7 @@ export async function createNotionOrderEntry(order) {
       'Phone Number': {
         phone_number: order.lead.phoneNumber,
       },
-      WhatsApp: {
+      Whatsapp: {
         phone_number: order.lead.whatsappNumber || order.lead.phoneNumber,
       },
       'Total Cost': {
@@ -282,7 +290,6 @@ export async function createNotionOrderEntry(order) {
       },
     }
 
-    // Add optional fields
     if (order.description) {
       properties['Description'] = {
         rich_text: createRichText(order.description),
@@ -309,10 +316,9 @@ export async function createNotionOrderEntry(order) {
       }
     }
 
-    // Create the entry
     const response = await notion.pages.create({
       parent: {
-        database_id: process.env.NOTION_ORDERS_DATABASE_ID,
+        database_id: ORDERS_DATABASE_ID,
       },
       properties,
     })
@@ -591,6 +597,7 @@ export const NOTION_DATABASES = {
   BOOKINGS: DATABASE_ID,
   LEADS: LEADS_DATABASE_ID,
   CONTACTS: CONTACT_DATABASE_ID,
+  ORDERS: ORDERS_DATABASE_ID,
 }
 
 // ========== DEFAULT EXPORT ==========

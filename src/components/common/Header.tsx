@@ -16,6 +16,7 @@ import MobileMenu from './MobileMenu'
 const Header = () => {
   const pathname = usePathname()
   const router = useRouter()
+  const isBooking = pathname === ROUTES.BOOKING
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const scrollPositionRef = useRef(0)
 
@@ -85,15 +86,17 @@ const Header = () => {
         </div>
 
         <div className="flex items-center">
-          <Button
-            size="lg"
-            variant="primary"
-            icon={<ChevronRightIcon className="size-7" />}
-            className="hidden lg:flex group"
-            onClick={handleGetStarted}
-          >
-            Get started
-          </Button>
+          {!isBooking && (
+            <Button
+              size="lg"
+              variant="primary"
+              icon={<ChevronRightIcon className="size-7" />}
+              className="hidden lg:flex group"
+              onClick={handleGetStarted}
+            >
+              Get started
+            </Button>
+          )}
 
           <BurgerButton
             isOpen={isMobileMenuOpen}

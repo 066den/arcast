@@ -2,115 +2,180 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { createNotionOrderEntry, createNotionLeadEntry } from '@/lib/notion'
 import { z } from 'zod'
-import { orderSchema } from '@/lib/schemas'
-import { OrderResponse } from '@/types/api'
-import { OrderStatus } from '@prisma/client'
+import { validateOrder } from '@/lib/schemas'
+import { OrderFormData, OrderResponse } from '@/types/api'
+import { OrderStatus, Service } from '@prisma/client'
+import { getPaymentLinkForOrder } from '@/services/paymentServices'
 import {
-  getPaymentLinkForBooking,
-  getPaymentLinkForOrder,
-} from '@/services/paymentServices'
-import { ERROR_MESSAGES, HTTP_STATUS } from '@/lib/constants'
+  DISCOUNT_TYPE,
+  ERROR_MESSAGES,
+  HTTP_STATUS,
+  ORDER_STATUS,
+  VAT_RATE,
+} from '@/lib/constants'
+import { Decimal } from '@prisma/client/runtime/library'
 
-export async function POST(req: NextRequest) {
+function calculateBaseCost(price: number, quantity: number): number {
+  return parseFloat(price.toString()) * quantity
+}
+
+export async function POST(req: Request) {
   try {
-    const body = await req.json()
+    const body: OrderFormData = await req.json()
 
-    const validatedData = orderSchema.parse(body)
+    const validatedData = validateOrder(body)
 
-    const result = await prisma.$transaction(async tx => {
-      let lead = await tx.lead.findFirst({
-        where: {
-          OR: [
-            { email: validatedData.lead.email },
-            { phoneNumber: validatedData.lead.phoneNumber },
-          ],
+    if (!validatedData.success) {
+      console.error('Validation error:', validatedData.error)
+      return NextResponse.json(
+        {
+          error: ERROR_MESSAGES.INVALID_REQUEST,
+          details: validatedData.error.issues.map(issue => ({
+            field: issue.path.join('.'),
+            message: issue.message,
+          })),
         },
+        { status: HTTP_STATUS.BAD_REQUEST }
+      )
+    }
+
+    const {
+      serviceId,
+      discountCode,
+      requirements,
+      estimatedDays,
+      deadline,
+      lead,
+    } = body
+
+    let serviceData: Service | null = null
+    if (serviceId) {
+      serviceData = await prisma.service.findUnique({
+        where: { id: serviceId },
       })
 
-      if (!lead) {
-        lead = await tx.lead.create({
-          data: {
-            fullName: validatedData.lead.fullName,
-            email: validatedData.lead.email,
-            phoneNumber: validatedData.lead.phoneNumber,
-            whatsappNumber: validatedData.lead.whatsappNumber,
-          },
-        })
-      } else {
-        lead = await tx.lead.update({
-          where: { id: lead.id },
-          data: {
-            fullName: validatedData.lead.fullName,
-            email: validatedData.lead.email || lead.email,
-            phoneNumber: validatedData.lead.phoneNumber || lead.phoneNumber,
-            whatsappNumber:
-              validatedData.lead.whatsappNumber || lead.whatsappNumber,
-          },
-        })
+      if (!serviceData) {
+        return NextResponse.json(
+          { success: false, error: ERROR_MESSAGES.SERVICE.NOT_FOUND },
+          { status: HTTP_STATUS.NOT_FOUND }
+        )
+      }
+    }
+
+    let validatedDiscount: { id: string; type: string; value: Decimal } | null =
+      null
+
+    if (discountCode) {
+      const validDiscount = await prisma.discountCode.findUnique({
+        where: { code: discountCode },
+      })
+
+      if (
+        !validDiscount ||
+        !validDiscount.isActive ||
+        validDiscount.endDate < new Date()
+      ) {
+        return NextResponse.json(
+          { success: false, error: ERROR_MESSAGES.DISCOUNT.INVALID },
+          { status: HTTP_STATUS.BAD_REQUEST }
+        )
       }
 
-      let validatedDiscount = null
-      if (validatedData.discountCode) {
-        validatedDiscount = await tx.discountCode.findFirst({
+      if (validDiscount.firstTimeOnly && lead.email) {
+        const bookingsCount = await prisma.booking.count({
+          where: { lead: { email: lead.email } },
+        })
+
+        if (bookingsCount > 0) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: ERROR_MESSAGES.DISCOUNT.FIRST_TIME_ONLY,
+            },
+            { status: HTTP_STATUS.BAD_REQUEST }
+          )
+        }
+      }
+
+      validatedDiscount = {
+        id: validDiscount.id,
+        type: validDiscount.type,
+        value: validDiscount.value,
+      }
+    }
+
+    const baseCost = calculateBaseCost(
+      serviceData ? parseFloat(serviceData.price.toString()) : 0,
+      1
+    )
+
+    const discountAmount = validatedDiscount
+      ? validatedDiscount.type === DISCOUNT_TYPE.PERCENTAGE
+        ? (baseCost * Number(validatedDiscount.value)) / 100
+        : Number(validatedDiscount.value)
+      : 0
+    const costAfterDiscount = baseCost - Number(discountAmount)
+    const finalVatAmount = (costAfterDiscount * VAT_RATE) / 100
+    const finalTotalCost = costAfterDiscount + finalVatAmount
+
+    const result = await prisma.$transaction(
+      async tx => {
+        let orderLead = await tx.lead.findFirst({
           where: {
-            code: validatedData.discountCode,
-            isActive: true,
-            startDate: { lte: new Date() },
-            endDate: { gte: new Date() },
+            OR: [{ email: lead.email }, { phoneNumber: lead.phoneNumber }],
           },
         })
 
-        if (!validatedDiscount) {
-          throw new Error('Invalid or expired discount code')
-        }
-      }
-
-      let finalAmount = validatedData.totalCost
-      let discountAmount = 0
-
-      if (validatedDiscount) {
-        if (validatedDiscount.type === 'PERCENTAGE') {
-          discountAmount =
-            (validatedData.totalCost *
-              parseFloat(validatedDiscount.value.toString())) /
-            100
+        if (!orderLead) {
+          orderLead = await tx.lead.create({
+            data: {
+              fullName: lead.fullName,
+              email: lead.email,
+              phoneNumber: lead.phoneNumber,
+              whatsappNumber: lead.whatsappNumber,
+            },
+          })
         } else {
-          discountAmount = parseFloat(validatedDiscount.value.toString())
+          orderLead = await tx.lead.update({
+            where: { id: orderLead.id },
+            data: {
+              fullName: lead.fullName,
+              email: lead.email || lead.email,
+              phoneNumber: lead.phoneNumber || lead.phoneNumber,
+              whatsappNumber: lead.whatsappNumber || lead.whatsappNumber,
+            },
+          })
         }
-        finalAmount = Math.max(0, validatedData.totalCost - discountAmount)
-      }
 
-      const order = await tx.order.create({
-        data: {
-          serviceName: validatedData.serviceName,
-          description: validatedData.description,
-          requirements: validatedData.requirements,
-          totalCost: validatedData.totalCost,
-          finalAmount: finalAmount,
-          discountAmount: discountAmount,
-          estimatedDays: validatedData.estimatedDays,
-          deadline: validatedData.deadline
-            ? new Date(validatedData.deadline)
-            : null,
-          leadId: lead.id,
-          discountCodeId: validatedDiscount?.id,
-        },
-        include: {
-          lead: true,
-          discountCode: true,
-        },
-      })
-
-      // Update discount usage if applicable
-      if (validatedDiscount) {
-        await tx.discountCode.update({
-          where: { id: validatedDiscount.id },
-          data: { usedCount: { increment: 1 } },
+        const order = await tx.order.create({
+          data: {
+            serviceName: serviceData ? serviceData.name : '',
+            totalCost: finalTotalCost,
+            finalAmount: finalTotalCost,
+            discountAmount,
+            leadId: orderLead.id,
+            discountCodeId: validatedDiscount?.id,
+            status: ORDER_STATUS.PENDING,
+          },
+          include: {
+            lead: true,
+            discountCode: true,
+          },
         })
-      }
 
-      return order
-    })
+        if (validatedDiscount) {
+          await tx.discountCode.update({
+            where: { id: validatedDiscount.id },
+            data: { usedCount: { increment: 1 } },
+          })
+        }
+
+        return order
+      },
+      {
+        timeout: 15000,
+      }
+    )
 
     // Create Notion entry
     try {

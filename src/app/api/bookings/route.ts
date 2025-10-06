@@ -181,7 +181,6 @@ export async function POST(req: Request) {
       }
     }
 
-    // Validate discount code
     let validatedDiscount: { id: string; type: string; value: Decimal } | null =
       null
 
