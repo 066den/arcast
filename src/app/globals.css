@@ -248,10 +248,6 @@
     }
   }
 
-  .next-video-alert {
-    display: none;
-  }
-
   /* Hero section animations */
   @keyframes fadeInUp {
     from {

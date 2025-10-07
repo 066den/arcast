@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Video from 'next-video'
-import videoUrl from 'https://res.cloudinary.com/deuvbiekl/video/upload/v1747050218/desk_bgzsdy.mp4'
+
+const videoUrl =
+  'https://res.cloudinary.com/deuvbiekl/video/upload/v1747050218/desk_bgzsdy.mp4'
 
 interface VideoBackgroundProps {
   children: React.ReactNode
@@ -59,7 +60,7 @@ const VideoBackground = ({
     >
       {shouldShowVideo && !isVideoError && (
         <div className="absolute inset-0 z-0">
-          <Video
+          <video
             src={videoUrl}
             controls={false}
             muted
