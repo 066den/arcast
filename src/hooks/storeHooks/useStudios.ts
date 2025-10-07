@@ -9,6 +9,7 @@ export function useStudios() {
     createStudio,
     updateStudioImage,
     updateStudio,
+    updateStudioGallery,
   } = useStudioStore()
 
   return {
@@ -19,5 +20,6 @@ export function useStudios() {
     createStudio,
     updateStudioImage,
     updateStudio,
+    updateStudioGallery,
   }
 }

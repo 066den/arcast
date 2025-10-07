@@ -16,12 +16,20 @@ import { ASPECT_RATIOS } from '@/lib/constants'
 import { useStudios } from '@/hooks/storeHooks/useStudios'
 import { toast } from 'sonner'
 import { ApiError } from '@/lib/api'
+import GalleryEditable from '@/components/ui/GalleryEditable'
 
 const StudioItem = ({ studio }: { studio: Studio }) => {
   const [isEditing, setIsEditing] = useState(false)
-  const { updateStudioImage, updateStudio } = useStudios()
-  const { name, openingTime, closingTime, totalSeats, location, imageUrl } =
-    studio
+  const { updateStudioImage, updateStudio, updateStudioGallery } = useStudios()
+  const {
+    name,
+    openingTime,
+    closingTime,
+    totalSeats,
+    location,
+    imageUrl,
+    gallery,
+  } = studio
 
   const {
     register,
@@ -71,12 +79,26 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
     }
   }
 
+  const handleUploadGallery = async (file: File) => {
+    try {
+      await updateStudioGallery(studio.id, file)
+      toast.success('Gallery uploaded successfully')
+    } catch (error) {
+      console.error('Error uploading gallery:', error)
+      toast.error('Error uploading gallery')
+    }
+  }
+
   return (
     <form onSubmit={handleSave}>
       <Card>
         <CardHeader className="flex flex-row justify-between">
           <CardTitle>
-            {isEditing ? <Input {...register('name')} /> : name}
+            {isEditing ? (
+              <Input {...register('name')} className="flex-1" />
+            ) : (
+              name
+            )}
           </CardTitle>
           {!isEditing ? (
             <Button
@@ -125,7 +147,7 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
                   <MapPin className="h-5 w-5 text-green-600" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <p className="text-sm text-muted-foreground">Location:</p>
+                  <p className="text-base text-muted-foreground">Location:</p>
                   {isEditing ? (
                     <Input
                       {...register('location')}
@@ -134,7 +156,7 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
                     />
                   ) : (
                     <div className="flex items-center space-x-2">
-                      <span className="text-sm">{location}</span>
+                      <span className="text-base">{location}</span>
                     </div>
                   )}
                 </div>
@@ -146,7 +168,9 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
                   <Users className="h-5 w-5 text-blue-600" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <p className="text-sm text-muted-foreground">Total Seats:</p>
+                  <p className="text-base text-muted-foreground">
+                    Total Seats:
+                  </p>
                   {isEditing ? (
                     <Input
                       type="number"
@@ -158,7 +182,7 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
                     />
                   ) : (
                     <div className="flex items-center space-x-2">
-                      <span className="text-sm">{totalSeats}</span>
+                      <span className="text-base">{totalSeats}</span>
                     </div>
                   )}
                 </div>
@@ -169,9 +193,9 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
                 <div className="bg-yellow-100 p-2 rounded-lg">
                   <Clock className="h-5 w-5 text-yellow-600" />
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm text-muted-foreground">
-                    Opening Time:
+                <div className="flex items-center gap-2">
+                  <Label>
+                    <span className="text-base">Opening Time:</span>
                   </Label>
                   {isEditing ? (
                     <div className="flex items-center gap-2">
@@ -196,13 +220,19 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
               </div>
             </div>
           </div>
-          <ImageEditable
-            className="mt-4"
-            src={imageUrl || undefined}
-            alt="Studio Image"
-            onUpload={handleUploadImage}
-            aspectRatio={ASPECT_RATIOS.CLASSIC}
-          />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+            <ImageEditable
+              src={imageUrl || undefined}
+              alt="Studio Image"
+              onUpload={handleUploadImage}
+              aspectRatio={ASPECT_RATIOS.CLASSIC}
+            />
+
+            <GalleryEditable
+              onUpload={handleUploadGallery}
+              aspectRatio={ASPECT_RATIOS.LANDSCAPE}
+            />
+          </div>
         </CardContent>
       </Card>
     </form>

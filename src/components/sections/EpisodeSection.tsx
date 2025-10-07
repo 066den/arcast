@@ -4,6 +4,7 @@ import { Sample, ServiceType } from '@/types'
 import SmoothOverlappingCarousel from '../ui/smooth-overlapping-carousel'
 import ServiceTypesList from '../servicesComponents/ServiceTypesList'
 import { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 
 interface EpisodeSectionProps {
   initialServiceTypes: ServiceType[]
@@ -15,9 +16,14 @@ const EpisodeSection = ({
   initialSamples,
 }: EpisodeSectionProps) => {
   const [typePackages, setTypePackages] = useState<string>('podcast')
+
   const filteredServiceTypes = initialServiceTypes.filter(
     serviceType => serviceType.slug !== 'social'
   )
+
+  const filteredSamples = initialSamples.filter(sample => {
+    return sample?.serviceType?.slug === typePackages
+  })
 
   return (
     <section className="py-10 xl:py-20">
@@ -46,7 +52,7 @@ const EpisodeSection = ({
         </p>
       </div>
 
-      <div className="lg:flex lg:flex-row items-center gap-4">
+      <div className="overflow-hidden lg:flex lg:flex-row items-center gap-4">
         <div className="lg:w-1/3 w-full lg:pr-4 mb-14 lg:mb-0">
           <ServiceTypesList
             typePackages={typePackages}
@@ -55,12 +61,23 @@ const EpisodeSection = ({
           />
         </div>
 
-        {initialSamples && (
-          <SmoothOverlappingCarousel
-            items={initialSamples}
-            className="flex-1 xl:pr-44 h-[22.5rem]"
-          />
-        )}
+        <AnimatePresence mode="wait">
+          {initialSamples && (
+            <motion.div
+              key={typePackages}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="relative flex-1 xl:pr-44 h-[22.5rem]"
+            >
+              <SmoothOverlappingCarousel
+                items={filteredSamples}
+                className="w-full h-full"
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   )

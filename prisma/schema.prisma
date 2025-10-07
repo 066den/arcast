@@ -53,6 +53,7 @@ model Studio {
   openingTime String   // HH:MM format
   closingTime String   // HH:MM format
   isActive    Boolean  @default(true)
+  gallery     String[] @default([])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

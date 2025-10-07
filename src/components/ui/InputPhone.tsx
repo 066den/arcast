@@ -5,12 +5,13 @@ import { Button } from './button'
 import { Input } from './input'
 import { getCountries, getCountryCallingCode } from 'libphonenumber-js'
 
-interface InputPhoneProps extends ComponentProps<'input'> {
+interface InputPhoneProps extends Omit<ComponentProps<'input'>, 'size'> {
+  size?: 'sm' | 'md' | 'lg'
   error?: string
   onChangeValue: (value: string) => void
 }
 
-const InputPhone = ({ onChangeValue, error }: InputPhoneProps) => {
+const InputPhone = ({ onChangeValue, error, size = 'sm' }: InputPhoneProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [countryCode, setCountryCode] = useState('+971')
   const [customValue, setCustomValue] = useState('')
@@ -84,6 +85,7 @@ const InputPhone = ({ onChangeValue, error }: InputPhoneProps) => {
           value={customValue}
           onChange={handleInputChange}
           placeholder="Phone number"
+          size={size}
         />
       </div>
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}

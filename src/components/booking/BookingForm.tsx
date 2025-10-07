@@ -367,6 +367,7 @@ const BookingForm = ({
                 <Label htmlFor="fullName">Full name</Label>
                 <Input
                   id="fullName"
+                  size="md"
                   {...register('fullName')}
                   placeholder="John Doe"
                   error={errors.fullName?.message}
@@ -377,6 +378,7 @@ const BookingForm = ({
                 <Input
                   id="email"
                   type="email"
+                  size="md"
                   {...register('email')}
                   placeholder="john@example.com"
                   error={errors.email?.message}
@@ -389,6 +391,7 @@ const BookingForm = ({
                 <InputPhone
                   key={formKey}
                   id="phone"
+                  size="md"
                   {...register('phoneNumber')}
                   error={errors.phoneNumber?.message}
                   onChangeValue={handlePhoneChange}
@@ -398,6 +401,7 @@ const BookingForm = ({
                 <Label htmlFor="discountCode">Discount code (optional)</Label>
                 <Input
                   id="discountCode"
+                  size="md"
                   {...register('discountCode')}
                   placeholder="Discount code"
                   error={errors.discountCode?.message}

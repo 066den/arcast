@@ -67,6 +67,7 @@ export type Studio = {
   name: string
   location: string
   imageUrl: string | null
+  gallery: string[]
   totalSeats: number
   openingTime: string
   closingTime: string
