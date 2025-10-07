@@ -17,7 +17,7 @@ interface ServiceCardProps {
 }
 
 const ServiceCard = ({ service }: ServiceCardProps) => {
-  const { name, includes, price, isPopular, currency, type } = service
+  const { name, includes, price, isPopular, currency, serviceType } = service
   const { selectService, selectServiceId } = useBooking()
   const pathname = usePathname()
   const isBooking = pathname === ROUTES.BOOKING
@@ -25,13 +25,13 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
   const { navigateWithScroll } = useScrollNavigation()
 
   const unit = useMemo(() => {
-    switch (type) {
+    switch (serviceType?.slug) {
       case 'podcast':
         return 'hour'
       default:
         return ''
     }
-  }, [type])
+  }, [serviceType])
 
   const handleBookNow = () => {
     selectService(service.id)

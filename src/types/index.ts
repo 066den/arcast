@@ -130,10 +130,14 @@ export interface Service {
   description: string | null
   includes: string[]
   imageUrl: string | null
-  price: number | Decimal
+  price: number
   currency: string
   isPopular: boolean
-  type: string
+  serviceTypeId: string
+  serviceType?: {
+    slug: string
+  }
+  type?: string
 }
 
 export interface ServiceType {
@@ -143,7 +147,7 @@ export interface ServiceType {
   sortOrder: number
   description: string | null
   isActive: boolean
-  services: Service[]
+  services?: Service[]
 }
 
 export interface AdditionalService {
