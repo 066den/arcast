@@ -10,6 +10,7 @@ export function useStudios() {
     updateStudioImage,
     updateStudio,
     updateStudioGallery,
+    deleteStudioGallery,
   } = useStudioStore()
 
   return {
@@ -21,5 +22,6 @@ export function useStudios() {
     updateStudioImage,
     updateStudio,
     updateStudioGallery,
+    deleteStudioGallery,
   }
 }

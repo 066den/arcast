@@ -20,7 +20,12 @@ import GalleryEditable from '@/components/ui/GalleryEditable'
 
 const StudioItem = ({ studio }: { studio: Studio }) => {
   const [isEditing, setIsEditing] = useState(false)
-  const { updateStudioImage, updateStudio, updateStudioGallery } = useStudios()
+  const {
+    updateStudioImage,
+    updateStudio,
+    updateStudioGallery,
+    deleteStudioGallery,
+  } = useStudios()
   const {
     name,
     openingTime,
@@ -86,6 +91,16 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
     } catch (error) {
       console.error('Error uploading gallery:', error)
       toast.error('Error uploading gallery')
+    }
+  }
+
+  const handleDeleteGallery = async (image: string) => {
+    try {
+      await deleteStudioGallery(studio.id, image)
+      toast.success('Gallery deleted successfully')
+    } catch (error) {
+      console.error('Error deleting gallery:', error)
+      toast.error('Error deleting gallery')
     }
   }
 
@@ -231,6 +246,8 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
             <GalleryEditable
               onUpload={handleUploadGallery}
               aspectRatio={ASPECT_RATIOS.LANDSCAPE}
+              images={gallery}
+              onDelete={handleDeleteGallery}
             />
           </div>
         </CardContent>

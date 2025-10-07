@@ -51,11 +51,7 @@ export async function POST(
       data: { gallery: [...existingStudio.gallery, imageUrl] },
     })
 
-    return NextResponse.json({
-      success: true,
-      message: 'Studio image updated successfully',
-      studio: updatedStudio,
-    })
+    return NextResponse.json(updatedStudio)
   } catch (error) {
     console.error('Error updating studio gallery:', error)
     return NextResponse.json(
@@ -71,8 +67,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
-    const { searchParams } = new URL(req.url)
-    const imageUrl = searchParams.get('imageUrl')
+    const { imageUrl } = await req.json()
 
     if (!id || !imageUrl) {
       return NextResponse.json(
@@ -91,7 +86,6 @@ export async function DELETE(
         { status: 404 }
       )
     }
-
     const updatedGallery = existingStudio.gallery.filter(
       url => url !== imageUrl
     )
@@ -101,14 +95,9 @@ export async function DELETE(
       data: { gallery: updatedGallery },
     })
 
-    // Физическое удаление файла с диска
     await deleteUploadedFile(imageUrl)
 
-    return NextResponse.json({
-      success: true,
-      message: 'Gallery image removed successfully',
-      studio: updatedStudio,
-    })
+    return NextResponse.json(updatedStudio)
   } catch (error) {
     console.error('Error removing gallery image:', error)
     return NextResponse.json(

@@ -21,6 +21,7 @@ interface StudioStore {
   updateStudio: (id: string, update: Partial<Studio>) => Promise<void>
   updateStudioImage: (studioId: string, imageFile: File) => Promise<void>
   updateStudioGallery: (studioId: string, imageFile: File) => Promise<void>
+  deleteStudioGallery: (studioId: string, image: string) => Promise<void>
   deleteStudio: (studioId: string) => Promise<void>
 }
 
@@ -151,6 +152,37 @@ const useStudioStore = create<StudioStore>()(
           const updatedStudios = studios?.map(studio =>
             studio.id === studioId
               ? { ...studio, gallery: response.gallery }
+              : studio
+          )
+
+          set({ studios: updatedStudios })
+        } catch (error) {
+          if (error instanceof ApiError) {
+            throw new Error(error.message)
+          }
+        }
+      },
+
+      deleteStudioGallery: async (studioId: string, image: string) => {
+        const { studios } = get()
+
+        try {
+          const response = await apiRequest<Studio>(
+            `${API_ENDPOINTS.STUDIOS}/${studioId}/gallery`,
+            {
+              method: 'DELETE',
+              body: JSON.stringify({ imageUrl: image }),
+            }
+          )
+
+          console.log(response)
+
+          const updatedStudios = studios?.map(studio =>
+            studio.id === studioId
+              ? {
+                  ...studio,
+                  gallery: response.gallery,
+                }
               : studio
           )
 

@@ -25,7 +25,7 @@ import {
 import { API_ENDPOINTS, ERROR_MESSAGES } from '@/lib/constants'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LeadSchema, bookingLeadSchema } from '@/lib/schemas'
-import InputPhone from '../ui/InputPhone'
+import InputPhoneNew from '../ui/InputPhoneNew'
 import { ApiError, apiRequest } from '@/lib/api'
 import { cardVariants, notificationVariants } from '@/lib/motion-variants'
 import { motion } from 'framer-motion'
@@ -388,7 +388,7 @@ const BookingForm = ({
             <div className="grid grid-cols-1 md:grid-cols-5 md:gap-4 gap-8">
               <div className="space-y-3 md:col-span-3">
                 <Label htmlFor="phone">Phone</Label>
-                <InputPhone
+                <InputPhoneNew
                   key={formKey}
                   id="phone"
                   size="md"
