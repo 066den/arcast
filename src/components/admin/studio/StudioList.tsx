@@ -12,11 +12,7 @@ import useFlag from '@/hooks/useFlag'
 import AddStudioModal from './AddStudioModal'
 import { Preloader } from '@/components/ui/preloader'
 
-interface StudioListProps {
-  initialStudios: Studio[]
-}
-
-const StudioList = ({ initialStudios }: StudioListProps) => {
+const StudioList = () => {
   const { studios, setStudios, isLoading, fetchStudios } = useStudios()
 
   const [isAddStudioModalOpen, openAddStudioModal, closeAddStudioModal] =
@@ -27,11 +23,10 @@ const StudioList = ({ initialStudios }: StudioListProps) => {
   }
 
   useEffect(() => {
-    setStudios(initialStudios)
-    if (studios.length === 0) {
+    if (!studios) {
       fetchStudios()
     }
-  }, [initialStudios, setStudios, fetchStudios, studios.length])
+  }, [studios, setStudios, fetchStudios])
 
   return (
     <Card className="px-4 h-full">
@@ -58,14 +53,14 @@ const StudioList = ({ initialStudios }: StudioListProps) => {
           <div className="p-4 h-full flex items-center justify-center">
             <Preloader variant="wave" size="lg" text="Processing data..." />
           </div>
-        ) : studios.length > 0 || initialStudios.length > 0 ? (
+        ) : studios && studios.length > 0 ? (
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 xl:grid-cols-2 gap-4"
+            className="grid grid-cols-1 2xl:grid-cols-2 gap-4"
           >
-            {(studios.length > 0 ? studios : initialStudios).map(studio => (
+            {studios.map(studio => (
               <motion.div key={studio.id} variants={itemVariants}>
                 <StudioItem key={studio.id} studio={studio} />
               </motion.div>

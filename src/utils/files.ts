@@ -1,6 +1,6 @@
 import { join } from 'path'
 import { v4 as uuidv4 } from 'uuid'
-import { mkdir, writeFile } from 'fs/promises'
+import { mkdir, writeFile, unlink } from 'fs/promises'
 
 export const getUploadedFile = async (
   file: File,
@@ -14,7 +14,7 @@ export const getUploadedFile = async (
 
   try {
     await mkdir(uploadDir, { recursive: true })
-  } catch (error) {
+  } catch {
     // Error creating directory
   }
 
@@ -24,4 +24,15 @@ export const getUploadedFile = async (
   await writeFile(filePath, buffer)
 
   return `/uploads/${nameDir}/${fileName}`
+}
+
+export const deleteUploadedFile = async (fileUrl: string) => {
+  try {
+    const filePath = join(process.cwd(), 'public', fileUrl)
+    await unlink(filePath)
+    return true
+  } catch (error) {
+    console.error('Error deleting file:', error)
+    return false
+  }
 }

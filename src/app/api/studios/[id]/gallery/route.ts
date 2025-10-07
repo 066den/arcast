@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 
 import { ERROR_MESSAGES, HTTP_STATUS } from '@/lib/constants'
 import { validateFile } from '@/lib/validate'
-import { deleteUploadedFile, getUploadedFile } from '@/utils/files'
+import { getUploadedFile, deleteUploadedFile } from '@/utils/files'
 
 export async function POST(
   req: Request,
@@ -27,14 +27,6 @@ export async function POST(
       return NextResponse.json({ error: validation }, { status: 400 })
     }
 
-    const imageUrl = await getUploadedFile(file, 'studios')
-    if (!imageUrl) {
-      return NextResponse.json(
-        { error: 'Failed to upload image' },
-        { status: 400 }
-      )
-    }
-
     const existingStudio = await prisma.studio.findUnique({
       where: { id },
     })
@@ -46,13 +38,17 @@ export async function POST(
       )
     }
 
-    if (existingStudio.imageUrl) {
-      await deleteUploadedFile(existingStudio.imageUrl)
+    const imageUrl = await getUploadedFile(file, `studios/gallery/${id}`)
+    if (!imageUrl) {
+      return NextResponse.json(
+        { error: 'Failed to upload image' },
+        { status: 400 }
+      )
     }
 
     const updatedStudio = await prisma.studio.update({
       where: { id },
-      data: { imageUrl },
+      data: { gallery: [...existingStudio.gallery, imageUrl] },
     })
 
     return NextResponse.json({
@@ -61,7 +57,7 @@ export async function POST(
       studio: updatedStudio,
     })
   } catch (error) {
-    console.error('Error updating studio image:', error)
+    console.error('Error updating studio gallery:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -69,22 +65,24 @@ export async function POST(
   }
 }
 
-// Method for deleting studio image
-export async function DELETE(req: Request) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
+    const { id } = await params
     const { searchParams } = new URL(req.url)
-    const studioId = searchParams.get('studioId')
+    const imageUrl = searchParams.get('imageUrl')
 
-    if (!studioId) {
+    if (!id || !imageUrl) {
       return NextResponse.json(
-        { error: 'Studio ID is required' },
+        { error: 'Studio ID and image URL are required' },
         { status: 400 }
       )
     }
 
-    // Check if studio exists
     const existingStudio = await prisma.studio.findUnique({
-      where: { id: studioId },
+      where: { id },
     })
 
     if (!existingStudio) {
@@ -94,19 +92,25 @@ export async function DELETE(req: Request) {
       )
     }
 
-    // Remove studio image (set to null)
+    const updatedGallery = existingStudio.gallery.filter(
+      url => url !== imageUrl
+    )
+
     const updatedStudio = await prisma.studio.update({
-      where: { id: studioId },
-      data: { imageUrl: '' },
+      where: { id },
+      data: { gallery: updatedGallery },
     })
+
+    // Физическое удаление файла с диска
+    await deleteUploadedFile(imageUrl)
 
     return NextResponse.json({
       success: true,
-      message: 'Studio image removed successfully',
+      message: 'Gallery image removed successfully',
       studio: updatedStudio,
     })
   } catch (error) {
-    console.error('Error removing studio image:', error)
+    console.error('Error removing gallery image:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

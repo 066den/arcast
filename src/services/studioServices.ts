@@ -68,7 +68,11 @@ export const getSamples = async () => {
     throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
   }
   try {
-    const samples = await prisma.sample.findMany({})
+    const samples = await prisma.sample.findMany({
+      include: {
+        serviceType: true,
+      },
+    })
     return samples
   } catch (error) {
     console.error('Error fetching samples:', error)
