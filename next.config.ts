@@ -1,4 +1,3 @@
-import { withNextVideo } from 'next-video/process'
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
@@ -28,8 +27,15 @@ const nextConfig: NextConfig = {
         fs: false,
       }
     }
+
+    // Add support for video files
+    config.module.rules.push({
+      test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+      type: 'asset/resource',
+    })
+
     return config
   },
 }
 
-export default withNextVideo(nextConfig)
+export default nextConfig

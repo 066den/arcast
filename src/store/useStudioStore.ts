@@ -175,8 +175,6 @@ const useStudioStore = create<StudioStore>()(
             }
           )
 
-          console.log(response)
-
           const updatedStudios = studios?.map(studio =>
             studio.id === studioId
               ? {
