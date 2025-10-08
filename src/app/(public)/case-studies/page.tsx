@@ -4,8 +4,6 @@ import { getCases, getClients } from '@/services/studioServices'
 import { CaseStudy } from '@/types'
 import TestimonialsSection from '@/components/sections/TestimonialsSection'
 
-export const dynamic = 'force-dynamic'
-
 export default async function CaseStudiesPage() {
   const cases: CaseStudy[] = (await getCases()) as unknown as CaseStudy[]
   const clients = await getClients()
