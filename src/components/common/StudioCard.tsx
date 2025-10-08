@@ -26,37 +26,27 @@ export function StudioCard({
     }
   }
 
-  const [isOpen, setIsOpen] = useState(false)
-
-  const openGallery = () => {
-    setIsOpen(true)
-  }
-
-  const closeGallery = () => {
-    setIsOpen(false)
-  }
   return (
     <>
       <div
         className={cn(
-          'group relative aspect-[4/3] w-full overflow-hidden md:rounded-5xl rounded-3xl cursor-pointer bg-white shadow-lg transition-transform duration-300 hover:shadow-xl',
+          'relative aspect-[4/3] w-full overflow-hidden md:rounded-5xl rounded-3xl cursor-pointer bg-white shadow-lg transition-transform duration-300 hover:shadow-xl',
           isSelection ? 'max-w-[440px]' : 'max-w-[540px]'
         )}
-        onClick={openGallery}
       >
         <Image
           src={imageUrl || ''}
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          className="object-cover"
         />
 
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center">
+        {/* <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center">
           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <Eye className="size-14 text-white" />
           </div>
-        </div>
+        </div> */}
 
         <div className="absolute bottom-0 left-0 right-0 bg-primary lg:py-5 py-4 lg:px-8 px-6">
           <div className="flex flex-col space-y-2">
@@ -80,12 +70,6 @@ export function StudioCard({
           </div>
         )}
       </div>
-      <FullscreenGallery
-        images={gallery || []}
-        isOpen={isOpen}
-        onClose={closeGallery}
-        title={name || 'Gallery'}
-      />
     </>
   )
 }
