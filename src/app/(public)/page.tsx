@@ -9,6 +9,10 @@ import PackagesSection from '@/components/sections/PackagesSection'
 import Marquee from '@/components/ui/marquee'
 const videoUrl = '/assets/video/bg-hero-video.mp4'
 
+// Force dynamic rendering to avoid database connection at build time
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function Home() {
   const [serviceTypes, samples, clients, packages] = await Promise.allSettled([
     getServiceTypes(),
