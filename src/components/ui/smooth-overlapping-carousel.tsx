@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowIcon } from './icons'
 import { Play } from 'lucide-react'
 import useFlag from '@/hooks/useFlag'
-import { VideoModal } from './modal'
+import { VideoModal } from '../modals/modal'
 
 interface SmoothOverlappingCarouselProps {
   items: Array<{

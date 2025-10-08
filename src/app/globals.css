@@ -93,6 +93,10 @@
     @apply font-hanken-grotesk font-medium xl:text-[4em] lg:text-5xl text-4xl tracking-[-0.04em];
   }
 
+  h2 strong {
+    @apply font-medium text-accent;
+  }
+
   h3,
   h4,
   h5,
@@ -240,6 +244,10 @@
     will-change: transform;
     transform: translateZ(0);
     backface-visibility: hidden;
+  }
+
+  .scrollbar-gutter-stable {
+    scrollbar-gutter: stable both-edges;
   }
 
   @media (max-width: 768px) {

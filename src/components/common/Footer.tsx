@@ -1,3 +1,4 @@
+'use client'
 import Image from 'next/image'
 import { Button } from '../ui/button'
 import { ArrowIcon } from '../ui/icons'
@@ -8,8 +9,11 @@ import {
   supportNavigation,
 } from '@/lib/config'
 import Link from 'next/link'
+import useFlag from '@/hooks/useFlag'
+import ContactForm from './ContactForm'
 
 const Footer = () => {
+  const [isContactFormOpen, contactFormOpen, contactFormClose] = useFlag()
   return (
     <footer>
       <section className="flex flex-col sm:flex-row lg:gap-14 gap-6 lg:pb-20 pb-10">
@@ -30,7 +34,12 @@ const Footer = () => {
         <div className="w-full md:w-2/5">
           <div className="flex items-center justify-between gap-2 pb-5">
             <h3>Reach us out</h3>
-            <Button variant="accent" size="icon" className="size-15">
+            <Button
+              variant="accent"
+              size="icon"
+              className="size-15"
+              onClick={contactFormOpen}
+            >
               <ArrowIcon size={28} degree={-45} className="stroke-white" />
             </Button>
           </div>
@@ -79,6 +88,7 @@ const Footer = () => {
           <p>© 2025 ARcast All rights reserved.</p>
         </section>
       </div>
+      <ContactForm isOpen={isContactFormOpen} onClose={contactFormClose} />
     </footer>
   )
 }

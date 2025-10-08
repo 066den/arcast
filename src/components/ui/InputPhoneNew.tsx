@@ -1,6 +1,6 @@
 'use client'
 
-import { ComponentProps, useState } from 'react'
+import { ChangeEvent, ComponentProps, useState, useEffect } from 'react'
 import { Input } from './input'
 import { getCountries, getCountryCallingCode } from 'libphonenumber-js'
 import { Select, SelectContent, SelectItem, SelectTrigger } from './select'
@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from './select'
 interface InputPhoneProps extends Omit<ComponentProps<'input'>, 'size'> {
   size?: 'sm' | 'md' | 'lg'
   error?: string
+  value?: string
   onChangeValue: (value: string) => void
 }
 
@@ -15,10 +16,17 @@ const InputPhoneNew = ({
   onChangeValue,
   error,
   size = 'md',
+  value = '',
 }: InputPhoneProps) => {
-  const [isOpen, setIsOpen] = useState(false)
   const [countryCode, setCountryCode] = useState('+971')
   const [customValue, setCustomValue] = useState('')
+
+  useEffect(() => {
+    if (value === '') {
+      setCustomValue('')
+      setCountryCode('+971')
+    }
+  }, [value])
 
   const countryes = getCountries()
     .map(code => ({
@@ -30,22 +38,22 @@ const InputPhoneNew = ({
         index === self.findIndex(c => c.code === country.code)
     )
 
-  const handleCountryCodeSelect = (countryCode: string) => {
-    setCountryCode(countryCode)
-    setIsOpen(false)
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     const rawValue = value.replace(/\D/g, '')
     setCustomValue(rawValue)
     onChangeValue(countryCode + rawValue)
   }
 
+  const handleCountryCodeSelect = (countryCode: string) => {
+    setCountryCode(countryCode)
+    onChangeValue(countryCode + customValue)
+  }
+
   return (
     <div className="space-y-1">
       <div className="flex gap-0">
-        <Select value={countryCode} onValueChange={setCountryCode}>
+        <Select value={countryCode} onValueChange={handleCountryCodeSelect}>
           <SelectTrigger
             size={size}
             className="font-mono w-auto rounded-r-none border-r-0"

@@ -1,5 +1,5 @@
 import { Input } from '@/components/ui/input'
-import { Modal } from '@/components/ui/modal'
+import { Modal } from '@/components/modals/modal'
 import { StudioSchema, studioSchema } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'

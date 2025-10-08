@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
-import { FullscreenGallery } from './FullscreenGallery'
+import { FullscreenGallery } from '../modals/FullscreenGallery'
 import { cn } from '@/lib/utils'
 import { Eye, Grid3X3 } from 'lucide-react'
 import { Button } from './button'

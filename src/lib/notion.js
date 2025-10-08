@@ -250,7 +250,7 @@ export async function createNotionOrderEntry(order) {
 
     const properties = {
       Name: {
-        title: createTitle(`${order.serviceName} - ${order.lead.fullName}`),
+        title: createTitle(order.serviceName),
       },
       OrderID: {
         rich_text: createRichText(order.id.toString()),
@@ -394,9 +394,6 @@ export async function createNotionLeadEntry(lead) {
   }
 }
 
-/**
- * Create a contact form entry in Notion (for contact page)
- */
 export async function createNotionContactEntry(contactData) {
   try {
     if (!CONTACT_DATABASE_ID) {
