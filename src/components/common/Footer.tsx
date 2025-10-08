@@ -70,15 +70,13 @@ const Footer = () => {
             </nav>
             <nav className="flex flex-col gap-2">
               <p className="font-medium mb-2">Support</p>
-              {supportNavigation.map(item => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="text-secondary hover:text-primary transition-all duration-300"
-                >
-                  {item.name}
-                </Link>
-              ))}
+
+              <span
+                onClick={contactFormOpen}
+                className="text-secondary hover:text-primary transition-all duration-300 cursor-pointer"
+              >
+                Contact us
+              </span>
             </nav>
           </div>
         </div>

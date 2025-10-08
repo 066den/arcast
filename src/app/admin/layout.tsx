@@ -6,9 +6,11 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar'
 import AppSidebar from '@/components/admin/AppSidebar'
-import { Button } from '@/components/ui/button'
+
 import Link from 'next/link'
 import { ArrowRightIcon } from 'lucide-react'
+
+export const dynamic = 'force-dynamic'
 
 export default function AdminLayout({
   children,
