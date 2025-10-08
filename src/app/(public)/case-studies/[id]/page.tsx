@@ -9,8 +9,6 @@ import ItemCard from '@/components/common/ItemCard'
 import PackagesSection from '@/components/sections/PackagesSection'
 import { getServiceTypes, getPackages } from '@/services/servicesServices'
 
-export const dynamic = 'force-dynamic'
-
 export default async function CaseStudyPage({
   params,
 }: {
