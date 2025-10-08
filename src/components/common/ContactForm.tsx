@@ -79,7 +79,7 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
       size="xl"
       title="Reach us out"
       hideTitle
-      className="sm:px-8 pb-8"
+      className="sm:px-8 pb-8 scrollbar-gutter-stable"
     >
       <h2 className="mb-6">
         Reach <strong>us out</strong>

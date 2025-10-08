@@ -84,12 +84,7 @@ export function Modal({
           </DialogHeader>
         )}
 
-        <div
-          className={cn(
-            'px-4 flex-1 overflow-y-auto scrollbar-gutter-stable',
-            className
-          )}
-        >
+        <div className={cn('px-4 flex-1 overflow-y-auto', className)}>
           {children}
         </div>
 
@@ -168,7 +163,7 @@ export function VideoModal({
       title={title || 'Video Player'}
       hideTitle={!title}
       contentClassName="overflow-hidden"
-      className="p-0 aspect-video"
+      className="p-0"
     >
       <ReactPlayer
         src={videoUrl}

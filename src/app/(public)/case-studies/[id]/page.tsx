@@ -1,5 +1,5 @@
 import HeroSection from '@/components/sections/HeroSection'
-import { getCaseById, getCases } from '@/services/studioServices'
+import { getCaseById } from '@/services/studioServices'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
@@ -8,13 +8,6 @@ import { CaseStudyEquipment, CaseStudyStaff } from '@/types'
 import ItemCard from '@/components/common/ItemCard'
 import PackagesSection from '@/components/sections/PackagesSection'
 import { getServiceTypes, getPackages } from '@/services/servicesServices'
-
-export async function generateStaticParams() {
-  const cases = await getCases()
-  return cases.map(caseStudy => ({
-    id: caseStudy.id,
-  }))
-}
 
 export default async function CaseStudyPage({
   params,

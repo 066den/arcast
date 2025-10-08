@@ -5,6 +5,10 @@ import servicesContent from '@/data/servicesContent.json'
 
 import { getClients } from '@/services/studioServices'
 
+// Force dynamic rendering to avoid database connection at build time
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function ServicesPage() {
   const clients = await getClients()
 

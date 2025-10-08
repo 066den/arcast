@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Button } from '../ui/button'
@@ -13,8 +13,9 @@ import {
   RotateCcw,
   Maximize2,
 } from 'lucide-react'
+import useEmblaCarousel from 'embla-carousel-react'
 
-interface FullscreenGalleryProps {
+interface FullscreenGalleryEmblaProps {
   images: string[]
   title?: string
   isOpen: boolean
@@ -22,25 +23,34 @@ interface FullscreenGalleryProps {
   currentIndex?: number
 }
 
-export function FullscreenGallery({
+export function FullscreenGalleryEmbla({
   images,
   title,
   isOpen,
   onClose,
   currentIndex = 0,
-}: FullscreenGalleryProps) {
+}: FullscreenGalleryEmblaProps) {
   const [activeIndex, setActiveIndex] = useState(currentIndex)
   const [zoom, setZoom] = useState(1)
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const [showThumbnails, setShowThumbnails] = useState(true)
-  const [touchStart, setTouchStart] = useState({ x: 0, y: 0 })
-  const [lastTouchTime, setLastTouchTime] = useState(0)
   const [initialDistance, setInitialDistance] = useState(0)
   const [initialZoom, setInitialZoom] = useState(1)
-  const [swipeOffset, setSwipeOffset] = useState(0)
-  const [isSwiping, setIsSwiping] = useState(false)
+  const [touchStart, setTouchStart] = useState({ x: 0, y: 0 })
+
+  // Embla Carousel setup
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    skipSnaps: false,
+    duration: 20,
+  })
+
+  const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({
+    containScroll: 'keepSnaps',
+    dragFree: true,
+  })
 
   useEffect(() => {
     if (isOpen) {
@@ -48,6 +58,11 @@ export function FullscreenGallery({
       setZoom(1)
       setPosition({ x: 0, y: 0 })
       document.body.style.overflow = 'hidden'
+
+      // Jump to the current index when opening
+      if (emblaApi) {
+        emblaApi.scrollTo(currentIndex, true)
+      }
     } else {
       document.body.style.overflow = 'unset'
     }
@@ -55,7 +70,41 @@ export function FullscreenGallery({
     return () => {
       document.body.style.overflow = 'unset'
     }
-  }, [isOpen, currentIndex])
+  }, [isOpen, currentIndex, emblaApi])
+
+  // Update active index when carousel scrolls
+  useEffect(() => {
+    if (!emblaApi) return
+
+    const onSelect = () => {
+      const index = emblaApi.selectedScrollSnap()
+      setActiveIndex(index)
+      setZoom(1)
+      setPosition({ x: 0, y: 0 })
+    }
+
+    emblaApi.on('select', onSelect)
+    onSelect()
+
+    return () => {
+      emblaApi.off('select', onSelect)
+    }
+  }, [emblaApi])
+
+  // Sync thumbnail carousel with main carousel
+  useEffect(() => {
+    if (!emblaApi || !emblaThumbsApi) return
+
+    const onSelect = () => {
+      const index = emblaApi.selectedScrollSnap()
+      emblaThumbsApi.scrollTo(index)
+    }
+
+    emblaApi.on('select', onSelect)
+    return () => {
+      emblaApi.off('select', onSelect)
+    }
+  }, [emblaApi, emblaThumbsApi])
 
   const resetZoom = useCallback(() => {
     setZoom(1)
@@ -63,14 +112,19 @@ export function FullscreenGallery({
   }, [])
 
   const goToPrevious = useCallback(() => {
-    setActiveIndex(prev => (prev > 0 ? prev - 1 : images.length - 1))
-    resetZoom()
-  }, [images.length, resetZoom])
+    if (emblaApi) emblaApi.scrollPrev()
+  }, [emblaApi])
 
   const goToNext = useCallback(() => {
-    setActiveIndex(prev => (prev < images.length - 1 ? prev + 1 : 0))
-    resetZoom()
-  }, [images.length, resetZoom])
+    if (emblaApi) emblaApi.scrollNext()
+  }, [emblaApi])
+
+  const scrollTo = useCallback(
+    (index: number) => {
+      if (emblaApi) emblaApi.scrollTo(index)
+    },
+    [emblaApi]
+  )
 
   const handleZoomIn = useCallback(() => {
     setZoom(prev => Math.min(prev * 1.5, 5))
@@ -80,6 +134,7 @@ export function FullscreenGallery({
     setZoom(prev => Math.max(prev / 1.5, 0.5))
   }, [])
 
+  // Wheel event for zoom and navigation
   useEffect(() => {
     if (!isOpen) return
 
@@ -91,7 +146,7 @@ export function FullscreenGallery({
         } else {
           handleZoomOut()
         }
-      } else if (images.length > 1) {
+      } else if (images.length > 1 && zoom <= 1) {
         e.preventDefault()
         if (e.deltaY > 0) {
           goToNext()
@@ -101,7 +156,6 @@ export function FullscreenGallery({
       }
     }
 
-    // Add wheel event listener with passive: false
     document.addEventListener('wheel', handleWheel, { passive: false })
 
     return () => {
@@ -110,12 +164,14 @@ export function FullscreenGallery({
   }, [
     isOpen,
     images.length,
+    zoom,
     goToNext,
     goToPrevious,
     handleZoomIn,
     handleZoomOut,
   ])
 
+  // Keyboard navigation
   useEffect(() => {
     if (!isOpen) return
 
@@ -164,8 +220,10 @@ export function FullscreenGallery({
     onClose,
   ])
 
+  // Mouse drag for panning when zoomed
   const handleMouseDown = (e: React.MouseEvent) => {
     if (zoom <= 1) return
+    e.preventDefault()
     setIsDragging(true)
     setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y })
   }
@@ -182,6 +240,7 @@ export function FullscreenGallery({
     setIsDragging(false)
   }
 
+  // Touch gestures
   const getDistance = (touches: React.TouchList) => {
     const touch1 = touches[0]
     const touch2 = touches[1]
@@ -194,10 +253,8 @@ export function FullscreenGallery({
     if (e.touches.length === 1) {
       const touch = e.touches[0]
       setTouchStart({ x: touch.clientX, y: touch.clientY })
-      setLastTouchTime(Date.now())
-      setIsSwiping(false)
-      setSwipeOffset(0)
     } else if (e.touches.length === 2) {
+      // Pinch to zoom
       const distance = getDistance(e.touches)
       setInitialDistance(distance)
       setInitialZoom(zoom)
@@ -205,29 +262,17 @@ export function FullscreenGallery({
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
+    if (e.touches.length === 1 && zoom > 1) {
+      // Pan when zoomed in
       const touch = e.touches[0]
       const deltaX = touch.clientX - touchStart.x
       const deltaY = touch.clientY - touchStart.y
-
-      if (zoom > 1) {
-        // Pan when zoomed in
-        setPosition({
-          x: deltaX,
-          y: deltaY,
-        })
-      } else if (images.length > 1) {
-        // Swipe to navigate when not zoomed
-        const absDeltaX = Math.abs(deltaX)
-        const absDeltaY = Math.abs(deltaY)
-
-        // Only start swiping if horizontal movement is greater than vertical
-        if (absDeltaX > absDeltaY && absDeltaX > 10) {
-          setIsSwiping(true)
-          setSwipeOffset(deltaX)
-        }
-      }
+      setPosition({
+        x: deltaX,
+        y: deltaY,
+      })
     } else if (e.touches.length === 2 && initialDistance > 0) {
+      // Pinch to zoom
       try {
         e.preventDefault()
       } catch {
@@ -237,51 +282,6 @@ export function FullscreenGallery({
       const scale = distance / initialDistance
       const newZoom = Math.max(0.5, Math.min(5, initialZoom * scale))
       setZoom(newZoom)
-    }
-  }
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (e.touches.length === 0) {
-      const touchDuration = Date.now() - lastTouchTime
-      const touch = e.changedTouches[0]
-      const deltaX = touch.clientX - touchStart.x
-      const deltaY = touch.clientY - touchStart.y
-      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
-
-      // Check for swipe gesture
-      if (isSwiping && zoom <= 1 && images.length > 1) {
-        const swipeThreshold = 50
-        const absDeltaX = Math.abs(deltaX)
-
-        if (absDeltaX > swipeThreshold) {
-          // Swipe detected
-          if (deltaX > 0) {
-            // Swipe right - go to previous
-            goToPrevious()
-          } else {
-            // Swipe left - go to next
-            goToNext()
-          }
-        }
-      }
-      // Single tap navigation (if touch was quick and short and not a swipe)
-      else if (
-        touchDuration < 300 &&
-        distance < 50 &&
-        zoom <= 1 &&
-        images.length > 1
-      ) {
-        const centerX = window.innerWidth / 2
-        if (touch.clientX < centerX) {
-          goToPrevious()
-        } else {
-          goToNext()
-        }
-      }
-
-      // Reset swipe state
-      setIsSwiping(false)
-      setSwipeOffset(0)
     }
   }
 
@@ -327,10 +327,9 @@ export function FullscreenGallery({
     )
   }
 
-  const currentImage = images[activeIndex]
-
   return (
     <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm">
+      {/* Header */}
       <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-2 sm:p-4 bg-gradient-to-b from-black/50 to-transparent">
         <div className="flex items-center gap-2 sm:gap-4 min-w-0">
           {title && (
@@ -371,36 +370,46 @@ export function FullscreenGallery({
         </div>
       </div>
 
+      {/* Main Carousel */}
       <div className="flex items-center justify-center h-full px-4 sm:px-8 md:px-16 pt-16 pb-20 sm:pb-32 relative z-10">
-        <div
-          className="relative w-full h-full cursor-move select-none touch-none"
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          style={{
-            transform:
-              isSwiping && zoom <= 1
-                ? `translateX(${swipeOffset}px)`
-                : `scale(${zoom}) translate(${position.x / zoom}px, ${position.y / zoom}px)`,
-            transition:
-              isDragging || isSwiping ? 'none' : 'transform 0.2s ease-out',
-          }}
-        >
-          <Image
-            src={currentImage}
-            alt={`Gallery image ${activeIndex + 1}`}
-            fill
-            sizes="1200px"
-            className="w-full h-full object-contain"
-            priority
-          />
+        <div className="embla w-full h-full" ref={emblaRef}>
+          <div className="embla__container h-full flex">
+            {images.map((image, index) => (
+              <div
+                key={index}
+                className="embla__slide flex-[0_0_100%] min-w-0 relative h-full"
+              >
+                <div
+                  className="relative w-full h-full cursor-move select-none touch-none flex items-center justify-center"
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={handleMouseUp}
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  style={{
+                    transform: `scale(${zoom}) translate(${position.x / zoom}px, ${position.y / zoom}px)`,
+                    transition: isDragging ? 'none' : 'transform 0.2s ease-out',
+                  }}
+                >
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={image}
+                      alt={`Gallery image ${index + 1}`}
+                      fill
+                      sizes="1200px"
+                      className="w-full h-full object-contain"
+                      priority={Math.abs(index - activeIndex) <= 1}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
+      {/* Navigation Buttons */}
       {images.length > 1 && (
         <>
           <Button
@@ -429,6 +438,7 @@ export function FullscreenGallery({
         </>
       )}
 
+      {/* Zoom Controls */}
       <div className="absolute left-1/2 -translate-x-1/2 bottom-16 sm:bottom-20 z-20 items-center gap-1 sm:gap-2 bg-black/50 backdrop-blur-sm rounded-full p-1 sm:p-2 hidden sm:flex">
         <Button
           type="button"
@@ -473,37 +483,41 @@ export function FullscreenGallery({
         </Button>
       </div>
 
+      {/* Thumbnails */}
       {showThumbnails && images.length > 1 && (
         <div className="absolute bottom-0 left-0 right-0 z-20 p-2 bg-gradient-to-t from-black/50 to-transparent">
-          <div className="flex justify-center gap-1 sm:gap-2 overflow-x-auto max-w-full pb-2">
-            {images.map((image, index) => (
-              <Button
-                key={index}
-                onClick={e => {
-                  e.stopPropagation()
-                  setActiveIndex(index)
-                  resetZoom()
-                }}
-                className={cn(
-                  'relative flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden border-2 transition-all duration-200',
-                  index === activeIndex
-                    ? 'border-white'
-                    : 'border-white/30 hover:border-white/60'
-                )}
-              >
-                <Image
-                  src={image}
-                  alt={`Thumbnail ${index + 1}`}
-                  fill
-                  sizes="64px"
-                  className="object-cover"
-                />
-              </Button>
-            ))}
+          <div className="embla-thumbs overflow-hidden" ref={emblaThumbsRef}>
+            <div className="embla-thumbs__container flex gap-1 sm:gap-2 justify-center">
+              {images.map((image, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={e => {
+                    e.stopPropagation()
+                    scrollTo(index)
+                  }}
+                  className={cn(
+                    'embla-thumbs__slide relative flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden border-2 transition-all duration-200',
+                    index === activeIndex
+                      ? 'border-white'
+                      : 'border-white/30 hover:border-white/60'
+                  )}
+                >
+                  <Image
+                    src={image}
+                    alt={`Thumbnail ${index + 1}`}
+                    fill
+                    sizes="64px"
+                    className="object-cover"
+                  />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}
 
+      {/* Backdrop */}
       <div className="absolute inset-0 z-0" onClick={() => onClose?.()} />
     </div>
   )
