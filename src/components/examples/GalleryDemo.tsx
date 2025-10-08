@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { GalleryViewer, GalleryCard } from '@/components/ui/GalleryViewer'
 import GalleryEditable from '@/components/ui/GalleryEditable'
-import { FullscreenGallery } from '@/components/ui/FullscreenGallery'
+import { FullscreenGallery } from '@/components/modals/FullscreenGallery'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 

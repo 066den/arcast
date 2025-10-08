@@ -20,13 +20,19 @@ export async function POST(req: Request) {
       )
     }
 
-    const { firstName, lastName, email, message } = body
+    const { firstName, lastName, email, message, phone } = body
 
-    await createNotionContactEntry({ firstName, lastName, email, message })
+    await createNotionContactEntry({
+      firstName,
+      lastName,
+      email,
+      message,
+      phone,
+    })
 
     return NextResponse.json({
       success: true,
-      data: { firstName, lastName, email, message },
+      data: { firstName, lastName, email, message, phone },
     })
   } catch (error) {
     console.error('Error creating contact:', error)

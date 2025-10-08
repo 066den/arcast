@@ -101,17 +101,23 @@ export const pagePreloaderVariants = {
 export const fadeVariants: Variants = {
   hidden: {
     opacity: 0,
-    scale: 0.8,
+    scale: 0.9,
   },
   visible: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.3, ease: 'easeOut' },
+    transition: {
+      duration: 0.5,
+      ease: [0.4, 0.0, 0.2, 1],
+    },
   },
   exit: {
     opacity: 0,
-    scale: 0.8,
-    transition: { duration: 0.3, ease: 'easeOut' },
+    scale: 0.9,
+    transition: {
+      duration: 0.3,
+      ease: [0.4, 0.0, 1, 1],
+    },
   },
 }
 

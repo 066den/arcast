@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
-import { Button } from './button'
+import { Button } from '../ui/button'
 import {
   X,
   ChevronLeft,
@@ -430,10 +430,10 @@ export function FullscreenGallery({
       </div>
 
       {showThumbnails && images.length > 1 && (
-        <div className="absolute bottom-0 left-0 right-0 z-20 p-2 sm:p-4 bg-gradient-to-t from-black/50 to-transparent">
+        <div className="absolute bottom-0 left-0 right-0 z-20 p-2 bg-gradient-to-t from-black/50 to-transparent">
           <div className="flex justify-center gap-1 sm:gap-2 overflow-x-auto max-w-full pb-2">
             {images.map((image, index) => (
-              <button
+              <Button
                 key={index}
                 onClick={e => {
                   e.stopPropagation()
@@ -454,7 +454,7 @@ export function FullscreenGallery({
                   sizes="64px"
                   className="object-cover"
                 />
-              </button>
+              </Button>
             ))}
           </div>
         </div>

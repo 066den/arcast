@@ -33,7 +33,7 @@ const sizeClasses = {
   sm: 'max-w-sm',
   md: 'max-w-md',
   lg: 'max-w-lg',
-  xl: 'max-w-xl',
+  xl: 'max-w-4xl sm:rounded-3xl',
   full: 'max-w-full mx-4',
 }
 
@@ -62,7 +62,7 @@ export function Modal({
       <DialogContent
         className={cn(
           sizeClasses[size],
-          'max-h-[calc(100vh-40px)] pt-4',
+          'max-h-[calc(100vh-40px)] pt-4 overflow-hidden',
           contentClassName
         )}
         onPointerDownOutside={
@@ -84,7 +84,12 @@ export function Modal({
           </DialogHeader>
         )}
 
-        <div className={cn('px-4 flex-1 overflow-y-auto', className)}>
+        <div
+          className={cn(
+            'px-4 flex-1 overflow-y-auto scrollbar-gutter-stable',
+            className
+          )}
+        >
           {children}
         </div>
 

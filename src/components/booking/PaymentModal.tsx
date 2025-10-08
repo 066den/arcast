@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Modal } from '@/components/ui/modal'
+import { Modal } from '@/components/modals/modal'
 
 import Image from 'next/image'
 

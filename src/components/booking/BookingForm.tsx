@@ -85,6 +85,7 @@ const BookingForm = ({
     reset,
     setValue,
     trigger,
+    watch,
     formState: { isSubmitting, isValid, errors },
   } = useForm({
     resolver: zodResolver(bookingLeadSchema),
@@ -96,6 +97,8 @@ const BookingForm = ({
       discountCode: '',
     },
   })
+
+  const phoneValue = watch('phoneNumber')
 
   const handlePhoneChange = (value: string) => {
     setValue('phoneNumber', value)
@@ -392,7 +395,7 @@ const BookingForm = ({
                   key={formKey}
                   id="phone"
                   size="md"
-                  {...register('phoneNumber')}
+                  value={phoneValue}
                   error={errors.phoneNumber?.message}
                   onChangeValue={handlePhoneChange}
                 />

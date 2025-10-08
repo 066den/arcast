@@ -1,4 +1,4 @@
-import { Studio, TimeSlotList } from '../../types'
+import { TimeSlotList } from '../../types'
 import { Button } from '../ui/button'
 import { formatTimeRange } from '../../utils/time'
 
@@ -15,7 +15,6 @@ const SelectTime = ({
   onSelectTime,
   duration,
 }: SelectTimeProps) => {
-  // Use times as they come from API (already filtered for duration)
   const availableTimes = times.filter(time => time.available)
 
   return (
