@@ -2,7 +2,7 @@ import Header from '@/components/common/Header'
 import Footer from '@/components/common/Footer'
 
 // Set revalidate to 120 seconds for production builds
-export const revalidate = 120
+export const revalidate = 0
 
 export default function RootLayout({
   children,
