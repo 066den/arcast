@@ -87,6 +87,7 @@ export const getServiceTypes = async () => {
             },
           },
         },
+        samples: true,
       },
     })
 

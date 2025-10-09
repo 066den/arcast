@@ -4,9 +4,11 @@ import ServicesContentList from '@/components/servicesComponents/ServicesContent
 import servicesContent from '@/data/servicesContent.json'
 
 import { getClients } from '@/services/studioServices'
+import { getServiceTypes } from '@/services/servicesServices'
 
 export default async function ServicesPage() {
   const clients = await getClients()
+  const servicesTypes = await getServiceTypes()
 
   return (
     <>
@@ -15,7 +17,10 @@ export default async function ServicesPage() {
         description="Providing full-cycled content production services"
         image="/assets/images/services.jpg"
       />
-      <ServicesContentList servicesDescription={servicesContent} />
+      <ServicesContentList
+        servicesDescription={servicesContent}
+        servicesTypes={servicesTypes}
+      />
       <TestimonialsSection initialClients={clients} />
     </>
   )

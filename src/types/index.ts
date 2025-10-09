@@ -148,6 +148,7 @@ export interface ServiceType {
   description: string | null
   isActive: boolean
   services?: Service[]
+  samples?: Sample[]
 }
 
 export interface AdditionalService {
