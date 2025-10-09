@@ -12,7 +12,7 @@ interface HeadlineProps {
   description: string
   image: string
   isReverse?: boolean
-  actionSection: { label: string; event: () => void }[]
+  actionSection?: { label: string; event: () => void }[]
 }
 
 const Headline = ({
@@ -48,7 +48,7 @@ const Headline = ({
         )}
       </motion.div>
 
-      <div className="flex-1 flex flex-col justify-between sm:gap-8 gap-4 pb-2">
+      <div className="flex-1 flex flex-col justify-center sm:gap-10 gap-4 pb-2">
         <motion.h2
           className=" text-accent"
           initial={{ opacity: 0, y: 30 }}
@@ -67,37 +67,37 @@ const Headline = ({
           {ReactHtmlParser(description)}
         </motion.div>
 
-        <motion.div
-          className="flex flex-col sm:flex-row gap-4"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.6, ease: 'easeOut' }}
-        >
-          {actionSection.map(({ label, event }, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                duration: 0.4,
-                delay: 0.8 + index * 0.1,
-                ease: 'easeOut',
-              }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button
-                onClick={event}
-                size="lg"
-                variant="primary"
-                className="group"
-                icon={<ChevronRightIcon className="size-7" />}
+        {actionSection && (
+          <motion.div
+            className="flex flex-col sm:flex-row gap-4"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.6, ease: 'easeOut' }}
+          >
+            {actionSection?.map(({ label, event }, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  duration: 0.4,
+                  delay: 0.8 + index * 0.1,
+                  ease: 'easeOut',
+                }}
               >
-                {label}
-              </Button>
-            </motion.div>
-          ))}
-        </motion.div>
+                <Button
+                  onClick={event}
+                  size="lg"
+                  variant="primary"
+                  className="group"
+                  icon={<ChevronRightIcon className="size-7" />}
+                >
+                  {label}
+                </Button>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
       </div>
     </div>
   )
