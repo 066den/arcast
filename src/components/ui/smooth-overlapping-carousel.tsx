@@ -51,7 +51,7 @@ const SmoothOverlappingCarousel = ({
   )
 
   const handleCloseVideo = useCallback(() => {
-    setSelectedVideoUrl(null)
+    //setSelectedVideoUrl(null)
     videoClose()
   }, [videoClose])
 
@@ -184,15 +184,13 @@ const SmoothOverlappingCarousel = ({
         </Button>
       </div>
 
-      {selectedVideoUrl && (
-        <VideoModal
-          isOpen={isVideoModalOpen}
-          title={items[currentIndex].name || ''}
-          videoUrl={selectedVideoUrl}
-          poster={items[currentIndex].thumbUrl || undefined}
-          onClose={handleCloseVideo}
-        />
-      )}
+      <VideoModal
+        isOpen={isVideoModalOpen}
+        title={items[currentIndex].name || ''}
+        videoUrl={selectedVideoUrl || ''}
+        poster={items[currentIndex].thumbUrl || undefined}
+        onClose={handleCloseVideo}
+      />
     </div>
   )
 }

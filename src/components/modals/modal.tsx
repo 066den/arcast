@@ -157,7 +157,7 @@ export function VideoModal({
 }: VideoModalProps) {
   return (
     <Modal
-      isOpen={isOpen}
+      isOpen={Boolean(isOpen && videoUrl)}
       onClose={onClose}
       size="xl"
       title={title || 'Video Player'}
@@ -166,7 +166,7 @@ export function VideoModal({
       className="p-0"
     >
       <ReactPlayer
-        src={videoUrl}
+        src={videoUrl || ''}
         style={{ width: '100%', height: '100%', aspectRatio: '16/9' }}
         controls
         autoPlay

@@ -63,15 +63,20 @@
     scrollbar-color: #ededed transparent;
   }
   html {
-    scrollbar-gutter: stable both-edges;
     line-height: 1.35;
+    height: 100%;
+    overflow: hidden;
   }
   body {
-    @apply bg-background text-foreground overflow-x-hidden;
+    @apply bg-background text-foreground overflow-x-hidden h-screen;
+  }
+
+  body:not([data-scroll-locked]) {
+    scrollbar-gutter: stable both-edges;
   }
 
   body[data-scroll-locked] {
-    margin-right: 0 !important;
+    /* margin-right: 0 !important; */
   }
 
   ::-webkit-scrollbar {
