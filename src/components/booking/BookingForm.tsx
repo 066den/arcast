@@ -248,7 +248,7 @@ const BookingForm = ({
               <h2>
                 Choose <span className="text-accent">studio</span>
               </h2>
-              <div className="grid sm:grid-cols-2 lg:gap-16 gap-6 py-6 justify-items-center max-w-7xl mx-auto">
+              <div className="grid lg:grid-cols-2 xl:gap-16 gap-6 py-6 justify-items-center max-w-7xl mx-auto">
                 {initialStudios.map(studio => (
                   <StudioCard
                     key={studio.id}

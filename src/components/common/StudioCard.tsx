@@ -1,9 +1,13 @@
 import { cn } from '@/lib/utils'
 import { Studio } from '../../types'
 import Image from 'next/image'
-import { Eye } from 'lucide-react'
-import { FullscreenGallery } from '../modals/FullscreenGallery'
-import { useState } from 'react'
+import {
+  Carousel,
+  CarouselItem,
+  CarouselContent,
+  CarouselPrevious,
+  CarouselNext,
+} from '../ui/carousel'
 
 interface StudioCardProps {
   studio: Studio
@@ -30,17 +34,42 @@ export function StudioCard({
     <>
       <div
         className={cn(
-          'relative aspect-[4/3] w-full overflow-hidden md:rounded-5xl rounded-3xl cursor-pointer bg-white shadow-lg transition-transform duration-300 hover:shadow-xl',
-          isSelection ? 'max-w-[440px]' : 'max-w-[540px]'
+          'relative aspect-[4/3] w-full max-w-[542px] overflow-hidden md:rounded-5xl rounded-3xl bg-white shadow-sm'
         )}
       >
-        <Image
+        <Carousel className="h-full w-full">
+          <CarouselContent className="h-full">
+            <CarouselItem className="relative h-full">
+              <Image
+                src={imageUrl || ''}
+                alt={name}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover"
+              />
+            </CarouselItem>
+            {gallery.map((image, index) => (
+              <CarouselItem key={image} className="relative h-full">
+                <Image
+                  src={image || ''}
+                  alt={`${name} - Gallery ${index + 1}`}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover"
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-4 opacity-30 hover:opacity-100" />
+          <CarouselNext className="right-4 opacity-30 hover:opacity-100" />
+        </Carousel>
+        {/* <Image
           src={imageUrl || ''}
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover"
-        />
+        /> */}
 
         {/* <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center">
           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -48,12 +77,10 @@ export function StudioCard({
           </div>
         </div> */}
 
-        <div className="absolute bottom-0 left-0 right-0 bg-primary lg:py-5 py-4 lg:px-8 px-6">
-          <div className="flex flex-col space-y-2">
-            <h3 className="lg:text-[2.75em] md:text-[2em] text-[1.5em] font-nunito-sans font-bold text-white leading-tight">
-              {name}
-            </h3>
-          </div>
+        <div className="absolute bottom-0 left-0 right-0 md:py-5 p-5 md:px-10">
+          <h3 className="sm:text-[2em] text-[1.5em] font-nunito-sans font-bold text-white leading-tight text-shadow-md">
+            {name}
+          </h3>
         </div>
 
         {isSelection && (
@@ -62,7 +89,7 @@ export function StudioCard({
               e.stopPropagation()
               handleClick()
             }}
-            className="absolute top-4 right-4 md:size-11 size-8 flex items-center justify-center bg-primary rounded-full border-3 border-white"
+            className="absolute sm:top-6 top-4 sm:right-6 right-4 sm:size-11 size-8 flex items-center justify-center bg-primary rounded-full border-3 border-white"
           >
             {isSelected && (
               <div className="md:size-8 size-6 bg-accent rounded-full" />

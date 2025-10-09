@@ -11,7 +11,7 @@ const StudiosSection = ({ initialStudios }: StudiosSectionProps) => {
     <>
       <section className="lg:py-10 sm:py-6 py-2">
         <h2 className="text-accent">Our beautiful studios</h2>
-        <div className="grid sm:grid-cols-2 grid-cols-1 justify-items-center lg:gap-16 gap-6 lg:py-12 py-6">
+        <div className="grid lg:grid-cols-2 grid-cols-1 justify-items-center lg:gap-16 gap-6 lg:py-12 py-6">
           {initialStudios.map(studio => (
             <StudioCard key={studio.id} studio={studio} />
           ))}
