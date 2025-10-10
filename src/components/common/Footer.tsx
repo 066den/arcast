@@ -25,7 +25,15 @@ const Footer = () => {
             height={400}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/60 z-10 flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-all duration-300">
+          <div
+            className="absolute inset-0 bg-black/60 z-10 flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-all duration-300"
+            onClick={() =>
+              window.open(
+                'https://www.google.com/maps/place/Dubai+Media+City,+Loft+Offices+2,+Entrance+C,+Office+210+arcast/@25.0969654,55.1576304,21z?entry=ttu&g_ep=EgoyMDI1MTAwOC4wIKXMDSoASAFQAw%3D%3D',
+                '_blank'
+              )
+            }
+          >
             <div className="text-white text-center">
               View location & direction
             </div>
@@ -43,7 +51,7 @@ const Footer = () => {
               <ArrowIcon size={28} degree={-45} className="stroke-white" />
             </Button>
           </div>
-          <div className="flex justify-between border-t pt-10 gap-2">
+          <div className="grid grid-cols-2 border-t pt-10 gap-2">
             <nav className="flex flex-col gap-2">
               <p className="font-medium mb-2">{siteConfig.name}</p>
               {navigation.map(item => (
@@ -67,16 +75,6 @@ const Footer = () => {
                   {item.name}
                 </Link>
               ))}
-            </nav>
-            <nav className="flex flex-col gap-2">
-              <p className="font-medium mb-2">Support</p>
-
-              <span
-                onClick={contactFormOpen}
-                className="text-secondary hover:text-primary transition-all duration-300 cursor-pointer"
-              >
-                Contact us
-              </span>
             </nav>
           </div>
         </div>
