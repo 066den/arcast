@@ -39,10 +39,9 @@ export const adminNavigation = [
 ] as const
 
 export const legalNavigation = [
-  { name: 'Terms & Conditions', href: '/terms-and-conditions' },
+  { name: 'Terms of Service', href: '/terms-of-service' },
   { name: 'Privacy Policy', href: '/privacy-policy' },
-  { name: 'Term of Use', href: '/term-of-use' },
-  { name: 'Deletion Policy', href: '/deletion-policy' },
+  { name: 'Data Deletion', href: '/data-deletion' },
 ] as const
 
 export const supportNavigation = [
