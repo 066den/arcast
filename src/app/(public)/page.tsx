@@ -7,7 +7,7 @@ import { getClients, getSamples } from '@/services/studioServices'
 import TestimonialsSection from '@/components/sections/TestimonialsSection'
 import PackagesSection from '@/components/sections/PackagesSection'
 import Marquee from '@/components/ui/marquee'
-import videoUrl from 'https://res.cloudinary.com/deuvbiekl/video/upload/v1747050218/desk_bgzsdy.mp4'
+const videoUrl = '/assets/video/bg-hero-video.mp4'
 
 export default async function Home() {
   const [services, samples, clients] = await Promise.all([

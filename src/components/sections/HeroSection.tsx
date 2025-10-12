@@ -1,13 +1,11 @@
 import { cn } from '@/lib/utils'
-import Video from 'next-video'
-import { Asset } from 'next-video/dist/assets.js'
 import Image from 'next/image'
 
 interface HeroSectionProps {
   title?: string
   description?: string
   image?: string
-  videoUrl?: Asset
+  videoUrl?: string
 }
 
 const HeroSection = ({
@@ -25,7 +23,7 @@ const HeroSection = ({
       )}
     >
       {videoUrl && (
-        <Video
+        <video
           src={videoUrl}
           controls={false}
           muted
@@ -33,6 +31,7 @@ const HeroSection = ({
           autoPlay
           playsInline
           poster="/assets/images/heronew.png"
+          className="w-full h-full object-cover"
         />
       )}
       {image && (

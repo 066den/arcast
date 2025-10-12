@@ -1,7 +1,6 @@
 'use client'
 
 import { useMemo, useRef } from 'react'
-import Video from 'next-video'
 import Image from 'next/image'
 import { Button } from '../ui/button'
 import { ChevronRightIcon } from 'lucide-react'
@@ -14,7 +13,7 @@ import {
   textVariants,
 } from '@/lib/motion-variants'
 import Autoplay from 'embla-carousel-autoplay'
-import videoUrl from 'https://res.cloudinary.com/deuvbiekl/video/upload/v1747050640/1_sngfk4.mp4'
+const videoUrl = '/assets/video/mic-vid.mp4'
 
 interface TestimonialsSectionProps {
   isVideo?: boolean
@@ -59,15 +58,14 @@ const TestimonialsSection = ({
       <div className="grid grid-cols-5 gap-10">
         <div className="aspect-[3/4] col-span-2 max-w-xl rounded-3xl overflow-hidden">
           {isVideo ? (
-            <Video
-              src={videoUrl ?? ''}
+            <video
+              src={videoUrl}
               controls={false}
-              className="rounded-3xl"
+              className="rounded-3xl w-full h-full object-cover"
               muted
               loop
               autoPlay
               playsInline
-              //poster={poster}
             />
           ) : (
             <Image
