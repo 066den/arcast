@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react'
 
-const videoUrl =
-  'https://res.cloudinary.com/deuvbiekl/video/upload/v1747050218/desk_bgzsdy.mp4'
+const videoUrl = '/assets/video/bg-hero-video.mp4'
 
 interface VideoBackgroundProps {
   children: React.ReactNode

@@ -108,10 +108,7 @@ temp/
 
 # next-video
 
-videos/*
-!videos/*.json
-!videos/*.js
-!videos/*.ts
+videos/
 public/_next-video
 public/assets/video/*
 public/assets/images/*.mp4
@@ -119,3 +116,6 @@ public/assets/images/*.mov
 public/assets/images/*.avi
 public/assets/images/*.webm
 public/assets/images/*.mkv
+
+# Webpack lock files
+*.webpack.lock
