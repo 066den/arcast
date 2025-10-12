@@ -35,15 +35,24 @@ export const getServices = async () => {
   }
 }
 
-export const getServicesByType = async (serviceTypeId: string) => {
+export const getServicesByType = async (slug: string) => {
   if (!prisma) {
     throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
   }
   try {
     const services = await prisma.service.findMany({
       where: {
-        serviceTypeId: serviceTypeId,
+        serviceType: {
+          slug: slug,
+        },
         isActive: true,
+      },
+      include: {
+        serviceType: {
+          select: {
+            slug: true,
+          },
+        },
       },
     })
 

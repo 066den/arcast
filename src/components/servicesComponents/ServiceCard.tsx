@@ -1,3 +1,5 @@
+'use client'
+
 import { useMemo } from 'react'
 import { Service } from '@/types'
 import { Card, CardContent, CardFooter, CardHeader } from '../ui/card'

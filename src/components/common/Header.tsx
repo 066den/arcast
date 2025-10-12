@@ -66,7 +66,7 @@ const Header = () => {
               height={40}
             />
           </Link>
-          <nav className="hidden lg:flex items-center space-x-4">
+          <nav className="hidden lg:flex items-center xl:space-x-4 space-x-2">
             {navigation.map(item => (
               <Link
                 key={item.name}

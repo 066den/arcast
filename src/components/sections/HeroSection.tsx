@@ -48,7 +48,7 @@ const HeroSection = ({
         <div className="absolute inset-0 flex flex-col lg:gap-4 gap-2 items-center justify-center p-4 bg-black/80">
           <h1 className="text-white text-center animate-fade-in-up">{title}</h1>
           {description && (
-            <h3 className="text-accent text-center animate-fade-in-up-delayed">
+            <h3 className="max-w-4xl text-accent text-center animate-fade-in-up-delayed">
               {description}
             </h3>
           )}

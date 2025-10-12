@@ -2,12 +2,7 @@
 import Image from 'next/image'
 import { Button } from '../ui/button'
 import { ArrowIcon } from '../ui/icons'
-import {
-  legalNavigation,
-  navigation,
-  siteConfig,
-  supportNavigation,
-} from '@/lib/config'
+import { legalNavigation, navigation, siteConfig } from '@/lib/config'
 import Link from 'next/link'
 import useFlag from '@/hooks/useFlag'
 import ContactForm from './ContactForm'
@@ -16,7 +11,7 @@ const Footer = () => {
   const [isContactFormOpen, contactFormOpen, contactFormClose] = useFlag()
   return (
     <footer>
-      <section className="flex flex-col sm:flex-row lg:gap-14 gap-6 lg:pb-20 pb-10">
+      <section className="flex flex-col sm:flex-row lg:gap-14 gap-6 lg:pb-20 py-10">
         <div className="aspect-[16/9] md:w-3/5 rounded-3xl overflow-hidden hover:bg-black/10 transition-all duration-300 relative group">
           <Image
             src="/assets/images/map-Dubai.jpg"
