@@ -39,11 +39,14 @@ export default async function BusinessPage() {
         </h2>
         <div>
           <Image
-            src="/assets/images/business-who.png"
-            alt="Who it works"
-            width={1500}
-            height={1500}
-            className="w-full h-full object-cover"
+            src={'assets/images/how-it-works.png'}
+            alt="how-it-works"
+            className="hidden md:block w-full h-full object-cover"
+          />
+          <Image
+            src={'assets/images/how-it-works-mobile.png'}
+            alt="how-it-works"
+            className="md:hidden w-full h-full object-cover"
           />
         </div>
       </section>
