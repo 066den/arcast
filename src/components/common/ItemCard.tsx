@@ -14,14 +14,14 @@ export default function ItemCard({
 }: ItemCardProps) {
   return (
     <div className="bg-white flex flex-col flex-1 items-center">
-      <div className="aspect-[1/1] w-full max-w-[160px] relative overflow-hidden rounded-xl group transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+      <div className="flex items-center justify-center aspect-[1/1] w-full max-w-[160px] relative overflow-hidden rounded-xl group transition-all duration-300 shadow-lg hover:-translate-y-1">
         {imageUrl ? (
           <Image
             src={imageUrl}
             alt={name || 'Staff member'}
-            fill
-            sizes="160px"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            width={160}
+            height={160}
+            className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
           <AvatarEmpty />

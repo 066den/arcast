@@ -110,6 +110,7 @@ export const ROUTES = {
   ABOUT_US: '/about-us',
   FOR_BUSINESS: '/business',
   ADMIN: '/admin',
+  OUR_SETUPS: '/our-setups',
 } as const
 
 export const HTTP_STATUS = {

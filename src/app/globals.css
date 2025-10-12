@@ -75,10 +75,6 @@
     scrollbar-gutter: stable both-edges;
   }
 
-  body[data-scroll-locked] {
-    /* margin-right: 0 !important; */
-  }
-
   ::-webkit-scrollbar {
     width: 4px;
     height: 4px;

@@ -230,14 +230,13 @@ const BookingForm = ({
   }, [selectedDate, selectStudioId, duration, selectedTime, isBooking])
 
   useEffect(() => {
-    selectStudio('')
     setSelectedTime('')
     setDuration(1)
     setGuests(1)
     setAdditionalServices([])
     setSelectedDate(new Date())
     setAvailableTimes(null)
-  }, [selectServiceTypeSlug, selectStudio])
+  }, [selectServiceTypeSlug])
 
   return (
     <section id={SCROLL_TARGETS.BOOKING.FORM} className="lg:py-16 py-10">

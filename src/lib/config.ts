@@ -28,6 +28,7 @@ export const navigation = [
   { name: 'Content Factory', href: ROUTES.CONTENT_FACTORY },
   { name: 'Blog', href: ROUTES.BLOG },
   { name: 'About Us', href: ROUTES.ABOUT_US },
+  { name: 'Our Setups', href: ROUTES.OUR_SETUPS },
   { name: 'For Business', href: ROUTES.FOR_BUSINESS },
 ] as const
 

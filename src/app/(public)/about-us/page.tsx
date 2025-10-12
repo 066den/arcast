@@ -32,7 +32,6 @@ export default async function AboutPage() {
           title="Hi, I’m Alexey Redkin,<br />Founder of Arcast"
           description="<h3>Two years ago, I started creating content in Dubai. <br /> I wanted to grow my personal brand, launch projects, and scale.</h3>"
           image="/assets/images/alex.jpg"
-          actionSection={[]}
         />
 
         <p>

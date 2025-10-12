@@ -43,7 +43,7 @@ const Header = () => {
   }, [isMobileMenuOpen])
 
   const handleGetStarted = () => {
-    router.push(ROUTES.BOOKING)
+    router.push(ROUTES.OUR_SETUPS)
   }
 
   const toggleMobileMenu = () => {

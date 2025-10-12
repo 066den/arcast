@@ -23,7 +23,6 @@ export function StudioCard({
   onClick,
 }: StudioCardProps) {
   const { name, imageUrl, gallery } = studio
-
   const handleClick = () => {
     if (onClick) {
       onClick(studio.id)
@@ -89,7 +88,7 @@ export function StudioCard({
               e.stopPropagation()
               handleClick()
             }}
-            className="absolute sm:top-6 top-4 sm:right-6 right-4 sm:size-11 size-8 flex items-center justify-center bg-primary rounded-full border-3 border-white"
+            className="absolute sm:top-6 top-4 sm:right-6 right-4 sm:size-11 size-8 flex items-center justify-center bg-primary rounded-full border-3 cursor-pointer border-white"
           >
             {isSelected && (
               <div className="md:size-8 size-6 bg-accent rounded-full" />
