@@ -1,32 +1,30 @@
 'use client'
+import { useState } from 'react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
-import {
-  serviceButtonVariants,
-  serviceButtonItemVariants,
-} from '@/lib/motion-variants'
-
-import { Package, Service } from '@/types'
-import ServiceButton from '../servicesPage/ServiceButton'
+import { PackageWithServices, ServiceType } from '@/types'
+import ServiceTypesList from '../servicesComponents/ServiceTypesList'
+import ServicesCarousel from '../servicesComponents/ServiceCarousel'
 
 interface PackagesSectionProps {
-  initialServices: Service[]
-  initialPackages: Package[]
+  initialServiceTypes: ServiceType[]
+  initialPackages: PackageWithServices[]
 }
 
 const PackagesSection = ({
-  initialServices,
+  initialServiceTypes,
   initialPackages,
 }: PackagesSectionProps) => {
+  const [typePackages, setTypePackages] = useState<string>('podcast')
+
   return (
-    <section className="py-20">
+    <section className="py-10 xl:py-20">
       <div className="section-title">what do we provide</div>
-      <div className="flex justify-between gap-4 mb-25">
+      <div className="flex flex-col sm:flex-row justify-between gap-4 lg:mb-16 mb-8">
         <div className="mt-2">
-          <h2 className="text-6xl mb-4">
+          <h2>
             Fully packed <span className="text-accent">services</span>
           </h2>
-          <h2 className="text-6xl flex items-center gap-3">
+          <h2 className="flex items-center flex-wrap sm:flex-nowrap gap-3">
             <Image
               src="/assets/images/pre-beneficial.jpg"
               alt="Beneficial packages"
@@ -43,21 +41,18 @@ const PackagesSection = ({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <motion.div
-          className="flex flex-col gap-5"
-          variants={serviceButtonVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          {initialServices &&
-            initialServices.map(service => (
-              <motion.div key={service.id} variants={serviceButtonItemVariants}>
-                <ServiceButton title={service.name} />
-              </motion.div>
-            ))}
-        </motion.div>
+      <div className="flex flex-col lg:flex-row items-center lg:justify-between gap-10">
+        <ServiceTypesList
+          withBenefits
+          typePackages={typePackages}
+          initialServiceTypes={initialServiceTypes}
+          setTypePackages={setTypePackages}
+        />
+        <ServicesCarousel
+          serviceType={initialServiceTypes}
+          typePackages={typePackages}
+          packages={initialPackages}
+        />
       </div>
     </section>
   )

@@ -82,6 +82,7 @@ const ImageEditable = ({
         accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
         maxSize={MAX_FILE_SIZE.IMAGE}
         onError={handleError}
+        className="aspect-[4/3]"
       >
         <DropzoneEmptyState>
           <div className="flex w-full items-center gap-4 p-8">

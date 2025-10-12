@@ -1,0 +1,866 @@
+{
+  "timestamp": "2025-09-24T08:06:46.279Z",
+  "studios": [
+    {
+      "id": "cmfxibki00000tugwl30fnpvl",
+      "name": "Setup 1",
+      "location": "Dubai",
+      "imageUrl": "https://res.cloudinary.com/dcluqgjqe/image/upload/v1744358650/Frame_1618875659_tkrldb.png",
+      "totalSeats": 5,
+      "openingTime": "10:00",
+      "closingTime": "21:00",
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:41.831Z",
+      "updatedAt": "2025-09-24T04:51:41.831Z"
+    },
+    {
+      "id": "cmfxibklb0001tugwfbw39rkp",
+      "name": "Setup 2",
+      "location": "Dubai",
+      "imageUrl": "https://res.cloudinary.com/dcluqgjqe/image/upload/v1744358654/Frame_1618875660_spu27d.png",
+      "totalSeats": 6,
+      "openingTime": "10:00",
+      "closingTime": "21:00",
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:41.952Z",
+      "updatedAt": "2025-09-24T04:51:41.952Z"
+    },
+    {
+      "id": "cmfxibkmq0002tugwucdl6p72",
+      "name": "Setup 3",
+      "location": "Dubai",
+      "imageUrl": "https://res.cloudinary.com/dcluqgjqe/image/upload/v1744358657/Frame_1618875661_lzt4cy.png",
+      "totalSeats": 4,
+      "openingTime": "10:00",
+      "closingTime": "21:00",
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.003Z",
+      "updatedAt": "2025-09-24T04:51:42.003Z"
+    },
+    {
+      "id": "cmfxibko60003tugwpybwnily",
+      "name": "Setup 4",
+      "location": "Dubai",
+      "imageUrl": "https://res.cloudinary.com/dcluqgjqe/image/upload/v1744358653/Frame_1618875662_woyngq.png",
+      "totalSeats": 3,
+      "openingTime": "10:00",
+      "closingTime": "21:00",
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.054Z",
+      "updatedAt": "2025-09-24T04:51:42.054Z"
+    },
+    {
+      "id": "cmfxkf04c0000tux8q3th9skw",
+      "name": "Setup 1",
+      "location": "Dubai",
+      "imageUrl": "https://res.cloudinary.com/dcluqgjqe/image/upload/v1744358650/Frame_1618875659_tkrldb.png",
+      "totalSeats": 5,
+      "openingTime": "10:00",
+      "closingTime": "21:00",
+      "isActive": true,
+      "createdAt": "2025-09-24T05:50:21.276Z",
+      "updatedAt": "2025-09-24T05:50:21.276Z"
+    },
+    {
+      "id": "cmfxkf07n0001tux8by1w8zgy",
+      "name": "Setup 2",
+      "location": "Dubai",
+      "imageUrl": "https://res.cloudinary.com/dcluqgjqe/image/upload/v1744358654/Frame_1618875660_spu27d.png",
+      "totalSeats": 6,
+      "openingTime": "10:00",
+      "closingTime": "21:00",
+      "isActive": true,
+      "createdAt": "2025-09-24T05:50:21.395Z",
+      "updatedAt": "2025-09-24T05:50:21.395Z"
+    },
+    {
+      "id": "cmfxkf0980002tux8232ndigh",
+      "name": "Setup 3",
+      "location": "Dubai",
+      "imageUrl": "https://res.cloudinary.com/dcluqgjqe/image/upload/v1744358657/Frame_1618875661_lzt4cy.png",
+      "totalSeats": 4,
+      "openingTime": "10:00",
+      "closingTime": "21:00",
+      "isActive": true,
+      "createdAt": "2025-09-24T05:50:21.452Z",
+      "updatedAt": "2025-09-24T05:50:21.452Z"
+    },
+    {
+      "id": "cmfxkf0at0003tux8ewqjhugw",
+      "name": "Setup 4",
+      "location": "Dubai",
+      "imageUrl": "https://res.cloudinary.com/dcluqgjqe/image/upload/v1744358653/Frame_1618875662_woyngq.png",
+      "totalSeats": 3,
+      "openingTime": "10:00",
+      "closingTime": "21:00",
+      "isActive": true,
+      "createdAt": "2025-09-24T05:50:21.510Z",
+      "updatedAt": "2025-09-24T05:50:21.510Z"
+    }
+  ],
+  "serviceTypes": [
+    {
+      "id": "cmfxl8pj10000tux46dcniknl",
+      "name": "Social media management",
+      "description": null,
+      "isActive": true,
+      "createdAt": "2025-09-24T06:13:27.173Z",
+      "updatedAt": "2025-09-24T06:12:19.512Z"
+    },
+    {
+      "id": "cmfxl8pj20001tux4xgnxpw3h",
+      "name": "Beneficial packages",
+      "description": null,
+      "isActive": true,
+      "createdAt": "2025-09-24T06:13:27.173Z",
+      "updatedAt": "2025-09-24T06:12:34.734Z"
+    },
+    {
+      "id": "cmfxkf1a2000ptux86isqcmmx",
+      "name": "Podcast production",
+      "description": "Professional recording services",
+      "isActive": true,
+      "createdAt": "2025-09-21T05:50:22.779Z",
+      "updatedAt": "2025-09-24T06:14:55.663Z"
+    },
+    {
+      "id": "cmfxkf1dc000qtux8xm7wkc2v",
+      "name": "Reels production",
+      "description": "Post-production editing services",
+      "isActive": true,
+      "createdAt": "2025-09-22T05:50:22.896Z",
+      "updatedAt": "2025-09-24T06:14:55.663Z"
+    },
+    {
+      "id": "cmfxkf1f0000rtux8k7i7b2b6",
+      "name": "Media post-production",
+      "description": "Live streaming and broadcast services",
+      "isActive": true,
+      "createdAt": "2025-09-23T05:50:22.956Z",
+      "updatedAt": "2025-09-24T06:14:55.663Z"
+    }
+  ],
+  "services": [],
+  "packages": [
+    {
+      "id": "cmfxibkq80004tugw5brpur4n",
+      "name": "Recording + Professional Edit",
+      "description": "Get high-quality recording with professional editing to enhance your sound",
+      "basePrice": "940",
+      "currency": "AED",
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.128Z",
+      "updatedAt": "2025-09-24T04:51:42.128Z"
+    },
+    {
+      "id": "cmfxibkt80005tugwf1cv29kp",
+      "name": "Recording Only",
+      "description": "Get high-quality recording with professional editing to enhance your sound",
+      "basePrice": "440",
+      "currency": "AED",
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.237Z",
+      "updatedAt": "2025-09-24T04:51:42.237Z"
+    },
+    {
+      "id": "cmfxibkuu0006tugw9a48liao",
+      "name": "Recording + Live Video Cutting with Synced Media",
+      "description": "Get high-quality recording with professional editing to enhance your sound",
+      "basePrice": "540",
+      "currency": "AED",
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.295Z",
+      "updatedAt": "2025-09-24T04:51:42.295Z"
+    },
+    {
+      "id": "cmfxkf0cf0004tux8n15h3r09",
+      "name": "Recording + Professional Edit",
+      "description": "Get high-quality recording with professional editing to enhance your sound",
+      "basePrice": "940",
+      "currency": "AED",
+      "isActive": true,
+      "createdAt": "2025-09-24T05:50:21.567Z",
+      "updatedAt": "2025-09-24T05:50:21.567Z"
+    },
+    {
+      "id": "cmfxkf0fm0005tux8y6ji46ib",
+      "name": "Recording Only",
+      "description": "Get high-quality recording with professional editing to enhance your sound",
+      "basePrice": "440",
+      "currency": "AED",
+      "isActive": true,
+      "createdAt": "2025-09-24T05:50:21.683Z",
+      "updatedAt": "2025-09-24T05:50:21.683Z"
+    },
+    {
+      "id": "cmfxkf0h70006tux893laeoa1",
+      "name": "Recording + Live Video Cutting with Synced Media",
+      "description": "Get high-quality recording with professional editing to enhance your sound",
+      "basePrice": "540",
+      "currency": "AED",
+      "isActive": true,
+      "createdAt": "2025-09-24T05:50:21.739Z",
+      "updatedAt": "2025-09-24T05:50:21.739Z"
+    }
+  ],
+  "clients": [
+    {
+      "id": "cmfxibl86000etugwncwn70ij",
+      "name": "Margarita",
+      "showTitle": "Margarita's Podcast",
+      "jobTitle": "Podcaster",
+      "testimonial": "The team helped me launch my podcast successfully!",
+      "featured": true,
+      "imageUrl": "/assets/images/Margarita-case.jpg"
+    },
+    {
+      "id": "cmfxmdqh30000tuvwh8bj6vq4",
+      "name": "Ahmed",
+      "showTitle": null,
+      "jobTitle": null,
+      "testimonial": "Arcast didn’t just polish our content — they redefined how we tell stories. It was an awakening.",
+      "featured": true,
+      "imageUrl": "/assets/images/ahmed.jpg"
+    },
+    {
+      "id": "cmfxmix1b0001tuvwih4w1x7x",
+      "name": "Sam",
+      "showTitle": null,
+      "jobTitle": null,
+      "testimonial": "The team helped me launch my podcast successfully!",
+      "featured": true,
+      "imageUrl": "/assets/images/sam-case.jpg"
+    }
+  ],
+  "caseStudies": [
+    {
+      "id": "cmfxkf0yu000gtux8g7knsjkv",
+      "clientId": "cmfxmdqh30000tuvwh8bj6vq4",
+      "title": "Ahmed",
+      "tagline": "When you have no time for content",
+      "mainText": "Margarita came to us with a bold idea but no experience in podcasting. Within weeks, she was generating income from her professional video podcast.",
+      "isActive": true,
+      "imageUrls": [
+        "/assets/images/case-banner.jpg"
+      ],
+      "client": {
+        "id": "cmfxmdqh30000tuvwh8bj6vq4",
+        "name": "Ahmed",
+        "showTitle": null,
+        "jobTitle": null,
+        "testimonial": "Arcast didn’t just polish our content — they redefined how we tell stories. It was an awakening.",
+        "featured": true,
+        "imageUrl": "/assets/images/ahmed.jpg"
+      },
+      "caseContent": [
+        {
+          "id": "cmfxkf124000itux84ab73h0q",
+          "caseStudyId": "cmfxkf0yu000gtux8g7knsjkv",
+          "title": "Challenge",
+          "text": [
+            "Margarita had a bold idea: she wanted to start her own podcast.",
+            "The difficulty was that she had no background in podcasting, video production, or editing — and no clear understanding of how podcasts could be monetized.",
+            "She needed guidance and a professional setup to turn her idea into something real and profitable."
+          ],
+          "list": [],
+          "imageUrl": "/assets/images/challenge.jpg",
+          "order": 1
+        },
+        {
+          "id": "cmfxkf15a000ktux84icdtolb",
+          "caseStudyId": "cmfxkf0yu000gtux8g7knsjkv",
+          "title": "Solution",
+          "text": [
+            "We provided a turnkey podcast production service, taking care of everything from concept development and filming to editing and final delivery.",
+            "Each episode was produced as a polished video podcast, ready to publish. By handling the technical side — filming, editing, and post-production — we gave Margarita the freedom to focus on her content and her guests.",
+            "Within just a few weeks, she had four high-quality episodes live."
+          ],
+          "list": [],
+          "imageUrl": "/assets/images/solution.jpg",
+          "order": 2
+        },
+        {
+          "id": "cmfxkf16u000mtux8y256e835",
+          "caseStudyId": "cmfxkf0yu000gtux8g7knsjkv",
+          "title": "Result",
+          "text": [
+            "The impact was immediate.",
+            "By her **fifth episode**, Margarita's podcast was already generating income.",
+            "Thanks to her growing media presence and the professional look of her show, guests recognized the value of being featured and began paying for the opportunity.",
+            "Today, Margarita **earns at least $1,000 per episode** from guest appearances — turning her podcast into both a creative outlet and a reliable business model."
+          ],
+          "list": [],
+          "imageUrl": "/assets/images/result.jpg",
+          "order": 3
+        },
+        {
+          "id": "cmfxkf18g000otux8dhlbkx41",
+          "caseStudyId": "cmfxkf0yu000gtux8g7knsjkv",
+          "title": "Key Takeaways",
+          "text": [],
+          "list": [
+            "A first-time podcaster successfully launched a professional video podcast from scratch.",
+            "Full-cycle podcast production (filming, editing, post-production) ensured high quality and consistency.",
+            "Podcast monetization started by episode five, with $1,000+ per guest appearance.",
+            "Turnkey production services let creators focus on building content, brand, and audience."
+          ],
+          "imageUrl": "/assets/images/takeaways.jpg",
+          "order": 4
+        }
+      ],
+      "caseStaff": [],
+      "caseEquipment": []
+    },
+    {
+      "id": "cmfxiblb0000gtugwrs93we58",
+      "clientId": "cmfxibl86000etugwncwn70ij",
+      "title": "Margarita",
+      "tagline": "From zero to hero",
+      "mainText": "In just five episodes, Margarita went from complete  beginner to earning $1,000 per show — with the support  of professional podcast production and a clear path to monetization.",
+      "isActive": true,
+      "imageUrls": [
+        "/assets/images/case-banner.jpg"
+      ],
+      "client": {
+        "id": "cmfxibl86000etugwncwn70ij",
+        "name": "Margarita",
+        "showTitle": "Margarita's Podcast",
+        "jobTitle": "Podcaster",
+        "testimonial": "The team helped me launch my podcast successfully!",
+        "featured": true,
+        "imageUrl": "/assets/images/Margarita-case.jpg"
+      },
+      "caseContent": [
+        {
+          "id": "cmfxible0000itugwaq657upb",
+          "caseStudyId": "cmfxiblb0000gtugwrs93we58",
+          "title": "Challenge",
+          "text": [
+            "Margarita had a bold idea: she wanted to start her own podcast.",
+            "The difficulty was that she had no background in podcasting, video production, or editing — and no clear understanding of how podcasts could be monetized.",
+            "She needed guidance and a professional setup to turn her idea into something real and profitable."
+          ],
+          "list": [],
+          "imageUrl": "/assets/images/Margarita-case.jpg",
+          "order": 1
+        },
+        {
+          "id": "cmfxiblgu000ktugwtrbzuz3n",
+          "caseStudyId": "cmfxiblb0000gtugwrs93we58",
+          "title": "Solution",
+          "text": [
+            "We provided a **turnkey podcast production service**, taking care of everything from concept development and filming to editing and final delivery.",
+            "Each episode was produced as a polished **video podcast**, ready to publish. By handling the technical side — filming, editing, and post-production — we gave Margarita the freedom to focus on her content and her guests.",
+            "Within just a few weeks, she had four high-quality episodes live."
+          ],
+          "list": [],
+          "imageUrl": "/assets/images/Margarita-case.jpg",
+          "order": 2
+        },
+        {
+          "id": "cmfxiblia000mtugwqdeeswbd",
+          "caseStudyId": "cmfxiblb0000gtugwrs93we58",
+          "title": "Result",
+          "text": [
+            "The impact was immediate.",
+            "By her **fifth episode**, Margarita's podcast was already generating income.",
+            "Thanks to her growing media presence and the professional look of her show, guests recognized the value of being featured and began paying for the opportunity.",
+            "Today, Margarita **earns at least $1,000 per episode** from guest appearances — turning her podcast into both a creative outlet and a reliable business model."
+          ],
+          "list": [],
+          "imageUrl": "/assets/images/Margarita-case.jpg",
+          "order": 3
+        },
+        {
+          "id": "cmfxibljq000otugwtjqcdkhd",
+          "caseStudyId": "cmfxiblb0000gtugwrs93we58",
+          "title": "Key Takeaways",
+          "text": [],
+          "list": [
+            "A first-time podcaster successfully launched a professional video podcast from scratch.",
+            "Full-cycle podcast production (filming, editing, post-production) ensured high quality and consistency.",
+            "Podcast monetization started by episode five, with $1,000+ per guest appearance.",
+            "Turnkey production services let creators focus on building content, brand, and audience."
+          ],
+          "imageUrl": "",
+          "order": 4
+        }
+      ],
+      "caseStaff": [],
+      "caseEquipment": []
+    },
+    {
+      "id": "cmfxmk7wc0002tuvwadest6zn",
+      "clientId": "cmfxmix1b0001tuvwih4w1x7x",
+      "title": "Sam",
+      "tagline": "Political talks and fact checking",
+      "mainText": null,
+      "isActive": true,
+      "imageUrls": [],
+      "client": {
+        "id": "cmfxmix1b0001tuvwih4w1x7x",
+        "name": "Sam",
+        "showTitle": null,
+        "jobTitle": null,
+        "testimonial": "The team helped me launch my podcast successfully!",
+        "featured": true,
+        "imageUrl": "/assets/images/sam-case.jpg"
+      },
+      "caseContent": [],
+      "caseStaff": [],
+      "caseEquipment": []
+    }
+  ],
+  "caseStudyContent": [
+    {
+      "id": "cmfxkf124000itux84ab73h0q",
+      "caseStudyId": "cmfxkf0yu000gtux8g7knsjkv",
+      "title": "Challenge",
+      "text": [
+        "Margarita had a bold idea: she wanted to start her own podcast.",
+        "The difficulty was that she had no background in podcasting, video production, or editing — and no clear understanding of how podcasts could be monetized.",
+        "She needed guidance and a professional setup to turn her idea into something real and profitable."
+      ],
+      "list": [],
+      "imageUrl": "/assets/images/challenge.jpg",
+      "order": 1
+    },
+    {
+      "id": "cmfxkf15a000ktux84icdtolb",
+      "caseStudyId": "cmfxkf0yu000gtux8g7knsjkv",
+      "title": "Solution",
+      "text": [
+        "We provided a turnkey podcast production service, taking care of everything from concept development and filming to editing and final delivery.",
+        "Each episode was produced as a polished video podcast, ready to publish. By handling the technical side — filming, editing, and post-production — we gave Margarita the freedom to focus on her content and her guests.",
+        "Within just a few weeks, she had four high-quality episodes live."
+      ],
+      "list": [],
+      "imageUrl": "/assets/images/solution.jpg",
+      "order": 2
+    },
+    {
+      "id": "cmfxkf16u000mtux8y256e835",
+      "caseStudyId": "cmfxkf0yu000gtux8g7knsjkv",
+      "title": "Result",
+      "text": [
+        "The impact was immediate.",
+        "By her **fifth episode**, Margarita's podcast was already generating income.",
+        "Thanks to her growing media presence and the professional look of her show, guests recognized the value of being featured and began paying for the opportunity.",
+        "Today, Margarita **earns at least $1,000 per episode** from guest appearances — turning her podcast into both a creative outlet and a reliable business model."
+      ],
+      "list": [],
+      "imageUrl": "/assets/images/result.jpg",
+      "order": 3
+    },
+    {
+      "id": "cmfxkf18g000otux8dhlbkx41",
+      "caseStudyId": "cmfxkf0yu000gtux8g7knsjkv",
+      "title": "Key Takeaways",
+      "text": [],
+      "list": [
+        "A first-time podcaster successfully launched a professional video podcast from scratch.",
+        "Full-cycle podcast production (filming, editing, post-production) ensured high quality and consistency.",
+        "Podcast monetization started by episode five, with $1,000+ per guest appearance.",
+        "Turnkey production services let creators focus on building content, brand, and audience."
+      ],
+      "imageUrl": "/assets/images/takeaways.jpg",
+      "order": 4
+    },
+    {
+      "id": "cmfxible0000itugwaq657upb",
+      "caseStudyId": "cmfxiblb0000gtugwrs93we58",
+      "title": "Challenge",
+      "text": [
+        "Margarita had a bold idea: she wanted to start her own podcast.",
+        "The difficulty was that she had no background in podcasting, video production, or editing — and no clear understanding of how podcasts could be monetized.",
+        "She needed guidance and a professional setup to turn her idea into something real and profitable."
+      ],
+      "list": [],
+      "imageUrl": "/assets/images/Margarita-case.jpg",
+      "order": 1
+    },
+    {
+      "id": "cmfxiblgu000ktugwtrbzuz3n",
+      "caseStudyId": "cmfxiblb0000gtugwrs93we58",
+      "title": "Solution",
+      "text": [
+        "We provided a **turnkey podcast production service**, taking care of everything from concept development and filming to editing and final delivery.",
+        "Each episode was produced as a polished **video podcast**, ready to publish. By handling the technical side — filming, editing, and post-production — we gave Margarita the freedom to focus on her content and her guests.",
+        "Within just a few weeks, she had four high-quality episodes live."
+      ],
+      "list": [],
+      "imageUrl": "/assets/images/Margarita-case.jpg",
+      "order": 2
+    },
+    {
+      "id": "cmfxiblia000mtugwqdeeswbd",
+      "caseStudyId": "cmfxiblb0000gtugwrs93we58",
+      "title": "Result",
+      "text": [
+        "The impact was immediate.",
+        "By her **fifth episode**, Margarita's podcast was already generating income.",
+        "Thanks to her growing media presence and the professional look of her show, guests recognized the value of being featured and began paying for the opportunity.",
+        "Today, Margarita **earns at least $1,000 per episode** from guest appearances — turning her podcast into both a creative outlet and a reliable business model."
+      ],
+      "list": [],
+      "imageUrl": "/assets/images/Margarita-case.jpg",
+      "order": 3
+    },
+    {
+      "id": "cmfxibljq000otugwtjqcdkhd",
+      "caseStudyId": "cmfxiblb0000gtugwrs93we58",
+      "title": "Key Takeaways",
+      "text": [],
+      "list": [
+        "A first-time podcaster successfully launched a professional video podcast from scratch.",
+        "Full-cycle podcast production (filming, editing, post-production) ensured high quality and consistency.",
+        "Podcast monetization started by episode five, with $1,000+ per guest appearance.",
+        "Turnkey production services let creators focus on building content, brand, and audience."
+      ],
+      "imageUrl": "",
+      "order": 4
+    }
+  ],
+  "equipment": [
+    {
+      "id": "cmfxp8b0c0004tu001945bt54",
+      "name": "Sony a7 SIII",
+      "description": "Camera",
+      "imageUrl": null
+    },
+    {
+      "id": "cmfxp8b0f0005tu00jd204yc2",
+      "name": "MV7X",
+      "description": "Microphone",
+      "imageUrl": null
+    },
+    {
+      "id": "cmfxp8b0f0006tu00lon32a7t",
+      "name": "NTH-100",
+      "description": "Headphones",
+      "imageUrl": null
+    },
+    {
+      "id": "cmfxp8b0f0007tu00wxxywm81",
+      "name": "Feelworld T7",
+      "description": "Monitor",
+      "imageUrl": null
+    },
+    {
+      "id": "cmfxp8b0f0008tu0009egjbif",
+      "name": "200XS and Softbox",
+      "description": null,
+      "imageUrl": null
+    },
+    {
+      "id": "cmfxp8b0f0009tu0058wrzr6d",
+      "name": null,
+      "description": "Teleprompter",
+      "imageUrl": null
+    },
+    {
+      "id": "cmfxp8b0h000atu00t7srcnw9",
+      "name": "Sony fx3",
+      "description": "Camera",
+      "imageUrl": null
+    },
+    {
+      "id": "cmfxp8b0h000btu00tg1lo1zo",
+      "name": null,
+      "description": "Focusrite audio interface",
+      "imageUrl": null
+    },
+    {
+      "id": "cmfxp8b0h000ctu0082vwamjh",
+      "name": null,
+      "description": "Acoustic Panels",
+      "imageUrl": null
+    },
+    {
+      "id": "cmfxp8b0h000dtu00ekakjyrc",
+      "name": null,
+      "description": "Shock Mounts",
+      "imageUrl": null
+    },
+    {
+      "id": "cmfxp8b0h000etu00x5dnsqd8",
+      "name": null,
+      "description": "Soft Light",
+      "imageUrl": null
+    },
+    {
+      "id": "cmfxp8b0h000ftu0063o83q1m",
+      "name": "Sony gm 24-70mm f 1.8",
+      "description": null,
+      "imageUrl": null
+    }
+  ],
+  "staff": [
+    {
+      "id": "cmfxowtpf0000tu006evvtxuu",
+      "name": "Abdulmuin Muhamedov",
+      "role": "Head of Video Production",
+      "imageUrl": "/assets/images/partner2_ver3my.webp"
+    },
+    {
+      "id": "cmfxowtpr0001tu0006f7rakx",
+      "name": "Ahmed Mohsin Tarabay",
+      "role": "Studio Technician",
+      "imageUrl": "/assets/images/partner5_kzoahh.webp"
+    },
+    {
+      "id": "cmfxowtpr0002tu00vnvhji0o",
+      "name": "Grace Gella Dayono",
+      "role": "Operations & Administrative Manager",
+      "imageUrl": "/assets/images/partner3_nanc5z.webp"
+    },
+    {
+      "id": "cmfxowtpr0003tu005xv82ykx",
+      "name": "Muinjon Ergashev",
+      "role": "Videographer",
+      "imageUrl": "assets/images/partner4_wczphp.webp"
+    }
+  ],
+  "samples": [
+    {
+      "id": "cmfxkf1gy000ttux8o6danp88",
+      "name": "Podcast Recording Sample",
+      "thumbUrl": "/assets/images/episode-1.webp",
+      "videoUrl": "https://res.cloudinary.com/deuvbiekl/video/upload/v1747050218/desk_bgzsdy.mp4",
+      "serviceTypeId": "cmfxkf1a2000ptux86isqcmmx"
+    },
+    {
+      "id": "cmfxkf1lr000xtux8rvuy9ub8",
+      "name": "Live Stream Sample",
+      "thumbUrl": "/assets/images/episode-3.webp",
+      "videoUrl": "https://res.cloudinary.com/deuvbiekl/video/upload/v1747050218/desk_bgzsdy.mp4",
+      "serviceTypeId": "cmfxkf1f0000rtux8k7i7b2b6"
+    },
+    {
+      "id": "cmfxkf1nd000ztux8dpozc16u",
+      "name": "Corporate Video Sample",
+      "thumbUrl": "/assets/images/episode-4.webp",
+      "videoUrl": "https://res.cloudinary.com/deuvbiekl/video/upload/v1747050218/desk_bgzsdy.mp4",
+      "serviceTypeId": "cmfxkf1a2000ptux86isqcmmx"
+    },
+    {
+      "id": "cmfxlkgpx0002tux49vyxgxgm",
+      "name": "Episode 5",
+      "thumbUrl": "/assets/images/episode-5.webp",
+      "videoUrl": "https://res.cloudinary.com/deuvbiekl/video/upload/v1747050218/desk_bgzsdy.mp4",
+      "serviceTypeId": "cmfxkf1dc000qtux8xm7wkc2v"
+    },
+    {
+      "id": "cmfxkf1k5000vtux847f0w8z1",
+      "name": "Video Editing Sample",
+      "thumbUrl": "/assets/images/episode-2.webp",
+      "videoUrl": "https://res.cloudinary.com/deuvbiekl/video/upload/v1747050218/desk_bgzsdy.mp4",
+      "serviceTypeId": "cmfxkf1dc000qtux8xm7wkc2v"
+    }
+  ],
+  "additionalServices": [
+    {
+      "id": "cmfxibkwi0007tugw9pyq4tmg",
+      "name": "Short Form Edit (Instagram/TikTok)",
+      "type": "BY_THREE",
+      "price": "500",
+      "currency": "AED",
+      "count": 1,
+      "description": "High-quality, premium reels with advanced editing, motion graphics, and engaging cuts.",
+      "imageUrls": [
+        "https://res.cloudinary.com/deuvbiekl/image/upload/v1741610901/Frame_1618875616_kmnkk0.png"
+      ],
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.354Z",
+      "updatedAt": "2025-09-24T04:51:42.354Z"
+    },
+    {
+      "id": "cmfxibkzc0008tugwyvi8se5n",
+      "name": "Long Form Edit (Youtube)",
+      "type": "BY_THREE",
+      "price": "950",
+      "currency": "AED",
+      "count": 1,
+      "description": "Professional-grade editing with in-depth sound design, smooth transitions, and high production quality per episode.",
+      "imageUrls": [
+        "https://res.cloudinary.com/deuvbiekl/image/upload/v1741610519/Youtube_player_dtcx8v.png"
+      ],
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.457Z",
+      "updatedAt": "2025-09-24T04:51:42.457Z"
+    },
+    {
+      "id": "cmfxibl0r0009tugw4vg1hay1",
+      "name": "Episode Trailer (Short form)",
+      "type": "BY_THREE",
+      "price": "200",
+      "currency": "AED",
+      "count": 1,
+      "description": "Quick, impactful trailer editing to capture attention and drive excitement with key highlights in a concise format.",
+      "imageUrls": [],
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.507Z",
+      "updatedAt": "2025-09-24T04:51:42.507Z"
+    },
+    {
+      "id": "cmfxibl25000atugw7xurj90x",
+      "name": "Episode Trailer (Long form)",
+      "type": "BY_THREE",
+      "price": "200",
+      "currency": "AED",
+      "count": 1,
+      "description": "Professional editing to create a captivating trailer that highlights key moments, engaging your audience with a polished, cinematic preview.",
+      "imageUrls": [],
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.558Z",
+      "updatedAt": "2025-09-24T04:51:42.558Z"
+    },
+    {
+      "id": "cmfxibl3o000btugwg7047hto",
+      "name": "Subtitles (per session)",
+      "type": "BY_THREE",
+      "price": "440",
+      "currency": "AED",
+      "count": 1,
+      "description": "Accurate subtitles and captions to improve accessibility and engagement for video content.",
+      "imageUrls": [
+        "https://res.cloudinary.com/deuvbiekl/image/upload/v1741610687/Frame_1618875174_bdmhcv.png"
+      ],
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.612Z",
+      "updatedAt": "2025-09-24T04:51:42.612Z"
+    },
+    {
+      "id": "cmfxibl52000ctugwr4cj8hyk",
+      "name": "Teleprompter Support",
+      "type": "BY_THREE",
+      "price": "80",
+      "currency": "AED",
+      "count": 1,
+      "description": "On-screen script assistance for seamless delivery, perfect for structured interviews and presentations.",
+      "imageUrls": [
+        "https://res.cloudinary.com/deuvbiekl/image/upload/v1741610730/Frame_1618875174_1_zvq2lz.png"
+      ],
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.663Z",
+      "updatedAt": "2025-09-24T04:51:42.663Z"
+    },
+    {
+      "id": "cmfxibl6q000dtugwrxfpml15",
+      "name": "Wardrobe Styling Consultation",
+      "type": "BY_THREE",
+      "price": "500",
+      "currency": "AED",
+      "count": 1,
+      "description": "Expert outfit guidance to enhance your on-camera presence and reflect your personal brand.",
+      "imageUrls": [],
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.723Z",
+      "updatedAt": "2025-09-24T04:51:42.723Z"
+    },
+    {
+      "id": "cmfxkf0it0007tux8upd35v5c",
+      "name": "Short Form Edit (Instagram/TikTok)",
+      "type": "BY_THREE",
+      "price": "500",
+      "currency": "AED",
+      "count": 1,
+      "description": "High-quality, premium reels with advanced editing, motion graphics, and engaging cuts.",
+      "imageUrls": [
+        "https://res.cloudinary.com/deuvbiekl/image/upload/v1741610901/Frame_1618875616_kmnkk0.png"
+      ],
+      "isActive": true,
+      "createdAt": "2025-09-24T05:50:21.798Z",
+      "updatedAt": "2025-09-24T05:50:21.798Z"
+    },
+    {
+      "id": "cmfxkf0m00008tux8pgpizd7x",
+      "name": "Long Form Edit (Youtube)",
+      "type": "BY_THREE",
+      "price": "950",
+      "currency": "AED",
+      "count": 1,
+      "description": "Professional-grade editing with in-depth sound design, smooth transitions, and high production quality per episode.",
+      "imageUrls": [
+        "https://res.cloudinary.com/deuvbiekl/image/upload/v1741610519/Youtube_player_dtcx8v.png"
+      ],
+      "isActive": true,
+      "createdAt": "2025-09-24T05:50:21.913Z",
+      "updatedAt": "2025-09-24T05:50:21.913Z"
+    },
+    {
+      "id": "cmfxkf0nn0009tux8jctjtn64",
+      "name": "Episode Trailer (Short form)",
+      "type": "BY_THREE",
+      "price": "200",
+      "currency": "AED",
+      "count": 1,
+      "description": "Quick, impactful trailer editing to capture attention and drive excitement with key highlights in a concise format.",
+      "imageUrls": [],
+      "isActive": true,
+      "createdAt": "2025-09-24T05:50:21.971Z",
+      "updatedAt": "2025-09-24T05:50:21.971Z"
+    },
+    {
+      "id": "cmfxkf0pc000atux8ofozg1u1",
+      "name": "Episode Trailer (Long form)",
+      "type": "BY_THREE",
+      "price": "200",
+      "currency": "AED",
+      "count": 1,
+      "description": "Professional editing to create a captivating trailer that highlights key moments, engaging your audience with a polished, cinematic preview.",
+      "imageUrls": [],
+      "isActive": true,
+      "createdAt": "2025-09-24T05:50:22.033Z",
+      "updatedAt": "2025-09-24T05:50:22.033Z"
+    },
+    {
+      "id": "cmfxkf0qx000btux8rz5wuryh",
+      "name": "Subtitles (per session)",
+      "type": "BY_THREE",
+      "price": "440",
+      "currency": "AED",
+      "count": 1,
+      "description": "Accurate subtitles and captions to improve accessibility and engagement for video content.",
+      "imageUrls": [
+        "https://res.cloudinary.com/deuvbiekl/image/upload/v1741610687/Frame_1618875174_bdmhcv.png"
+      ],
+      "isActive": true,
+      "createdAt": "2025-09-24T05:50:22.090Z",
+      "updatedAt": "2025-09-24T05:50:22.090Z"
+    },
+    {
+      "id": "cmfxkf0si000ctux89kbaax8b",
+      "name": "Teleprompter Support",
+      "type": "BY_THREE",
+      "price": "80",
+      "currency": "AED",
+      "count": 1,
+      "description": "On-screen script assistance for seamless delivery, perfect for structured interviews and presentations.",
+      "imageUrls": [
+        "https://res.cloudinary.com/deuvbiekl/image/upload/v1741610730/Frame_1618875174_1_zvq2lz.png"
+      ],
+      "isActive": true,
+      "createdAt": "2025-09-24T05:50:22.147Z",
+      "updatedAt": "2025-09-24T05:50:22.147Z"
+    },
+    {
+      "id": "cmfxkf0u3000dtux8wwd4c6a7",
+      "name": "Wardrobe Styling Consultation",
+      "type": "BY_THREE",
+      "price": "500",
+      "currency": "AED",
+      "count": 1,
+      "description": "Expert outfit guidance to enhance your on-camera presence and reflect your personal brand.",
+      "imageUrls": [],
+      "isActive": true,
+      "createdAt": "2025-09-24T05:50:22.204Z",
+      "updatedAt": "2025-09-24T05:50:22.204Z"
+    }
+  ],
+  "discountCodes": [],
+  "leads": [],
+  "bookings": [],
+  "payments": [],
+  "blogRecords": []
+}

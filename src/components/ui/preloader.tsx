@@ -8,6 +8,7 @@ interface PreloaderProps {
   size?: 'sm' | 'md' | 'lg' | 'xl'
   variant?: 'spinner' | 'dots' | 'pulse' | 'wave'
   text?: string
+  show?: boolean
 }
 
 const sizeClasses = {
@@ -29,13 +30,13 @@ export function Preloader({
   size = 'md',
   variant = 'spinner',
   text,
+  show = true,
 }: PreloaderProps) {
   const renderSpinner = () => (
     <motion.div
       className={cn(
         'rounded-full border-2 border-muted border-t-accent',
-        sizeClasses[size],
-        className
+        sizeClasses[size]
       )}
       animate={{ rotate: 360 }}
       transition={{
@@ -47,7 +48,7 @@ export function Preloader({
   )
 
   const renderDots = () => (
-    <div className={cn('flex space-x-1', className)}>
+    <div className="flex space-x-1">
       {[0, 1, 2].map(i => (
         <motion.div
           key={i}
@@ -78,7 +79,7 @@ export function Preloader({
 
   const renderPulse = () => (
     <motion.div
-      className={cn('rounded-full bg-accent', sizeClasses[size], className)}
+      className={cn('rounded-full bg-accent', sizeClasses[size])}
       animate={{
         scale: [1, 1.2, 1],
         opacity: [0.5, 1, 0.5],
@@ -92,7 +93,7 @@ export function Preloader({
   )
 
   const renderWave = () => (
-    <div className={cn('flex space-x-1', className)}>
+    <div className="flex space-x-1">
       {[0, 1, 2, 3, 4].map(i => (
         <motion.div
           key={i}
@@ -135,7 +136,22 @@ export function Preloader({
   }
 
   return (
-    <div className="flex flex-col items-center justify-center space-y-2">
+    <motion.div
+      className={cn(
+        'flex flex-col items-center justify-center space-y-2',
+        show ? 'visible' : 'invisible',
+        className
+      )}
+      initial={{ opacity: 0 }}
+      animate={{
+        opacity: show ? 1 : 0,
+      }}
+      exit={{ opacity: 0 }}
+      transition={{
+        duration: 0.3,
+        ease: 'easeOut',
+      }}
+    >
       {renderVariant()}
       {text && (
         <motion.p
@@ -155,7 +171,7 @@ export function Preloader({
           {text}
         </motion.p>
       )}
-    </div>
+    </motion.div>
   )
 }
 
@@ -210,6 +226,7 @@ interface InlinePreloaderProps {
   variant?: PreloaderProps['variant']
   size?: PreloaderProps['size']
   className?: string
+  show?: boolean
 }
 
 export function InlinePreloader({
@@ -217,10 +234,23 @@ export function InlinePreloader({
   variant = 'dots',
   size = 'md',
   className,
+  show = true,
 }: InlinePreloaderProps) {
   return (
-    <div className={cn('flex items-center justify-center py-8', className)}>
-      <Preloader variant={variant} size={size} text={text} />
-    </div>
+    <motion.div
+      className={cn('flex items-center justify-center py-8', className)}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{
+        opacity: show ? 1 : 0,
+        y: show ? 0 : 20,
+      }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{
+        duration: 0.3,
+        ease: 'easeOut',
+      }}
+    >
+      <Preloader variant={variant} size={size} text={text} show={show} />
+    </motion.div>
   )
 }

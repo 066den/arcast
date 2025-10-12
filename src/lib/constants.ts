@@ -16,6 +16,14 @@ export const BOOKING_STATUS = {
   PAID: 'PAID',
 } as const
 
+export const ORDER_STATUS = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+} as const
+
 export const PAYMENT_STATUS = {
   PENDING: 'PENDING',
   COMPLETED: 'COMPLETED',
@@ -89,6 +97,20 @@ export const API_ENDPOINTS = {
   PACKAGES: '/api/packages',
   CONTACT: '/api/contact',
   PAYMENT_LINK: '/api/payment-link',
+  BLOG: '/api/blog',
+  ORDERS: '/api/orders',
+} as const
+
+export const ROUTES = {
+  BOOKING: '/booking',
+  SERVICES: '/services',
+  CASE_STUDIES: '/case-studies',
+  CONTENT_FACTORY: '/content-factory',
+  BLOG: '/blog',
+  ABOUT_US: '/about-us',
+  FOR_BUSINESS: '/business',
+  ADMIN: '/admin',
+  OUR_SETUPS: '/our-setups',
 } as const
 
 export const HTTP_STATUS = {
@@ -121,6 +143,9 @@ export const ERROR_MESSAGES = {
     FAILED: 'Failed to create booking',
     PAST_DATE: 'Cannot book slots for past dates',
     SELECT_TIME: 'Please select a time',
+  },
+  ORDER: {
+    NOT_FOUND: 'Order not found',
   },
   STUDIO: {
     NOT_FOUND: 'Studio not found',
@@ -161,6 +186,9 @@ export const ERROR_MESSAGES = {
   },
   PRISMA: {
     NOT_INITIALIZED: 'Prisma client is not initialized',
+  },
+  ARTICLE: {
+    NOT_FOUND: 'Article not found',
   },
 } as const
 
@@ -214,7 +242,7 @@ export const CURRENCY_SYMBOLS = {
 export const PAYMENT_PROVIDER = {
   TITLE: 'ARcast Booking',
   CURRENCY: 'AED',
-  RETURN_URL: `${process.env.NEXT_PUBLIC_APP_URL}/booking/sucess`,
+  RETURN_URL: `${process.env.NEXT_PUBLIC_APP_URL}/booking/success`,
   FAILURE_RETURN_URL: `${process.env.NEXT_PUBLIC_APP_URL}/booking/failed`,
 } as const
 

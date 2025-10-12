@@ -18,7 +18,7 @@ function calculateBaseCost(pricePerHour: number, duration: number): number {
   return parseFloat(pricePerHour.toString()) * duration
 }
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     const bookings = await prisma.booking.findMany({
       include: {
@@ -58,6 +58,7 @@ export async function POST(req: Request) {
     const {
       studioId,
       packageId,
+      serviceId,
       numberOfSeats,
       selectedTime,
       duration,
@@ -153,19 +154,33 @@ export async function POST(req: Request) {
       )
     }
 
-    // Get package price
-    const packageData = await prisma.package.findUnique({
-      where: { id: packageId },
-    })
+    let serviceData = null
+    let packageData = null
+    if (serviceId) {
+      serviceData = await prisma.service.findUnique({
+        where: { id: serviceId },
+      })
 
-    if (!packageData) {
-      return NextResponse.json(
-        { success: false, error: ERROR_MESSAGES.PACKAGE.NOT_FOUND },
-        { status: HTTP_STATUS.NOT_FOUND }
-      )
+      if (!serviceData) {
+        return NextResponse.json(
+          { success: false, error: ERROR_MESSAGES.SERVICE.NOT_FOUND },
+          { status: HTTP_STATUS.NOT_FOUND }
+        )
+      }
     }
 
-    // Validate discount code
+    if (packageId) {
+      packageData = await prisma.package.findUnique({
+        where: { id: packageId },
+      })
+      if (!packageData) {
+        return NextResponse.json(
+          { success: false, error: ERROR_MESSAGES.PACKAGE.NOT_FOUND },
+          { status: HTTP_STATUS.NOT_FOUND }
+        )
+      }
+    }
+
     let validatedDiscount: { id: string; type: string; value: Decimal } | null =
       null
 
@@ -210,7 +225,7 @@ export async function POST(req: Request) {
 
     // Pre-fetch additional services to validate
     const additionalServicesData: Array<{
-      serviceId: string
+      additionalServiceId: string
       quantity: number
       unitPrice: number
       totalPrice: number
@@ -218,16 +233,17 @@ export async function POST(req: Request) {
     let additionalServicesCost = 0
 
     if (additionalServices && additionalServices.length > 0) {
-      const serviceIds = additionalServices.map(service => service.id)
-      const availableServices = await prisma.additionalService.findMany({
-        where: {
-          id: { in: serviceIds },
-          isActive: true,
-        },
-      })
+      const additionalServiceIds = additionalServices.map(service => service.id)
+      const availableAdditionalServices =
+        await prisma.additionalService.findMany({
+          where: {
+            id: { in: additionalServiceIds },
+            isActive: true,
+          },
+        })
 
       const serviceMap = new Map()
-      availableServices.forEach(service => {
+      availableAdditionalServices.forEach(service => {
         serviceMap.set(service.id, service)
       })
 
@@ -246,7 +262,7 @@ export async function POST(req: Request) {
         additionalServicesCost += serviceCost
 
         additionalServicesData.push({
-          serviceId: additionalService.id,
+          additionalServiceId: additionalService.id,
           quantity,
           unitPrice: parseFloat(additionalService.price.toString()),
           totalPrice: serviceCost,
@@ -256,7 +272,13 @@ export async function POST(req: Request) {
 
     // Calculate costs
     const baseCost = calculateBaseCost(
-      parseFloat(packageData.basePrice.toString()),
+      parseFloat(
+        serviceData
+          ? serviceData.price.toString()
+          : packageData
+            ? packageData.basePrice.toString()
+            : '0'
+      ),
       duration
     )
     const totalBeforeDiscount = baseCost + additionalServicesCost
@@ -334,14 +356,21 @@ export async function POST(req: Request) {
             status: BOOKING_STATUS.PENDING,
             studioId,
             contentPackageId: packageId,
+            serviceId: serviceId,
             leadId: bookingLead.id,
             bookingAdditionalServices: {
-              create: additionalServicesData,
+              create: additionalServicesData.map(
+                ({ additionalServiceId, ...rest }) => ({
+                  ...rest,
+                  serviceId: additionalServiceId,
+                })
+              ),
             },
           },
           include: {
             studio: true,
             contentPackage: true,
+            service: true,
             lead: true,
             discountCode: true,
             bookingAdditionalServices: {
@@ -392,12 +421,25 @@ export async function POST(req: Request) {
     }
 
     try {
+      console.log('Creating payment link for booking:', result.id)
       const paymentLink = await getPaymentLinkForBooking(result.id)
-      if (paymentLink) {
-        response.paymentUrl = `${paymentLink.paymentLink?.payment_url}?embedded=true&parent_origin=${process.env.NEXT_PUBLIC_APP_URL}&enable_postmessage=true`
+      if (paymentLink && paymentLink.paymentLink) {
+        response.paymentUrl = `${paymentLink.paymentLink.payment_url}?embedded=true&parent_origin=${process.env.NEXT_PUBLIC_APP_URL}&enable_postmessage=true`
+        console.log('Payment URL created successfully:', response.paymentUrl)
+      } else {
+        console.warn('Payment link creation returned null or undefined')
       }
     } catch (error) {
-      console.error('Failed to create payment link:', error)
+      console.error('Failed to create payment link:', {
+        bookingId: result.id,
+        error: error instanceof Error ? error.message : error,
+        stack: error instanceof Error ? error.stack : undefined,
+      })
+
+      return NextResponse.json(
+        { success: false, error: ERROR_MESSAGES.PAYMENT.FAILED },
+        { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
+      )
     }
 
     return NextResponse.json(response)

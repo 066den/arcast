@@ -11,14 +11,13 @@ export default function SuccessPage() {
     router.push('/')
   }
   return (
-    <div className="px-4">
+    <div className="px-4 min-h-screen">
       <div className="w-full mt-5">
         <Button onClick={onClose} variant="outline">
           <ArrowLeftIcon className="w-4 h-4" /> Back
         </Button>
       </div>
       <div className="flex flex-col h-full items-center justify-center pb-5 lg:pb-0">
-        {/* Ticket with Checkmark */}
         <div className="relative w-32 h-44 mb-8">
           <Image
             src="/assets/images/complete.webp"

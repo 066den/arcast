@@ -16,9 +16,26 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // experimental: {
-  //   optimizeCss: true,
-  // },
+  experimental: {
+    optimizeCss: false, // Disable CSS optimization for TailwindCSS v4 compatibility
+  },
+  // Ensure proper CSS handling for TailwindCSS v4
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      }
+    }
+
+    // Add support for video files
+    config.module.rules.push({
+      test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+      type: 'asset/resource',
+    })
+
+    return config
+  },
 }
 
 export default nextConfig

@@ -7,6 +7,8 @@ import PaymentModal from '@/components/booking/PaymentModal'
 import useFlag from '@/hooks/useFlag'
 import { apiRequest } from '@/lib/api'
 import { API_ENDPOINTS } from '@/lib/constants'
+import { useErrorToast } from '@/components/ui/error-toast'
+import { handleApiError, parseErrorResponse } from '@/lib/error-handler'
 import { useState, Suspense } from 'react'
 
 function FailedPageContent() {
@@ -14,6 +16,7 @@ function FailedPageContent() {
   const searchParams = useSearchParams()
   const [isPaymentModalOpen, openPaymentModal, closePaymentModal] = useFlag()
   const [paymentLink, setPaymentLink] = useState<string>('')
+  const { showError, showSuccess, ToastContainer } = useErrorToast()
   const onClose = () => {
     router.push('/')
   }
@@ -21,18 +24,37 @@ function FailedPageContent() {
   const onTryAgain = async () => {
     const paymentLinkId = searchParams.get('paymentLinkId')
     try {
-      const response = await apiRequest<{ paymentLink: string }>(
-        `${API_ENDPOINTS.PAYMENT_LINK}/${paymentLinkId}`
-      )
-      setPaymentLink(response.paymentLink)
-      openPaymentModal()
+      const response = await apiRequest<{
+        success: boolean
+        paymentLink?: string
+        error?: string
+        code?: string
+        message?: string
+      }>(`${API_ENDPOINTS.PAYMENT_LINK}/${paymentLinkId}`)
+
+      if (response.success && response.paymentLink) {
+        setPaymentLink(response.paymentLink)
+        openPaymentModal()
+        showSuccess('Payment link created successfully!')
+      } else {
+        const errorResponse = parseErrorResponse(response)
+        const errorMessage =
+          errorResponse?.message ||
+          errorResponse?.error ||
+          'Failed to create payment link'
+        showError(`Payment Error: ${errorMessage}`)
+        console.error('Payment link error:', response)
+      }
     } catch (error) {
-      console.error(error)
+      console.error('Payment link request failed:', error)
+
+      const errorMessage = handleApiError(error)
+      showError(`Payment Error: ${errorMessage}`)
     }
   }
 
   return (
-    <div className="px-4">
+    <div className="px-4 min-h-screen">
       <div className="w-full mt-5">
         <Button onClick={onClose} variant="outline">
           <ArrowLeftIcon className="w-4 h-4" />
@@ -76,6 +98,7 @@ function FailedPageContent() {
         onClose={closePaymentModal}
         totalAmount={100}
       />
+      <ToastContainer />
     </div>
   )
 }

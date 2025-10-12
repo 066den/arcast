@@ -1,3 +1,4 @@
+'use client'
 import { NoneToVoidFunction } from '@/types'
 import { useCallback, useState } from 'react'
 

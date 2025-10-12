@@ -5,12 +5,13 @@ import { Button } from './button'
 import { Input } from './input'
 import { getCountries, getCountryCallingCode } from 'libphonenumber-js'
 
-interface InputPhoneProps extends ComponentProps<'input'> {
+interface InputPhoneProps extends Omit<ComponentProps<'input'>, 'size'> {
+  size?: 'sm' | 'md' | 'lg'
   error?: string
   onChangeValue: (value: string) => void
 }
 
-const InputPhone = ({ onChangeValue, error }: InputPhoneProps) => {
+const InputPhone = ({ onChangeValue, error, size = 'sm' }: InputPhoneProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [countryCode, setCountryCode] = useState('+971')
   const [customValue, setCustomValue] = useState('')
@@ -34,13 +35,12 @@ const InputPhone = ({ onChangeValue, error }: InputPhoneProps) => {
 
   return (
     <div className="space-y-1">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center md:gap-4 gap-2">
         <div className="relative">
           <Button
-            variant="outline"
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="w-full justify-between"
+            className="w-full justify-between bg-input md:h-18 h-16 md:text-2xl text-xl rounded-2xl hover:bg-input shadow-none hover:shadow-none text-primary md:min-w-[105px]"
             disabled={!countryes}
           >
             <span className="flex items-center gap-2">
@@ -62,15 +62,15 @@ const InputPhone = ({ onChangeValue, error }: InputPhoneProps) => {
           </Button>
 
           {isOpen && (
-            <div className="absolute z-50 mt-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md shadow-lg max-h-60 overflow-auto">
+            <div className="absolute z-50 mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
               {countryes?.map(({ code, country }) => (
                 <button
                   key={country}
                   onClick={() => handleCountryCodeSelect(code)}
-                  className={`w-full p-2 text-left whitespace-nowrap hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors ${
+                  className={`w-full p-2 text-left whitespace-nowrap transition-colors ${
                     code === countryCode
-                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-900 dark:text-blue-100'
-                      : 'text-slate-900 dark:text-slate-100'
+                      ? 'bg-primary text-white'
+                      : 'text-primary'
                   }`}
                 >
                   {code} {country}
@@ -84,6 +84,8 @@ const InputPhone = ({ onChangeValue, error }: InputPhoneProps) => {
           autoComplete="tel"
           value={customValue}
           onChange={handleInputChange}
+          placeholder="Phone number"
+          size={size}
         />
       </div>
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}

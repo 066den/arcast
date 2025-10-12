@@ -1,4 +1,5 @@
-import { Box, Calendar, User, Radio } from 'lucide-react'
+import { Book, Box, Calendar, Radio } from 'lucide-react'
+import { ROUTES } from './constants'
 
 export const siteConfig = {
   name: 'ARcast',
@@ -22,25 +23,26 @@ export const siteConfig = {
 } as const
 
 export const navigation = [
-  { name: 'Services', href: '/services', icon: Box },
-  { name: 'Case Studies', href: '/studios', icon: Radio },
-  { name: 'Content Factory', href: '/content-factory', icon: Calendar },
-  { name: 'Blog', href: '/blog', icon: User },
-  { name: 'About Us', href: '/about', icon: User },
-  { name: 'For Business', href: '/business', icon: Calendar },
+  { name: 'Services', href: ROUTES.SERVICES },
+  { name: 'Case Studies', href: ROUTES.CASE_STUDIES },
+  { name: 'Content Factory', href: ROUTES.CONTENT_FACTORY },
+  { name: 'Blog', href: ROUTES.BLOG },
+  { name: 'About Us', href: ROUTES.ABOUT_US },
+  { name: 'Our Setups', href: ROUTES.OUR_SETUPS },
+  { name: 'For Business', href: ROUTES.FOR_BUSINESS },
 ] as const
 
 export const adminNavigation = [
-  { name: 'Bookings', href: '/admin', icon: Calendar },
-  { name: 'Studios', href: '/admin/studios', icon: Radio },
-  { name: 'Services', href: '/services', icon: Box },
+  { name: 'Bookings', href: ROUTES.ADMIN, icon: Calendar },
+  { name: 'Studios', href: ROUTES.ADMIN + '/studios', icon: Radio },
+  { name: 'Services', href: ROUTES.ADMIN + '/services', icon: Box },
+  { name: 'Blog', href: ROUTES.ADMIN + '/blog', icon: Book },
 ] as const
 
 export const legalNavigation = [
-  { name: 'Terms & Conditions', href: '/terms-and-conditions' },
+  { name: 'Terms of Service', href: '/terms-of-service' },
   { name: 'Privacy Policy', href: '/privacy-policy' },
-  { name: 'Term of Use', href: '/term-of-use' },
-  { name: 'Deletion Policy', href: '/deletion-policy' },
+  { name: 'Data Deletion', href: '/data-deletion' },
 ] as const
 
 export const supportNavigation = [
@@ -53,48 +55,21 @@ export const aboutFeatures = [
     description:
       'Conversations that break the surface and explore what really matters. Episodes that spark thoughts and challenge perspectives.',
     image: '/assets/images/production.webp',
-    url: '/services/full-cycle-production',
+    url: '/services#full-cycle',
   },
   {
     title: 'Strategy & competitor analysis',
     description:
       'Conversations that break the surface and explore what really matters. Episodes that spark thoughts and challenge perspectives.',
     image: '/assets/images/strategy.webp',
-    url: '/services/strategy-and-competitor-analysis',
+    url: '/services#reels',
   },
   {
     title: 'Publishing & growth support',
     description:
       'Conversations that break the surface and explore what really matters. Episodes that spark thoughts and challenge perspectives.',
     image: '/assets/images/publishing.webp',
-    url: '/services/publishing-and-growth-support',
-  },
-] as const
-
-export const testimonials = [
-  {
-    id: 'anna-petrova',
-    name: 'Anna Petrova',
-    podcast: 'Tech Talk Podcast',
-    rating: 5,
-    text: "Professional equipment and amazing atmosphere. We've recorded over 20 episodes here!",
-    image: '/images/testimonials/anna.jpg',
-  },
-  {
-    id: 'mikhail-sidorov',
-    name: 'Mikhail Sidorov',
-    podcast: 'Business Stories',
-    rating: 5,
-    text: 'Convenient booking system and top-notch sound quality. Highly recommend!',
-    image: '/images/testimonials/mikhail.jpg',
-  },
-  {
-    id: 'elena-kozlova',
-    name: 'Elena Kozlova',
-    podcast: 'Psychology Insights',
-    rating: 5,
-    text: 'Comfortable studio with thoughtful acoustics. Guests feel relaxed and natural.',
-    image: '/images/testimonials/elena.jpg',
+    url: '/services#media',
   },
 ] as const
 
@@ -162,7 +137,6 @@ export const seoConfig = {
 // Export types for TypeScript
 export type NavigationItem = (typeof navigation)[number]
 export type AboutFeature = (typeof aboutFeatures)[number]
-export type Testimonial = (typeof testimonials)[number]
 export type SocialLink = (typeof socialLinks)[number]
 
 // Default export for convenience
@@ -170,7 +144,6 @@ export default {
   siteConfig,
   navigation,
   aboutFeatures,
-  testimonials,
   socialLinks,
   seoConfig,
 } as const

@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 
 import { ERROR_MESSAGES, HTTP_STATUS } from '@/lib/constants'
 import { validateFile } from '@/lib/validate'
-import { getUploadedFile } from '@/utils/files'
+import { deleteUploadedFile, getUploadedFile } from '@/utils/files'
 
 export async function POST(
   req: Request,
@@ -44,6 +44,10 @@ export async function POST(
         { error: ERROR_MESSAGES.STUDIO.NOT_FOUND },
         { status: 404 }
       )
+    }
+
+    if (existingStudio.imageUrl) {
+      await deleteUploadedFile(existingStudio.imageUrl)
     }
 
     const updatedStudio = await prisma.studio.update({

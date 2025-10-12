@@ -3,17 +3,16 @@
 import Image from 'next/image'
 import { Button } from '../ui/button'
 import { ChevronRightIcon } from 'lucide-react'
-import remarkBreaks from 'remark-breaks'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import ReactMarkdown from 'react-markdown'
+import ReactHtmlParser from 'html-react-parser'
 
 interface HeadlineProps {
   title: string
   description: string
   image: string
   isReverse?: boolean
-  actionSection: { label: string; event: () => void }[]
+  actionSection?: { label: string; event: () => void }[]
 }
 
 const Headline = ({
@@ -25,85 +24,80 @@ const Headline = ({
 }: HeadlineProps) => {
   return (
     <div
-      className={cn('flex gap-10 py-14', {
-        'lg:flex-row-reverse': isReverse,
-      })}
+      className={cn(
+        'flex flex-col sm:flex-row lg:gap-10 sm:gap-6 gap-2 lg:py-8 py-4',
+        {
+          'lg:flex-row-reverse': isReverse,
+        }
+      )}
     >
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="max-w-[280px] max-h-[350px]"
+        className="aspect-[4/5] w-full max-w-[180px] md:max-w-[280px] overflow-hidden sm:rounded-[2.5rem] rounded-3xl relative"
       >
         {image && (
           <Image
             src={image}
             alt={title}
-            width={280}
-            height={350}
-            className="rounded-[2.5rem] h-full object-cover w-full"
+            fill
+            sizes="(max-width: 768px) 180px, 280px"
+            className="object-cover"
           />
         )}
       </motion.div>
 
-      <div className="flex-1 flex flex-col justify-between gap-8 pb-2">
+      <div className="flex-1 flex flex-col justify-center sm:gap-10 gap-4 pb-2">
         <motion.h2
           className=" text-accent"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2, ease: 'easeOut' }}
         >
-          {title}
+          {ReactHtmlParser(title)}
         </motion.h2>
 
-        <motion.h3
+        <motion.div
           className="colored-text"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.4, ease: 'easeOut' }}
         >
-          <ReactMarkdown
-            remarkPlugins={[remarkBreaks]}
-            components={{
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              p: ({ node, ...props }) => <span {...props} />,
-            }}
-          >
-            {description}
-          </ReactMarkdown>
-        </motion.h3>
-
-        <motion.div
-          className="flex gap-4"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.6, ease: 'easeOut' }}
-        >
-          {actionSection.map(({ label, event }, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{
-                duration: 0.4,
-                delay: 0.8 + index * 0.1,
-                ease: 'easeOut',
-              }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button
-                onClick={event}
-                size="lg"
-                variant="primary"
-                className="group"
-                icon={<ChevronRightIcon className="size-7" />}
-              >
-                {label}
-              </Button>
-            </motion.div>
-          ))}
+          {ReactHtmlParser(description)}
         </motion.div>
+
+        {actionSection && (
+          <motion.div
+            className="flex flex-col sm:flex-row gap-4"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.6, ease: 'easeOut' }}
+          >
+            {actionSection?.map(({ label, event }, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  duration: 0.4,
+                  delay: 0.8 + index * 0.1,
+                  ease: 'easeOut',
+                }}
+              >
+                <Button
+                  onClick={event}
+                  size="lg"
+                  variant="primary"
+                  className="group"
+                  icon={<ChevronRightIcon className="size-7" />}
+                >
+                  {label}
+                </Button>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
       </div>
     </div>
   )

@@ -2,38 +2,62 @@ import z from 'zod'
 import { VALIDATION } from './constants'
 
 // Validate server side data
-export const bookingSchema = z.object({
-  studioId: z.string(),
-  packageId: z.string(),
-  numberOfSeats: z.number(),
-  selectedTime: z.string(),
-  duration: z.number(),
-  discountCode: z.string().nullable(),
-  additionalServices: z.array(
-    z.object({
-      id: z.string(),
-      quantity: z.number().optional(),
-    })
-  ),
+export const bookingSchema = z
+  .object({
+    studioId: z.string(),
+    packageId: z.string().nullable(),
+    serviceId: z.string().nullable(),
+    numberOfSeats: z.number(),
+    selectedTime: z.string(),
+    duration: z.number(),
+    discountCode: z.string().nullable(),
+    additionalServices: z.array(
+      z.object({
+        id: z.string(),
+        quantity: z.number().optional(),
+      })
+    ),
+    lead: z.object({
+      fullName: z.string(),
+      email: z.string(),
+      phoneNumber: z.string().optional(),
+      whatsappNumber: z.string().optional(),
+      recordingLocation: z.string().optional(),
+    }),
+  })
+  .refine(data => data.packageId || data.serviceId, {
+    message: 'Either packageId or serviceId must be provided',
+    path: ['packageId'],
+  })
+
+export const orderSchema = z.object({
+  serviceId: z.string(),
+  description: z.string().optional(),
+  requirements: z.string().optional(),
+  estimatedDays: z.number().optional(),
+  deadline: z.string().optional(),
   lead: z.object({
-    fullName: z.string(),
-    email: z.string(),
+    fullName: z.string().min(1, 'Full name is required'),
+    email: z.email().optional(),
     phoneNumber: z.string().optional(),
     whatsappNumber: z.string().optional(),
-    recordingLocation: z.string().optional(),
   }),
+  discountCode: z.string().nullable(),
 })
 
 // Validate client side data
 export const bookingLeadSchema = z.object({
   fullName: z
     .string()
+    .nonempty({ message: 'Full name is required' })
     .min(2, { message: 'Full name must be at least 2 characters' })
     .max(100, { message: 'Full name must be less than 100 characters' })
     .regex(VALIDATION.NAME_REGEX, {
       message: 'Full name must only contain letters and spaces',
     }),
-  email: z.email({ message: 'Invalid email address' }),
+  email: z
+    .email({ message: 'Invalid email address' })
+    .nonempty({ message: 'Email is required' }),
   phoneNumber: z
     .string()
     .regex(VALIDATION.PHONE_REGEX, { message: 'Invalid phone number' })
@@ -89,6 +113,12 @@ export const studioSchema = z.object({
   totalSeats: z.number(),
 })
 
+export const blogRecordSchema = z.object({
+  title: z.string().min(1, { message: 'Title is required' }),
+  tagline: z.string().min(1, { message: 'Tagline is required' }),
+  mainText: z.string().min(1, { message: 'Main text is required' }),
+})
+
 export const studioImageUploadSchema = z.object({
   studioId: z.string().min(1, { message: 'Studio ID is required' }),
   imageUrl: z.url({ message: 'Invalid image URL' }),
@@ -96,6 +126,10 @@ export const studioImageUploadSchema = z.object({
 
 export const validateBooking = (data: unknown) => {
   return bookingSchema.safeParse(data)
+}
+
+export const validateOrder = (data: unknown) => {
+  return orderSchema.safeParse(data)
 }
 
 export const validateStudio = (data: unknown) => {
@@ -110,7 +144,13 @@ export const validateContactForm = (data: unknown) => {
   return contactFormSchema.safeParse(data)
 }
 
+export const validateBlogRecord = (data: unknown) => {
+  return blogRecordSchema.safeParse(data)
+}
+
 export type LeadSchema = z.infer<typeof bookingLeadSchema>
 export type StudioSchema = z.infer<typeof studioSchema>
 export type StudioImageUploadSchema = z.infer<typeof studioImageUploadSchema>
 export type ContactFormSchema = z.infer<typeof contactFormSchema>
+export type BlogRecordSchema = z.infer<typeof blogRecordSchema>
+export type OrderSchema = z.infer<typeof orderSchema>

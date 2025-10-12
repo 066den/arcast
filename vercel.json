@@ -1,0 +1,11 @@
+{
+  "buildCommand": "npm run vercel-build",
+  "framework": "nextjs",
+  "build": {
+    "env": {
+      "NODE_ENV": "production",
+      "NEXT_TELEMETRY_DISABLED": "1",
+      "TAILWIND_MODE": "build"
+    }
+  }
+}

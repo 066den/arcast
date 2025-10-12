@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Modal } from '@/components/ui/modal'
+import { Modal } from '@/components/modals/modal'
 
 import Image from 'next/image'
 
@@ -20,6 +20,8 @@ const PaymentModal = ({
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const handleMessage = (event: MessageEvent) => {
       const allowedOrigins = [process.env.MAMO_BASE_URL]
       if (!allowedOrigins.includes(event.origin)) {
@@ -45,16 +47,16 @@ const PaymentModal = ({
       title="Payment"
       description="Complete your payment to proceed with the booking"
       size="lg"
-      contentClassName="h-full max-h-[calc(100vh-100px)]"
+      contentClassName="h-full sm:max-h-[calc(100vh-100px)]"
       footer={
-        <div className="flex items-center gap-2 justify-between text-sm text-gray-500">
+        <div className="flex items-center gap-2 justify-between text-sm p-4 pt-0 text-gray-500">
           Powered by{' '}
           <Image src="/icons/mamo_logo.svg" alt="Mamo" width={72} height={18} />
         </div>
       }
     >
       <div className="flex flex-col h-full">
-        <div className="flex items-center justify-between pb-4 px-4 mb-4 border-b border-gray-200">
+        <div className="flex items-center justify-between pb-4 px-4 mb-4 border-b font-medium border-gray-200">
           <span>Total</span>
           <span>AED {totalAmount}</span>
         </div>

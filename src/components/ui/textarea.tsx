@@ -1,23 +1,47 @@
-import * as React from "react"
+import * as React from 'react'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
-export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>
+interface TextareaProps
+  extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'size'> {
+  error?: string
+  size?: 'sm' | 'md' | 'lg'
+}
+
+const sizeClasses = {
+  sm: 'min-h-[80px] px-3 py-2 text-sm rounded-md',
+  md: 'min-h-[120px] px-4 py-3 text-xl md:text-2xl rounded-2xl',
+  lg: 'min-h-[160px] px-5 py-4 text-2xl md:text-3xl rounded-2xl',
+}
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, error, size = 'sm', ...props }, ref) => {
     return (
-      <textarea
-        className={cn(
-          "flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-          className
+      <div className="relative w-full">
+        <textarea
+          data-slot="textarea"
+          aria-invalid={error ? 'true' : 'false'}
+          className={cn(
+            'placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground bg-input flex w-full min-w-0 transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 resize-none',
+            'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] focus-visible:ring-inset',
+            'aria-invalid:ring-destructive/40 aria-invalid:border-destructive aria-invalid:ring-inset',
+            'not-placeholder-shown:bg-white not-placeholder-shown:ring-2 not-placeholder-shown:ring-input not-placeholder-shown:ring-inset',
+            error && 'border-red-500 ring-red-500/20',
+            sizeClasses[size],
+            className
+          )}
+          ref={ref}
+          {...props}
+        />
+        {error && (
+          <p className="text-red-500 absolute top-full left-4 mt-0.5">
+            {error}
+          </p>
         )}
-        ref={ref}
-        {...props}
-      />
+      </div>
     )
   }
 )
-Textarea.displayName = "Textarea"
+Textarea.displayName = 'Textarea'
 
 export { Textarea }

@@ -59,6 +59,7 @@ export interface Client {
   jobTitle?: string | null
   showTitle?: string | null
   testimonial: string | null
+  featured: boolean
 }
 
 export type Studio = {
@@ -66,6 +67,7 @@ export type Studio = {
   name: string
   location: string
   imageUrl: string | null
+  gallery: string[]
   totalSeats: number
   openingTime: string
   closingTime: string
@@ -89,6 +91,32 @@ export interface Package {
   updatedAt: Date
 }
 
+export interface PackageService {
+  id: string
+  name: string
+  description: string
+  price: number
+  quantity: number
+}
+
+export interface PackageAdditionalService {
+  id: string
+  name: string
+  type: 'STANDARD' | 'BY_THREE'
+  price: number
+  currency: string
+  count: number
+  description: string | null
+  imageUrls: string[]
+  isActive: boolean
+  quantity: number
+}
+
+export interface PackageWithServices extends Package {
+  services: PackageService[]
+  additionalServices: PackageAdditionalService[]
+}
+
 export interface PackagePerk {
   id: string
   name: string
@@ -99,20 +127,35 @@ export interface PackagePerk {
 export interface Service {
   id: string
   name: string
-  title?: string
   description: string | null
-  content?: string | null
+  includes: string[]
   imageUrl: string | null
-  price?: number
-  currency?: string
+  price: number
+  currency: string
+  isPopular: boolean
+  serviceTypeId: string
+  serviceType?: {
+    slug: string
+  }
+  type?: string
+}
+
+export interface ServiceType {
+  id: string
+  name: string
+  slug: string
+  sortOrder: number
+  description: string | null
   isActive: boolean
+  services?: Service[]
+  samples?: Sample[]
 }
 
 export interface AdditionalService {
   id: string
   name: string
   type: 'STANDARD' | 'BY_THREE'
-  price: number
+  price: number | Decimal
   currency: string
   description: string | null
   imageUrls: string[]
@@ -164,4 +207,60 @@ export interface Sample {
   name: string | null
   thumbUrl: string | null
   videoUrl: string | null
+  serviceTypeId: string | null
+  serviceType?: ServiceType | null
+}
+
+export interface CaseStudyContentItem {
+  title: string
+  text?: string[]
+  list?: string[]
+}
+
+export interface CaseStudyContent {
+  id: string
+  caseStudyId: string
+  title: string
+  text: string[]
+  list: string[]
+  imageUrl: string
+  order: number
+}
+
+export interface CaseStudyEquipment {
+  id: string
+  name?: string | null
+  description?: string | null
+  imageUrl?: string | null
+}
+
+export interface CaseStudyStaff {
+  id: string
+  name: string | null
+  role?: string | null
+  imageUrl?: string | null
+}
+
+export interface CaseStudy {
+  id: string
+  clientId: string | null
+  title: string | null
+  tagline: string | null
+  mainText: string | null
+  featured: boolean
+  imageUrls: string[]
+  client?: Client | null
+  caseContent?: CaseStudyContent[]
+  equipment?: CaseStudyEquipment[]
+  staff?: CaseStudyStaff[]
+}
+
+export interface BlogRecord {
+  id: string
+  title: string | null
+  tagline: string | null
+  mainText: string | null
+  mainImageUrl?: string | null
+  createdAt: Date
+  updatedAt: Date
 }

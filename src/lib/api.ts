@@ -9,6 +9,28 @@ export class ApiError extends Error {
   }
 }
 
+// Blog API functions
+export interface CreateArticleData {
+  title: string
+  tagline: string
+  mainText: string
+  mainImageUrl: string
+}
+
+export async function createArticle(data: CreateArticleData) {
+  return apiRequest('/api/blog', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function getArticles() {
+  return apiRequest('/api/blog')
+}
+
 export async function apiRequest<T>(
   url: string,
   options: RequestInit = {}

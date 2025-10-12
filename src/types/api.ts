@@ -1,3 +1,4 @@
+import { OrderStatus } from '@prisma/client'
 import { AdditionalService, Lead, Package, TimeSlotList, Studio } from '.'
 
 export interface ApiResponse<T> {
@@ -22,7 +23,8 @@ export interface ApiResponseAvailablity {
 
 export interface BookingFormData {
   studioId: string
-  packageId: string
+  packageId: string | null
+  serviceId: string | null
   numberOfSeats: number
   selectedTime: string
   duration: number
@@ -35,6 +37,21 @@ export interface BookingFormData {
     recordingLocation?: string
   }
   additionalServices: AdditionalService[]
+}
+
+export interface OrderFormData {
+  serviceId: string
+  discountCode: string | null
+  requirements: string | null
+  estimatedDays: number | null
+  deadline: string | null
+  lead: {
+    fullName: string
+    email: string
+    phoneNumber: string
+    whatsappNumber: string
+    recordingLocation?: string
+  }
 }
 
 export interface StudioFormData {
@@ -67,5 +84,17 @@ export interface BookingResponse {
   package?: Package
   lead?: Lead
   additionalServices?: AdditionalService[]
+  paymentUrl?: string
+}
+
+export interface OrderResponse {
+  id: string
+  serviceName: string
+  totalCost: number
+  finalAmount?: number
+  discountAmount?: number
+  status: OrderStatus
+  estimatedDays?: number
+  deadline?: Date
   paymentUrl?: string
 }

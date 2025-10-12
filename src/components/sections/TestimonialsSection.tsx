@@ -13,50 +13,56 @@ import {
   textVariants,
 } from '@/lib/motion-variants'
 import Autoplay from 'embla-carousel-autoplay'
+import Link from 'next/link'
+import { ROUTES } from '@/lib/constants'
 const videoUrl = '/assets/video/mic-vid.mp4'
 
 interface TestimonialsSectionProps {
   isVideo?: boolean
+  showButton?: boolean
   initialClients: Client[]
 }
 
 const TestimonialsSection = ({
   isVideo,
+  showButton = true,
   initialClients,
 }: TestimonialsSectionProps) => {
-  const plugins = useRef([
+  const autoplayPlugin = useRef(
     Autoplay({
       delay: 2000,
-    }),
-  ])
+    })
+  )
+
   const clientTestimonials = useMemo(() => {
     if (!initialClients) return []
-    return initialClients.filter(client => client.testimonial)
+    return initialClients.filter(
+      client => client.testimonial && client.featured
+    )
   }, [initialClients])
 
-  // Safe handlers for mouse events
   const handleMouseEnter = () => {
-    if (plugins.current && plugins.current[0]) {
-      plugins.current[0].stop()
+    if (autoplayPlugin.current) {
+      autoplayPlugin.current.stop()
     }
   }
 
   const handleMouseLeave = () => {
-    if (plugins.current && plugins.current[0]) {
-      plugins.current[0].play()
+    if (autoplayPlugin.current) {
+      autoplayPlugin.current.play()
     }
   }
 
   return (
     <motion.section
-      className="py-20"
+      className="lg:py-20 py-10"
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: '-100px' }}
     >
-      <div className="grid grid-cols-5 gap-10">
-        <div className="aspect-[3/4] col-span-2 max-w-xl rounded-3xl overflow-hidden">
+      <div className="grid sm:grid-cols-5 grid-cols-1 md:gap-10 gap-2">
+        <div className="aspect-[3/4] md:col-span-2 col-span-1 md:max-w-xl rounded-3xl overflow-hidden">
           {isVideo ? (
             <video
               src={videoUrl}
@@ -77,26 +83,31 @@ const TestimonialsSection = ({
             />
           )}
         </div>
-        <motion.div variants={containerVariants} className="col-span-3 px-6">
+        <motion.div
+          variants={containerVariants}
+          className="md:col-span-3 sm:col-span-4 col-span-1 lg:px-6"
+        >
           <motion.div className="section-title" variants={itemVariants}>
             FREE YOURSELF FROM PRODUCTION ROUTINE
           </motion.div>
           <motion.h2
-            className="text-6xl leading-tight max-w-xl mb-4"
+            className="leading-tight max-w-2xl mb-4"
             variants={textVariants}
           >
-            This is how we&apos;ve already helped talents like you!
+            This is how we&apos;ve <br /> already helped talents like you!
           </motion.h2>
-          <motion.div variants={itemVariants}>
-            <Button
-              size="lg"
-              variant="primary"
-              className="group"
-              icon={<ChevronRightIcon className="size-7" />}
-            >
-              Check our cases
-            </Button>
-          </motion.div>
+          {showButton && (
+            <motion.div variants={itemVariants}>
+              <Button asChild size="lg" variant="primary" className="group">
+                <Link href={ROUTES.CASE_STUDIES}>
+                  Check our cases{' '}
+                  <span className="group-hover:translate-x-1 transition-transform duration-200 ease-in-out">
+                    <ChevronRightIcon className="size-7" />
+                  </span>
+                </Link>
+              </Button>
+            </motion.div>
+          )}
           <motion.div
             className="border-b font-medium my-10 py-2.5"
             variants={itemVariants}
@@ -105,7 +116,7 @@ const TestimonialsSection = ({
           </motion.div>
           <motion.div variants={containerVariants}>
             <Carousel
-              plugins={plugins.current}
+              plugins={[autoplayPlugin.current]}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
               opts={{
@@ -118,7 +129,7 @@ const TestimonialsSection = ({
                 {clientTestimonials.map((client, index) => (
                   <CarouselItem
                     key={client.id}
-                    className="basis-1/2 border-e-2 px-6"
+                    className="xl:basis-1/2 border-e-2 px-6"
                   >
                     <motion.div variants={itemVariants} custom={index}>
                       <blockquote className="text-xl font-nunito-sans font-medium mb-6">{`"${client.testimonial}"`}</blockquote>

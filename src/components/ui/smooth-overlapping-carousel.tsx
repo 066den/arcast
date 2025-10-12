@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowIcon } from './icons'
 import { Play } from 'lucide-react'
 import useFlag from '@/hooks/useFlag'
-import { VideoModal } from './modal'
+import { VideoModal } from '../modals/modal'
 
 interface SmoothOverlappingCarouselProps {
   items: Array<{
@@ -51,7 +51,7 @@ const SmoothOverlappingCarousel = ({
   )
 
   const handleCloseVideo = useCallback(() => {
-    setSelectedVideoUrl(null)
+    //setSelectedVideoUrl(null)
     videoClose()
   }, [videoClose])
 
@@ -91,11 +91,11 @@ const SmoothOverlappingCarousel = ({
 
   return (
     <div
-      className={cn('relative w-full', className)}
+      className={cn('h-full', className)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative w-full h-full flex items-center justify-center">
+      <div className="relative h-full flex items-center justify-center xl:justify-end">
         {items.map((item, index) => {
           let relativeIndex = index - currentIndex
 
@@ -125,7 +125,7 @@ const SmoothOverlappingCarousel = ({
               }}
             >
               <div
-                className="relative cursor-pointer w-[325px] h-[360px]"
+                className="relative cursor-pointer sm:w-[325px] w-[260px] sm:h-[360px] h-[300px]"
                 onClick={() => item.videoUrl && playVideo(item.videoUrl)}
               >
                 <Image
@@ -159,8 +159,7 @@ const SmoothOverlappingCarousel = ({
         })}
       </div>
 
-      {/* Navigation buttons */}
-      <div className="absolute flex gap-4 right-0 top-0 -translate-y-[8em] z-20 ">
+      <div className="absolute flex gap-4 right-0 top-0 -translate-y-[2em] lg:-translate-y-[3.5em] xl:-translate-y-[6.5em] z-20 ">
         <Button
           size="icon"
           className="rounded-full w-11 h-11 bg-border group hover:bg-primary"
@@ -185,15 +184,13 @@ const SmoothOverlappingCarousel = ({
         </Button>
       </div>
 
-      {selectedVideoUrl && (
-        <VideoModal
-          isOpen={isVideoModalOpen}
-          title={items[currentIndex].name || ''}
-          videoUrl={selectedVideoUrl}
-          poster={items[currentIndex].thumbUrl || undefined}
-          onClose={handleCloseVideo}
-        />
-      )}
+      <VideoModal
+        isOpen={isVideoModalOpen}
+        title={items[currentIndex].name || ''}
+        videoUrl={selectedVideoUrl || ''}
+        poster={items[currentIndex].thumbUrl || undefined}
+        onClose={handleCloseVideo}
+      />
     </div>
   )
 }

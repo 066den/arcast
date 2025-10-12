@@ -35,6 +35,14 @@ enum PaymentStatus {
   REFUNDED
 }
 
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
 // Models
 model Studio {
   id          String   @id @default(cuid())
@@ -45,6 +53,7 @@ model Studio {
   openingTime String   // HH:MM format
   closingTime String   // HH:MM format
   isActive    Boolean  @default(true)
+  gallery     String[] @default([])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -58,12 +67,15 @@ model ServiceType {
   id          String   @id @default(cuid())
   name        String   @unique
   description String?
+  slug        String   @unique  
+  sortOrder   Int      @default(0) 
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
   services Service[]
+  samples  Sample[]
 
   @@map("service_types")
 }
@@ -72,7 +84,7 @@ model Service {
   id            String   @id @default(cuid())
   name          String   @unique
   description   String?
-  includes      String?
+  includes      String[] @default([])
   imageUrl      String?
   serviceTypeId String
   isPopular     Boolean  @default(false)
@@ -97,9 +109,10 @@ model ServicePackageRecord {
   serviceQuantity          Int
 
   // Relations
-  package         Package @relation(fields: [parentContentPackageId], references: [id])
-  includedService Service @relation(fields: [includedServiceId], references: [id])
+  package         Package @relation(fields: [parentContentPackageId], references: [id], onDelete: Cascade)
+  includedService Service @relation(fields: [includedServiceId], references: [id], onDelete: Cascade)
 
+  @@unique([parentContentPackageId, includedServiceId])
   @@map("service_packages_records")
 }
 
@@ -110,9 +123,10 @@ model AddServicePackageRecord {
   serviceQuantity          Int
 
   // Relations
-  package                  Package           @relation(fields: [parentContentPackageId], references: [id])
-  includedAdditionalService AdditionalService @relation(fields: [includedServiceId], references: [id])
+  package                  Package           @relation(fields: [parentContentPackageId], references: [id], onDelete: Cascade)
+  includedAdditionalService AdditionalService @relation(fields: [includedServiceId], references: [id], onDelete: Cascade)
 
+  @@unique([parentContentPackageId, includedServiceId])
   @@map("add_service_packages_records")
 }
 
@@ -153,6 +167,7 @@ model DiscountCode {
 
   // Relations
   bookings Booking[]
+  orders   Order[]
 
   @@map("discount_codes")
 }
@@ -199,6 +214,7 @@ model Lead {
 
   // Relations
   bookings Booking[]
+  orders   Order[]
 
   @@map("leads")
 }
@@ -268,16 +284,31 @@ model CaseStudy {
   title     String?
   tagline   String?
   mainText  String?
-  content   Json?
-  featured  Boolean  @default(true)
+  isActive  Boolean  @default(true)
   imageUrls String[]
 
   // Relations
-  client        Client?         @relation(fields: [clientId], references: [id])
-  caseStaff     CaseStaff[]
-  caseEquipment CaseEquipment[]
+  client      Client?           @relation(fields: [clientId], references: [id])
+  staff       Staff[]           // Direct many-to-many relation
+  equipment   Equipment[]       // Direct many-to-many relation
+  caseContent CaseStudyContent[]
 
   @@map("case_studies")
+}
+
+model CaseStudyContent {
+  id          String   @id @default(cuid())
+  caseStudyId String
+  title       String   
+  text        String[] 
+  list        String[] 
+  imageUrl    String
+  order       Int      
+  
+  // Relations
+  caseStudy CaseStudy @relation(fields: [caseStudyId], references: [id], onDelete: Cascade)
+
+  @@map("case_study_content")
 }
 
 model Equipment {
@@ -287,7 +318,7 @@ model Equipment {
   imageUrl    String?
 
   // Relations
-  caseEquipment CaseEquipment[]
+  caseStudies CaseStudy[] // Direct many-to-many relation
 
   @@map("equipment")
 }
@@ -299,7 +330,7 @@ model Staff {
   imageUrl String?
 
   // Relations
-  caseStaff CaseStaff[]
+  caseStudies CaseStudy[] // Direct many-to-many relation
 
   @@map("staff")
 }
@@ -310,6 +341,7 @@ model Client {
   showTitle   String?
   jobTitle    String?
   testimonial String?
+  featured    Boolean  @default(false)
   imageUrl    String?
 
   // Relations
@@ -318,47 +350,74 @@ model Client {
   @@map("clients")
 }
 
-model CaseStaff {
-  id          String @id @default(cuid())
-  caseStudyId String
-  staffId     String
-
-  // Relations
-  caseStudy CaseStudy @relation(fields: [caseStudyId], references: [id])
-  staff     Staff     @relation(fields: [staffId], references: [id])
-
-  @@map("case_staff")
-}
-
-model CaseEquipment {
-  id          String @id @default(cuid())
-  caseStudyId String
-  equipmentId String
-
-  // Relations
-  caseStudy CaseStudy @relation(fields: [caseStudyId], references: [id])
-  equipment Equipment @relation(fields: [equipmentId], references: [id])
-
-  @@map("case_equipment")
-}
-
 model Sample {
-  id       String  @id @default(cuid())
-  name     String?
-  thumbUrl String?
-  videoUrl String?
+  id            String  @id @default(cuid())
+  name          String?
+  thumbUrl      String?
+  videoUrl      String?
+  serviceTypeId String?
+
+  // Relations
+  serviceType ServiceType? @relation(fields: [serviceTypeId], references: [id])
 
   @@map("samples")
 }
 
 model BlogRecord {
   id        String   @id @default(cuid())
-  title     String?
-  tagline   String?
-  mainText  String?
-  imageUrls String[]
+  title     String
+  tagline   String
+  mainText  String
+  mainImageUrl String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("blog_records")
+}
+
+model Order {
+  id               String       @id @default(cuid())
+  serviceName      String       
+  description      String?      
+  requirements     String?      
+  totalCost        Decimal      @db.Decimal(10, 2)
+  vatAmount        Decimal?     @db.Decimal(10, 2)
+  discountAmount   Decimal?     @db.Decimal(10, 2)
+  finalAmount      Decimal?     @db.Decimal(10, 2)
+  status           OrderStatus  @default(PENDING)
+  estimatedDays    Int?         
+  deadline         DateTime?    
+  completedAt      DateTime?    
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  leadId           String       
+  discountCodeId   String?      
+  
+  // Relations
+  lead        Lead          @relation(fields: [leadId], references: [id])
+  discountCode DiscountCode? @relation(fields: [discountCodeId], references: [id])
+  payment     OrderPayment?
+
+  @@map("orders")
+}
+
+model OrderPayment {
+  id            String        @id @default(cuid())
+  orderId       String        @unique
+  amount        Decimal       @db.Decimal(10, 2)
+  currency      String        @default("AED")
+  status        PaymentStatus @default(PENDING)
+  provider      String        @default("MAMO_PAY")
+  externalId    String?
+  paymentLinkId String?
+  metadata      Json?
+  completedAt   DateTime?
+  refundedAt    DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_payments")
 }

@@ -8,7 +8,7 @@ import { persist } from 'zustand/middleware'
 
 interface StudioStore {
   // State
-  studios: Studio[]
+  studios: Studio[] | null
   isLoading: boolean
   error: string | null
 
@@ -20,14 +20,16 @@ interface StudioStore {
   createStudio: (studio: StudioFormData) => Promise<void>
   updateStudio: (id: string, update: Partial<Studio>) => Promise<void>
   updateStudioImage: (studioId: string, imageFile: File) => Promise<void>
+  updateStudioGallery: (studioId: string, imageFile: File) => Promise<void>
+  deleteStudioGallery: (studioId: string, image: string) => Promise<void>
   deleteStudio: (studioId: string) => Promise<void>
 }
 
 const useStudioStore = create<StudioStore>()(
   persist(
     (set, get) => ({
-      studios: [],
-      isLoading: true,
+      studios: null,
+      isLoading: false,
       error: null,
       setStudios: (studios: Studio[]) => set({ studios }),
 
@@ -69,7 +71,7 @@ const useStudioStore = create<StudioStore>()(
             body: formData,
           })
 
-          set({ studios: [...get().studios, newStudio] })
+          set({ studios: [...(get().studios || []), newStudio] })
         } catch (error) {
           if (error instanceof ApiError) {
             throw new Error(error.message)
@@ -82,7 +84,7 @@ const useStudioStore = create<StudioStore>()(
       updateStudio: async (id: string, update: Partial<Studio>) => {
         const { studios } = get()
 
-        const updatedStudios = studios.map(studio =>
+        const updatedStudios = studios?.map(studio =>
           studio.id === id ? { ...studio, ...update } : studio
         )
 
@@ -118,9 +120,67 @@ const useStudioStore = create<StudioStore>()(
             }
           )
 
-          const updatedStudios = studios.map(studio =>
+          const updatedStudios = studios?.map(studio =>
             studio.id === studioId
               ? { ...studio, imageUrl: response.imageUrl }
+              : studio
+          )
+
+          set({ studios: updatedStudios })
+        } catch (error) {
+          if (error instanceof ApiError) {
+            throw new Error(error.message)
+          }
+        }
+      },
+
+      updateStudioGallery: async (studioId: string, imageFile: File) => {
+        const { studios } = get()
+
+        const formData = new FormData()
+        formData.append('imageFile', imageFile)
+
+        try {
+          const response = await apiRequest<Studio>(
+            `${API_ENDPOINTS.STUDIOS}/${studioId}/gallery`,
+            {
+              method: 'POST',
+              body: formData,
+            }
+          )
+
+          const updatedStudios = studios?.map(studio =>
+            studio.id === studioId
+              ? { ...studio, gallery: response.gallery }
+              : studio
+          )
+
+          set({ studios: updatedStudios })
+        } catch (error) {
+          if (error instanceof ApiError) {
+            throw new Error(error.message)
+          }
+        }
+      },
+
+      deleteStudioGallery: async (studioId: string, image: string) => {
+        const { studios } = get()
+
+        try {
+          const response = await apiRequest<Studio>(
+            `${API_ENDPOINTS.STUDIOS}/${studioId}/gallery`,
+            {
+              method: 'DELETE',
+              body: JSON.stringify({ imageUrl: image }),
+            }
+          )
+
+          const updatedStudios = studios?.map(studio =>
+            studio.id === studioId
+              ? {
+                  ...studio,
+                  gallery: response.gallery,
+                }
               : studio
           )
 

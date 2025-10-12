@@ -1,14 +1,10 @@
 @import 'tailwindcss';
 
-@custom-variant dark (&:is(.dark *));
-
 :root {
   --background: hsl(0 0% 100%);
   --foreground: hsl(0 0% 20%);
-  --primary: hsl(0 0% 20%);
-  --primary-dark: hsl(0 0% 15%);
-  --accent: hsl(16 88% 57%);
-  --accent-dark: hsl(16 88% 52%);
+  --primary: hsl(0, 0%, 20%);
+  --accent: hsl(16, 88%, 57%);
   --white-smoke: hsl(0 0% 95%);
   --border: hsl(0 0% 90%);
   --ring: oklch(0.709 0.01 56.259);
@@ -25,19 +21,17 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.147 0.004 49.25);
   --muted: hsl(0 0% 96%);
-  --dark-mode: hsl(220 1% 14%);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
-  --color-primary-dark: var(--primary-dark);
   --color-accent: var(--accent);
-  --color-accent-dark: var(--accent-dark);
   --color-accent-foreground: var(--white-smoke);
   --color-border: var(--border);
   --color-ring: var(--ring);
+  --color-input: var(--white-smoke);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -57,34 +51,9 @@
   --color-destructive-light: var(--color-red-100);
   --font-hanken-grotesk: var(--font-hanken-grotesk);
   --font-nunito-sans: var(--font-nunito-sans);
-  --color-dark-mode: var(--dark-mode);
-}
-
-.dark {
-  --background: oklch(0.147 0.004 49.25);
-  --foreground: oklch(0.985 0.001 106.423);
-  --border: oklch(1 0 0 / 10%);
-  --ring: oklch(0.553 0.013 58.071);
-  --sidebar: hsl(240 5.9% 10%);
-  --sidebar-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-primary: hsl(224.3 76.3% 48%);
-  --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(240 3.7% 15.9%);
-  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-border: hsl(240 3.7% 15.9%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
-  --color-muted: var(--muted);
-  --color-destructive: var(--color-red-500);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-destructive-dark: var(--color-red-600);
-  --color-destructive-light: var(--color-red-100);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --radius-5xl: 2.5rem;
+  --shadow-3xl: 0px 4px 12px -2px rgba(0, 0, 0, 0.1);
+  --shadow-4xl: 0px 22px 44px -6px rgba(45, 54, 67, 0.08);
 }
 
 @layer base {
@@ -94,12 +63,16 @@
     scrollbar-color: #ededed transparent;
   }
   html {
-    scrollbar-gutter: stable both-edges;
-    overflow-y: scroll;
     line-height: 1.35;
+    height: 100%;
+    overflow: hidden;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-x-hidden h-screen;
+  }
+
+  body:not([data-scroll-locked]) {
+    scrollbar-gutter: stable both-edges;
   }
 
   ::-webkit-scrollbar {
@@ -118,7 +91,11 @@
 
   h1,
   h2 {
-    @apply font-hanken-grotesk font-medium xl:text-[4em] text-[3.5em] tracking-[-0.04em];
+    @apply font-hanken-grotesk font-medium xl:text-[4em] lg:text-5xl text-4xl tracking-[-0.04em];
+  }
+
+  h2 strong {
+    @apply font-medium text-accent;
   }
 
   h3,
@@ -129,7 +106,7 @@
   }
 
   h3 {
-    @apply xl:text-[2.75rem] text-[2.25rem];
+    @apply xl:text-[2.75rem] lg:text-[2.25rem] md:text-3xl text-2xl;
   }
 
   section {
@@ -142,22 +119,58 @@
   }
 
   .text-content {
-    p {
-      margin-bottom: 1.25em;
-      letter-spacing: -0.04em;
+    p,
+    blockquote {
+      @apply lg:mb-10 md:mb-6 mb-4;
+      letter-spacing: -0.02em;
     }
     p:last-of-type {
       margin-bottom: 0;
     }
     ul {
-      list-style-type: disc;
-      margin-left: 1.5em;
+      @apply list-disc md:ml-[1.5em] ml-[1em];
       margin-bottom: 1.25em;
       letter-spacing: -0.04em;
     }
     ul:last-of-type {
       margin-bottom: 0;
     }
+  }
+
+  .blog-text-content {
+    h2 {
+      @apply text-accent mb-4;
+    }
+    p,
+    ul {
+      @apply font-nunito-sans lg:text-[2em] md:text-[1.5em] text-[1.25em];
+    }
+    ul:last-of-type {
+      margin-bottom: 1.25em;
+    }
+  }
+
+  .custom-list {
+    list-style-type: none !important;
+    @apply font-nunito-sans;
+  }
+
+  .custom-list li {
+    @apply relative md:mb-8 mb-4;
+  }
+
+  .custom-list li:before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 0;
+    width: 1.65rem;
+    height: 2.5rem;
+    background-image: url('/icons/list-icon.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: -1;
+    @apply md:w-6 w-4 md:h-10 h-8 md:mr-[1.125rem] mr-1.5 sm:mt-1 mt-0.5 md:-mt-0.5;
   }
 
   .section-title {
@@ -172,13 +185,13 @@
   }
 
   .outline-text {
-    font-size: 12.5em;
+    @apply text-white xl:text-[12.5em] lg:text-[8.5em] md:text-[7em] text-[5em] leading-[1.18] font-hanken-grotesk font-bold;
     line-height: 1.18;
-    color: white;
     paint-order: stroke fill;
     -webkit-text-stroke: 0.5rem var(--color-accent);
-    font-weight: 700;
-    font-family: var(--font-hanken-grotesk);
+    @media (max-width: 768px) {
+      -webkit-text-stroke: 0.25rem var(--color-accent);
+    }
   }
 }
 
@@ -234,14 +247,14 @@
     backface-visibility: hidden;
   }
 
+  .scrollbar-gutter-stable {
+    scrollbar-gutter: stable both-edges;
+  }
+
   @media (max-width: 768px) {
     .video-background {
       filter: brightness(0.8);
     }
-  }
-
-  .next-video-alert {
-    display: none;
   }
 
   /* Hero section animations */
@@ -267,12 +280,17 @@
     }
   }
 
-  .animate-fade-in-up {
-    animation: fadeInUp 0.8s ease-out 0.3s both;
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-in-out;
   }
 
-  .animate-fade-in-up-delayed {
-    animation: fadeInUpDelayed 0.6s ease-out 0.6s both;
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -282,7 +300,8 @@
     }
 
     .animate-fade-in-up,
-    .animate-fade-in-up-delayed {
+    .animate-fade-in-up-delayed,
+    .animate-fade-in {
       animation: none;
       opacity: 1;
       transform: none;
@@ -297,4 +316,8 @@
     transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
     opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
   will-change: transform, opacity;
+}
+
+.ProseMirror {
+  outline: none;
 }
