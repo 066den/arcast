@@ -110,7 +110,7 @@ temp/
 
 videos/
 public/_next-video
-public/assets/video/samples/*
+public/assets/video/reels/*
 
 # Webpack lock files
 *.webpack.lock
