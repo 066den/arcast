@@ -13,9 +13,9 @@ import {
   textVariants,
 } from '@/lib/motion-variants'
 import Autoplay from 'embla-carousel-autoplay'
-const videoUrl = '/assets/video/mic-vid.mp4'
-import { ROUTES } from '@/lib/constants'
 import Link from 'next/link'
+import { ROUTES } from '@/lib/constants'
+const videoUrl = '/assets/video/mic-vid.mp4'
 
 interface TestimonialsSectionProps {
   isVideo?: boolean
