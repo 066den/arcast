@@ -1,0 +1,2961 @@
+{
+  "metadata": {
+    "timestamp": "2025-10-12T17:51:04.758Z",
+    "totalRecords": 132
+  },
+  "studios": [
+    {
+      "id": "cmfxibklb0001tugwfbw39rkp",
+      "name": "Setup 2",
+      "location": "Dubai",
+      "imageUrl": "https://res.cloudinary.com/dcluqgjqe/image/upload/v1744358654/Frame_1618875660_spu27d.png",
+      "totalSeats": 6,
+      "openingTime": "10:00",
+      "closingTime": "21:00",
+      "isActive": true,
+      "gallery": [
+        "/uploads/studios/gallery/cmfxibklb0001tugwfbw39rkp/437e543c-661d-4e23-80c4-f41f69d708c1.jpg",
+        "/uploads/studios/gallery/cmfxibklb0001tugwfbw39rkp/8bf65558-ef01-4f32-9245-b2c3a67ef9f8.jpg",
+        "/uploads/studios/gallery/cmfxibklb0001tugwfbw39rkp/862f7701-d913-446a-bf35-e9ef6a075167.jpg",
+        "/uploads/studios/gallery/cmfxibklb0001tugwfbw39rkp/59aa46d4-9c82-417e-b24a-d46861598e8e.jpg",
+        "/uploads/studios/gallery/cmfxibklb0001tugwfbw39rkp/cbb1858a-bc6e-4783-a114-58b9e4eea9a6.jpg",
+        "/uploads/studios/gallery/cmfxibklb0001tugwfbw39rkp/3c7e8fda-2435-4662-9270-1b9c5502d749.jpg",
+        "/uploads/studios/gallery/cmfxibklb0001tugwfbw39rkp/8a6b10eb-0f93-4191-a57a-e16c58a0d9be.jpg"
+      ],
+      "createdAt": "2025-09-24T04:51:41.952Z",
+      "updatedAt": "2025-10-07T08:32:03.058Z"
+    },
+    {
+      "id": "cmfxibki00000tugwl30fnpvl",
+      "name": "Setup 1",
+      "location": "Dubai",
+      "imageUrl": "/uploads/studios/08e65ee3-6143-4d72-aaf1-0128da2154f0.jpg",
+      "totalSeats": 5,
+      "openingTime": "10:00",
+      "closingTime": "21:00",
+      "isActive": true,
+      "gallery": [
+        "/uploads/studios/gallery/cmfxibki00000tugwl30fnpvl/86ca34ea-a4d7-4c8e-834c-d21fe15893da.jpg",
+        "/uploads/studios/gallery/cmfxibki00000tugwl30fnpvl/bd8071f8-7fe2-4216-a2bc-ed0b099c511f.jpg",
+        "/uploads/studios/gallery/cmfxibki00000tugwl30fnpvl/97e825ea-e89c-4dcf-bbce-a0cd6ddf2f8f.jpg",
+        "/uploads/studios/gallery/cmfxibki00000tugwl30fnpvl/637b9408-bf82-4c3b-9556-a212b067ddf4.jpg"
+      ],
+      "createdAt": "2025-09-24T04:51:41.831Z",
+      "updatedAt": "2025-10-07T08:42:18.898Z"
+    },
+    {
+      "id": "cmfxibko60003tugwpybwnily",
+      "name": "Setup 4",
+      "location": "Dubai",
+      "imageUrl": "/uploads/studios/3b12265f-8364-47bd-a095-38ea5d2515f5.jpg",
+      "totalSeats": 3,
+      "openingTime": "10:00",
+      "closingTime": "21:00",
+      "isActive": true,
+      "gallery": [
+        "/uploads/studios/gallery/cmfxibko60003tugwpybwnily/8b0dcbb1-28bb-419f-8310-39d66ddb68f8.jpg",
+        "/uploads/studios/gallery/cmfxibko60003tugwpybwnily/ce311d1b-b8d6-4f60-b3bf-d62c54f8226a.jpg",
+        "/uploads/studios/gallery/cmfxibko60003tugwpybwnily/425fb92f-fa8c-426a-980f-f132aa20645f.jpg",
+        "/uploads/studios/gallery/cmfxibko60003tugwpybwnily/f3095bcd-9f52-4b14-9a3a-bde09273b54c.jpg",
+        "/uploads/studios/gallery/cmfxibko60003tugwpybwnily/ab673ba5-a3dc-4777-bb50-a56a0cad4b0d.jpg"
+      ],
+      "createdAt": "2025-09-24T04:51:42.054Z",
+      "updatedAt": "2025-10-07T12:34:36.556Z"
+    },
+    {
+      "id": "cmfxibkmq0002tugwucdl6p72",
+      "name": "Setup 3",
+      "location": "Dubai",
+      "imageUrl": "/uploads/studios/b05997b6-3dd4-4b9b-81ba-94416182212d.jpg",
+      "totalSeats": 4,
+      "openingTime": "10:00",
+      "closingTime": "21:00",
+      "isActive": true,
+      "gallery": [
+        "/uploads/studios/gallery/cmfxibkmq0002tugwucdl6p72/5ff4f0c0-cfb6-4c0a-80ab-bff4ff2adf6d.jpg",
+        "/uploads/studios/gallery/cmfxibkmq0002tugwucdl6p72/12752681-c2ee-41c9-8def-04045bea2dc0.jpg",
+        "/uploads/studios/gallery/cmfxibkmq0002tugwucdl6p72/c4125315-42cb-4dd8-92ea-5f40ba31cd0c.jpg",
+        "/uploads/studios/gallery/cmfxibkmq0002tugwucdl6p72/e96902e4-565e-404d-89b0-8515628e5259.jpg"
+      ],
+      "createdAt": "2025-09-24T04:51:42.003Z",
+      "updatedAt": "2025-10-07T12:33:35.636Z"
+    }
+  ],
+  "serviceTypes": [
+    {
+      "id": "cmfxkf1a2000ptux86isqcmmx",
+      "name": "Podcast production",
+      "description": "Professional recording services",
+      "slug": "podcast",
+      "sortOrder": 0,
+      "isActive": true,
+      "createdAt": "2025-09-21T05:50:22.779Z",
+      "updatedAt": "2025-09-24T13:26:35.750Z"
+    },
+    {
+      "id": "cmfxkf1dc000qtux8xm7wkc2v",
+      "name": "Reels production",
+      "description": "Post-production editing services",
+      "slug": "reels",
+      "sortOrder": 10,
+      "isActive": true,
+      "createdAt": "2025-09-22T05:50:22.896Z",
+      "updatedAt": "2025-09-24T13:27:22.029Z"
+    },
+    {
+      "id": "cmfxkf1f0000rtux8k7i7b2b6",
+      "name": "Media post-production",
+      "description": "Live streaming and broadcast services",
+      "slug": "media",
+      "sortOrder": 20,
+      "isActive": true,
+      "createdAt": "2025-09-23T05:50:22.956Z",
+      "updatedAt": "2025-09-24T13:27:22.029Z"
+    },
+    {
+      "id": "cmfxl8pj10000tux46dcniknl",
+      "name": "Social media management",
+      "description": null,
+      "slug": "social",
+      "sortOrder": 30,
+      "isActive": true,
+      "createdAt": "2025-09-24T06:13:27.173Z",
+      "updatedAt": "2025-09-24T13:27:22.029Z"
+    }
+  ],
+  "services": [
+    {
+      "id": "cmfy06orp0000tu1owdt2w99x",
+      "name": "Full-cycle production",
+      "description": "Full-cycle production",
+      "includes": [
+        "Raw video and audio materials in multiple resolutions and formats",
+        "Video editing ",
+        "Color grading",
+        "Audio editing and clean up",
+        "Speech clean up",
+        "SEO optimized show notes"
+      ],
+      "imageUrl": null,
+      "serviceTypeId": "cmfxkf1a2000ptux86isqcmmx",
+      "isPopular": true,
+      "isActive": true,
+      "price": "1100",
+      "currency": "AED",
+      "createdAt": "2025-09-24T13:11:47.125Z",
+      "updatedAt": "2025-09-24T13:15:56.695Z"
+    },
+    {
+      "id": "cmfy06orq0001tu1ovlcbxwso",
+      "name": "Recording & Live Editing",
+      "description": "Recording & Live Editing",
+      "includes": [
+        "Raw video and audio materials in multiple resolutions and formats",
+        "Video editing",
+        "Audio editing",
+        "Video and audio sync"
+      ],
+      "imageUrl": null,
+      "serviceTypeId": "cmfxkf1a2000ptux86isqcmmx",
+      "isPopular": false,
+      "isActive": true,
+      "price": "540",
+      "currency": "AED",
+      "createdAt": "2025-09-24T13:11:47.125Z",
+      "updatedAt": "2025-09-24T13:15:56.695Z"
+    },
+    {
+      "id": "cmfy06orq0002tu1okmehbqt5",
+      "name": "Recording only",
+      "description": "Recording only",
+      "includes": [
+        "Raw video and audio materials in multiple resolutions and formats"
+      ],
+      "imageUrl": null,
+      "serviceTypeId": "cmfxkf1a2000ptux86isqcmmx",
+      "isPopular": false,
+      "isActive": true,
+      "price": "400",
+      "currency": "AED",
+      "createdAt": "2025-09-24T13:11:47.125Z",
+      "updatedAt": "2025-09-24T13:15:56.695Z"
+    },
+    {
+      "id": "cmfz5ihyf0000tujkr2vi1hox",
+      "name": "Minimum package",
+      "description": null,
+      "includes": [
+        "7 reels"
+      ],
+      "imageUrl": null,
+      "serviceTypeId": "cmfxkf1dc000qtux8xm7wkc2v",
+      "isPopular": false,
+      "isActive": true,
+      "price": "1500",
+      "currency": "AED",
+      "createdAt": "2025-09-25T08:28:42.419Z",
+      "updatedAt": "2025-09-25T11:47:19.460Z"
+    },
+    {
+      "id": "cmfz5ihyj0001tujk3wf4q0mw",
+      "name": "Profitable Package",
+      "description": null,
+      "includes": [
+        "15 reels"
+      ],
+      "imageUrl": null,
+      "serviceTypeId": "cmfxkf1dc000qtux8xm7wkc2v",
+      "isPopular": true,
+      "isActive": true,
+      "price": "3000",
+      "currency": "AED",
+      "createdAt": "2025-09-25T08:28:42.419Z",
+      "updatedAt": "2025-09-25T11:48:36.354Z"
+    },
+    {
+      "id": "cmfz5kky80002tujkwuic3ovl",
+      "name": "Publication",
+      "description": null,
+      "includes": [
+        "publishing videos"
+      ],
+      "imageUrl": null,
+      "serviceTypeId": "cmfxkf1dc000qtux8xm7wkc2v",
+      "isPopular": false,
+      "isActive": true,
+      "price": "2000",
+      "currency": "AED",
+      "createdAt": "2025-09-25T08:30:19.664Z",
+      "updatedAt": "2025-09-25T11:54:03.391Z"
+    },
+    {
+      "id": "cmfzcyy900008tujkjjoqot7b",
+      "name": "Profitable",
+      "description": null,
+      "includes": [
+        "15 reels with scenarios"
+      ],
+      "imageUrl": null,
+      "serviceTypeId": "cmfxkf1f0000rtux8k7i7b2b6",
+      "isPopular": true,
+      "isActive": true,
+      "price": "6000",
+      "currency": "AED",
+      "createdAt": "2025-09-25T11:57:27.196Z",
+      "updatedAt": "2025-09-25T11:56:35.659Z"
+    },
+    {
+      "id": "cmfzcximg0007tujk6m497cbh",
+      "name": "Standard",
+      "description": null,
+      "includes": [
+        "7 shorts with scenarios"
+      ],
+      "imageUrl": null,
+      "serviceTypeId": "cmfxkf1f0000rtux8k7i7b2b6",
+      "isPopular": false,
+      "isActive": true,
+      "price": "3000",
+      "currency": "AED",
+      "createdAt": "2025-09-25T11:56:20.488Z",
+      "updatedAt": "2025-09-25T11:57:27.196Z"
+    }
+  ],
+  "packages": [
+    {
+      "id": "cmfxibkq80004tugw5brpur4n",
+      "name": "Starter Package",
+      "description": "Get high-quality recording with professional editing to enhance your sound",
+      "basePrice": "940",
+      "currency": "AED",
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.128Z",
+      "updatedAt": "2025-09-25T11:03:01.801Z"
+    },
+    {
+      "id": "cmfxibkt80005tugwf1cv29kp",
+      "name": "Growth Package",
+      "description": "Get high-quality recording with professional editing to enhance your sound",
+      "basePrice": "440",
+      "currency": "AED",
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.237Z",
+      "updatedAt": "2025-09-25T11:03:01.801Z"
+    },
+    {
+      "id": "cmfxibkuu0006tugw9a48liao",
+      "name": "Without editing",
+      "description": "Get high-quality recording with professional editing to enhance your sound",
+      "basePrice": "540",
+      "currency": "AED",
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.295Z",
+      "updatedAt": "2025-09-25T11:03:01.801Z"
+    }
+  ],
+  "servicePackageRecords": [],
+  "addServicePackageRecords": [],
+  "additionalServices": [
+    {
+      "id": "cmfxibl0r0009tugw4vg1hay1",
+      "name": "Episode Trailer (Short form)",
+      "type": "STANDARD",
+      "price": "200",
+      "currency": "AED",
+      "count": 1,
+      "description": "Quick, impactful trailer editing to capture attention and drive excitement with key highlights in a concise format.",
+      "imageUrls": [],
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.507Z",
+      "updatedAt": "2025-09-25T10:51:06.949Z"
+    },
+    {
+      "id": "cmfxibl25000atugw7xurj90x",
+      "name": "Episode Trailer (Long form)",
+      "type": "STANDARD",
+      "price": "200",
+      "currency": "AED",
+      "count": 1,
+      "description": "Professional editing to create a captivating trailer that highlights key moments, engaging your audience with a polished, cinematic preview.",
+      "imageUrls": [],
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.558Z",
+      "updatedAt": "2025-09-25T10:51:06.949Z"
+    },
+    {
+      "id": "cmfxibkwi0007tugw9pyq4tmg",
+      "name": "Podcast Reels",
+      "type": "BY_THREE",
+      "price": "500",
+      "currency": "AED",
+      "count": 3,
+      "description": "High-quality, premium reels with advanced editing, motion graphics, and engaging cuts.",
+      "imageUrls": [],
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.354Z",
+      "updatedAt": "2025-09-25T10:56:33.506Z"
+    },
+    {
+      "id": "cmfxibkzc0008tugwyvi8se5n",
+      "name": "Teleprompter Support",
+      "type": "STANDARD",
+      "price": "100",
+      "currency": "AED",
+      "count": 1,
+      "description": "On-screen script assistance for seamless delivery, perfect for structured interviews and presentations.",
+      "imageUrls": [],
+      "isActive": true,
+      "createdAt": "2025-09-24T04:51:42.457Z",
+      "updatedAt": "2025-09-25T10:56:33.506Z"
+    }
+  ],
+  "discountCodes": [],
+  "leads": [
+    {
+      "id": "cmgdo41yx0000ld04mx0iaz4t",
+      "fullName": "Alexey Redkin",
+      "email": "redkin.alexey@gmail.com",
+      "phoneNumber": "971508529018",
+      "whatsappNumber": "971508529018",
+      "recordingLocation": null,
+      "createdAt": "2025-10-05T12:18:07.738Z",
+      "updatedAt": "2025-10-05T12:31:14.235Z"
+    },
+    {
+      "id": "cmgexct3d0008tug0mtfdb81g",
+      "fullName": "DENYS MELNYKOV",
+      "email": "lead03@gmail.com",
+      "phoneNumber": "9713809522184342",
+      "whatsappNumber": null,
+      "recordingLocation": null,
+      "createdAt": "2025-10-06T09:24:38.858Z",
+      "updatedAt": "2025-10-06T09:24:38.858Z"
+    },
+    {
+      "id": "cmg9fx6zo0009tuggo5lsgs91",
+      "fullName": "DENYS MELNYKOV",
+      "email": "lead03@gmail.com",
+      "phoneNumber": "971380952218050",
+      "whatsappNumber": "971380952218050",
+      "recordingLocation": null,
+      "createdAt": "2025-10-02T13:17:46.020Z",
+      "updatedAt": "2025-10-06T09:45:00.627Z"
+    },
+    {
+      "id": "cmgbypgz40000tuewtvt2v3qt",
+      "fullName": "DENYS MELNYKOV",
+      "email": "lead02@gmail.com",
+      "phoneNumber": "971380952218050",
+      "whatsappNumber": "971380952218050",
+      "recordingLocation": null,
+      "createdAt": "2025-10-04T07:39:10.764Z",
+      "updatedAt": "2025-10-06T09:48:35.995Z"
+    },
+    {
+      "id": "cmgc4q04p0005lb04wshxdt3t",
+      "fullName": "Dghcccbv",
+      "email": "dfgcv@gmail.com",
+      "phoneNumber": "971222222222",
+      "whatsappNumber": "971222222222",
+      "recordingLocation": null,
+      "createdAt": "2025-10-04T10:27:33.289Z",
+      "updatedAt": "2025-10-04T10:27:33.289Z"
+    },
+    {
+      "id": "cmgc4i91o0000lb04l890zi31",
+      "fullName": "Dfgjbb",
+      "email": "jzracs@gmail.com",
+      "phoneNumber": "9711256887785",
+      "whatsappNumber": "9711256887785",
+      "recordingLocation": null,
+      "createdAt": "2025-10-04T10:21:31.597Z",
+      "updatedAt": "2025-10-04T10:41:20.518Z"
+    },
+    {
+      "id": "cmgcv6ogl0000kv04sib3ot3e",
+      "fullName": "Dmitri",
+      "email": "sm1else@gmail.com",
+      "phoneNumber": "359878553052",
+      "whatsappNumber": "359878553052",
+      "recordingLocation": null,
+      "createdAt": "2025-10-04T22:48:21.333Z",
+      "updatedAt": "2025-10-04T22:48:21.333Z"
+    }
+  ],
+  "bookings": [
+    {
+      "id": "cmg9fx72x000btugg76dmlaoe",
+      "startTime": "2025-10-10T06:00:00.000Z",
+      "endTime": "2025-10-10T07:00:00.000Z",
+      "numberOfSeats": 1,
+      "totalCost": "1100",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "1100",
+      "status": "PENDING",
+      "createdAt": "2025-10-02T13:17:46.138Z",
+      "updatedAt": "2025-10-02T13:17:46.138Z",
+      "studioId": "cmfxibki00000tugwl30fnpvl",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmg9fx6zo0009tuggo5lsgs91",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgbyph2h0002tuewy9wnmxg4",
+      "startTime": "2025-10-19T10:00:00.000Z",
+      "endTime": "2025-10-19T11:00:00.000Z",
+      "numberOfSeats": 1,
+      "totalCost": "1600",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "1600",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T07:39:10.886Z",
+      "updatedAt": "2025-10-04T07:39:10.886Z",
+      "studioId": "cmfxibki00000tugwl30fnpvl",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmgbypgz40000tuewtvt2v3qt",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc4i96m0002lb04p0njl5uu",
+      "startTime": "2025-10-07T10:00:00.000Z",
+      "endTime": "2025-10-07T13:00:00.000Z",
+      "numberOfSeats": 2,
+      "totalCost": "3900",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "3900",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T10:21:31.774Z",
+      "updatedAt": "2025-10-04T10:21:31.774Z",
+      "studioId": "cmfxibklb0001tugwfbw39rkp",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmgc4i91o0000lb04l890zi31",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc4jpsq0001tur8wyep652o",
+      "startTime": "2025-10-16T09:00:00.000Z",
+      "endTime": "2025-10-16T11:00:00.000Z",
+      "numberOfSeats": 2,
+      "totalCost": "2800",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "2800",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T10:22:39.953Z",
+      "updatedAt": "2025-10-04T10:22:39.953Z",
+      "studioId": "cmfxibki00000tugwl30fnpvl",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmg9fx6zo0009tuggo5lsgs91",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc4kvk10007tur89g01m6eq",
+      "startTime": "2025-10-16T06:00:00.000Z",
+      "endTime": "2025-10-16T07:00:00.000Z",
+      "numberOfSeats": 1,
+      "totalCost": "1100",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "1100",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T10:23:34.081Z",
+      "updatedAt": "2025-10-04T10:23:34.081Z",
+      "studioId": "cmfxibki00000tugwl30fnpvl",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmgbypgz40000tuewtvt2v3qt",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc4q09m0007lb04010hkt2r",
+      "startTime": "2025-10-07T09:00:00.000Z",
+      "endTime": "2025-10-07T10:00:00.000Z",
+      "numberOfSeats": 1,
+      "totalCost": "1100",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "1100",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T10:27:33.466Z",
+      "updatedAt": "2025-10-04T10:27:33.466Z",
+      "studioId": "cmfxibklb0001tugwfbw39rkp",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmgc4q04p0005lb04wshxdt3t",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc4t1uq0009lb043ip6dgfg",
+      "startTime": "2025-10-08T06:00:00.000Z",
+      "endTime": "2025-10-08T07:00:00.000Z",
+      "numberOfSeats": 1,
+      "totalCost": "1100",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "1100",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T10:29:55.490Z",
+      "updatedAt": "2025-10-04T10:29:55.490Z",
+      "studioId": "cmfxibki00000tugwl30fnpvl",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmgbypgz40000tuewtvt2v3qt",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc57qk90001ky04aue024pg",
+      "startTime": "2025-10-07T06:00:00.000Z",
+      "endTime": "2025-10-07T08:00:00.000Z",
+      "numberOfSeats": 1,
+      "totalCost": "2700",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "2700",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T10:41:20.697Z",
+      "updatedAt": "2025-10-04T10:41:20.697Z",
+      "studioId": "cmfxibklb0001tugwfbw39rkp",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmgc4i91o0000lb04l890zi31",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc58hs60005ky04qkfnmxyw",
+      "startTime": "2025-10-10T10:00:00.000Z",
+      "endTime": "2025-10-10T11:00:00.000Z",
+      "numberOfSeats": 2,
+      "totalCost": "1600",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "1600",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T10:41:55.974Z",
+      "updatedAt": "2025-10-04T10:41:55.974Z",
+      "studioId": "cmfxibki00000tugwl30fnpvl",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmg9fx6zo0009tuggo5lsgs91",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc5dcyu0009ky04z6xrdr2v",
+      "startTime": "2025-10-10T11:00:00.000Z",
+      "endTime": "2025-10-10T12:00:00.000Z",
+      "numberOfSeats": 1,
+      "totalCost": "1100",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "1100",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T10:45:43.014Z",
+      "updatedAt": "2025-10-04T10:45:43.014Z",
+      "studioId": "cmfxibki00000tugwl30fnpvl",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmg9fx6zo0009tuggo5lsgs91",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc6qqjm0001jv040c9g8ya3",
+      "startTime": "2025-10-09T09:00:00.000Z",
+      "endTime": "2025-10-09T10:00:00.000Z",
+      "numberOfSeats": 1,
+      "totalCost": "1100",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "1100",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T11:24:06.754Z",
+      "updatedAt": "2025-10-04T11:24:06.754Z",
+      "studioId": "cmfxibki00000tugwl30fnpvl",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmg9fx6zo0009tuggo5lsgs91",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc6vh1u0003jv0477n58d3t",
+      "startTime": "2025-10-10T13:00:00.000Z",
+      "endTime": "2025-10-10T14:00:00.000Z",
+      "numberOfSeats": 1,
+      "totalCost": "1100",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "1100",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T11:27:47.730Z",
+      "updatedAt": "2025-10-04T11:27:47.730Z",
+      "studioId": "cmfxibki00000tugwl30fnpvl",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmg9fx6zo0009tuggo5lsgs91",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc76jdf0001tu1wkco8avf5",
+      "startTime": "2025-10-09T10:00:00.000Z",
+      "endTime": "2025-10-09T11:00:00.000Z",
+      "numberOfSeats": 1,
+      "totalCost": "1100",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "1100",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T11:36:23.949Z",
+      "updatedAt": "2025-10-04T11:36:23.949Z",
+      "studioId": "cmfxibki00000tugwl30fnpvl",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmg9fx6zo0009tuggo5lsgs91",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc786o30005tu1wuczc55hm",
+      "startTime": "2025-10-16T12:00:00.000Z",
+      "endTime": "2025-10-16T13:00:00.000Z",
+      "numberOfSeats": 1,
+      "totalCost": "1100",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "1100",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T11:37:40.804Z",
+      "updatedAt": "2025-10-04T11:37:40.804Z",
+      "studioId": "cmfxibki00000tugwl30fnpvl",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmg9fx6zo0009tuggo5lsgs91",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc8bp2j0001l104fgtxdhn6",
+      "startTime": "2025-10-09T12:00:00.000Z",
+      "endTime": "2025-10-09T13:00:00.000Z",
+      "numberOfSeats": 1,
+      "totalCost": "1100",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "1100",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T12:08:24.235Z",
+      "updatedAt": "2025-10-04T12:08:24.235Z",
+      "studioId": "cmfxibki00000tugwl30fnpvl",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmg9fx6zo0009tuggo5lsgs91",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc8e65e0005l104ahvvv70c",
+      "startTime": "2025-10-16T14:00:00.000Z",
+      "endTime": "2025-10-16T15:00:00.000Z",
+      "numberOfSeats": 1,
+      "totalCost": "1100",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "1100",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T12:10:19.682Z",
+      "updatedAt": "2025-10-04T12:10:19.682Z",
+      "studioId": "cmfxibki00000tugwl30fnpvl",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmg9fx6zo0009tuggo5lsgs91",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc8jnsf0001jv04x61p2493",
+      "startTime": "2025-10-09T13:00:00.000Z",
+      "endTime": "2025-10-09T14:00:00.000Z",
+      "numberOfSeats": 1,
+      "totalCost": "1100",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "1100",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T12:14:35.823Z",
+      "updatedAt": "2025-10-04T12:14:35.823Z",
+      "studioId": "cmfxibki00000tugwl30fnpvl",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmg9fx6zo0009tuggo5lsgs91",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc8zbqq0001kt044tmlj8c9",
+      "startTime": "2025-10-09T07:00:00.000Z",
+      "endTime": "2025-10-09T09:00:00.000Z",
+      "numberOfSeats": 1,
+      "totalCost": "2200",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "2200",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T12:26:46.707Z",
+      "updatedAt": "2025-10-04T12:26:46.707Z",
+      "studioId": "cmfxibki00000tugwl30fnpvl",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmg9fx6zo0009tuggo5lsgs91",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgc9fydn0001tu1kf7mr00cp",
+      "startTime": "2025-10-10T10:00:00.000Z",
+      "endTime": "2025-10-10T11:00:00.000Z",
+      "numberOfSeats": 1,
+      "totalCost": "540",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "540",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T12:39:42.539Z",
+      "updatedAt": "2025-10-04T12:39:42.539Z",
+      "studioId": "cmfxibkmq0002tugwucdl6p72",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orq0001tu1ovlcbxwso",
+      "leadId": "cmg9fx6zo0009tuggo5lsgs91",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgcv6oli0002kv04xln8q1zv",
+      "startTime": "2025-10-09T14:00:00.000Z",
+      "endTime": "2025-10-09T17:00:00.000Z",
+      "numberOfSeats": 4,
+      "totalCost": "3020",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "3020",
+      "status": "PENDING",
+      "createdAt": "2025-10-04T22:48:21.511Z",
+      "updatedAt": "2025-10-04T22:48:21.511Z",
+      "studioId": "cmfxibki00000tugwl30fnpvl",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orq0001tu1ovlcbxwso",
+      "leadId": "cmgcv6ogl0000kv04sib3ot3e",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgdo42480002ld04xxac5wt1",
+      "startTime": "2025-10-08T11:00:00.000Z",
+      "endTime": "2025-10-08T13:00:00.000Z",
+      "numberOfSeats": 2,
+      "totalCost": "1100",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "1100",
+      "status": "PENDING",
+      "createdAt": "2025-10-05T12:18:07.928Z",
+      "updatedAt": "2025-10-05T12:18:07.928Z",
+      "studioId": "cmfxibklb0001tugwfbw39rkp",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orq0002tu1okmehbqt5",
+      "leadId": "cmgdo41yx0000ld04mx0iaz4t",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgdokwzf0008ld04vm651cmj",
+      "startTime": "2025-10-13T10:00:00.000Z",
+      "endTime": "2025-10-13T12:00:00.000Z",
+      "numberOfSeats": 4,
+      "totalCost": "2700",
+      "vatAmount": "0",
+      "discountAmount": "0",
+      "finalAmount": "2700",
+      "status": "PENDING",
+      "createdAt": "2025-10-05T12:31:14.428Z",
+      "updatedAt": "2025-10-05T12:31:14.428Z",
+      "studioId": "cmfxibkmq0002tugwucdl6p72",
+      "contentPackageId": null,
+      "serviceId": "cmfy06orp0000tu1owdt2w99x",
+      "leadId": "cmgdo41yx0000ld04mx0iaz4t",
+      "discountCodeId": null
+    }
+  ],
+  "bookingAdditionalServices": [],
+  "payments": [
+    {
+      "id": "cmg9fx9o7000dtugg6cvyanve",
+      "bookingId": "cmg9fx72x000btugg76dmlaoe",
+      "amount": "1100",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-8C9EA6D6BD",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-8C9EA6D6BD",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 1100,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "http://localhost:3000/booking/sucess",
+        "custom_data": {
+          "studio": "cmfxibki00000tugwl30fnpvl",
+          "bookingId": "cmg9fx72x000btugg76dmlaoe",
+          "packageId": null
+        },
+        "description": "Studio booking for Friday, October 10, 2025 at 10:00",
+        "enable_tips": false,
+        "external_id": "cmg9fx72x000btugg76dmlaoe",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-a46c8f",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "http://localhost:3000/booking/failed",
+        "prefilled_customer": {
+          "email": "lead02@gmail.com",
+          "last_name": "MELNYKOV",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-02T13:17:49.485Z",
+      "updatedAt": "2025-10-02T13:17:49.485Z"
+    },
+    {
+      "id": "cmgbypjjz0006tuewl80jbad6",
+      "bookingId": "cmgbyph2h0002tuewy9wnmxg4",
+      "amount": "1600",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-A18895F37A",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-A18895F37A",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 1600,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "http://localhost:3000/booking/sucess",
+        "custom_data": {
+          "studio": "cmfxibki00000tugwl30fnpvl",
+          "bookingId": "cmgbyph2h0002tuewy9wnmxg4",
+          "packageId": null
+        },
+        "description": "Studio booking for Sunday, October 19, 2025 at 14:00",
+        "enable_tips": false,
+        "external_id": "cmgbyph2h0002tuewy9wnmxg4",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-45042b",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "http://localhost:3000/booking/failed",
+        "prefilled_customer": {
+          "email": "lead03@gmail.com",
+          "last_name": "MELNYKOV",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-04T07:39:14.111Z",
+      "updatedAt": "2025-10-04T07:39:14.111Z"
+    },
+    {
+      "id": "cmgc4js5z0005tur85dfgxclf",
+      "bookingId": "cmgc4jpsq0001tur8wyep652o",
+      "amount": "2800",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-A5CFC6B945",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-A5CFC6B945",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 2800,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "http://localhost:3000/booking/sucess",
+        "custom_data": {
+          "studio": "cmfxibki00000tugwl30fnpvl",
+          "bookingId": "cmgc4jpsq0001tur8wyep652o",
+          "packageId": null
+        },
+        "description": "Studio booking for Thursday, October 16, 2025 at 13:00",
+        "enable_tips": false,
+        "external_id": "cmgc4jpsq0001tur8wyep652o",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-93fbed",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "http://localhost:3000/booking/failed",
+        "prefilled_customer": {
+          "email": "lead02@gmail.com",
+          "last_name": "MELNYKOV",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-04T10:22:43.030Z",
+      "updatedAt": "2025-10-04T10:22:43.030Z"
+    },
+    {
+      "id": "cmgc4kxgw0009tur8amipmqvi",
+      "bookingId": "cmgc4kvk10007tur89g01m6eq",
+      "amount": "1100",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-5DE30EC7A4",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-5DE30EC7A4",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 1100,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "http://localhost:3000/booking/sucess",
+        "custom_data": {
+          "studio": "cmfxibki00000tugwl30fnpvl",
+          "bookingId": "cmgc4kvk10007tur89g01m6eq",
+          "packageId": null
+        },
+        "description": "Studio booking for Thursday, October 16, 2025 at 10:00",
+        "enable_tips": false,
+        "external_id": "cmgc4kvk10007tur89g01m6eq",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-301f53",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "http://localhost:3000/booking/failed",
+        "prefilled_customer": {
+          "email": "lead03@gmail.com",
+          "last_name": "MELNYKOV",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-04T10:23:36.561Z",
+      "updatedAt": "2025-10-04T10:23:36.561Z"
+    },
+    {
+      "id": "cmgc76qs80003tu1woy7ze83s",
+      "bookingId": "cmgc76jdf0001tu1wkco8avf5",
+      "amount": "1100",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-247E5D5059",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-247E5D5059",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 1100,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "http://localhost:3000/booking/sucess",
+        "custom_data": {
+          "studio": "cmfxibki00000tugwl30fnpvl",
+          "bookingId": "cmgc76jdf0001tu1wkco8avf5",
+          "packageId": null
+        },
+        "description": "Studio booking for Thursday, October 9, 2025 at 14:00",
+        "enable_tips": false,
+        "external_id": "cmgc76jdf0001tu1wkco8avf5",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-deab10",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "http://localhost:3000/booking/failed",
+        "prefilled_customer": {
+          "email": "lead02@gmail.com",
+          "last_name": "MELNYKOV",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-04T11:36:33.561Z",
+      "updatedAt": "2025-10-04T11:36:33.561Z"
+    },
+    {
+      "id": "cmgc789ni0007tu1w8xt1s7sn",
+      "bookingId": "cmgc786o30005tu1wuczc55hm",
+      "amount": "1100",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-DC50F62FEF",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-DC50F62FEF",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 1100,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "http://localhost:3000/booking/sucess",
+        "custom_data": {
+          "studio": "cmfxibki00000tugwl30fnpvl",
+          "bookingId": "cmgc786o30005tu1wuczc55hm",
+          "packageId": null
+        },
+        "description": "Studio booking for Thursday, October 16, 2025 at 16:00",
+        "enable_tips": false,
+        "external_id": "cmgc786o30005tu1wuczc55hm",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-c7b734",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "http://localhost:3000/booking/failed",
+        "prefilled_customer": {
+          "email": "lead02@gmail.com",
+          "last_name": "MELNYKOV",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-04T11:37:44.670Z",
+      "updatedAt": "2025-10-04T11:37:44.670Z"
+    },
+    {
+      "id": "cmgc8brhx0003l104o9mvazv0",
+      "bookingId": "cmgc8bp2j0001l104fgtxdhn6",
+      "amount": "1100",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-CFF7FB4A2B",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-CFF7FB4A2B",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 1100,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "http://localhost:3000/booking/sucess",
+        "custom_data": {
+          "studio": "cmfxibki00000tugwl30fnpvl",
+          "bookingId": "cmgc8bp2j0001l104fgtxdhn6",
+          "packageId": null
+        },
+        "description": "Studio booking for Thursday, October 9, 2025 at 16:00",
+        "enable_tips": false,
+        "external_id": "cmgc8bp2j0001l104fgtxdhn6",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-76ff49",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "http://localhost:3000/booking/failed",
+        "prefilled_customer": {
+          "email": "lead02@gmail.com",
+          "last_name": "MELNYKOV",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-04T12:08:27.381Z",
+      "updatedAt": "2025-10-04T12:08:27.381Z"
+    },
+    {
+      "id": "cmgc8e8fs0007l1043jhkpbwg",
+      "bookingId": "cmgc8e65e0005l104ahvvv70c",
+      "amount": "1100",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-87CCACE976",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-87CCACE976",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 1100,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "http://localhost:3000/booking/sucess",
+        "custom_data": {
+          "studio": "cmfxibki00000tugwl30fnpvl",
+          "bookingId": "cmgc8e65e0005l104ahvvv70c",
+          "packageId": null
+        },
+        "description": "Studio booking for Thursday, October 16, 2025 at 18:00",
+        "enable_tips": false,
+        "external_id": "cmgc8e65e0005l104ahvvv70c",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-41b8b7",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "http://localhost:3000/booking/failed",
+        "prefilled_customer": {
+          "email": "lead02@gmail.com",
+          "last_name": "MELNYKOV",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-04T12:10:22.649Z",
+      "updatedAt": "2025-10-04T12:10:22.649Z"
+    },
+    {
+      "id": "cmgc8jty80003jv04i3kt3wsg",
+      "bookingId": "cmgc8jnsf0001jv04x61p2493",
+      "amount": "1100",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-D18969A724",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-D18969A724",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 1100,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "http://localhost:3000/booking/sucess",
+        "custom_data": {
+          "studio": "cmfxibki00000tugwl30fnpvl",
+          "bookingId": "cmgc8jnsf0001jv04x61p2493",
+          "packageId": null
+        },
+        "description": "Studio booking for Thursday, October 9, 2025 at 17:00",
+        "enable_tips": false,
+        "external_id": "cmgc8jnsf0001jv04x61p2493",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-b47f05",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "http://localhost:3000/booking/failed",
+        "prefilled_customer": {
+          "email": "lead02@gmail.com",
+          "last_name": "MELNYKOV",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-04T12:14:43.809Z",
+      "updatedAt": "2025-10-04T12:14:43.809Z"
+    },
+    {
+      "id": "cmgc8zdxv0003kt047jd8jjqa",
+      "bookingId": "cmgc8zbqq0001kt044tmlj8c9",
+      "amount": "2200",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-6E8ABE446D",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-6E8ABE446D",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 2200,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "https://arcast-stage.vercel.app/booking/sucess",
+        "custom_data": {
+          "studio": "cmfxibki00000tugwl30fnpvl",
+          "bookingId": "cmgc8zbqq0001kt044tmlj8c9",
+          "packageId": null
+        },
+        "description": "Studio booking for Thursday, October 9, 2025 at 11:00",
+        "enable_tips": false,
+        "external_id": "cmgc8zbqq0001kt044tmlj8c9",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-0cbb12",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "https://arcast-stage.vercel.app/booking/failed",
+        "prefilled_customer": {
+          "email": "lead02@gmail.com",
+          "last_name": "MELNYKOV",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-04T12:26:49.555Z",
+      "updatedAt": "2025-10-04T12:26:49.555Z"
+    },
+    {
+      "id": "cmgc9g4ql0003tu1k2lgjefgi",
+      "bookingId": "cmgc9fydn0001tu1kf7mr00cp",
+      "amount": "540",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-71FFBA450A",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-71FFBA450A",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 540,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "http://localhost:3000/booking/sucess",
+        "custom_data": {
+          "studio": "cmfxibkmq0002tugwucdl6p72",
+          "bookingId": "cmgc9fydn0001tu1kf7mr00cp",
+          "packageId": null
+        },
+        "description": "Studio booking for Friday, October 10, 2025 at 14:00",
+        "enable_tips": false,
+        "external_id": "cmgc9fydn0001tu1kf7mr00cp",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-4de94c",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "http://localhost:3000/booking/failed",
+        "prefilled_customer": {
+          "email": "lead02@gmail.com",
+          "last_name": "MELNYKOV",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-04T12:39:50.781Z",
+      "updatedAt": "2025-10-04T12:39:50.781Z"
+    },
+    {
+      "id": "cmgcv6s4r0008kv04xykvqutg",
+      "bookingId": "cmgcv6oli0002kv04xln8q1zv",
+      "amount": "3020",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-8E1DD0AE13",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-8E1DD0AE13",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 3020,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "https://arcast-stage.vercel.app/booking/success",
+        "custom_data": {
+          "studio": "cmfxibki00000tugwl30fnpvl",
+          "bookingId": "cmgcv6oli0002kv04xln8q1zv",
+          "packageId": null
+        },
+        "description": "Studio booking for Thursday, October 9, 2025 at 18:00",
+        "enable_tips": false,
+        "external_id": "cmgcv6oli0002kv04xln8q1zv",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-a7e6b7",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "https://arcast-stage.vercel.app/booking/failed",
+        "prefilled_customer": {
+          "email": "sm1else@gmail.com",
+          "first_name": "Dmitri"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-04T22:48:26.092Z",
+      "updatedAt": "2025-10-04T22:48:26.092Z"
+    },
+    {
+      "id": "cmgdo44pn0006ld04zrlu9nt7",
+      "bookingId": "cmgdo42480002ld04xxac5wt1",
+      "amount": "1100",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-06209D9EC4",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-06209D9EC4",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 1100,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "https://arcast-stage.vercel.app/booking/success",
+        "custom_data": {
+          "studio": "cmfxibklb0001tugwfbw39rkp",
+          "bookingId": "cmgdo42480002ld04xxac5wt1",
+          "packageId": null
+        },
+        "description": "Studio booking for Wednesday, October 8, 2025 at 15:00",
+        "enable_tips": false,
+        "external_id": "cmgdo42480002ld04xxac5wt1",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-8b2d67",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "https://arcast-stage.vercel.app/booking/failed",
+        "prefilled_customer": {
+          "email": "redkin.alexey@gmail.com",
+          "last_name": "Redkin",
+          "first_name": "Alexey"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-05T12:18:11.291Z",
+      "updatedAt": "2025-10-05T12:18:11.291Z"
+    },
+    {
+      "id": "cmgdol13l000cld04n29n03ux",
+      "bookingId": "cmgdokwzf0008ld04vm651cmj",
+      "amount": "2700",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-D43846ED33",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-D43846ED33",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 2700,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "https://arcast-stage.vercel.app/booking/success",
+        "custom_data": {
+          "studio": "cmfxibkmq0002tugwucdl6p72",
+          "bookingId": "cmgdokwzf0008ld04vm651cmj",
+          "packageId": null
+        },
+        "description": "Studio booking for Monday, October 13, 2025 at 14:00",
+        "enable_tips": false,
+        "external_id": "cmgdokwzf0008ld04vm651cmj",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-8bcb1c",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "https://arcast-stage.vercel.app/booking/failed",
+        "prefilled_customer": {
+          "email": "redkin.alexey@gmail.com",
+          "last_name": "Redkin",
+          "first_name": "Alexey"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-05T12:31:19.762Z",
+      "updatedAt": "2025-10-05T12:31:19.762Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "cmgeu2pgg0001tug0zsrbapo7",
+      "serviceName": "Minimum package",
+      "description": null,
+      "requirements": null,
+      "totalCost": "1500",
+      "vatAmount": null,
+      "discountAmount": "0",
+      "finalAmount": "1500",
+      "status": "PENDING",
+      "estimatedDays": null,
+      "deadline": null,
+      "completedAt": null,
+      "createdAt": "2025-10-06T07:52:48.736Z",
+      "updatedAt": "2025-10-06T07:52:48.736Z",
+      "leadId": "cmgbypgz40000tuewtvt2v3qt",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgeukw660005tug07gatmu44",
+      "serviceName": "Profitable",
+      "description": null,
+      "requirements": null,
+      "totalCost": "6000",
+      "vatAmount": null,
+      "discountAmount": "0",
+      "finalAmount": "6000",
+      "status": "PENDING",
+      "estimatedDays": null,
+      "deadline": null,
+      "completedAt": null,
+      "createdAt": "2025-10-06T08:06:57.246Z",
+      "updatedAt": "2025-10-06T08:06:57.246Z",
+      "leadId": "cmg9fx6zo0009tuggo5lsgs91",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgexct72000atug0f1yad31k",
+      "serviceName": "Profitable",
+      "description": null,
+      "requirements": null,
+      "totalCost": "6000",
+      "vatAmount": null,
+      "discountAmount": "0",
+      "finalAmount": "6000",
+      "status": "PENDING",
+      "estimatedDays": null,
+      "deadline": null,
+      "completedAt": null,
+      "createdAt": "2025-10-06T09:24:38.991Z",
+      "updatedAt": "2025-10-06T09:24:38.991Z",
+      "leadId": "cmgexct3d0008tug0mtfdb81g",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgexnioo0001tumogo1r3hqz",
+      "serviceName": "Profitable",
+      "description": null,
+      "requirements": null,
+      "totalCost": "6000",
+      "vatAmount": null,
+      "discountAmount": "0",
+      "finalAmount": "6000",
+      "status": "PENDING",
+      "estimatedDays": null,
+      "deadline": null,
+      "completedAt": null,
+      "createdAt": "2025-10-06T09:32:58.585Z",
+      "updatedAt": "2025-10-06T09:32:58.585Z",
+      "leadId": "cmgbypgz40000tuewtvt2v3qt",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgey30c00001tus06u3x9ddi",
+      "serviceName": "Minimum package",
+      "description": null,
+      "requirements": null,
+      "totalCost": "1500",
+      "vatAmount": null,
+      "discountAmount": "0",
+      "finalAmount": "1500",
+      "status": "PENDING",
+      "estimatedDays": null,
+      "deadline": null,
+      "completedAt": null,
+      "createdAt": "2025-10-06T09:45:01.292Z",
+      "updatedAt": "2025-10-06T09:45:01.292Z",
+      "leadId": "cmg9fx6zo0009tuggo5lsgs91",
+      "discountCodeId": null
+    },
+    {
+      "id": "cmgey7m8v0005tus0zc0gii3s",
+      "serviceName": "Minimum package",
+      "description": null,
+      "requirements": null,
+      "totalCost": "1500",
+      "vatAmount": null,
+      "discountAmount": "0",
+      "finalAmount": "1500",
+      "status": "PENDING",
+      "estimatedDays": null,
+      "deadline": null,
+      "completedAt": null,
+      "createdAt": "2025-10-06T09:48:36.319Z",
+      "updatedAt": "2025-10-06T09:48:36.319Z",
+      "leadId": "cmgbypgz40000tuewtvt2v3qt",
+      "discountCodeId": null
+    }
+  ],
+  "orderPayments": [
+    {
+      "id": "cmgeu2r400003tug0u5fuenfw",
+      "orderId": "cmgeu2pgg0001tug0zsrbapo7",
+      "amount": "1500",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-F43B055D1D",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-F43B055D1D",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 1500,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "http://localhost:3000/booking/success",
+        "custom_data": {},
+        "description": "Order for undefined",
+        "enable_tips": false,
+        "external_id": "cmgeu2pgg0001tug0zsrbapo7",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-1896cf",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "http://localhost:3000/booking/failed",
+        "prefilled_customer": {
+          "email": "lead02@gmail.com",
+          "last_name": "MELNYKOV",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-06T07:52:50.880Z",
+      "updatedAt": "2025-10-06T07:52:50.880Z"
+    },
+    {
+      "id": "cmgeukxp30007tug0kb4s7t6j",
+      "orderId": "cmgeukw660005tug07gatmu44",
+      "amount": "6000",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-ADF2E9C5C5",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-ADF2E9C5C5",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 6000,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "http://localhost:3000/booking/success",
+        "custom_data": {},
+        "description": "Order for undefined",
+        "enable_tips": false,
+        "external_id": "cmgeukw660005tug07gatmu44",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-398af2",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "http://localhost:3000/booking/failed",
+        "prefilled_customer": {
+          "email": "lead02@gmail.com",
+          "last_name": "MELNYKOVfdrr",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-06T08:06:59.223Z",
+      "updatedAt": "2025-10-06T08:06:59.223Z"
+    },
+    {
+      "id": "cmgexcurb000ctug07n6qibpm",
+      "orderId": "cmgexct72000atug0f1yad31k",
+      "amount": "6000",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-9342BE22C9",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-9342BE22C9",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 6000,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "http://localhost:3000/booking/success",
+        "custom_data": {},
+        "description": "Order for undefined",
+        "enable_tips": false,
+        "external_id": "cmgexct72000atug0f1yad31k",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-ae1599",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "http://localhost:3000/booking/failed",
+        "prefilled_customer": {
+          "email": "lead03@gmail.com",
+          "last_name": "MELNYKOV",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-06T09:24:41.015Z",
+      "updatedAt": "2025-10-06T09:24:41.015Z"
+    },
+    {
+      "id": "cmgexnn150003tumoaogrfmc9",
+      "orderId": "cmgexnioo0001tumogo1r3hqz",
+      "amount": "6000",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-FF0F855B3C",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-FF0F855B3C",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 6000,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "http://localhost:3000/booking/success",
+        "custom_data": {},
+        "description": "Order for undefined",
+        "enable_tips": false,
+        "external_id": "cmgexnioo0001tumogo1r3hqz",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-5b2ccc",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "http://localhost:3000/booking/failed",
+        "prefilled_customer": {
+          "email": "lead02@gmail.com",
+          "last_name": "MELNYKOV",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-06T09:33:04.218Z",
+      "updatedAt": "2025-10-06T09:33:04.218Z"
+    },
+    {
+      "id": "cmgey34wz0003tus0yqaazky7",
+      "orderId": "cmgey30c00001tus06u3x9ddi",
+      "amount": "1500",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-9F24F0A30C",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-9F24F0A30C",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 1500,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "http://localhost:3000/booking/success",
+        "custom_data": {},
+        "description": "Order for undefined",
+        "enable_tips": false,
+        "external_id": "cmgey30c00001tus06u3x9ddi",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-c0cbe3",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "http://localhost:3000/booking/failed",
+        "prefilled_customer": {
+          "email": "lead03@gmail.com",
+          "last_name": "MELNYKOV",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-06T09:45:07.236Z",
+      "updatedAt": "2025-10-06T09:45:07.236Z"
+    },
+    {
+      "id": "cmgey7qg90007tus0ofz4u4ux",
+      "orderId": "cmgey7m8v0005tus0zc0gii3s",
+      "amount": "1500",
+      "currency": "AED",
+      "status": "PENDING",
+      "provider": "MAMO_PAY",
+      "externalId": "MB-LINK-086EFC8F8D",
+      "paymentLinkId": null,
+      "metadata": {
+        "id": "MB-LINK-086EFC8F8D",
+        "lang": "en",
+        "name": "ARcast Booking",
+        "rules": {
+          "allowed": []
+        },
+        "title": "ARcast Booking",
+        "active": true,
+        "amount": 1500,
+        "capacity": null,
+        "platform": "client",
+        "is_widget": true,
+        "link_type": "inline",
+        "save_card": "off",
+        "max_amount": null,
+        "return_url": "http://localhost:3000/booking/success",
+        "custom_data": {},
+        "description": "Order for undefined",
+        "enable_tips": false,
+        "external_id": "cmgey7m8v0005tus0zc0gii3s",
+        "payment_url": "https://sandbox.dev.business.mamopay.com/inline-widget/pay/arcast-2d22b9",
+        "enable_tabby": false,
+        "subscription": null,
+        "internal_note": null,
+        "payouts_share": null,
+        "enable_message": false,
+        "amount_currency": "AED",
+        "enable_quantity": false,
+        "expiration_date": null,
+        "payment_methods": [
+          "card",
+          "wallet"
+        ],
+        "failure_return_url": "http://localhost:3000/booking/failed",
+        "prefilled_customer": {
+          "email": "lead02@gmail.com",
+          "last_name": "MELNYKOV",
+          "first_name": "DENYS"
+        },
+        "hold_and_charge_later": false,
+        "processing_fee_amount": null,
+        "send_customer_receipt": true,
+        "enable_customer_details": true,
+        "terms_and_conditions_url": null,
+        "processing_fee_percentage": 0
+      },
+      "completedAt": null,
+      "refundedAt": null,
+      "createdAt": "2025-10-06T09:48:41.770Z",
+      "updatedAt": "2025-10-06T09:48:41.770Z"
+    }
+  ],
+  "clients": [
+    {
+      "id": "cmfxibl86000etugwncwn70ij",
+      "name": "Margarita",
+      "showTitle": "Margarita's Podcast",
+      "jobTitle": "Podcaster",
+      "testimonial": "The team helped me launch my podcast successfully!",
+      "featured": true,
+      "imageUrl": "/assets/images/Margarita-case.jpg"
+    },
+    {
+      "id": "cmfxmdqh30000tuvwh8bj6vq4",
+      "name": "Ahmed",
+      "showTitle": null,
+      "jobTitle": null,
+      "testimonial": "Arcast didn’t just polish our content — they redefined how we tell stories. It was an awakening.",
+      "featured": true,
+      "imageUrl": "/assets/images/ahmed.jpg"
+    },
+    {
+      "id": "cmfxmix1b0001tuvwih4w1x7x",
+      "name": "Sam",
+      "showTitle": null,
+      "jobTitle": null,
+      "testimonial": "The team helped me launch my podcast successfully!",
+      "featured": true,
+      "imageUrl": "/assets/images/sam-case.jpg"
+    }
+  ],
+  "staff": [
+    {
+      "id": "cmfxowtpf0000tu006evvtxuu",
+      "name": "Abdulmuin Muhamedov",
+      "role": "Head of Video Production",
+      "imageUrl": "/assets/images/partner2_ver3my.webp"
+    },
+    {
+      "id": "cmfxowtpr0001tu0006f7rakx",
+      "name": "Ahmed Mohsin Tarabay",
+      "role": "Studio Technician",
+      "imageUrl": "/assets/images/partner5_kzoahh.webp"
+    },
+    {
+      "id": "cmfxowtpr0002tu00vnvhji0o",
+      "name": "Grace Gella Dayono",
+      "role": "Operations & Administrative Manager",
+      "imageUrl": "/assets/images/partner3_nanc5z.webp"
+    },
+    {
+      "id": "cmfxowtpr0003tu005xv82ykx",
+      "name": "Muinjon Ergashev",
+      "role": "Videographer",
+      "imageUrl": "/assets/images/partner4_wczphp.webp"
+    }
+  ],
+  "equipment": [
+    {
+      "id": "cmfxp8b0c0004tu001945bt54",
+      "name": "Sony a7 SIII",
+      "description": "Camera",
+      "imageUrl": "/assets/images/camera.png"
+    },
+    {
+      "id": "cmfxp8b0f0005tu00jd204yc2",
+      "name": "MV7X",
+      "description": "Microphone",
+      "imageUrl": "/assets/images/camera.png"
+    },
+    {
+      "id": "cmfxp8b0f0006tu00lon32a7t",
+      "name": "NTH-100",
+      "description": "Headphones",
+      "imageUrl": "/assets/images/camera.png"
+    },
+    {
+      "id": "cmfxp8b0f0007tu00wxxywm81",
+      "name": "Feelworld T7",
+      "description": "Monitor",
+      "imageUrl": "/assets/images/camera.png"
+    },
+    {
+      "id": "cmfxp8b0f0008tu0009egjbif",
+      "name": "200XS and Softbox",
+      "description": null,
+      "imageUrl": "/assets/images/camera.png"
+    },
+    {
+      "id": "cmfxp8b0f0009tu0058wrzr6d",
+      "name": null,
+      "description": "Teleprompter",
+      "imageUrl": "/assets/images/camera.png"
+    },
+    {
+      "id": "cmfxp8b0h000atu00t7srcnw9",
+      "name": "Sony fx3",
+      "description": "Camera",
+      "imageUrl": "/assets/images/camera.png"
+    },
+    {
+      "id": "cmfxp8b0h000btu00tg1lo1zo",
+      "name": null,
+      "description": "Focusrite audio interface",
+      "imageUrl": "/assets/images/camera.png"
+    },
+    {
+      "id": "cmfxp8b0h000ctu0082vwamjh",
+      "name": null,
+      "description": "Acoustic Panels",
+      "imageUrl": "/assets/images/camera.png"
+    },
+    {
+      "id": "cmfxp8b0h000dtu00ekakjyrc",
+      "name": null,
+      "description": "Shock Mounts",
+      "imageUrl": "/assets/images/camera.png"
+    },
+    {
+      "id": "cmfxp8b0h000etu00x5dnsqd8",
+      "name": null,
+      "description": "Soft Light",
+      "imageUrl": "/assets/images/camera.png"
+    },
+    {
+      "id": "cmfxp8b0h000ftu0063o83q1m",
+      "name": "Sony gm 24-70mm f 1.8",
+      "description": null,
+      "imageUrl": "/assets/images/camera.png"
+    }
+  ],
+  "caseStudies": [
+    {
+      "id": "cmfxkf0yu000gtux8g7knsjkv",
+      "clientId": "cmfxmdqh30000tuvwh8bj6vq4",
+      "title": "Ahmed",
+      "tagline": "When you have no time for content",
+      "mainText": "Margarita came to us with a bold idea but no experience in podcasting. Within weeks, she was generating income from her professional video podcast.",
+      "isActive": true,
+      "imageUrls": [
+        "/assets/images/case-banner.jpg"
+      ],
+      "staff": [
+        {
+          "id": "cmfxowtpf0000tu006evvtxuu",
+          "name": "Abdulmuin Muhamedov",
+          "role": "Head of Video Production",
+          "imageUrl": "/assets/images/partner2_ver3my.webp"
+        },
+        {
+          "id": "cmfxowtpr0001tu0006f7rakx",
+          "name": "Ahmed Mohsin Tarabay",
+          "role": "Studio Technician",
+          "imageUrl": "/assets/images/partner5_kzoahh.webp"
+        },
+        {
+          "id": "cmfxowtpr0002tu00vnvhji0o",
+          "name": "Grace Gella Dayono",
+          "role": "Operations & Administrative Manager",
+          "imageUrl": "/assets/images/partner3_nanc5z.webp"
+        },
+        {
+          "id": "cmfxowtpr0003tu005xv82ykx",
+          "name": "Muinjon Ergashev",
+          "role": "Videographer",
+          "imageUrl": "/assets/images/partner4_wczphp.webp"
+        }
+      ],
+      "equipment": [
+        {
+          "id": "cmfxp8b0c0004tu001945bt54",
+          "name": "Sony a7 SIII",
+          "description": "Camera",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0f0005tu00jd204yc2",
+          "name": "MV7X",
+          "description": "Microphone",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0f0006tu00lon32a7t",
+          "name": "NTH-100",
+          "description": "Headphones",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0f0007tu00wxxywm81",
+          "name": "Feelworld T7",
+          "description": "Monitor",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0f0008tu0009egjbif",
+          "name": "200XS and Softbox",
+          "description": null,
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0f0009tu0058wrzr6d",
+          "name": null,
+          "description": "Teleprompter",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000atu00t7srcnw9",
+          "name": "Sony fx3",
+          "description": "Camera",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000btu00tg1lo1zo",
+          "name": null,
+          "description": "Focusrite audio interface",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000ctu0082vwamjh",
+          "name": null,
+          "description": "Acoustic Panels",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000dtu00ekakjyrc",
+          "name": null,
+          "description": "Shock Mounts",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000etu00x5dnsqd8",
+          "name": null,
+          "description": "Soft Light",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000ftu0063o83q1m",
+          "name": "Sony gm 24-70mm f 1.8",
+          "description": null,
+          "imageUrl": "/assets/images/camera.png"
+        }
+      ]
+    },
+    {
+      "id": "cmfxiblb0000gtugwrs93we58",
+      "clientId": "cmfxibl86000etugwncwn70ij",
+      "title": "Margarita",
+      "tagline": "From zero to hero",
+      "mainText": "In just five episodes, Margarita went from complete  beginner to earning $1,000 per show — with the support  of professional podcast production and a clear path to monetization.",
+      "isActive": true,
+      "imageUrls": [
+        "/assets/images/case-banner.jpg"
+      ],
+      "staff": [
+        {
+          "id": "cmfxowtpf0000tu006evvtxuu",
+          "name": "Abdulmuin Muhamedov",
+          "role": "Head of Video Production",
+          "imageUrl": "/assets/images/partner2_ver3my.webp"
+        },
+        {
+          "id": "cmfxowtpr0001tu0006f7rakx",
+          "name": "Ahmed Mohsin Tarabay",
+          "role": "Studio Technician",
+          "imageUrl": "/assets/images/partner5_kzoahh.webp"
+        },
+        {
+          "id": "cmfxowtpr0002tu00vnvhji0o",
+          "name": "Grace Gella Dayono",
+          "role": "Operations & Administrative Manager",
+          "imageUrl": "/assets/images/partner3_nanc5z.webp"
+        },
+        {
+          "id": "cmfxowtpr0003tu005xv82ykx",
+          "name": "Muinjon Ergashev",
+          "role": "Videographer",
+          "imageUrl": "/assets/images/partner4_wczphp.webp"
+        }
+      ],
+      "equipment": [
+        {
+          "id": "cmfxp8b0c0004tu001945bt54",
+          "name": "Sony a7 SIII",
+          "description": "Camera",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0f0005tu00jd204yc2",
+          "name": "MV7X",
+          "description": "Microphone",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0f0006tu00lon32a7t",
+          "name": "NTH-100",
+          "description": "Headphones",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0f0007tu00wxxywm81",
+          "name": "Feelworld T7",
+          "description": "Monitor",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0f0008tu0009egjbif",
+          "name": "200XS and Softbox",
+          "description": null,
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0f0009tu0058wrzr6d",
+          "name": null,
+          "description": "Teleprompter",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000atu00t7srcnw9",
+          "name": "Sony fx3",
+          "description": "Camera",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000btu00tg1lo1zo",
+          "name": null,
+          "description": "Focusrite audio interface",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000ctu0082vwamjh",
+          "name": null,
+          "description": "Acoustic Panels",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000dtu00ekakjyrc",
+          "name": null,
+          "description": "Shock Mounts",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000etu00x5dnsqd8",
+          "name": null,
+          "description": "Soft Light",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000ftu0063o83q1m",
+          "name": "Sony gm 24-70mm f 1.8",
+          "description": null,
+          "imageUrl": "/assets/images/camera.png"
+        }
+      ]
+    },
+    {
+      "id": "cmfxmk7wc0002tuvwadest6zn",
+      "clientId": "cmfxmix1b0001tuvwih4w1x7x",
+      "title": "Sam",
+      "tagline": "Political talks and fact checking",
+      "mainText": null,
+      "isActive": true,
+      "imageUrls": [],
+      "staff": [
+        {
+          "id": "cmfxowtpf0000tu006evvtxuu",
+          "name": "Abdulmuin Muhamedov",
+          "role": "Head of Video Production",
+          "imageUrl": "/assets/images/partner2_ver3my.webp"
+        },
+        {
+          "id": "cmfxowtpr0001tu0006f7rakx",
+          "name": "Ahmed Mohsin Tarabay",
+          "role": "Studio Technician",
+          "imageUrl": "/assets/images/partner5_kzoahh.webp"
+        },
+        {
+          "id": "cmfxowtpr0002tu00vnvhji0o",
+          "name": "Grace Gella Dayono",
+          "role": "Operations & Administrative Manager",
+          "imageUrl": "/assets/images/partner3_nanc5z.webp"
+        },
+        {
+          "id": "cmfxowtpr0003tu005xv82ykx",
+          "name": "Muinjon Ergashev",
+          "role": "Videographer",
+          "imageUrl": "/assets/images/partner4_wczphp.webp"
+        }
+      ],
+      "equipment": [
+        {
+          "id": "cmfxp8b0c0004tu001945bt54",
+          "name": "Sony a7 SIII",
+          "description": "Camera",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0f0005tu00jd204yc2",
+          "name": "MV7X",
+          "description": "Microphone",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0f0006tu00lon32a7t",
+          "name": "NTH-100",
+          "description": "Headphones",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0f0007tu00wxxywm81",
+          "name": "Feelworld T7",
+          "description": "Monitor",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0f0008tu0009egjbif",
+          "name": "200XS and Softbox",
+          "description": null,
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0f0009tu0058wrzr6d",
+          "name": null,
+          "description": "Teleprompter",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000atu00t7srcnw9",
+          "name": "Sony fx3",
+          "description": "Camera",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000btu00tg1lo1zo",
+          "name": null,
+          "description": "Focusrite audio interface",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000ctu0082vwamjh",
+          "name": null,
+          "description": "Acoustic Panels",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000dtu00ekakjyrc",
+          "name": null,
+          "description": "Shock Mounts",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000etu00x5dnsqd8",
+          "name": null,
+          "description": "Soft Light",
+          "imageUrl": "/assets/images/camera.png"
+        },
+        {
+          "id": "cmfxp8b0h000ftu0063o83q1m",
+          "name": "Sony gm 24-70mm f 1.8",
+          "description": null,
+          "imageUrl": "/assets/images/camera.png"
+        }
+      ]
+    }
+  ],
+  "caseStudyContent": [
+    {
+      "id": "cmfxible0000itugwaq657upb",
+      "caseStudyId": "cmfxiblb0000gtugwrs93we58",
+      "title": "Challenge",
+      "text": [
+        "Margarita had a bold idea: she wanted to start her own podcast.",
+        "The difficulty was that she had no background in podcasting, video production, or editing — and no clear understanding of how podcasts could be monetized.",
+        "She needed guidance and a professional setup to turn her idea into something real and profitable."
+      ],
+      "list": [],
+      "imageUrl": "/assets/images/Margarita-case.jpg",
+      "order": 1
+    },
+    {
+      "id": "cmfxiblgu000ktugwtrbzuz3n",
+      "caseStudyId": "cmfxiblb0000gtugwrs93we58",
+      "title": "Solution",
+      "text": [
+        "We provided a **turnkey podcast production service**, taking care of everything from concept development and filming to editing and final delivery.",
+        "Each episode was produced as a polished **video podcast**, ready to publish. By handling the technical side — filming, editing, and post-production — we gave Margarita the freedom to focus on her content and her guests.",
+        "Within just a few weeks, she had four high-quality episodes live."
+      ],
+      "list": [],
+      "imageUrl": "/assets/images/Margarita-case.jpg",
+      "order": 2
+    },
+    {
+      "id": "cmfxiblia000mtugwqdeeswbd",
+      "caseStudyId": "cmfxiblb0000gtugwrs93we58",
+      "title": "Result",
+      "text": [
+        "The impact was immediate.",
+        "By her **fifth episode**, Margarita's podcast was already generating income.",
+        "Thanks to her growing media presence and the professional look of her show, guests recognized the value of being featured and began paying for the opportunity.",
+        "Today, Margarita **earns at least $1,000 per episode** from guest appearances — turning her podcast into both a creative outlet and a reliable business model."
+      ],
+      "list": [],
+      "imageUrl": "/assets/images/Margarita-case.jpg",
+      "order": 3
+    },
+    {
+      "id": "cmfxibljq000otugwtjqcdkhd",
+      "caseStudyId": "cmfxiblb0000gtugwrs93we58",
+      "title": "Key Takeaways",
+      "text": [],
+      "list": [
+        "A first-time podcaster successfully launched a professional video podcast from scratch.",
+        "Full-cycle podcast production (filming, editing, post-production) ensured high quality and consistency.",
+        "Podcast monetization started by episode five, with $1,000+ per guest appearance.",
+        "Turnkey production services let creators focus on building content, brand, and audience."
+      ],
+      "imageUrl": "",
+      "order": 4
+    },
+    {
+      "id": "cmfxkf124000itux84ab73h0q",
+      "caseStudyId": "cmfxkf0yu000gtux8g7knsjkv",
+      "title": "Challenge",
+      "text": [
+        "Margarita had a bold idea: she wanted to start her own podcast.",
+        "The difficulty was that she had no background in podcasting, video production, or editing — and no clear understanding of how podcasts could be monetized.",
+        "She needed guidance and a professional setup to turn her idea into something real and profitable."
+      ],
+      "list": [],
+      "imageUrl": "/assets/images/ahmed.jpg",
+      "order": 1
+    },
+    {
+      "id": "cmfxkf15a000ktux84icdtolb",
+      "caseStudyId": "cmfxkf0yu000gtux8g7knsjkv",
+      "title": "Solution",
+      "text": [
+        "We provided a turnkey podcast production service, taking care of everything from concept development and filming to editing and final delivery.",
+        "Each episode was produced as a polished video podcast, ready to publish. By handling the technical side — filming, editing, and post-production — we gave Margarita the freedom to focus on her content and her guests.",
+        "Within just a few weeks, she had four high-quality episodes live."
+      ],
+      "list": [],
+      "imageUrl": "/assets/images/ahmed.jpg",
+      "order": 2
+    },
+    {
+      "id": "cmfxkf16u000mtux8y256e835",
+      "caseStudyId": "cmfxkf0yu000gtux8g7knsjkv",
+      "title": "Result",
+      "text": [
+        "The impact was immediate.",
+        "By her **fifth episode**, Margarita's podcast was already generating income.",
+        "Thanks to her growing media presence and the professional look of her show, guests recognized the value of being featured and began paying for the opportunity.",
+        "Today, Margarita **earns at least $1,000 per episode** from guest appearances — turning her podcast into both a creative outlet and a reliable business model."
+      ],
+      "list": [],
+      "imageUrl": "/assets/images/ahmed.jpg",
+      "order": 3
+    },
+    {
+      "id": "cmfxkf18g000otux8dhlbkx41",
+      "caseStudyId": "cmfxkf0yu000gtux8g7knsjkv",
+      "title": "Key Takeaways",
+      "text": [],
+      "list": [
+        "A first-time podcaster successfully launched a professional video podcast from scratch.",
+        "Full-cycle podcast production (filming, editing, post-production) ensured high quality and consistency.",
+        "Podcast monetization started by episode five, with $1,000+ per guest appearance.",
+        "Turnkey production services let creators focus on building content, brand, and audience."
+      ],
+      "imageUrl": "",
+      "order": 4
+    }
+  ],
+  "samples": [
+    {
+      "id": "cmfxkf1nd000ztux8dpozc16u",
+      "name": "My soul chose this life - Eleonora Attar /Sarah Sami #2",
+      "thumbUrl": "/assets/images/GvnK1yIZyGE.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=GvnK1yIZyGE",
+      "serviceTypeId": "cmfxkf1a2000ptux86isqcmmx"
+    },
+    {
+      "id": "cmfxlkgpx0002tux49vyxgxgm",
+      "name": "She Almost Quit Everything - Eleonora Attar /Raghda Kouyoumdjian #3",
+      "thumbUrl": "/assets/images/jJbkVLHNpbI.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=jJbkVLHNpbI",
+      "serviceTypeId": "cmfxkf1a2000ptux86isqcmmx"
+    },
+    {
+      "id": "cmgf3sa2b0000tu1o6e7qlmam",
+      "name": "From Trauma to Transformation: A Husband’s Deepest Confession - Eleonora Attar / Khalid Alherani #4",
+      "thumbUrl": "/assets/images/7zL6D9vDgFY.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=7zL6D9vDgFY",
+      "serviceTypeId": "cmfxkf1a2000ptux86isqcmmx"
+    },
+    {
+      "id": "cmgf3sa2c0001tu1ovmrgg8vz",
+      "name": "Mike Radoor - From Self-Sabotage to Self-Mastery",
+      "thumbUrl": "/assets/images/khSwgb3PM-I.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=khSwgb3PM-I",
+      "serviceTypeId": "cmfxkf1a2000ptux86isqcmmx"
+    },
+    {
+      "id": "cmgf3sa2d0002tu1o3vdarwis",
+      "name": "От парикмахера в поселке до владельца бизнеса в Дубае. Эмиль Гильманский",
+      "thumbUrl": "/assets/images/A-S1QVeSYs0.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=A-S1QVeSYs0",
+      "serviceTypeId": "cmfxkf1a2000ptux86isqcmmx"
+    },
+    {
+      "id": "cmgf3w9mc0003tu1o828l1ui4",
+      "name": "Episode 03: Joel Lynch, Former Footballer turned Dubai Rel Estate Guru",
+      "thumbUrl": "/assets/images/HdByFxrqym4.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=HdByFxrqym4",
+      "serviceTypeId": "cmfxkf1a2000ptux86isqcmmx"
+    },
+    {
+      "id": "cmgnzitua0000tu64xgagxmoe",
+      "name": "VitaJoy MarineCollagen",
+      "thumbUrl": "/assets/images/media-5.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=5pSReh5acVY",
+      "serviceTypeId": "cmfxkf1f0000rtux8k7i7b2b6"
+    },
+    {
+      "id": "cmgf3x73i0004tu1o56dlwuza",
+      "name": "TCBoxes Intro Preview 1",
+      "thumbUrl": "/assets/images/media-1.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=dJlGaWdOg60",
+      "serviceTypeId": "cmfxkf1f0000rtux8k7i7b2b6"
+    },
+    {
+      "id": "cmgf3yhel0005tu1ojtqm9exh",
+      "name": "uxpeak Personalized Experience",
+      "thumbUrl": "/assets/images/media-2.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=DvOIvPLbWY0",
+      "serviceTypeId": "cmfxkf1f0000rtux8k7i7b2b6"
+    },
+    {
+      "id": "cmgf3z4u20006tu1oz0pa5o1m",
+      "name": "Psychology Behind Creatives? It Works!",
+      "thumbUrl": "/assets/images/media-3.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=emPqwdxOwn4",
+      "serviceTypeId": "cmfxkf1f0000rtux8k7i7b2b6"
+    },
+    {
+      "id": "cmgf3zu1z0007tu1o3rv66l2d",
+      "name": "I See Red",
+      "thumbUrl": "/assets/images/media-4.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=hA-pRPIo4j8",
+      "serviceTypeId": "cmfxkf1f0000rtux8k7i7b2b6"
+    },
+    {
+      "id": "cmfxkf1gy000ttux8o6danp88",
+      "name": "From Dubai’s First Limo to Owning Private Jets at 24",
+      "thumbUrl": "/assets/images/C328I4tSmOs.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=C328I4tSmOs",
+      "serviceTypeId": "cmfxkf1a2000ptux86isqcmmx"
+    },
+    {
+      "id": "cmfxkf1k5000vtux847f0w8z1",
+      "name": "Mahdi Shafiei",
+      "thumbUrl": "/assets/images/aE9NC--5k5Q.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=aE9NC--5k5Q",
+      "serviceTypeId": "cmfxkf1a2000ptux86isqcmmx"
+    },
+    {
+      "id": "cmfxkf1lr000xtux8rvuy9ub8",
+      "name": "What changed my life - Eleonora Attar /Areej Nashashibi #1",
+      "thumbUrl": "/assets/images/hqdefault.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=MNtwmCmNJVU",
+      "serviceTypeId": "cmfxkf1a2000ptux86isqcmmx"
+    },
+    {
+      "id": "cmgnzujus0001tu64ku8qf4dz",
+      "name": "Reel #1",
+      "thumbUrl": "/assets/images/Thumbnail_001.png",
+      "videoUrl": "/assets/video/reels/Alexey_Reel.mp4",
+      "serviceTypeId": "cmfxkf1dc000qtux8xm7wkc2v"
+    },
+    {
+      "id": "cmgnzujut0002tu64xrr48jly",
+      "name": "Reel #2",
+      "thumbUrl": "/assets/images/Thumbnail_002.png",
+      "videoUrl": "/assets/video/reels/Reel_2.mp4",
+      "serviceTypeId": "cmfxkf1dc000qtux8xm7wkc2v"
+    },
+    {
+      "id": "cmgnzujuu0003tu649mgljfyo",
+      "name": "Reel #3",
+      "thumbUrl": "/assets/images/Thumbnail_003.png",
+      "videoUrl": "/assets/video/reels/Reel_003.mp4",
+      "serviceTypeId": "cmfxkf1dc000qtux8xm7wkc2v"
+    },
+    {
+      "id": "cmgnzujuu0004tu64663ygfxk",
+      "name": "Reel #4",
+      "thumbUrl": "/assets/images/Thumbnail_004.png",
+      "videoUrl": "/assets/video/reels/Reel_04.mp4",
+      "serviceTypeId": "cmfxkf1dc000qtux8xm7wkc2v"
+    },
+    {
+      "id": "cmgnzujuv0005tu64qc2ee0fs",
+      "name": "Reel #5",
+      "thumbUrl": "/assets/images/Thumbnail_005.png",
+      "videoUrl": "/assets/video/reels/Reel_05.mp4",
+      "serviceTypeId": "cmfxkf1dc000qtux8xm7wkc2v"
+    },
+    {
+      "id": "cmgnzujuv0006tu640wy93449",
+      "name": "Reel #6",
+      "thumbUrl": "/assets/images/Thumbnail_006.png",
+      "videoUrl": "/assets/video/reels/Reel_6.mp4",
+      "serviceTypeId": "cmfxkf1dc000qtux8xm7wkc2v"
+    },
+    {
+      "id": "cmgnzujuw0007tu64gdoivo5h",
+      "name": "Reel #7",
+      "thumbUrl": "/assets/images/Thumbnail_007.png",
+      "videoUrl": "/assets/video/reels/Reel_007.mp4",
+      "serviceTypeId": "cmfxkf1dc000qtux8xm7wkc2v"
+    },
+    {
+      "id": "cmgnzujuw0008tu64143cm1ps",
+      "name": "Reel #8",
+      "thumbUrl": "/assets/images/Thumbnail_008.png",
+      "videoUrl": "/assets/video/reels/Reel_08.mp4",
+      "serviceTypeId": "cmfxkf1dc000qtux8xm7wkc2v"
+    }
+  ],
+  "blogRecords": [
+    {
+      "id": "cmg56064t0001tu0wgyxvwcu9",
+      "title": "Building Brand Authority with Podcasting",
+      "tagline": "<h3>The Secret Weapon for <strong>Building</strong> a <strong>Brand</strong> that is Trusted and Appreciated and <strong>Stands Out</strong>.</h3>",
+      "mainText": "<p>You want your business to stand out, don't you?<br>But here's the thing:<br>You can't just show up.<br>You can't just have a great product or a shiny website.<br>People don't trust <strong>businesses</strong>.<br>They trust <strong>individuals</strong>.<br>And how do you show the world you're more than just a name on a storefront or a logo on a website?<br>You build <strong>authority</strong>.</p><h2><strong>Authority isn't given.</strong></h2><p>It's earned.<br>Every successful brand has one thing in common:<br>They've mastered the art of building <strong>trust</strong>.<br><br>And in today's world, trust doesn't come from flashy ads or overproduced content.<br>It comes from <strong>conversations</strong>.<br>Podcasting is the modern-day round table, where your audience gets to hear from you—directly.<br>Not through a curated post or a vague advertisement.<br>But through your voice, your opinions, your values, and your journey.<br><br>Here's how podcasting builds <strong>brand authority:</strong><br>1. <strong>You become the expert</strong> – When you share your insights, experiences, and expertise, you position yourself as a thought leader in your field.<br>2. <strong>You engage your audience</strong> – Podcasting isn't passive. It's a two-way conversation, where listeners feel like they're part of the experience.<br>3. <strong>You create connection</strong> – People listen to podcasts during commutes, workouts, and downtime. That means they're inviting your voice into their lives in ways other content can't replicate.<br><br>Authority is no longer about having the loudest voice; it's about being the most trustworthy one.</p><h2><strong>The Power of Consistency in Building Trust</strong></h2><p>Trust isn't built overnight.<br>It takes time.<br>It takes consistency.<br>And it takes value.<br><br>Podcasting gives you a platform to show up every week (or every month) with content that delivers real value to your audience.<br>And the more you show up?<br>The more people begin to trust you.<br><br>When you start podcasting consistently, you start creating something bigger than just a few episodes.<br>You're creating a <strong>legacy</strong> of valuable insights, real conversations, and trust-building content that your audience can always come back to.</p><h2><strong>What makes a great authority-building podcast?</strong></h2><p>There's no formula for success in podcasting.<br>But there is a formula for trust.<br><br>Here's what you need to build a podcast that establishes your authority:<br><br>1. <strong>Authenticity</strong> – People don't trust brands that sound like they're selling something. They trust voices that are raw, real, and relatable.<br>2. <strong>Consistency</strong> – Trust is built over time. A weekly podcast isn't just content; it's a commitment to your audience.<br>3. <strong>Storytelling</strong> – Facts are important. But people remember <strong>stories</strong>. Tell the story of why you do what you do, and how your product or service can make a real difference in their lives.<br>4. <strong>Expert Guests</strong> – Bring in others to share their insights. When you host experts in your industry, it boosts your credibility even further.</p><h2><strong>Authority = Trust = Loyalty = Growth</strong></h2><p>The ROI of podcasting isn't immediate.<br>It's long-term.<br><br>But here's the catch:<br>Once you've built that trust and authority, your listeners become <strong>loyal</strong> advocates.<br>They'll share your podcast.<br>They'll promote your brand.<br>They'll bring others into your ecosystem.<br>And they'll buy from you, because they <strong>believe in you.</strong></p><h2><strong>Final Thoughts</strong></h2><p>Podcasting is no longer a nice-to-have.<br>It's a must-have.<br><br>If you want to build authority, trust, and lasting relationships with your audience, there's no better platform.<br><br>At <strong>ARCAST Studio</strong>, we help you create podcasts that aren't just good—they're impactful.<br><br>With <strong>professional equipment, polished editing, and strategic guidance,</strong> we help you position your brand as an <strong>authority</strong> in your field.<br><br>Ready to start building your authority?<br>Book your first session today!</p>",
+      "mainImageUrl": "/uploads/blog/f42a0ca9-c2d3-4730-99df-da37fe60b09c.jpg",
+      "createdAt": "2025-09-29T13:29:03.882Z",
+      "updatedAt": "2025-09-29T14:05:33.578Z"
+    },
+    {
+      "id": "cmg536g6v0000tu7491ce2ywz",
+      "title": "The Power of Podcasting",
+      "tagline": "<h3>Why Every <strong>Business</strong> <br>Needs to <strong>Start</strong> Talking</h3>",
+      "mainText": "<p>People don't buy what you do.<br> They buy <strong>why</strong> you do it.<br>They buy the emotion.<br>The voice.<br>The human behind the logo.<br>And in a world where everyone is flooding social feeds with quotes, AI-generated blogs, and another “top 5 growth hacks” video, the real question is:<br>Who's listening?</p><h2>Podcasting isn't loud. It's deep.</h2><p>The best marketing isn't always the flashiest.<br>It's the most consistent.<br>The most intentional.<br>The most real.</p><h2>Podcasting doesn't scream. It whispers.</h2><p>Right into your listener's ears.<br>For 10 minutes, 30 minutes, an hour—you get their undivided attention.<br>That's rare.<br>That's powerful.<br>That's why the best brands are building podcasts, not just ad campaigns.<br>You don't need more content.<br>You need more connection.<br><br>Here's the truth most businesses miss:<br>People scroll past polished graphics.<br>They pause for a story.<br>Podcasting is brand storytelling in its purest form.<br>No stock photos. No perfect lighting.<br>Just truth. Vulnerability.<br>A founder sharing the “why.”<br>A CEO answering tough questions.<br>A client telling how you changed their life.<br>That's content that converts.<br>That's marketing that feels like a handshake, not a billboard.</p><h2>What's the ROI of a podcast?</h2><p>Ask any business owner who has one:<br>It's not just followers.<br>It's not just SEO traffic (though you'll get that too).<br>It's <strong>trust</strong>.<br>And trust is the currency of the modern business world.<br><br><strong>Your podcast becomes:</strong><br>• A lead magnet<br>• A thought leadership tool<br>• A networking channel<br>• A long-form SEO engine<br>• And a legacy archive of your mission, values, and voice.<br>Not bad for something that starts with a mic and a message.</p><h2><strong>But what if I'm not a podcaster?</strong></h2><p>You don't have to be.<br>You just have to be honest.<br>Authentic.<br>Curious.<br>Brave enough to hit \\\"record.\\\"<br><br>At <strong>ARCAST </strong>Studio, we handle the rest.<br>You show up.<br>We film.<br>We edit.<br>We turn it into YouTube videos, Instagram reels, and Spotify audio.<br>Think of us as your content engine.Not just a podcast studio, but a production partner for growth.<br><br><strong>A great business podcast is:</strong><br>• Relatable — It doesn’t lecture. It connects.<br>• Strategic — It aligns with your marketing goals.<br>• Evergreen — It works while you sleep.<br>• Human — It reminds people that behind every logo is a beating heart.<br><br><strong>Podcasting is not just a content strategy.</strong><br><strong>It's a leadership move.</strong><br>The best leaders today aren't shouting instructions. They're inviting conversations.<br><br>Podcasting is how modern leaders build movements, not just businesses. And it starts with a mic.</p><blockquote><p><em>“Podcasting is the art of turning your voice into a bridge, connecting your message directly to the hearts and minds of your audience.”</em></p><p>--Jared Porter</p></blockquote><blockquote><p><em>“A great podcast is not about the technology or the perfect setup; it&amp;apos;s about having the courage to share your story and inviting others to be part of the conversation.”</em></p><p>-- Sarah Lee</p></blockquote><h2><strong>Final Word</strong></h2><p>Your business already has a story.<br>Podcasting is just how the world hears it.<br><br>So instead of asking:<br>“Should we start a podcast?”<br><br><strong>Ask:</strong><br>“Are we ready to be heard?”<br><br>If the answer is yes,<br><strong>ARCAST</strong> is your studio.<br><br>Let's bring your voice to life—with clarity, quality, and a touch of courage.<br><br>Book a session today!</p>",
+      "mainImageUrl": null,
+      "createdAt": "2025-09-29T12:09:58.126Z",
+      "updatedAt": "2025-09-30T06:09:33.656Z"
+    }
+  ]
+}

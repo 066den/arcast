@@ -31,6 +31,8 @@ const SmoothOverlappingCarousel = ({
   const [isHovered, setIsHovered] = useState(false)
   const [selectedVideoUrl, setSelectedVideoUrl] = useState<string | null>(null)
   const [isVideoModalOpen, videoOpen, videoClose] = useFlag()
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
 
   const nextSlide = useCallback(() => {
     setCurrentIndex(prev => (prev + 1) % items.length)
@@ -54,6 +56,31 @@ const SmoothOverlappingCarousel = ({
     //setSelectedVideoUrl(null)
     videoClose()
   }, [videoClose])
+
+  const minSwipeDistance = 50
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe) {
+      nextSlide()
+    } else if (isRightSwipe) {
+      prevSlide()
+    }
+  }
 
   useEffect(() => {
     if (!autoplay || isHovered || items.length <= 1) return
@@ -94,6 +121,9 @@ const SmoothOverlappingCarousel = ({
       className={cn('h-full', className)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
     >
       <div className="relative h-full flex items-center justify-center xl:justify-end">
         {items.map((item, index) => {
