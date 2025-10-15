@@ -17,6 +17,17 @@ import Image from 'next/image'
 
 const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   const pathname = usePathname()
+
+  // Function to check if a navigation item is active
+  const isActive = (href: string) => {
+    if (href === '/admin') {
+      // For the main admin page, only highlight if exactly matching
+      return pathname === href
+    }
+    // For other pages, check if pathname starts with the href
+    return pathname.startsWith(href)
+  }
+
   return (
     <Sidebar {...props}>
       <SidebarHeader className="items-center">
@@ -36,7 +47,7 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
             <SidebarMenu>
               {adminNavigation.map(item => (
                 <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton asChild isActive={item.href === pathname}>
+                  <SidebarMenuButton asChild isActive={isActive(item.href)}>
                     <Link href={item.href} className="flex items-center gap-2">
                       <item.icon />
                       <span>{item.name}</span>

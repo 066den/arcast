@@ -1,36 +1,41 @@
-'use client'
-
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
 import AppSidebar from '@/components/admin/AppSidebar'
-
-import Link from 'next/link'
-import { ArrowRightIcon } from 'lucide-react'
+import AdminHeader from '@/components/admin/AdminHeader'
+import { auth } from '@/auth'
+import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 
 export const dynamic = 'force-dynamic'
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const headersList = await headers()
+  const pathname = headersList.get('x-pathname') || ''
+
+  // Skip auth check for login page
+  if (pathname === '/admin/login') {
+    return <>{children}</>
+  }
+
+  const session = await auth()
+
+  // If user is not authenticated, redirect to login
+  if (!session?.user) {
+    redirect('/admin/login')
+  }
+
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex items-center justify-between p-4 border-b">
-          <SidebarTrigger />
-
-          <Link href="/" target="_blank">
-            <span className="flex items-center gap-2">
-              <span>Visit Site</span>
-              <ArrowRightIcon className="w-4 h-4" />
-            </span>
-          </Link>
-        </header>
+        <AdminHeader user={session.user} />
         {children}
       </SidebarInset>
     </SidebarProvider>

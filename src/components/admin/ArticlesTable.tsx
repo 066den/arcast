@@ -40,6 +40,8 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
 import { stripHtml } from '@/utils/renderText'
+import { toast } from 'sonner'
+import { ConfirmModal } from '@/components/modals/modal'
 
 interface ArticlesTableProps {
   initialData: BlogRecord[]
@@ -48,23 +50,51 @@ interface ArticlesTableProps {
 const ArticlesTable = ({ initialData }: ArticlesTableProps) => {
   const router = useRouter()
   const [data, setData] = useState(initialData)
-
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [deleteDialog, setDeleteDialog] = useState<{
+    isOpen: boolean
+    article: BlogRecord | null
+  }>({ isOpen: false, article: null })
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const handleEdit = (article: BlogRecord) => {
-    // TODO: Implement edit functionality
-    console.log('Edit article:', article.id)
+    router.push(`/admin/blog/edit/${article.id}`)
   }
 
   const handleDelete = (article: BlogRecord) => {
-    // TODO: Implement delete functionality with confirmation
-    console.log('Delete article:', article.id)
-    setData(prev => prev.filter(item => item.id !== article.id))
+    setDeleteDialog({ isOpen: true, article })
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteDialog.article) return
+
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/blog/${deleteDialog.article.id}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete article')
+      }
+
+      setData(prev => prev.filter(item => item.id !== deleteDialog.article!.id))
+      toast.success('Article deleted successfully')
+    } catch (error) {
+      console.error('Delete error:', error)
+      toast.error('Error deleting article')
+    } finally {
+      setIsDeleting(false)
+      setDeleteDialog({ isOpen: false, article: null })
+    }
+  }
+
+  const handleDeleteCancel = () => {
+    setDeleteDialog({ isOpen: false, article: null })
   }
 
   const handleView = (article: BlogRecord) => {
-    // TODO: Implement view functionality
-    console.log('View article:', article.id)
+    window.open(`/blog/${article.id}`, '_blank')
   }
 
   const handleCreate = () => {
@@ -300,6 +330,18 @@ const ArticlesTable = ({ initialData }: ArticlesTableProps) => {
             : 'Never'}
         </span>
       </div>
+
+      <ConfirmModal
+        isOpen={deleteDialog.isOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Article"
+        description={`Are you sure you want to delete "${deleteDialog.article?.title || 'this article'}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
+        loading={isDeleting}
+      />
     </div>
   )
 }

@@ -46,7 +46,7 @@
   --color-popover: var(--popover);
   --color-muted: var(--muted);
   --color-destructive: var(--color-red-500);
-  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-foreground: var(--white-smoke);
   --color-destructive-dark: var(--color-red-600);
   --color-destructive-light: var(--color-red-100);
   --font-hanken-grotesk: var(--font-hanken-grotesk);
@@ -69,11 +69,12 @@
   }
   body {
     @apply bg-background text-foreground overflow-x-hidden h-screen;
-  }
-
-  body:not([data-scroll-locked]) {
     scrollbar-gutter: stable both-edges;
   }
+
+  /* body:not([data-scroll-locked]) {
+    scrollbar-gutter: stable both-edges;
+  } */
 
   ::-webkit-scrollbar {
     width: 4px;

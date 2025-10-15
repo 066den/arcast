@@ -11,6 +11,7 @@ import Image from 'next/image'
 import { UploadIcon } from 'lucide-react'
 import { useState } from 'react'
 import { validateFile } from '@/lib/validate'
+import { ASPECT_RATIOS } from '@/lib/constants'
 
 interface ImageEditableProps {
   src?: string
@@ -19,6 +20,7 @@ interface ImageEditableProps {
   aspectRatio?: number
   showCrop?: boolean
   className?: string
+  size?: 'small' | 'medium' | 'large'
 }
 
 const ImageEditable = ({
@@ -28,6 +30,7 @@ const ImageEditable = ({
   aspectRatio = 1,
   showCrop = true,
   className,
+  size = 'medium',
 }: ImageEditableProps) => {
   const [cropImage, setCropImage] = useState<string | null>(null)
   const [isCropping, setIsCropping] = useState(false)
@@ -82,12 +85,12 @@ const ImageEditable = ({
         accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
         maxSize={MAX_FILE_SIZE.IMAGE}
         onError={handleError}
-        className="aspect-[4/3]"
+        className={`${aspectRatio === ASPECT_RATIOS.SQUARE ? 'aspect-[1/1]' : aspectRatio === ASPECT_RATIOS.LANDSCAPE ? 'aspect-[16/9]' : aspectRatio === ASPECT_RATIOS.PORTRAIT ? 'aspect-[3/4]' : 'aspect-[1/1]'} ${size === 'small' ? 'w-[200px]' : size === 'medium' ? 'w-[300px]' : 'w-[400px]'}`}
       >
         <DropzoneEmptyState>
-          <div className="flex w-full items-center gap-4 p-8">
+          <div className="flex flex-col w-full items-center gap-4">
             <div className="flex size-16 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-              <UploadIcon size={24} />
+              <UploadIcon size={20} />
             </div>
             <div className="text-left">
               <p className="font-medium text-sm">Upload a file</p>
@@ -99,16 +102,13 @@ const ImageEditable = ({
           </div>
         </DropzoneEmptyState>
         {imgUrl && (
-          <div className="w-full">
-            <Image
-              alt={alt || 'Preview'}
-              className="absolute top-0 left-0 h-full w-full object-cover"
-              width={350}
-              height={350}
-              src={imgUrl}
-              priority
-            />
-          </div>
+          <Image
+            alt={alt || 'Preview'}
+            className="absolute top-0 left-0 h-full w-full object-cover"
+            fill
+            src={imgUrl}
+            priority
+          />
         )}
         <DropzoneContent />
       </Dropzone>
