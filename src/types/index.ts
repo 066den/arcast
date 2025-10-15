@@ -133,6 +133,7 @@ export interface Service {
   price: number
   currency: string
   isPopular: boolean
+  isActive: boolean
   serviceTypeId: string
   serviceType?: {
     slug: string

@@ -7,11 +7,13 @@ import { Node } from '@tiptap/core'
 
 interface TaglineEditorProps {
   content?: string
+  initialContent?: string
   onChange: (content: string) => void
 }
 
 export const TaglineEditor = ({
   content = '',
+  initialContent = '',
   onChange,
 }: TaglineEditorProps) => {
   const [, forceUpdate] = useState({})
@@ -31,7 +33,7 @@ export const TaglineEditor = ({
         },
       }),
     ],
-    content: content || '<h3>Enter tagline here</h3>',
+    content: initialContent || content || '<h3>Enter tagline here</h3>',
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
       let html = editor.getHTML()

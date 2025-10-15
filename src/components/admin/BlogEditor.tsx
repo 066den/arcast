@@ -16,10 +16,11 @@ import {
 
 interface BlogEditorProps {
   content?: string
+  initialContent?: string
   onChange: (content: string) => void
 }
 
-export const BlogEditor = ({ content = '', onChange }: BlogEditorProps) => {
+export const BlogEditor = ({ content = '', initialContent = '', onChange }: BlogEditorProps) => {
   const [, forceUpdate] = useState({})
 
   const editor = useEditor({
@@ -30,7 +31,7 @@ export const BlogEditor = ({ content = '', onChange }: BlogEditorProps) => {
         openOnClick: false,
       }),
     ],
-    content,
+    content: initialContent || content,
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML())

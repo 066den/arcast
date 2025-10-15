@@ -85,7 +85,7 @@ export const getPaymentLinkForBooking = async (bookingId: string) => {
         status: PAYMENT_STATUS.PENDING,
         provider: 'MAMO_PAY',
         externalId: createdPaymentLink.id,
-        metadata: createdPaymentLink,
+        metadata: JSON.parse(JSON.stringify(createdPaymentLink)),
       },
     })
 
@@ -162,7 +162,7 @@ export const getPaymentLinkForOrder = async (orderId: string) => {
         status: PAYMENT_STATUS.PENDING,
         provider: 'MAMO_PAY',
         externalId: createdPaymentLink.id,
-        metadata: createdPaymentLink,
+        metadata: JSON.parse(JSON.stringify(createdPaymentLink)),
       },
     })
 
