@@ -32,6 +32,8 @@ export default {
   pages: {
     signIn: '/admin/login',
   },
+  secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true,
   callbacks: {
     jwt({ token, user }) {
       if (user) {
