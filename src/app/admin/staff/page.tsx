@@ -7,7 +7,7 @@ import { Preloader } from '@/components/ui/preloader'
 
 interface Staff {
   id: string
-  name?: string | null
+  name: string
   role?: string | null
   imageUrl?: string | null
 }

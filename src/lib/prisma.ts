@@ -20,5 +20,5 @@ declare global {
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  globalThis.prisma = prisma as any
+  globalThis.prisma = prisma
 }

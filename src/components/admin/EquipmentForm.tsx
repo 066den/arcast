@@ -12,8 +12,8 @@ import ImageEditable from '@/components/ui/ImageEditable'
 import { ASPECT_RATIOS } from '@/lib/constants'
 
 interface Equipment {
-  id?: string
-  name?: string | null
+  id: string
+  name: string
   description?: string | null
   imageUrl?: string | null
 }
@@ -30,6 +30,7 @@ export default function EquipmentForm({
   onCancel,
 }: EquipmentFormProps) {
   const [formData, setFormData] = useState<Equipment>({
+    id: equipment?.id || '',
     name: equipment?.name || '',
     description: equipment?.description || '',
     imageUrl: equipment?.imageUrl || '',

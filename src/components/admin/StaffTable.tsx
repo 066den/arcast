@@ -18,7 +18,7 @@ import { ConfirmModal } from '@/components/modals/modal'
 
 interface Staff {
   id: string
-  name?: string | null
+  name: string
   role?: string | null
   imageUrl?: string | null
 }

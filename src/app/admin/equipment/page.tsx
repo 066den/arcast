@@ -7,7 +7,7 @@ import { Preloader } from '@/components/ui/preloader'
 
 interface Equipment {
   id: string
-  name?: string | null
+  name: string
   description?: string | null
   imageUrl?: string | null
 }

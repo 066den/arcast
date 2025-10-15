@@ -44,18 +44,43 @@ export async function GET(
       )
     }
 
+    // Transform Prisma studio to match our Studio type
+    const transformedStudio: Studio = {
+      ...studio,
+      bookings:
+        studio.bookings?.map(booking => ({
+          ...booking,
+          totalCost: Number(booking.totalCost),
+          vatAmount: booking.vatAmount ? Number(booking.vatAmount) : 0,
+          discountAmount: booking.discountAmount
+            ? Number(booking.discountAmount)
+            : 0,
+        })) || [],
+    }
+
     if (view === 'day') {
       const availability = await generateDayAvailability(
-        studio,
+        transformedStudio,
         targetDate,
         parseInt(duration)
       )
-      return NextResponse.json({ success: true, studio, availability })
+      return NextResponse.json({
+        success: true,
+        studio: transformedStudio,
+        availability,
+      })
     }
 
     if (view === 'month') {
-      const availability = await generateMonthAvailability(studio, targetDate)
-      return NextResponse.json({ success: true, studio, availability })
+      const availability = await generateMonthAvailability(
+        transformedStudio,
+        targetDate
+      )
+      return NextResponse.json({
+        success: true,
+        studio: transformedStudio,
+        availability,
+      })
     }
 
     if (!view) {

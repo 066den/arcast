@@ -11,8 +11,8 @@ import ImageEditable from '@/components/ui/ImageEditable'
 import { ASPECT_RATIOS } from '@/lib/constants'
 
 interface Staff {
-  id?: string
-  name?: string | null
+  id: string
+  name: string
   role?: string | null
   imageUrl?: string | null
 }
@@ -25,6 +25,7 @@ interface StaffFormProps {
 
 export default function StaffForm({ staff, onSave, onCancel }: StaffFormProps) {
   const [formData, setFormData] = useState<Staff>({
+    id: staff?.id || '',
     name: staff?.name || '',
     role: staff?.role || '',
     imageUrl: staff?.imageUrl || '',

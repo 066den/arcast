@@ -19,7 +19,7 @@ import { ConfirmModal } from '@/components/modals/modal'
 
 interface Equipment {
   id: string
-  name?: string | null
+  name: string
   description?: string | null
   imageUrl?: string | null
 }
