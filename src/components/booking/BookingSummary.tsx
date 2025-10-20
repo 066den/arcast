@@ -2,13 +2,7 @@
 import { useMemo } from 'react'
 import { formatDateDubai } from '@/utils/dateFormat'
 import { formatTimeRange } from '@/utils/time'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '../ui/card'
+import { Card, CardContent } from '../ui/card'
 import { ServiceType, Studio } from '../../types'
 import { Package } from '../../types'
 import { AdditionalService } from '../../types'
@@ -17,7 +11,7 @@ import { useBooking } from '@/hooks/storeHooks/useBooking'
 interface BookingSummaryProps {
   selectedDate: Date | undefined
   selectedTime: string
-  duration: number
+  duration?: number | null
   guests: number
   selectedStudio: string
   selectedService?: string
@@ -57,14 +51,14 @@ export function BookingSummary({
     if (selectedPackage && packages) {
       const pkg = packages.find(p => p.id === selectedPackage)
       if (pkg) {
-        total += parseFloat(pkg.basePrice.toString()) * duration
+        total += parseFloat(pkg.basePrice.toString()) * (duration || 1)
       }
     }
 
     if (selectedService && services) {
       const service = services.find(s => s.id === selectedService)
       if (service) {
-        total += parseFloat(service.price?.toString() || '0') * duration
+        total += parseFloat(service.price?.toString() || '0') * (duration || 1)
       }
     }
 
@@ -127,11 +121,9 @@ export function BookingSummary({
               {formatDate(selectedDate)}
             </p>
             <p className="text-sm  text-slate-300">
-              Time: {formatTimeRange(selectedTime, duration, 'Asia/Dubai')}
+              Time: {formatTimeRange(selectedTime, duration || 1, 'Asia/Dubai')}
             </p>
-            <p className="text-sm  text-slate-300">
-              Duration: {duration} hour{duration > 1 ? 's' : ''}
-            </p>
+            <p className="text-sm  text-slate-300">Duration: ({duration}h)</p>
             <p className="text-sm  text-slate-300">Guests: {guests}</p>
           </div>
         )}
@@ -163,7 +155,7 @@ export function BookingSummary({
             <div className="space-y-1">
               {selectedPackage && packages && (
                 <div className="flex justify-between">
-                  <span className="">
+                  <span>
                     {packages.find(p => p.id === selectedPackage)?.name} (
                     {duration}h)
                   </span>
@@ -172,22 +164,23 @@ export function BookingSummary({
                       packages
                         .find(p => p.id === selectedPackage)
                         ?.basePrice.toString() || '0'
-                    ) * duration}{' '}
+                    ) * (duration || 1)}{' '}
                     AED
                   </span>
                 </div>
               )}
               {selectedService && services && (
                 <div className="flex justify-between text-xl">
-                  <span className="">
+                  <span>
                     {services.find(s => s.id === selectedService)?.name}
+                    {duration ? `(${duration}h)` : ''}
                   </span>
                   <span className="font-medium">
                     {parseFloat(
                       services
                         .find(s => s.id === selectedService)
                         ?.price?.toString() || '0'
-                    ) * duration}{' '}
+                    ) * (duration || 1)}{' '}
                     AED
                   </span>
                 </div>
