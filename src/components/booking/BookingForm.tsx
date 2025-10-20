@@ -443,7 +443,7 @@ const BookingForm = ({
           <BookingSummary
             selectedDate={selectedDate}
             selectedTime={selectedTime}
-            duration={duration}
+            duration={isBooking ? duration : null}
             guests={guests}
             selectedStudio={selectStudioId}
             selectedService={selectServiceId}
