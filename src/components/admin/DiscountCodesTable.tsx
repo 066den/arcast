@@ -127,7 +127,7 @@ export default function DiscountCodesTable({
                   <Checkbox
                     checked={c.isActive}
                     disabled={isPending}
-                    onChecked={v => toggleActive(c.id, Boolean(v))}
+                    onCheckedChange={(v: boolean) => toggleActive(c.id, v)}
                   />
                 </TableCell>
                 <TableCell>

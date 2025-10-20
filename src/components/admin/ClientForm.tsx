@@ -41,7 +41,7 @@ export default function ClientForm({
         ? await updateClient(form.id, payload)
         : await createClient(payload)
       toast.success('Client saved')
-      onSaved?.(saved)
+      onSaved?.(saved as ClientRowBase)
     } catch {
       toast.error('Failed to save client')
     } finally {
