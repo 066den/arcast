@@ -16,7 +16,7 @@ const IntroSection = () => {
     <section className="sm:py-6 py-2 xl:py-14">
       <Headline
         title="Your personal content factory in Dubai"
-        description={`<h3>We produce, edit, and publish your <br /> podcasts and Reels — from idea to audience growth.</h3>`}
+        description={`<h3>We produce, edit, publish <br /> your podcasts and Reels <br/> From idea to audience growth</h3>`}
         image="/assets/images/features.webp"
         actionSection={[
           { label: 'View Our Services', event: handleViewOurServices },

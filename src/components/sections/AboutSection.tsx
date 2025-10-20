@@ -43,10 +43,10 @@ const AboutSection = () => {
           className="sm:col-span-3 max-w-5xl lg:px-10"
           variants={textVariants}
         >
-          We provided solid technical and creative background for the talents.
+          We provide solid technical and creative background for the talents
           <br />
           All you need is just to bring your ideas{' '}
-          <span className="text-accent">and we will do the rest!</span>
+          <span className="text-accent"> and we will do the rest!</span>
         </motion.h3>
       </motion.div>
       {/* <motion.div

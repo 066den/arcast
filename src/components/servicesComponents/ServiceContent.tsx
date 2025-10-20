@@ -26,6 +26,7 @@ import { isActive } from '@tiptap/react'
 import { useCallback, useState } from 'react'
 import { VideoModal } from '../modals/modal'
 import useFlag from '@/hooks/useFlag'
+import { useBooking } from '@/hooks/storeHooks/useBooking'
 
 interface ServiceContentProps {
   servicesTypes: ServiceType[]
@@ -55,7 +56,10 @@ const ServiceContent = ({
   const serviceSamples =
     servicesTypes && servicesTypes.find(st => st.slug === serviceType)?.samples
 
-  const handleBookNow = () => {
+  const { selectServiceType } = useBooking()
+
+  const handleBookNow = (typePackages: string) => {
+    selectServiceType(typePackages)
     navigateWithScroll(ROUTES.BOOKING, SCROLL_TARGETS.BOOKING.SERVICES)
   }
 
@@ -171,7 +175,7 @@ const ServiceContent = ({
           </Carousel>
 
           <Button
-            onClick={handleBookNow}
+            onClick={() => handleBookNow(serviceType)}
             size="lg"
             variant="primary"
             className="group"

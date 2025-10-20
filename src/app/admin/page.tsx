@@ -59,6 +59,31 @@ export default async function AdminPage() {
     discountAmount:
       b.discountAmount != null ? toNumber(b.discountAmount) : null,
     finalAmount: b.finalAmount != null ? toNumber(b.finalAmount) : null,
+    service: b.service
+      ? {
+          ...b.service,
+          price:
+            b.service.price != null ? toNumber(b.service.price) : undefined,
+        }
+      : undefined,
+    contentPackage: b.contentPackage
+      ? {
+          ...b.contentPackage,
+          basePrice:
+            b.contentPackage.basePrice != null
+              ? toNumber(b.contentPackage.basePrice)
+              : undefined,
+        }
+      : undefined,
+    payment: b.payment
+      ? {
+          ...b.payment,
+          amount:
+            b.payment?.amount != null
+              ? toNumber(b.payment?.amount as unknown)
+              : undefined,
+        }
+      : undefined,
     bookingAdditionalServices:
       b.bookingAdditionalServices?.map(
         (
@@ -70,6 +95,18 @@ export default async function AdminPage() {
           ...s,
           unitPrice: toNumber(s.unitPrice),
           totalPrice: toNumber(s.totalPrice),
+          service: (s as { service?: { price?: unknown } }).service
+            ? {
+                ...(s as { service?: { price?: unknown } }).service!,
+                price:
+                  (s as { service?: { price?: unknown } }).service?.price !=
+                  null
+                    ? toNumber(
+                        (s as { service?: { price?: unknown } }).service?.price
+                      )
+                    : undefined,
+              }
+            : undefined,
         })
       ) ?? [],
   }))

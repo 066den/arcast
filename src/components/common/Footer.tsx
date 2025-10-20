@@ -24,7 +24,7 @@ const Footer = () => {
             className="absolute inset-0 bg-black/60 z-10 flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-all duration-300"
             onClick={() =>
               window.open(
-                'https://www.google.com/maps/place/Dubai+Media+City,+Loft+Offices+2,+Entrance+C,+Office+210+arcast/@25.0969654,55.1576304,21z?entry=ttu&g_ep=EgoyMDI1MTAwOC4wIKXMDSoASAFQAw%3D%3D',
+                'https://www.google.com/maps/place/Arcast+Podcast+Studio/@25.0969264,55.1575647,50m/data=!3m1!1e3!4m6!3m5!1s0x3e5f6b9dc660e08b:0xf26221184acae155!8m2!3d25.0969379!4d55.1577319!16s%2Fg%2F11x0wx712_?entry=ttu&g_ep=EgoyMDI1MTAxMy4wIKXMDSoASAFQAw%3D%3D',
                 '_blank'
               )
             }
