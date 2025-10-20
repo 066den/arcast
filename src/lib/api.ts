@@ -31,6 +31,161 @@ export async function getArticles() {
   return apiRequest('/api/blog')
 }
 
+// Case Studies API functions
+export interface CaseStudyData {
+  title: string
+  tagline: string
+  mainText: string
+  clientId?: string | null
+  staffIds: string[]
+  equipmentIds: string[]
+  imageUrls: string[]
+  caseContent: Array<{
+    title: string
+    text: string[]
+    list: string[]
+    imageUrl: string
+    order: number
+  }>
+}
+
+export async function createCaseStudy(data: CaseStudyData) {
+  return apiRequest('/api/case-studies', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function getCaseStudies() {
+  return apiRequest('/api/case-studies')
+}
+
+export async function getCaseStudy(id: string) {
+  return apiRequest(`/api/case-studies/${id}`)
+}
+
+export async function updateCaseStudy(
+  id: string,
+  data: Partial<CaseStudyData> & { isActive?: boolean }
+) {
+  return apiRequest(`/api/case-studies/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function deleteCaseStudy(id: string) {
+  return apiRequest(`/api/case-studies/${id}`, {
+    method: 'DELETE',
+  })
+}
+
+export async function uploadCaseStudyImage(id: string, file: File) {
+  const formData = new FormData()
+  formData.append('imageFile', file)
+
+  return apiRequest(`/api/case-studies/${id}/image`, {
+    method: 'POST',
+    body: formData,
+  })
+}
+
+export async function deleteCaseStudyImage(id: string, imageUrl: string) {
+  return apiRequest(
+    `/api/case-studies/${id}/image?imageUrl=${encodeURIComponent(imageUrl)}`,
+    {
+      method: 'DELETE',
+    }
+  )
+}
+
+// Samples API functions
+export interface SampleData {
+  name: string
+  thumbUrl?: string | null
+  videoUrl?: string | null
+  serviceTypeId?: string | null
+}
+
+export async function createSample(data: SampleData) {
+  return apiRequest('/api/samples', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function getSamples() {
+  return apiRequest('/api/samples')
+}
+
+export async function getSample(id: string) {
+  return apiRequest(`/api/samples/${id}`)
+}
+
+export async function updateSample(id: string, data: Partial<SampleData>) {
+  return apiRequest(`/api/samples/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function deleteSample(id: string) {
+  return apiRequest(`/api/samples/${id}`, {
+    method: 'DELETE',
+  })
+}
+
+export async function uploadSampleImage(id: string, file: File) {
+  const formData = new FormData()
+  formData.append('imageFile', file)
+
+  return apiRequest(`/api/samples/${id}/image`, {
+    method: 'POST',
+    body: formData,
+  })
+}
+
+export async function deleteSampleImage(id: string) {
+  return apiRequest(`/api/samples/${id}/image`, {
+    method: 'DELETE',
+  })
+}
+
+// Bookings API functions
+export interface BookingUpdateData {
+  status: string
+}
+
+export async function getBookings() {
+  return apiRequest('/api/bookings')
+}
+
+export async function getBooking(id: string) {
+  return apiRequest(`/api/bookings/${id}`)
+}
+
+export async function updateBookingStatus(id: string, status: string) {
+  return apiRequest(`/api/bookings/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ status }),
+  })
+}
+
 export async function apiRequest<T>(
   url: string,
   options: RequestInit = {}

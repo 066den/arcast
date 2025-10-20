@@ -32,12 +32,7 @@ const StudioList = () => {
     <Card className="px-4 h-full">
       <CardHeader className="flex flex-row items-center justify-between">
         <h1 className="text-2xl font-bold">Manage Studios</h1>
-        <Button
-          variant="destructive"
-          size="md"
-          disabled={isLoading}
-          onClick={handleAddStudio}
-        >
+        <Button size="md" disabled={isLoading} onClick={handleAddStudio}>
           {isLoading ? (
             'Processing...'
           ) : (

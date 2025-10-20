@@ -137,6 +137,7 @@ export interface Service {
   serviceTypeId: string
   serviceType?: {
     slug: string
+    name?: string
   }
   type?: string
 }

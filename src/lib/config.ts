@@ -6,6 +6,8 @@ import {
   Settings,
   Wrench,
   Users,
+  FileText,
+  Play,
 } from 'lucide-react'
 import { ROUTES } from './constants'
 
@@ -44,6 +46,12 @@ export const adminNavigation = [
   { name: 'Bookings', href: ROUTES.ADMIN, icon: Calendar },
   { name: 'Studios', href: ROUTES.ADMIN + '/studios', icon: Radio },
   { name: 'Services', href: ROUTES.ADMIN + '/services', icon: Box },
+  {
+    name: 'Case Studies',
+    href: ROUTES.ADMIN + '/case-studies',
+    icon: FileText,
+  },
+  { name: 'Samples', href: ROUTES.ADMIN + '/samples', icon: Play },
   { name: 'Equipment', href: ROUTES.ADMIN + '/equipment', icon: Wrench },
   { name: 'Staff', href: ROUTES.ADMIN + '/staff', icon: Users },
   { name: 'Blog', href: ROUTES.ADMIN + '/blog', icon: Book },

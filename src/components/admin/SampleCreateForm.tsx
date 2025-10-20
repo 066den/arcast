@@ -1,0 +1,175 @@
+'use client'
+
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { toast } from 'sonner'
+import { ArrowLeft, Save } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import ImageEditable from '@/components/ui/ImageEditable'
+import { ApiError, createSample } from '@/lib/api'
+
+interface ServiceType {
+  id: string
+  name: string
+}
+
+interface SampleCreateFormProps {
+  serviceTypes: ServiceType[]
+}
+
+export default function SampleCreateForm({
+  serviceTypes,
+}: SampleCreateFormProps) {
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    name: '',
+    videoUrl: '',
+    serviceTypeId: 'none',
+  })
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value,
+    }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    try {
+      const dataToSubmit = {
+        name: formData.name,
+        videoUrl: formData.videoUrl,
+        serviceTypeId:
+          formData.serviceTypeId === 'none' ? null : formData.serviceTypeId,
+      }
+
+      const newSample = await createSample(dataToSubmit)
+      toast.success('Sample created successfully')
+      router.push('/admin/samples')
+    } catch (error) {
+      console.error('Error creating sample:', error)
+      if (error instanceof ApiError) {
+        toast.error(error.message)
+      } else {
+        toast.error('Failed to create sample')
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleBack = () => {
+    router.push('/admin/samples')
+  }
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-6">
+      <div className="flex items-center gap-4">
+        <Button variant="outline" onClick={handleBack}>
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Samples
+        </Button>
+        <h2 className="text-2xl font-bold">Create New Sample</h2>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Basic Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label size="default" htmlFor="name">
+                Sample Name
+              </Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={e => handleInputChange('name', e.target.value)}
+                placeholder="Enter sample name"
+                required
+              />
+            </div>
+
+            <div>
+              <Label size="default" htmlFor="videoUrl">
+                Video URL
+              </Label>
+              <Input
+                id="videoUrl"
+                value={formData.videoUrl}
+                onChange={e => handleInputChange('videoUrl', e.target.value)}
+                placeholder="Enter video URL"
+                type="url"
+              />
+            </div>
+
+            <div>
+              <Label size="default" htmlFor="serviceType">
+                Service Type
+              </Label>
+              <Select
+                value={formData.serviceTypeId}
+                onValueChange={value =>
+                  handleInputChange('serviceTypeId', value)
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a service type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">No service type</SelectItem>
+                  {serviceTypes.map(serviceType => (
+                    <SelectItem key={serviceType.id} value={serviceType.id}>
+                      {serviceType.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Thumbnail Image</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label size="default" className="mb-2 block">
+                Upload Thumbnail (Optional)
+              </Label>
+              <p className="text-sm text-muted-foreground mb-4">
+                You can upload a thumbnail image after creating the sample.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="flex justify-end gap-4">
+          <Button type="button" variant="outline" onClick={handleBack}>
+            Cancel
+          </Button>
+          <Button type="submit" disabled={isLoading}>
+            <Save className="h-4 w-4 mr-2" />
+            {isLoading ? 'Creating...' : 'Create Sample'}
+          </Button>
+        </div>
+      </form>
+    </div>
+  )
+}
