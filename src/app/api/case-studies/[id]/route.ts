@@ -4,10 +4,10 @@ import { prisma } from '@/lib/prisma'
 // GET /api/case-studies/[id] - Fetch a specific case study
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
 
     const caseStudy = await prisma.caseStudy.findUnique({
       where: { id },
@@ -43,10 +43,10 @@ export async function GET(
 // PATCH /api/case-studies/[id] - Update a case study
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
     const body = await request.json()
     const {
       title,
@@ -77,7 +77,7 @@ export async function PATCH(
     }
 
     // Prepare update data
-    const updateData: any = {}
+    const updateData: Record<string, unknown> = {}
 
     if (title !== undefined) updateData.title = title
     if (tagline !== undefined) updateData.tagline = tagline
@@ -109,12 +109,20 @@ export async function PATCH(
 
       // Create new content
       updateData.caseContent = {
-        create: caseContent.map((content: any, index: number) => ({
+        create: (
+          caseContent as Array<{
+            title: string
+            text?: string[]
+            list?: string[]
+            imageUrl?: string
+            order?: number
+          }>
+        ).map((content, index: number) => ({
           title: content.title,
           text: content.text || [],
           list: content.list || [],
           imageUrl: content.imageUrl,
-          order: content.order || index,
+          order: content.order ?? index,
         })),
       }
     }
@@ -147,10 +155,10 @@ export async function PATCH(
 // DELETE /api/case-studies/[id] - Delete a case study
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
 
     // Check if case study exists
     const caseStudy = await prisma.caseStudy.findUnique({

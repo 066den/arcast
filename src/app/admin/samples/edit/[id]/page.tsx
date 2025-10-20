@@ -35,13 +35,13 @@ async function fetchServiceTypes() {
 }
 
 interface EditSamplePageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default async function EditSamplePage({ params }: EditSamplePageProps) {
-  const { id } = params
+  const { id } = await params
 
   const [sample, serviceTypes] = await Promise.all([
     fetchSample(id),

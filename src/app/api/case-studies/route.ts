@@ -59,12 +59,20 @@ export async function POST(request: NextRequest) {
           connect: equipmentIds.map((id: string) => ({ id })),
         },
         caseContent: {
-          create: caseContent.map((content: any, index: number) => ({
+          create: (
+            caseContent as Array<{
+              title: string
+              text?: string[]
+              list?: string[]
+              imageUrl?: string
+              order?: number
+            }>
+          ).map((content, index: number) => ({
             title: content.title,
             text: content.text || [],
             list: content.list || [],
-            imageUrl: content.imageUrl,
-            order: content.order || index,
+            imageUrl: content.imageUrl ?? '',
+            order: content.order ?? index,
           })),
         },
       },

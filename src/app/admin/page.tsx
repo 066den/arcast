@@ -33,6 +33,47 @@ async function fetchBookings() {
 export default async function AdminPage() {
   const bookings = await fetchBookings()
 
+  // Convert Prisma Decimal fields to numbers to satisfy Client Component serialization
+  const hasToString = (v: unknown): v is { toString: () => string } => {
+    return (
+      v !== null &&
+      typeof v === 'object' &&
+      typeof (v as { toString?: unknown }).toString === 'function'
+    )
+  }
+
+  const toNumber = (value: unknown): number | unknown => {
+    if (hasToString(value)) {
+      try {
+        const str = value.toString()
+        if (!Number.isNaN(Number(str))) return Number(str)
+      } catch {}
+    }
+    return value as unknown
+  }
+
+  const serializedBookings = bookings.map(b => ({
+    ...b,
+    totalCost: toNumber(b.totalCost),
+    vatAmount: b.vatAmount != null ? toNumber(b.vatAmount) : null,
+    discountAmount:
+      b.discountAmount != null ? toNumber(b.discountAmount) : null,
+    finalAmount: b.finalAmount != null ? toNumber(b.finalAmount) : null,
+    bookingAdditionalServices:
+      b.bookingAdditionalServices?.map(
+        (
+          s: { unitPrice: unknown; totalPrice: unknown } & Record<
+            string,
+            unknown
+          >
+        ) => ({
+          ...s,
+          unitPrice: toNumber(s.unitPrice),
+          totalPrice: toNumber(s.totalPrice),
+        })
+      ) ?? [],
+  }))
+
   return (
     <div className="p-4">
       <div className="mb-6">
@@ -49,7 +90,11 @@ export default async function AdminPage() {
           </div>
         }
       >
-        <BookingsTable initialData={bookings} />
+        <BookingsTable
+          initialData={
+            serializedBookings as unknown as import('@/types').Booking[]
+          }
+        />
       </Suspense>
     </div>
   )

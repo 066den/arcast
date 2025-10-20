@@ -70,15 +70,15 @@ async function fetchRelatedData() {
 }
 
 interface EditCaseStudyPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default async function EditCaseStudyPage({
   params,
 }: EditCaseStudyPageProps) {
-  const { id } = params
+  const { id } = await params
 
   const [caseStudy, relatedData] = await Promise.all([
     fetchCaseStudy(id),

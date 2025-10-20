@@ -26,6 +26,13 @@ export interface Booking {
   contentPackage?: Package
   lead?: Lead
   discountCode?: string
+  // Optional relations used in admin UI
+  service?: Service
+  payment?: {
+    id: string
+    status: 'PENDING' | 'COMPLETED' | 'FAILED' | string
+    provider?: string | null
+  }
   notionEntryId?: string
 }
 

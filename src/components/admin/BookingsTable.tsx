@@ -21,7 +21,6 @@ import {
   TableHeader,
   TableRow,
 } from '../ui/table'
-import { Button } from '../ui/button'
 import { Badge } from '../ui/badge'
 import {
   Select,
@@ -55,15 +54,16 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
   const [statusFilter, setStatusFilter] = useState('all')
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleStatusChange = async (bookingId: string, newStatus: string) => {
+  const handleStatusChange = async (
+    bookingId: string,
+    newStatus: Booking['status']
+  ) => {
     setIsLoading(true)
     try {
       await updateBookingStatus(bookingId, newStatus)
       setBookings(prev =>
         prev.map(booking =>
-          booking.id === bookingId
-            ? { ...booking, status: newStatus as any }
-            : booking
+          booking.id === bookingId ? { ...booking, status: newStatus } : booking
         )
       )
       toast.success('Booking status updated successfully')
@@ -96,7 +96,7 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
     }
   }
 
-  const formatCurrency = (amount: number | any) => {
+  const formatCurrency = (amount: number | null | undefined) => {
     if (typeof amount === 'number') {
       return new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -224,7 +224,9 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
           <div className="min-w-[150px]">
             <Select
               value={booking.status}
-              onValueChange={value => handleStatusChange(booking.id, value)}
+              onValueChange={value =>
+                handleStatusChange(booking.id, value as Booking['status'])
+              }
               disabled={isLoading}
             >
               <SelectTrigger className="w-full">
@@ -258,7 +260,24 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
             <div className="flex items-center gap-2 mb-1">
               <CreditCard className="h-4 w-4 text-muted-foreground" />
               <span className="font-medium">
-                {formatCurrency(booking.finalAmount || booking.totalCost)}
+                {formatCurrency(
+                  (() => {
+                    const v = (booking.finalAmount ??
+                      booking.totalCost) as unknown
+                    if (typeof v === 'number') return v
+                    if (
+                      v &&
+                      typeof v === 'object' &&
+                      typeof (v as { toString?: unknown }).toString ===
+                        'function'
+                    ) {
+                      const s = (v as { toString: () => string }).toString()
+                      const n = Number(s)
+                      return Number.isNaN(n) ? undefined : n
+                    }
+                    return undefined
+                  })()
+                )}
               </span>
             </div>
             {booking.discountAmount && Number(booking.discountAmount) > 0 && (
