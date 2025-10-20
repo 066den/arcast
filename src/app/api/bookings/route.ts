@@ -24,6 +24,18 @@ export async function GET() {
       include: {
         studio: true,
         lead: true,
+        contentPackage: true,
+        service: true,
+        discountCode: true,
+        bookingAdditionalServices: {
+          include: {
+            service: true,
+          },
+        },
+        payment: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     })
     return NextResponse.json({ success: true, data: bookings })

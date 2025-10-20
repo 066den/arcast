@@ -28,7 +28,7 @@ export default function ServicesTable({ initialData }: ServicesTableProps) {
   // Group services by type for better display
   const groupedServices = services.reduce(
     (acc, service) => {
-      const typeName = service?.serviceType?.slug
+      const typeName = service.serviceType?.name
       if (!typeName) {
         return acc
       }

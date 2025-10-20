@@ -35,7 +35,7 @@ export default async function BusinessPage() {
 
       <section className="lg:py-12 py-6 space-y-6">
         <h2>
-          Who <strong>it works</strong>
+          How <strong>it works</strong>
         </h2>
         <div>
           <Image

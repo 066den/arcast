@@ -194,6 +194,17 @@
       -webkit-text-stroke: 0.25rem var(--color-accent);
     }
   }
+
+  /* Selection styles for better visibility */
+  ::selection {
+    background-color: var(--color-accent);
+    color: white;
+  }
+
+  ::-moz-selection {
+    background-color: var(--color-accent);
+    color: white;
+  }
 }
 
 @layer utilities {
