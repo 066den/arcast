@@ -8,6 +8,9 @@ import {
   Users,
   FileText,
   Play,
+  ClipboardList,
+  UsersRound,
+  Percent,
 } from 'lucide-react'
 import { ROUTES } from './constants'
 
@@ -50,6 +53,13 @@ export const adminNavigation = [
     name: 'Case Studies',
     href: ROUTES.ADMIN + '/case-studies',
     icon: FileText,
+  },
+  { name: 'Orders', href: ROUTES.ADMIN + '/orders', icon: ClipboardList },
+  { name: 'Clients', href: ROUTES.ADMIN + '/clients', icon: UsersRound },
+  {
+    name: 'Discount Codes',
+    href: ROUTES.ADMIN + '/discount-codes',
+    icon: Percent,
   },
   { name: 'Samples', href: ROUTES.ADMIN + '/samples', icon: Play },
   { name: 'Equipment', href: ROUTES.ADMIN + '/equipment', icon: Wrench },

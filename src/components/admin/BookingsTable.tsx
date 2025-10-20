@@ -1,7 +1,7 @@
 'use client'
 
 import { Booking } from '@/types'
-import { useState } from 'react'
+import { useMemo, useState, useTransition } from 'react'
 import {
   ColumnDef,
   flexRender,
@@ -52,20 +52,25 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
-  const [isLoading, setIsLoading] = useState(false)
+  const [loadingId, setLoadingId] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
 
   const handleStatusChange = async (
     bookingId: string,
     newStatus: Booking['status']
   ) => {
-    setIsLoading(true)
+    setLoadingId(bookingId)
     try {
       await updateBookingStatus(bookingId, newStatus)
-      setBookings(prev =>
-        prev.map(booking =>
-          booking.id === bookingId ? { ...booking, status: newStatus } : booking
+      startTransition(() => {
+        setBookings(prev =>
+          prev.map(booking =>
+            booking.id === bookingId
+              ? { ...booking, status: newStatus }
+              : booking
+          )
         )
-      )
+      })
       toast.success('Booking status updated successfully')
     } catch (error) {
       console.error('Error updating booking status:', error)
@@ -75,7 +80,7 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
         toast.error('Failed to update booking status')
       }
     } finally {
-      setIsLoading(false)
+      setLoadingId(null)
     }
   }
 
@@ -116,19 +121,25 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
     })
   }
 
-  const filteredBookings = bookings.filter(booking => {
-    const matchesSearch =
-      booking.lead?.fullName
-        ?.toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      booking.lead?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      booking.studio?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredBookings = useMemo(
+    () =>
+      bookings.filter(booking => {
+        const matchesSearch =
+          booking.lead?.fullName
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          booking.lead?.email
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          booking.studio?.name?.toLowerCase().includes(searchTerm.toLowerCase())
 
-    const matchesStatus =
-      statusFilter === 'all' || booking.status === statusFilter
+        const matchesStatus =
+          statusFilter === 'all' || booking.status === statusFilter
 
-    return matchesSearch && matchesStatus
-  })
+        return matchesSearch && matchesStatus
+      }),
+    [bookings, searchTerm, statusFilter]
+  )
 
   const columns: ColumnDef<Booking>[] = [
     {
@@ -227,7 +238,7 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
               onValueChange={value =>
                 handleStatusChange(booking.id, value as Booking['status'])
               }
-              disabled={isLoading}
+              disabled={loadingId === booking.id || isPending}
             >
               <SelectTrigger className="w-full">
                 <SelectValue>

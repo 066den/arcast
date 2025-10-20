@@ -186,6 +186,108 @@ export async function updateBookingStatus(id: string, status: string) {
   })
 }
 
+// Orders API
+export async function getOrders(query?: Record<string, string | number>) {
+  const params = query
+    ? '?' +
+      new URLSearchParams(
+        Object.entries(query).map(([k, v]) => [k, String(v)])
+      ).toString()
+    : ''
+  return apiRequest(`/api/orders${params}`)
+}
+
+export async function updateOrderStatus(id: string, status: string) {
+  // Placeholder if/when endpoint is added
+  return Promise.resolve({ id, status }) as unknown as Promise<{
+    id: string
+    status: string
+  }>
+}
+
+// Clients API
+export async function getClients() {
+  return apiRequest('/api/clients')
+}
+
+export async function updateClient(
+  id: string,
+  data: Partial<{
+    featured: boolean
+    name: string
+    jobTitle: string
+    showTitle: string
+    testimonial: string
+    imageUrl: string
+  }>
+) {
+  return apiRequest(`/api/clients/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function createClient(data: {
+  name?: string | null
+  jobTitle?: string | null
+  showTitle?: string | null
+  testimonial?: string | null
+  featured?: boolean
+  imageUrl?: string | null
+}) {
+  return apiRequest('/api/clients', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function deleteClient(id: string) {
+  return apiRequest(`/api/clients/${id}`, { method: 'DELETE' })
+}
+
+export async function uploadClientImage(id: string, file: File) {
+  const formData = new FormData()
+  formData.append('imageFile', file)
+  return apiRequest(`/api/clients/${id}/image`, {
+    method: 'POST',
+    body: formData,
+  })
+}
+
+export async function deleteClientImage(id: string) {
+  return apiRequest(`/api/clients/${id}/image`, { method: 'DELETE' })
+}
+
+// Discount Codes API
+export async function getDiscountCodes() {
+  return apiRequest('/api/discount-codes')
+}
+
+export async function createDiscountCode(data: Record<string, unknown>) {
+  return apiRequest('/api/discount-codes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function updateDiscountCode(
+  id: string,
+  data: Record<string, unknown>
+) {
+  return apiRequest(`/api/discount-codes/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function deleteDiscountCode(id: string) {
+  return apiRequest(`/api/discount-codes/${id}`, { method: 'DELETE' })
+}
+
 export async function apiRequest<T>(
   url: string,
   options: RequestInit = {}
