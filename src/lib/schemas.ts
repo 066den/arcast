@@ -98,6 +98,40 @@ export const contactFormSchema = z.object({
     .max(1000, { message: 'Message must be less than 1000 characters' }),
 })
 
+export const callRequestFormSchema = z.object({
+  firstName: z
+    .string()
+    .nonempty({ message: 'First name is required' })
+    .min(2, { message: 'First name must be at least 2 characters' })
+    .max(100, { message: 'First name must be less than 100 characters' })
+    .regex(VALIDATION.NAME_REGEX, {
+      message: 'First name must only contain letters and spaces',
+    }),
+  lastName: z
+    .string()
+    .max(100, { message: 'Last name must be less than 100 characters' })
+    .regex(VALIDATION.NAME_REGEX, {
+      message: 'Last name must only contain letters and spaces',
+    })
+    .optional(),
+  phone: z
+    .string()
+    .nonempty({ message: 'Phone number is required' })
+    .regex(VALIDATION.PHONE_REGEX, { message: 'Invalid phone number' })
+    .transform(val => val.replace(/\D/g, '')),
+  callDateTime: z
+    .string()
+    .nonempty({ message: 'Call date & time is required' })
+    .refine(
+      date => {
+        const selectedDate = new Date(date)
+        const now = new Date()
+        return selectedDate > now
+      },
+      { message: 'Call date & time must be in the future' }
+    ),
+})
+
 export const studioSchema = z.object({
   name: z
     .string()
@@ -144,6 +178,10 @@ export const validateContactForm = (data: unknown) => {
   return contactFormSchema.safeParse(data)
 }
 
+export const validateCallRequestForm = (data: unknown) => {
+  return callRequestFormSchema.safeParse(data)
+}
+
 export const validateBlogRecord = (data: unknown) => {
   return blogRecordSchema.safeParse(data)
 }
@@ -152,5 +190,6 @@ export type LeadSchema = z.infer<typeof bookingLeadSchema>
 export type StudioSchema = z.infer<typeof studioSchema>
 export type StudioImageUploadSchema = z.infer<typeof studioImageUploadSchema>
 export type ContactFormSchema = z.infer<typeof contactFormSchema>
+export type CallRequestFormSchema = z.infer<typeof callRequestFormSchema>
 export type BlogRecordSchema = z.infer<typeof blogRecordSchema>
 export type OrderSchema = z.infer<typeof orderSchema>

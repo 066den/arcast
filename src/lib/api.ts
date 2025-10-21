@@ -111,16 +111,35 @@ export interface SampleData {
   thumbUrl?: string | null
   videoUrl?: string | null
   serviceTypeId?: string | null
+  thumbnailFile?: File | null
 }
 
 export async function createSample(data: SampleData) {
-  return apiRequest('/api/samples', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  })
+  // If there's a thumbnail file, use FormData, otherwise use JSON
+  if (data.thumbnailFile) {
+    const formData = new FormData()
+    formData.append('name', data.name)
+    if (data.videoUrl) formData.append('videoUrl', data.videoUrl)
+    if (data.serviceTypeId) formData.append('serviceTypeId', data.serviceTypeId)
+    if (data.thumbnailFile) formData.append('thumbnailFile', data.thumbnailFile)
+
+    return apiRequest('/api/samples', {
+      method: 'POST',
+      body: formData,
+    })
+  } else {
+    return apiRequest('/api/samples', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: data.name,
+        videoUrl: data.videoUrl,
+        serviceTypeId: data.serviceTypeId,
+      }),
+    })
+  }
 }
 
 export async function getSamples() {
@@ -132,13 +151,31 @@ export async function getSample(id: string) {
 }
 
 export async function updateSample(id: string, data: Partial<SampleData>) {
-  return apiRequest(`/api/samples/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  })
+  // If there's a thumbnail file, use FormData, otherwise use JSON
+  if (data.thumbnailFile) {
+    const formData = new FormData()
+    formData.append('name', data.name || '')
+    if (data.videoUrl) formData.append('videoUrl', data.videoUrl)
+    if (data.serviceTypeId) formData.append('serviceTypeId', data.serviceTypeId)
+    if (data.thumbnailFile) formData.append('thumbnailFile', data.thumbnailFile)
+
+    return apiRequest(`/api/samples/${id}`, {
+      method: 'PUT',
+      body: formData,
+    })
+  } else {
+    return apiRequest(`/api/samples/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: data.name,
+        videoUrl: data.videoUrl,
+        serviceTypeId: data.serviceTypeId,
+      }),
+    })
+  }
 }
 
 export async function deleteSample(id: string) {

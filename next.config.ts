@@ -14,6 +14,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: '*.digitaloceanspaces.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   experimental: {

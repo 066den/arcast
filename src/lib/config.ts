@@ -11,6 +11,7 @@ import {
   ClipboardList,
   UsersRound,
   Percent,
+  UserCheck,
 } from 'lucide-react'
 import { ROUTES } from './constants'
 
@@ -55,6 +56,7 @@ export const adminNavigation = [
     icon: FileText,
   },
   { name: 'Orders', href: ROUTES.ADMIN + '/orders', icon: ClipboardList },
+  { name: 'Leads', href: ROUTES.ADMIN + '/leads', icon: UserCheck },
   { name: 'Clients', href: ROUTES.ADMIN + '/clients', icon: UsersRound },
   {
     name: 'Discount Codes',

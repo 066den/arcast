@@ -96,6 +96,7 @@ export const API_ENDPOINTS = {
   STUDIOS: '/api/studios',
   PACKAGES: '/api/packages',
   CONTACT: '/api/contact',
+  CALL_REQUEST: '/api/call-request',
   PAYMENT_LINK: '/api/payment-link',
   BLOG: '/api/blog',
   ORDERS: '/api/orders',
@@ -184,6 +185,9 @@ export const ERROR_MESSAGES = {
   CONTACT: {
     FAILED: 'Failed to submit contact form',
   },
+  CALL_REQUEST: {
+    FAILED: 'Failed to submit call request',
+  },
   PRISMA: {
     NOT_INITIALIZED: 'Prisma client is not initialized',
   },
@@ -202,6 +206,9 @@ export const SUCCESS_MESSAGES = {
   },
   CONTACT: {
     SUBMITTED: 'Contact form submitted successfully',
+  },
+  CALL_REQUEST: {
+    SUBMITTED: 'Call request submitted successfully',
   },
   PAYMENT: {
     PROCESSED: 'Payment processed successfully',
@@ -250,12 +257,21 @@ export const PAYMENT_PROVIDER = {
 
 export const ALLOWED_FILE_TYPES = {
   IMAGES: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
+  VIDEOS: [
+    'video/mp4',
+    'video/webm',
+    'video/ogg',
+    'video/avi',
+    'video/mov',
+    'video/quicktime',
+  ],
   DOCUMENTS: ['application/pdf', 'application/msword'],
-  AUDIO: ['audio/mpeg', 'audio/wav', 'audio/aac'],
+  AUDIO: ['audio/mpeg', 'audio/wav', 'audio/aac', 'audio/ogg'],
 } as const
 
 export const MAX_FILE_SIZE = {
   IMAGE: 5 * 1024 * 1024, // 5MB
+  VIDEO: 1000 * 1024 * 1024, // 1000MB
   DOCUMENT: 10 * 1024 * 1024, // 10MB
   AUDIO: 50 * 1024 * 1024, // 50MB
 } as const

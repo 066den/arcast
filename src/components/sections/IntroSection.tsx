@@ -2,15 +2,19 @@
 import { ROUTES } from '@/lib/constants'
 import Headline from '../common/Headline'
 import { useRouter } from 'next/navigation'
+import useFlag from '@/hooks/useFlag'
+import CallRequestForm from '../common/CallRequestForm'
 const IntroSection = () => {
   const router = useRouter()
+
+  const [isCallRequestOpen, openCallRequest, closeCallRequest] = useFlag()
 
   const handleViewOurServices = () => {
     router.push(ROUTES.SERVICES)
   }
 
   const handleBookACall = () => {
-    //navigateWithScroll(ROUTES.BOOKING)
+    openCallRequest()
   }
   return (
     <section className="sm:py-6 py-2 xl:py-14">
@@ -23,6 +27,7 @@ const IntroSection = () => {
           { label: 'Book a Call', event: handleBookACall },
         ]}
       />
+      <CallRequestForm isOpen={isCallRequestOpen} onClose={closeCallRequest} />
     </section>
   )
 }

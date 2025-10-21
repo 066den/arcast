@@ -16,6 +16,7 @@ import { toast } from 'sonner'
 import { ArrowLeft, Save, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import ImageEditable from '@/components/ui/ImageEditable'
+import VideoUpload from '@/components/ui/VideoUpload'
 import Image from 'next/image'
 import {
   ApiError,
@@ -23,6 +24,7 @@ import {
   uploadSampleImage,
   deleteSampleImage,
 } from '@/lib/api'
+import { ASPECT_RATIOS } from '@/lib/constants'
 
 interface Sample {
   id: string
@@ -57,11 +59,19 @@ export default function SampleEditForm({
     videoUrl: sample.videoUrl || '',
     serviceTypeId: sample.serviceTypeId || 'none',
   })
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value,
+    }))
+  }
+
+  const handleVideoSelect = (videoUrl: string, videoFile?: File) => {
+    setFormData(prev => ({
+      ...prev,
+      videoUrl,
     }))
   }
 
@@ -110,9 +120,10 @@ export default function SampleEditForm({
     try {
       const dataToSubmit = {
         name: formData.name,
-        videoUrl: formData.videoUrl,
+        videoUrl: formData.videoUrl || sample.videoUrl, // Keep existing videoUrl if new one is empty
         serviceTypeId:
           formData.serviceTypeId === 'none' ? null : formData.serviceTypeId,
+        thumbnailFile,
       }
 
       await updateSample(sample.id, dataToSubmit)
@@ -164,19 +175,6 @@ export default function SampleEditForm({
             </div>
 
             <div>
-              <Label size="default" htmlFor="videoUrl">
-                Video URL
-              </Label>
-              <Input
-                id="videoUrl"
-                value={formData.videoUrl}
-                onChange={e => handleInputChange('videoUrl', e.target.value)}
-                placeholder="Enter video URL"
-                type="url"
-              />
-            </div>
-
-            <div>
               <Label size="default" htmlFor="serviceType">
                 Service Type
               </Label>
@@ -202,6 +200,12 @@ export default function SampleEditForm({
           </CardContent>
         </Card>
 
+        <VideoUpload
+          onVideoSelect={handleVideoSelect}
+          initialVideoUrl={sample.videoUrl || ''}
+          className="w-full"
+        />
+
         <Card>
           <CardHeader>
             <CardTitle>Thumbnail Image</CardTitle>
@@ -212,8 +216,8 @@ export default function SampleEditForm({
                 Upload New Thumbnail
               </Label>
               <ImageEditable
-                onUpload={handleImageUpload}
-                aspectRatio={16 / 9}
+                onUpload={setThumbnailFile}
+                aspectRatio={ASPECT_RATIOS.SQUARE}
                 showCrop={true}
                 size="medium"
                 className="mx-auto"
