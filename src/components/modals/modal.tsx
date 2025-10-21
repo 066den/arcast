@@ -181,17 +181,6 @@ export function VideoModal({
           autoPlay
           poster={poster || ''}
           preload="auto"
-          config={{
-            file: {
-              attributes: {
-                style: {
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'contain',
-                },
-              },
-            },
-          }}
           style={{
             position: 'absolute',
             top: 0,
@@ -200,6 +189,7 @@ export function VideoModal({
             height: '100%',
             minWidth: '100%',
             minHeight: '100%',
+            objectFit: 'contain',
           }}
         />
       </div>

@@ -97,7 +97,12 @@ export async function PUT(
       }
     }
 
-    const updateData: any = {
+    const updateData: {
+      name: string
+      videoUrl: string | null
+      serviceTypeId: string | null
+      thumbUrl?: string | null
+    } = {
       name,
       videoUrl,
       serviceTypeId: serviceTypeId || null,

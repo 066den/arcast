@@ -30,11 +30,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: validation }, { status: 400 })
     }
 
-    const fileUrl = await getUploadedFileGeneric(
-      file,
-      folder || 'files',
-      fileType
-    )
+    const fileUrl = await getUploadedFileGeneric(file, folder || 'files')
     if (!fileUrl) {
       return NextResponse.json(
         { error: 'Failed to upload file' },
