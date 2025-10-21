@@ -16,7 +16,9 @@ import { toast } from 'sonner'
 import { ArrowLeft, Save } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import ImageEditable from '@/components/ui/ImageEditable'
+import VideoUpload from '@/components/ui/VideoUpload'
 import { ApiError, createSample } from '@/lib/api'
+import { ASPECT_RATIOS } from '@/lib/constants'
 
 interface ServiceType {
   id: string
@@ -37,11 +39,19 @@ export default function SampleCreateForm({
     videoUrl: '',
     serviceTypeId: 'none',
   })
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value,
+    }))
+  }
+
+  const handleVideoSelect = (videoUrl: string, videoFile?: File) => {
+    setFormData(prev => ({
+      ...prev,
+      videoUrl,
     }))
   }
 
@@ -55,6 +65,7 @@ export default function SampleCreateForm({
         videoUrl: formData.videoUrl,
         serviceTypeId:
           formData.serviceTypeId === 'none' ? null : formData.serviceTypeId,
+        thumbnailFile,
       }
 
       const newSample = await createSample(dataToSubmit)
@@ -106,19 +117,6 @@ export default function SampleCreateForm({
             </div>
 
             <div>
-              <Label size="default" htmlFor="videoUrl">
-                Video URL
-              </Label>
-              <Input
-                id="videoUrl"
-                value={formData.videoUrl}
-                onChange={e => handleInputChange('videoUrl', e.target.value)}
-                placeholder="Enter video URL"
-                type="url"
-              />
-            </div>
-
-            <div>
               <Label size="default" htmlFor="serviceType">
                 Service Type
               </Label>
@@ -144,6 +142,8 @@ export default function SampleCreateForm({
           </CardContent>
         </Card>
 
+        <VideoUpload onVideoSelect={handleVideoSelect} className="w-full" />
+
         <Card>
           <CardHeader>
             <CardTitle>Thumbnail Image</CardTitle>
@@ -154,8 +154,16 @@ export default function SampleCreateForm({
                 Upload Thumbnail (Optional)
               </Label>
               <p className="text-sm text-muted-foreground mb-4">
-                You can upload a thumbnail image after creating the sample.
+                Upload a thumbnail image for the video sample.
               </p>
+              <ImageEditable
+                className="mt-4 text-center"
+                alt="Sample Thumbnail"
+                onUpload={setThumbnailFile}
+                aspectRatio={ASPECT_RATIOS.LANDSCAPE}
+                showCrop={true}
+                size="large"
+              />
             </div>
           </CardContent>
         </Card>
@@ -164,7 +172,7 @@ export default function SampleCreateForm({
           <Button type="button" variant="outline" onClick={handleBack}>
             Cancel
           </Button>
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" disabled={isLoading || !formData.videoUrl}>
             <Save className="h-4 w-4 mr-2" />
             {isLoading ? 'Creating...' : 'Create Sample'}
           </Button>

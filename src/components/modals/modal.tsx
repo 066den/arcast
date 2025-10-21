@@ -162,17 +162,47 @@ export function VideoModal({
       size="xl"
       title={title || 'Video Player'}
       hideTitle={!title}
-      contentClassName="overflow-hidden"
-      className="p-0 aspect-video"
+      contentClassName="overflow-hidden p-0"
+      className="w-full h-auto"
     >
-      <ReactPlayer
-        src={videoUrl || ''}
-        style={{ width: '100%', height: '100%', aspectRatio: '16/9' }}
-        controls
-        autoPlay
-        poster={poster || ''}
-        preload="auto"
-      />
+      <div
+        className="relative w-full video-modal-container"
+        style={{
+          aspectRatio: '16/9',
+          minHeight: '400px',
+          maxHeight: '80vh',
+        }}
+      >
+        <ReactPlayer
+          src={videoUrl || ''}
+          width="100%"
+          height="100%"
+          controls
+          autoPlay
+          poster={poster || ''}
+          preload="auto"
+          config={{
+            file: {
+              attributes: {
+                style: {
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                },
+              },
+            },
+          }}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            minWidth: '100%',
+            minHeight: '100%',
+          }}
+        />
+      </div>
     </Modal>
   )
 }

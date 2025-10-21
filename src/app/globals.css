@@ -333,3 +333,28 @@
 .ProseMirror {
   outline: none;
 }
+
+/* Firefox-specific video fixes */
+@-moz-document url-prefix() {
+  .video-modal-container {
+    min-height: 400px !important;
+  }
+
+  .video-modal-container video,
+  .video-modal-container iframe {
+    min-width: 100% !important;
+    min-height: 400px !important;
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+
+  /* Ensure ReactPlayer renders properly in Firefox */
+  .react-player {
+    min-height: 400px !important;
+  }
+
+  .react-player > div {
+    min-height: 400px !important;
+  }
+}

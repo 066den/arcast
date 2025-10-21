@@ -250,12 +250,21 @@ export const PAYMENT_PROVIDER = {
 
 export const ALLOWED_FILE_TYPES = {
   IMAGES: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
+  VIDEOS: [
+    'video/mp4',
+    'video/webm',
+    'video/ogg',
+    'video/avi',
+    'video/mov',
+    'video/quicktime',
+  ],
   DOCUMENTS: ['application/pdf', 'application/msword'],
-  AUDIO: ['audio/mpeg', 'audio/wav', 'audio/aac'],
+  AUDIO: ['audio/mpeg', 'audio/wav', 'audio/aac', 'audio/ogg'],
 } as const
 
 export const MAX_FILE_SIZE = {
   IMAGE: 5 * 1024 * 1024, // 5MB
+  VIDEO: 1000 * 1024 * 1024, // 1000MB
   DOCUMENT: 10 * 1024 * 1024, // 10MB
   AUDIO: 50 * 1024 * 1024, // 50MB
 } as const
