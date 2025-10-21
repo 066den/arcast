@@ -96,6 +96,7 @@ export const API_ENDPOINTS = {
   STUDIOS: '/api/studios',
   PACKAGES: '/api/packages',
   CONTACT: '/api/contact',
+  CALL_REQUEST: '/api/call-request',
   PAYMENT_LINK: '/api/payment-link',
   BLOG: '/api/blog',
   ORDERS: '/api/orders',
@@ -184,6 +185,9 @@ export const ERROR_MESSAGES = {
   CONTACT: {
     FAILED: 'Failed to submit contact form',
   },
+  CALL_REQUEST: {
+    FAILED: 'Failed to submit call request',
+  },
   PRISMA: {
     NOT_INITIALIZED: 'Prisma client is not initialized',
   },
@@ -202,6 +206,9 @@ export const SUCCESS_MESSAGES = {
   },
   CONTACT: {
     SUBMITTED: 'Contact form submitted successfully',
+  },
+  CALL_REQUEST: {
+    SUBMITTED: 'Call request submitted successfully',
   },
   PAYMENT: {
     PROCESSED: 'Payment processed successfully',

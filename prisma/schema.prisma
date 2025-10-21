@@ -345,6 +345,18 @@ model OrderPayment {
   @@map("order_payments")
 }
 
+model CallRequest {
+  id           String   @id @default(cuid())
+  firstName    String
+  lastName     String?
+  phone        String
+  callDateTime DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("call_requests")
+}
+
 model Admin {
   id           String    @id @default(cuid())
   username     String    @unique

@@ -162,8 +162,8 @@ export function VideoModal({
       size="xl"
       title={title || 'Video Player'}
       hideTitle={!title}
-      contentClassName="overflow-hidden p-0"
-      className="w-full h-auto"
+      contentClassName="overflow-hidden p-0 pt-4"
+      className="w-full h-auto px-0"
     >
       <div
         className="relative w-full video-modal-container"
