@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import Image from 'next/image'
 import ReactMarkdown from 'react-markdown'
 import { cn } from '@/lib/utils'
-import { CaseStudyEquipment, CaseStudyStaff } from '@/types'
+import { CaseStudyEquipment, CaseStudyStaff, CaseStudyContent } from '@/types'
 import ItemCard from '@/components/common/ItemCard'
 import PackagesSection from '@/components/sections/PackagesSection'
 import { getServiceTypes, getPackages } from '@/services/servicesServices'
@@ -37,7 +37,7 @@ export default async function CaseStudyPage({
         <h3 className="text-accent">{mainText}</h3>
       </section>
       <section className="lg:py-16 py-6 lg:space-y-24 space-y-12">
-        {caseContent?.map((item, index) => (
+        {caseContent?.map((item: CaseStudyContent, index) => (
           <div key={item.id}>
             <h2 className="text-accent mb-6">{item.title}</h2>
             <div
