@@ -3,6 +3,7 @@ import { getServicesByType } from '@/services/servicesServices'
 import ServiceCard from '@/components/servicesComponents/ServiceCard'
 import Image from 'next/image'
 import BusinessCardSection from '@/components/sections/BusinessCardSection'
+import { Service } from '@/types'
 
 export default async function BusinessPage() {
   const initialServices = await getServicesByType('podcast')
@@ -64,7 +65,7 @@ export default async function BusinessPage() {
           results-driven deliverables designed to grow your brand.
         </h3>
         <div className="flex justify-center flex-wrap gap-4 py-4">
-          {initialServices.map((service: any) => (
+          {initialServices.map((service: Service) => (
             <div
               key={service.id}
               className="max-w-[280px] lg:max-w-[300px] 2xl:max-w-[325px]"
