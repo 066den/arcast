@@ -64,7 +64,7 @@ export default async function BusinessPage() {
           results-driven deliverables designed to grow your brand.
         </h3>
         <div className="flex justify-center flex-wrap gap-4 py-4">
-          {initialServices.map(service => (
+          {initialServices.map((service: any) => (
             <div
               key={service.id}
               className="max-w-[280px] lg:max-w-[300px] 2xl:max-w-[325px]"

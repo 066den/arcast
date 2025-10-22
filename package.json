@@ -13,7 +13,7 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky",
+    "prepare": "husky || true",
     "prisma:generate": "prisma generate",
     "prisma:studio": "prisma studio",
     "db:push": "prisma db push",
