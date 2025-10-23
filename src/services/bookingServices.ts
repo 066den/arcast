@@ -1,45 +1,28 @@
-import { ERROR_MESSAGES } from '@/lib/constants'
 import { prisma } from '@/lib/prisma'
-import { BookingFilters } from '@/types'
 
-export const getAdditionalServices = async () => {
-  if (!prisma) {
-    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
-  }
-
+export async function fetchBookings() {
   try {
-    const additionalServices = await prisma.additionalService.findMany({
-      where: {
-        isActive: true,
+    const bookings = await prisma.booking.findMany({
+      include: {
+        studio: true,
+        lead: true,
+        contentPackage: true,
+        service: true,
+        discountCode: true,
+        bookingAdditionalServices: {
+          include: {
+            service: true,
+          },
+        },
+        payment: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     })
-    return additionalServices.map(service => ({
-      ...service,
-      price: Number(service.price),
-    }))
+    return bookings
   } catch (error) {
-    console.error('Error fetching additional services:', error)
-    if (error instanceof Error) {
-      throw new Error(`Failed to fetch additional services: ${error.message}`)
-    }
-    throw new Error('Failed to fetch additional services')
+    console.error('Error fetching bookings:', error)
+    return []
   }
-}
-
-export const getBookings = async (filters: BookingFilters = {}) => {
-  if (!prisma) {
-    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
-  }
-
-  const {
-    status,
-    dateFrom,
-    dateTo,
-    studioId,
-    packageId,
-    limit,
-    offset,
-    sortBy,
-    sortOrder,
-  } = filters
 }

@@ -108,7 +108,7 @@ export async function DELETE(
 
     // Remove the image URL from the array
     const updatedImageUrls = existingCaseStudy.imageUrls.filter(
-      url => url !== imageUrl
+      (url: any) => url !== imageUrl
     )
 
     // Delete the file from storage

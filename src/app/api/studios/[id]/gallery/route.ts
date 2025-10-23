@@ -87,7 +87,7 @@ export async function DELETE(
       )
     }
     const updatedGallery = existingStudio.gallery.filter(
-      url => url !== imageUrl
+      (url: any) => url !== imageUrl
     )
 
     const updatedStudio = await prisma.studio.update({

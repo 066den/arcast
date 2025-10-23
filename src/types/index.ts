@@ -57,6 +57,18 @@ export interface Lead {
   recordingLocation: string | null
   createdAt: Date
   updatedAt: Date
+  bookings?: Booking[]
+  orders?: Order[]
+}
+
+export interface Order {
+  id: string
+  leadId: string
+  serviceId: string
+  quantity: number
+  totalPrice: number
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface Client {

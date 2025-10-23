@@ -1,39 +1,11 @@
 import { Suspense } from 'react'
 import { Preloader } from '@/components/ui/preloader'
 import BookingsTable from '@/components/admin/BookingsTable'
-import { prisma } from '@/lib/prisma'
-
-async function fetchBookings() {
-  try {
-    const bookings = await prisma.booking.findMany({
-      include: {
-        studio: true,
-        lead: true,
-        contentPackage: true,
-        service: true,
-        discountCode: true,
-        bookingAdditionalServices: {
-          include: {
-            service: true,
-          },
-        },
-        payment: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    })
-    return bookings
-  } catch (error) {
-    console.error('Error fetching bookings:', error)
-    return []
-  }
-}
+import { fetchBookings } from '@/services/bookingServices'
 
 export default async function AdminPage() {
   const bookings = await fetchBookings()
 
-  // Convert Prisma Decimal fields to numbers to satisfy Client Component serialization
   const hasToString = (v: unknown): v is { toString: () => string } => {
     return (
       v !== null &&
@@ -52,7 +24,8 @@ export default async function AdminPage() {
     return value as unknown
   }
 
-  const serializedBookings = bookings.map(b => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const serializedBookings = bookings.map((b: any) => ({
     ...b,
     totalCost: toNumber(b.totalCost),
     vatAmount: b.vatAmount != null ? toNumber(b.vatAmount) : null,

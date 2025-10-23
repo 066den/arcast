@@ -1,36 +1,10 @@
 import { Suspense } from 'react'
 import { Preloader } from '@/components/ui/preloader'
 import DiscountCodesTable from '@/components/admin/DiscountCodesTable'
-import { prisma } from '@/lib/prisma'
-
-type Code = {
-  id: string
-  code: string
-  type: 'PERCENTAGE' | 'FIXED_AMOUNT' | string
-  value: number
-  currency: string
-  isActive: boolean
-  startDate: string | Date
-  endDate: string | Date
-  usageLimit?: number | null
-  usedCount?: number
-  firstTimeOnly?: boolean
-  minOrderAmount?: number | null
-}
-
-async function fetchCodes() {
-  const codes = await prisma.discountCode.findMany({
-    orderBy: { createdAt: 'desc' },
-  })
-  return codes.map(c => ({
-    ...c,
-    value: Number(c.value),
-    minOrderAmount: c.minOrderAmount ? Number(c.minOrderAmount) : null,
-  }))
-}
+import { fetchDiscountCodes } from '@/services/discountCodeServices'
 
 export default async function DiscountCodesPage() {
-  const codes = await fetchCodes()
+  const codes = await fetchDiscountCodes()
   return (
     <div className="p-4">
       <div className="mb-6">
@@ -50,7 +24,7 @@ export default async function DiscountCodesPage() {
           </div>
         }
       >
-        <DiscountCodesTable initialData={codes as Code[]} />
+        <DiscountCodesTable initialData={codes} />
       </Suspense>
     </div>
   )

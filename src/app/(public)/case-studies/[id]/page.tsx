@@ -37,7 +37,7 @@ export default async function CaseStudyPage({
         <h3 className="text-accent">{mainText}</h3>
       </section>
       <section className="lg:py-16 py-6 lg:space-y-24 space-y-12">
-        {caseContent?.map((item: CaseStudyContent, index) => (
+        {caseContent?.map((item: CaseStudyContent, index: number) => (
           <div key={item.id}>
             <h2 className="text-accent mb-6">{item.title}</h2>
             <div

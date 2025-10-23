@@ -1,9 +1,7 @@
-'use client'
-
-import { useEffect, useState } from 'react'
+import { Suspense } from 'react'
 import StaffTable from '@/components/admin/StaffTable'
-import { toast } from 'sonner'
 import { Preloader } from '@/components/ui/preloader'
+import { fetchStaff } from '@/services/staffServices'
 
 interface Staff {
   id: string
@@ -12,39 +10,8 @@ interface Staff {
   imageUrl?: string | null
 }
 
-export default function StaffPage() {
-  const [staff, setStaff] = useState<Staff[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    fetchStaff()
-  }, [])
-
-  const fetchStaff = async () => {
-    try {
-      const response = await fetch('/api/staff')
-      if (!response.ok) {
-        throw new Error('Failed to fetch staff')
-      }
-      const data = await response.json()
-      setStaff(data)
-    } catch (error) {
-      console.error('Error fetching staff:', error)
-      toast.error('Error loading staff')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  if (isLoading) {
-    return (
-      <div className="p-4">
-        <div className="flex items-center justify-center h-64">
-          <Preloader variant="spinner" size="xl" text="Loading..." />
-        </div>
-      </div>
-    )
-  }
+export default async function StaffPage() {
+  const staff = await fetchStaff()
 
   return (
     <div className="p-4">
@@ -54,7 +21,15 @@ export default function StaffPage() {
           Add and edit staff members for case studies
         </p>
       </div>
-      <StaffTable initialData={staff} />
+      <Suspense
+        fallback={
+          <div className="flex items-center justify-center h-64">
+            <Preloader variant="spinner" size="xl" text="Loading..." />
+          </div>
+        }
+      >
+        <StaffTable initialData={staff as Staff[]} />
+      </Suspense>
     </div>
   )
 }

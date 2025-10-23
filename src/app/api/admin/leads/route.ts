@@ -39,9 +39,11 @@ export async function GET() {
       return v as unknown
     }
 
-    const serializedLeads = leads.map(lead => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const serializedLeads = leads.map((lead: any) => ({
       ...lead,
-      bookings: lead.bookings.map(booking => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      bookings: lead.bookings.map((booking: any) => ({
         ...booking,
         totalCost: toNum(booking.totalCost),
         vatAmount: booking.vatAmount != null ? toNum(booking.vatAmount) : null,
@@ -62,7 +64,8 @@ export async function GET() {
             }
           : null,
       })),
-      orders: lead.orders.map(order => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      orders: lead.orders.map((order: any) => ({
         ...order,
         totalCost: toNum(order.totalCost),
         vatAmount: order.vatAmount != null ? toNum(order.vatAmount) : null,

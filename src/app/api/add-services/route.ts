@@ -12,7 +12,8 @@ export async function GET() {
       },
     })
 
-    const transformedServices = services.map(service => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const transformedServices = services.map((service: any) => ({
       id: service.id,
       name: service.name,
       description: service.description,

@@ -48,7 +48,7 @@ export async function GET(
     const transformedStudio: Studio = {
       ...studio,
       bookings:
-        studio.bookings?.map(booking => ({
+        studio.bookings?.map((booking: any) => ({
           ...booking,
           totalCost: Number(booking.totalCost),
           vatAmount: booking.vatAmount ? Number(booking.vatAmount) : 0,

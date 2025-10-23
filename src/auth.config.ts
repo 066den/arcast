@@ -23,7 +23,6 @@ export default {
 
           return user
         } catch (error) {
-          console.error('Authorization error:', error)
           return null
         }
       },

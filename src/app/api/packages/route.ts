@@ -24,14 +24,14 @@ export async function GET() {
       },
     })
     // Transform the data to match the frontend expectations
-    const transformedPackages = packages.map(pkg => ({
+    const transformedPackages = packages.map((pkg: any) => ({
       id: pkg.id,
       name: pkg.name,
       pricePerHour: pkg.basePrice.toString(),
       currency: pkg.currency,
       description: pkg.description,
       deliveryTime: '24-48 hours', // Default delivery time
-      features: pkg.servicePackageRecords.map(record =>
+      features: pkg.servicePackageRecords.map((record: any) =>
         record.serviceQuantity > 1
           ? `${record.serviceQuantity}x ${record.includedService.name}`
           : record.includedService.name
@@ -67,15 +67,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const {
-      name,
-      pricePerHour,
-      currency,
-      description,
-      deliveryTime,
-      features,
-      studioIds,
-    } = await req.json()
+    const { name, pricePerHour, currency, description } = await req.json()
     const packageData = {
       name,
       basePrice: parseFloat(pricePerHour),
