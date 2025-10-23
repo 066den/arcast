@@ -8,16 +8,16 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 // AWS S3 Configuration for DigitalOcean Spaces
 const s3Client = new S3Client({
-  region: process.env.AWS_REGION || 'blr1',
-  endpoint: process.env.AWS_ENDPOINT || 'https://blr1.digitaloceanspaces.com',
+  region: 'blr1',
+  endpoint: 'https://blr1.digitaloceanspaces.com',
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: 'DO801ZANC8M4JR4ANL7Z',
+    secretAccessKey: 'R1umCcwzZQtooGLR1eccRTNh0KBVqrptLZVpWlEmZEo',
   },
   forcePathStyle: false, // DigitalOcean Spaces uses virtual-hosted-style URLs
 })
 
-const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME || 'arcast-s3'
+const BUCKET_NAME = 'arcast-s3'
 
 export interface UploadResult {
   url: string
