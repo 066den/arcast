@@ -1,59 +1,139 @@
 import { BOOKING_STATUS } from '@/lib/constants'
+import { Decimal } from '@prisma/client/runtime/library'
+
+type BookingStatus = (typeof BOOKING_STATUS)[keyof typeof BOOKING_STATUS]
+
+export type NoneToVoidFunction = () => void
+
 export interface Booking {
   id: string
-  startTime: string // ISO 8601 format "YYYY-MM-DDTHH:mm:ss.sssZ"
-  endTime: string // ISO 8601 format
+  startTime: Date
+  endTime: Date
   numberOfSeats: number
-  totalCost: number // Assuming it's a string (e.g., "3800"), change to number if needed
-  vatAmount: number
-  discountAmount: number
-  status: typeof BOOKING_STATUS // Enum-like restriction
-  studioId: string
-  packageId: string
+  totalCost: number | Decimal
+  vatAmount: number | Decimal
+  discountAmount: number | Decimal | null
+  finalAmount?: number | Decimal | null
+  status: BookingStatus
+  studioId: string | null
+  contentPackageId: string | null
+  serviceId?: string | null
   leadId: string
   discountCodeId: string | null
-  createdAt: string
-  updatedAt: string
-  studio: Studio
-  package: StudioPackage
-  lead: Lead
-  discountCode: string | null
-  notionEntryId: string
+  createdAt: Date
+  updatedAt: Date
+  studio?: Studio
+  contentPackage?: Package
+  lead?: Lead
+  discountCode?: string
+  // Optional relations used in admin UI
+  service?: Service
+  payment?: {
+    id: string
+    status: 'PENDING' | 'COMPLETED' | 'FAILED' | string
+    provider?: string | null
+  }
+  notionEntryId?: string
+}
+
+export interface BookingFilters {
+  status?: string
+  dateFrom?: string
+  dateTo?: string
+  studioId?: string
+  packageId?: string
+  limit?: number
+  offset?: number
+  sortBy?: string
+  sortOrder?: string
 }
 
 export interface Lead {
   id: string
   fullName: string
-  email: string
-  phoneNumber: string
-  recordingLocation: string
-  createdAt: string
-  updatedAt: string
+  email: string | null
+  phoneNumber: string | null
+  whatsappNumber: string | null
+  recordingLocation: string | null
+  createdAt: Date
+  updatedAt: Date
+  bookings?: Booking[]
+  orders?: Order[]
+}
+
+export interface Order {
+  id: string
+  leadId: string
+  serviceId: string
+  quantity: number
+  totalPrice: number
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface Client {
+  id: string
+  name: string | null
+  imageUrl: string | null
+  jobTitle?: string | null
+  showTitle?: string | null
+  testimonial: string | null
+  featured: boolean
 }
 
 export type Studio = {
   id: string
   name: string
   location: string
-  imageUrl: string
+  imageUrl: string | null
+  gallery: string[]
   totalSeats: number
   openingTime: string
   closingTime: string
-  description: string
-  capacity: number
-  isFullyBooked: boolean
-  availableSlots: number
-  totalSlots: number
+  description?: string
+  capacity?: number
+  //  isFullyBooked: boolean
+  // availableSlots: number
+  // totalSlots: number
+  bookings?: Booking[]
+  //packages?: StudioPackage[]
 }
 
-export interface StudioPackage {
+export interface Package {
   id: string
   name: string
-  price_per_hour: number
+  basePrice: number | Decimal
   currency: string
+  description: string | null
+  isActive: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface PackageService {
+  id: string
+  name: string
   description: string
-  delivery_time: number
-  packagePerks: PackagePerk[]
+  price: number
+  quantity: number
+}
+
+export interface PackageAdditionalService {
+  id: string
+  name: string
+  type: 'STANDARD' | 'BY_THREE'
+  price: number
+  currency: string
+  count: number
+  description: string | null
+  imageUrls: string[]
+  isActive: boolean
+  quantity: number
+}
+
+export interface PackageWithServices extends Package {
+  services: PackageService[]
+  additionalServices: PackageAdditionalService[]
 }
 
 export interface PackagePerk {
@@ -63,25 +143,42 @@ export interface PackagePerk {
   count?: number | null
 }
 
-export interface AdditionalService {
+export interface Service {
   id: string
-  title: string
-  type:
-    | 'STANDARD_EDIT_SHORT_FORM'
-    | 'CUSTOM_EDIT_SHORT_FORM'
-    | 'STANDARD_EDIT_LONG_FORM'
-    | 'CUSTOM_EDIT_LONG_FORM'
-    | 'LIVE_VIDEO_CUTTING'
-    | 'SUBTITLES'
-    | 'TELEPROMPTER_SUPPORT'
-    | 'MULTI_CAM_RECORDING'
-    | 'EPISODE_TRAILER_LONG_FORM'
-    | 'EPISODE_TRAILER_SHORT_FORM'
-    | 'WARDROBE_STYLING_CONSULTATION'
-    | 'PODCAST_DISTRIBUTION'
+  name: string
+  description: string | null
+  includes: string[]
+  imageUrl: string | null
   price: number
   currency: string
-  description: string
+  isPopular: boolean
+  isActive: boolean
+  serviceTypeId: string
+  serviceType?: {
+    slug: string
+    name?: string
+  }
+  type?: string
+}
+
+export interface ServiceType {
+  id: string
+  name: string
+  slug: string
+  sortOrder: number
+  description: string | null
+  isActive: boolean
+  services?: Service[]
+  samples?: Sample[]
+}
+
+export interface AdditionalService {
+  id: string
+  name: string
+  type: 'STANDARD' | 'BY_THREE'
+  price: number | Decimal
+  currency: string
+  description: string | null
   imageUrls: string[]
   quantity?: number
   isActive?: boolean
@@ -124,4 +221,67 @@ export interface TimeSlotList {
   end: string
   start: string
   duration?: number
+}
+
+export interface Sample {
+  id: string
+  name: string | null
+  thumbUrl: string | null
+  videoUrl: string | null
+  serviceTypeId: string | null
+  serviceType?: ServiceType | null
+}
+
+export interface CaseStudyContentItem {
+  title: string
+  text?: string[]
+  list?: string[]
+}
+
+export interface CaseStudyContent {
+  id: string
+  caseStudyId: string
+  title: string
+  text: string[]
+  list: string[]
+  imageUrl: string
+  order: number
+}
+
+export interface CaseStudyEquipment {
+  id: string
+  name?: string | null
+  description?: string | null
+  imageUrl?: string | null
+}
+
+export interface CaseStudyStaff {
+  id: string
+  name: string | null
+  role?: string | null
+  imageUrl?: string | null
+}
+
+export interface CaseStudy {
+  id: string
+  clientId: string | null
+  title: string | null
+  tagline: string | null
+  mainText: string | null
+  featured: boolean
+  imageUrls: string[]
+  client?: Client | null
+  caseContent?: CaseStudyContent[]
+  equipment?: CaseStudyEquipment[]
+  staff?: CaseStudyStaff[]
+}
+
+export interface BlogRecord {
+  id: string
+  title: string | null
+  tagline: string | null
+  mainText: string | null
+  mainImageUrl?: string | null
+  createdAt: Date
+  updatedAt: Date
 }

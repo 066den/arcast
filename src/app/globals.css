@@ -1,13 +1,12 @@
 @import 'tailwindcss';
 
-@custom-variant dark (&:is(.dark *));
-
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.147 0.004 49.25);
-  --primary: oklch(0.71 0.18 50.9);
-  --primary-dark: oklch(0.67 0.18 50.9);
-  --border: oklch(0.923 0.003 48.717);
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(0 0% 20%);
+  --primary: hsl(0, 0%, 20%);
+  --accent: hsl(16, 88%, 57%);
+  --white-smoke: hsl(0 0% 95%);
+  --border: hsl(0 0% 90%);
   --ring: oklch(0.709 0.01 56.259);
   --sidebar: hsl(0 0% 98%);
   --sidebar-foreground: hsl(240 5.3% 26.1%);
@@ -21,15 +20,18 @@
   --card-foreground: oklch(0.147 0.004 49.25);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.147 0.004 49.25);
+  --muted: hsl(0 0% 96%);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
-  --color-primary-dark: var(--primary-dark);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--white-smoke);
   --color-border: var(--border);
   --color-ring: var(--ring);
+  --color-input: var(--white-smoke);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -42,41 +44,317 @@
   --color-card: var(--card);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
-}
-
-.dark {
-  --background: oklch(0.147 0.004 49.25);
-  --foreground: oklch(0.985 0.001 106.423);
-  --border: oklch(1 0 0 / 10%);
-  --ring: oklch(0.553 0.013 58.071);
-  --sidebar: hsl(240 5.9% 10%);
-  --sidebar-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-primary: hsl(224.3 76.3% 48%);
-  --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(240 3.7% 15.9%);
-  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-border: hsl(240 3.7% 15.9%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  --color-muted: var(--muted);
+  --color-destructive: var(--color-red-500);
+  --color-destructive-foreground: var(--white-smoke);
+  --color-destructive-dark: var(--color-red-600);
+  --color-destructive-light: var(--color-red-100);
+  --font-hanken-grotesk: var(--font-hanken-grotesk);
+  --font-nunito-sans: var(--font-nunito-sans);
+  --radius-5xl: 2.5rem;
+  --shadow-3xl: 0px 4px 12px -2px rgba(0, 0, 0, 0.1);
+  --shadow-4xl: 0px 22px 44px -6px rgba(45, 54, 67, 0.08);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    scrollbar-width: thin;
+    scrollbar-color: #ededed transparent;
+  }
+  html {
+    line-height: 1.35;
+    height: 100%;
+    overflow: hidden;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-x-hidden h-screen;
+    scrollbar-gutter: stable both-edges;
+  }
+
+  /* body:not([data-scroll-locked]) {
+    scrollbar-gutter: stable both-edges;
+  } */
+
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #ededed;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  h1,
+  h2 {
+    @apply font-hanken-grotesk font-medium xl:text-[4em] lg:text-5xl text-4xl tracking-[-0.04em];
+  }
+
+  h2 strong {
+    @apply font-medium text-accent;
+  }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-hanken-grotesk font-medium tracking-[-0.02em];
+  }
+
+  h3 {
+    @apply xl:text-[2.75rem] lg:text-[2.25rem] md:text-3xl text-2xl;
+  }
+
+  section {
+    @apply container mx-auto px-4;
+  }
+
+  .text-secondary {
+    color: hsl(0 0% 55%);
+    letter-spacing: -0.04em;
+  }
+
+  .text-content {
+    p,
+    blockquote {
+      @apply lg:mb-10 md:mb-6 mb-4;
+      letter-spacing: -0.02em;
+    }
+    p:last-of-type {
+      margin-bottom: 0;
+    }
+    ul {
+      @apply list-disc md:ml-[1.5em] ml-[1em];
+      margin-bottom: 1.25em;
+      letter-spacing: -0.04em;
+    }
+    ul:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+
+  .blog-text-content {
+    h2 {
+      @apply text-accent mb-4;
+    }
+    p,
+    ul {
+      @apply font-nunito-sans lg:text-[2em] md:text-[1.5em] text-[1.25em];
+    }
+    ul:last-of-type {
+      margin-bottom: 1.25em;
+    }
+  }
+
+  .custom-list {
+    list-style-type: none !important;
+    @apply font-nunito-sans;
+  }
+
+  .custom-list li {
+    @apply relative md:mb-8 mb-4;
+  }
+
+  .custom-list li:before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 0;
+    width: 1.65rem;
+    height: 2.5rem;
+    background-image: url('/icons/list-icon.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: -1;
+    @apply md:w-6 w-4 md:h-10 h-8 md:mr-[1.125rem] mr-1.5 sm:mt-1 mt-0.5 md:-mt-0.5;
+  }
+
+  .section-title {
+    @apply uppercase text-accent font-bold mb-2 font-hanken-grotesk;
+  }
+
+  .colored-text {
+    strong {
+      @apply text-accent;
+      font-weight: inherit;
+    }
+  }
+
+  .outline-text {
+    @apply text-white xl:text-[12.5em] lg:text-[8.5em] md:text-[7em] text-[5em] leading-[1.18] font-hanken-grotesk font-bold;
+    line-height: 1.18;
+    paint-order: stroke fill;
+    -webkit-text-stroke: 0.5rem var(--color-accent);
+    @media (max-width: 768px) {
+      -webkit-text-stroke: 0.25rem var(--color-accent);
+    }
+  }
+
+  /* Selection styles for better visibility */
+  ::selection {
+    background-color: var(--color-accent);
+    color: white;
+  }
+
+  ::-moz-selection {
+    background-color: var(--color-accent);
+    color: white;
+  }
+}
+
+@layer utilities {
+  .image-loading-optimized {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  .image-loading-optimized.loaded {
+    opacity: 1;
+  }
+
+  .hero-background {
+    z-index: -1;
+    background-image: linear-gradient(
+      to bottom right,
+      rgba(15, 23, 42, 0.6),
+      rgba(30, 41, 59, 0.4)
+    );
+  }
+
+  .video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+  }
+
+  .video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0.5) 100%
+    );
+    z-index: 1;
+  }
+
+  video {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  .scrollbar-gutter-stable {
+    scrollbar-gutter: stable both-edges;
+  }
+
+  @media (max-width: 768px) {
+    .video-background {
+      filter: brightness(0.8);
+    }
+  }
+
+  /* Hero section animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(50px) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes fadeInUpDelayed {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    video {
+      animation: none;
+      transition: none;
+    }
+
+    .animate-fade-in-up,
+    .animate-fade-in-up-delayed,
+    .animate-fade-in {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* Smooth Overlapping Carousel Styles */
+.smooth-overlapping-item {
+  position: absolute;
+  transition:
+    transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, opacity;
+}
+
+.ProseMirror {
+  outline: none;
+}
+
+/* Firefox-specific video fixes */
+@-moz-document url-prefix() {
+  .video-modal-container {
+    min-height: 400px !important;
+  }
+
+  .video-modal-container video,
+  .video-modal-container iframe {
+    min-width: 100% !important;
+    min-height: 400px !important;
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+
+  /* Ensure ReactPlayer renders properly in Firefox */
+  .react-player {
+    min-height: 400px !important;
+  }
+
+  .react-player > div {
+    min-height: 400px !important;
   }
 }

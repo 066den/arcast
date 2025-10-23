@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import {
-  generateAvailableTimeSlots,
-  getDubaiNow,
-  getDubaiToday,
-  getTargetToday,
-} from '../../../../utils/time'
-import { TimeSlotList } from '../../../../types'
+import { generateSimpleTimeSlots } from '../../../../utils/time'
+import { Studio, TimeSlotList } from '../../../../types'
 import { BOOKING_STATUS, ERROR_MESSAGES, HTTP_STATUS } from '@/lib/constants'
+import { validateStudio } from '@/lib/schemas'
 
 export async function GET(
   request: NextRequest,
@@ -15,10 +11,23 @@ export async function GET(
 ) {
   const { id } = await context.params
   const { searchParams } = new URL(request.url)
-  const { date, view = 'day' } = Object.fromEntries(searchParams)
+  const {
+    date,
+    view = 'day',
+    duration = '1',
+  } = Object.fromEntries(searchParams)
 
   try {
-    const targetDate = new Date(date)
+    // Parse date string and create date at midnight in UTC
+    const dateParts = date.split('-')
+    const targetDate = new Date(
+      Date.UTC(
+        parseInt(dateParts[0]), // year
+        parseInt(dateParts[1]) - 1, // month (0-based)
+        parseInt(dateParts[2]) // day
+      )
+    )
+
     if (isNaN(targetDate.getTime())) {
       return NextResponse.json(
         { error: ERROR_MESSAGES.INVALID_DATE_FORMAT },
@@ -35,14 +44,43 @@ export async function GET(
       )
     }
 
+    // Transform Prisma studio to match our Studio type
+    const transformedStudio: Studio = {
+      ...studio,
+      bookings:
+        studio.bookings?.map((booking: any) => ({
+          ...booking,
+          totalCost: Number(booking.totalCost),
+          vatAmount: booking.vatAmount ? Number(booking.vatAmount) : 0,
+          discountAmount: booking.discountAmount
+            ? Number(booking.discountAmount)
+            : 0,
+        })) || [],
+    }
+
     if (view === 'day') {
-      const availability = await generateDayAvailability(studio, targetDate)
-      return NextResponse.json({ success: true, studio, availability })
+      const availability = await generateDayAvailability(
+        transformedStudio,
+        targetDate,
+        parseInt(duration)
+      )
+      return NextResponse.json({
+        success: true,
+        studio: transformedStudio,
+        availability,
+      })
     }
 
     if (view === 'month') {
-      const availability = await generateMonthAvailability(studio, targetDate)
-      return NextResponse.json({ success: true, studio, availability })
+      const availability = await generateMonthAvailability(
+        transformedStudio,
+        targetDate
+      )
+      return NextResponse.json({
+        success: true,
+        studio: transformedStudio,
+        availability,
+      })
     }
 
     if (!view) {
@@ -58,6 +96,59 @@ export async function GET(
     return NextResponse.json(
       { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
+    )
+  }
+}
+
+export async function PATCH(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id } = await context.params
+  try {
+    const body = await req.json()
+    const { updateData } = body
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Studio ID is required' },
+        { status: 400 }
+      )
+    }
+
+    const validation = validateStudio(updateData)
+    if (!validation.success) {
+      return NextResponse.json(
+        {
+          error: 'Validation failed',
+          details: validation.error.issues,
+        },
+        { status: 400 }
+      )
+    }
+
+    const existingStudio = await prisma.studio.findUnique({
+      where: { id },
+    })
+
+    if (!existingStudio) {
+      return NextResponse.json(
+        { error: ERROR_MESSAGES.STUDIO.NOT_FOUND },
+        { status: 404 }
+      )
+    }
+
+    const updatedStudio = await prisma.studio.update({
+      where: { id },
+      data: validation.data,
+    })
+
+    return NextResponse.json(updatedStudio)
+  } catch (error) {
+    console.error('Error updating studio:', error)
+    return NextResponse.json(
+      { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
+      { status: 500 }
     )
   }
 }
@@ -123,17 +214,33 @@ const getStudioWithBookings = async (
 
 // Helper method to generate day availability
 const generateDayAvailability = async (
-  studio: {
-    id: string
-    openingTime: string
-    closingTime: string
-    bookings: { startTime: Date; endTime: Date }[]
-  },
-  targetDate: Date
+  studio: Studio,
+  targetDate: Date,
+  duration: number = 1
 ) => {
-  const today = getDubaiToday()
+  // Get current time in Dubai timezone (UTC+4)
+  const now = new Date()
+  const dubaiNow = new Date(now.getTime() + 4 * 60 * 60 * 1000)
+  const today = new Date(
+    Date.UTC(
+      dubaiNow.getUTCFullYear(),
+      dubaiNow.getUTCMonth(),
+      dubaiNow.getUTCDate()
+    )
+  )
 
-  const targetDateMidnight = getTargetToday(targetDate)
+  // Create target date at midnight in UTC
+  const targetDateMidnight = new Date(
+    Date.UTC(
+      targetDate.getFullYear(),
+      targetDate.getMonth(),
+      targetDate.getDate(),
+      0,
+      0,
+      0
+    )
+  )
+
   // Check if date is in the past
   if (targetDateMidnight < today) {
     return {
@@ -145,26 +252,46 @@ const generateDayAvailability = async (
   }
 
   // Get bookings for the specific date
-  const dayBookings = filterBookingsForDate(studio.bookings, targetDateMidnight)
+  const dayBookings = studio.bookings
+    ? filterBookingsForDate(
+        studio.bookings.map(b => ({
+          startTime: new Date(b.startTime),
+          endTime: new Date(b.endTime),
+        })),
+        targetDateMidnight
+      )
+    : []
 
-  // Generate time slots
-  const timeSlots = generateAvailableTimeSlots(
+  // Generate time slots using simple function
+  const timeSlots = generateSimpleTimeSlots(
     studio.openingTime,
     studio.closingTime,
     dayBookings,
-    targetDateMidnight
+    targetDate
   )
 
-  // Filter past slots if it's today
+  // Filter to show only available slots that can accommodate the duration
   const isToday = isSameDate(targetDate, today)
-  const filteredTimeSlots = isToday
-    ? timeSlots.filter(slot => new Date(slot.start) > getDubaiNow())
-    : timeSlots
+
+  const availableTimeSlots = timeSlots.filter(slot => {
+    // Check if slot is available
+    if (!slot.available) return false
+
+    // Check if slot is in the future (for today)
+    if (isToday) {
+      const slotStart = new Date(slot.start)
+      const slotStartDubai = new Date(slotStart.getTime() + 4 * 60 * 60 * 1000)
+      if (slotStartDubai <= dubaiNow) return false
+    }
+
+    // Check if there are enough consecutive available slots for the duration
+    return hasConsecutiveAvailableSlots(timeSlots, slot, duration, studio)
+  })
 
   return {
     studioId: studio.id,
     date: targetDate.toISOString().split('T')[0],
-    timeSlots: filteredTimeSlots,
+    timeSlots: availableTimeSlots,
   }
 }
 
@@ -174,7 +301,7 @@ const generateMonthAvailability = async (
     id: string
     openingTime: string
     closingTime: string
-    bookings: { startTime: Date; endTime: Date }[]
+    bookings?: { startTime: Date; endTime: Date }[]
   },
   targetDate: Date
 ) => {
@@ -184,7 +311,10 @@ const generateMonthAvailability = async (
     targetDate.getMonth() + 1,
     0
   ).getDate()
-  const today = getDubaiToday()
+
+  // Get current date
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
   const monthAvailability = []
 
@@ -205,10 +335,18 @@ const generateMonthAvailability = async (
     }
 
     // Get bookings for this day
-    const dayBookings = filterBookingsForDate(studio.bookings, currentDate)
+    const dayBookings = studio.bookings
+      ? filterBookingsForDate(
+          studio.bookings.map(b => ({
+            startTime: new Date(b.startTime),
+            endTime: new Date(b.endTime),
+          })),
+          currentDate
+        )
+      : []
 
-    // Generate time slots
-    const timeSlots = generateAvailableTimeSlots(
+    // Generate time slots using simple function
+    const timeSlots = generateSimpleTimeSlots(
       studio.openingTime,
       studio.closingTime,
       dayBookings,
@@ -279,8 +417,13 @@ const calculateSlotAvailability = (
     }
   }
 
-  const now = getDubaiNow()
-  const futureSlots = timeSlots.filter(slot => new Date(slot.start) > now)
+  const now = new Date()
+  const dubaiNow = new Date(now.getTime() + 4 * 60 * 60 * 1000)
+  const futureSlots = timeSlots.filter(slot => {
+    const slotStart = new Date(slot.start)
+    const slotStartDubai = new Date(slotStart.getTime() + 4 * 60 * 60 * 1000)
+    return slotStartDubai > dubaiNow
+  })
 
   return {
     availableSlots: futureSlots.filter(slot => slot.available).length,
@@ -293,4 +436,43 @@ const getDayStatus = (availableSlots: number, totalSlots: number) => {
   if (availableSlots === 0) return 'fully-booked'
   if (availableSlots < totalSlots) return 'partially-booked'
   return 'available'
+}
+
+// Helper function to check if there are enough consecutive available slots
+const hasConsecutiveAvailableSlots = (
+  allSlots: TimeSlotList[],
+  startSlot: TimeSlotList,
+  duration: number,
+  studio: Studio
+): boolean => {
+  const startTime = new Date(startSlot.start)
+  const requiredEndTime = new Date(
+    startTime.getTime() + duration * 60 * 60 * 1000
+  )
+
+  // Check if the booking would extend beyond studio closing time
+  const [closeHour, closeMinute] = studio.closingTime.split(':').map(Number)
+  const studioClosingTime = new Date(startTime)
+  studioClosingTime.setUTCHours(closeHour - 4, closeMinute, 0, 0) // Convert Dubai time to UTC
+
+  // If the required end time is after studio closing, this slot is not available
+  if (requiredEndTime > studioClosingTime) {
+    return false
+  }
+
+  // Find all slots that fall within the required duration
+  const slotsInRange = allSlots.filter(slot => {
+    const slotStart = new Date(slot.start)
+    const slotEnd = new Date(slot.end)
+
+    // Check if slot overlaps with the required time range
+    return (
+      (slotStart >= startTime && slotStart < requiredEndTime) ||
+      (slotEnd > startTime && slotEnd <= requiredEndTime) ||
+      (slotStart <= startTime && slotEnd >= requiredEndTime)
+    )
+  })
+
+  // Check if all slots in the range are available
+  return slotsInRange.every(slot => slot.available)
 }

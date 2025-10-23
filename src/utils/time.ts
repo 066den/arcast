@@ -6,33 +6,37 @@ export type BookingTimeRange = {
   endTime: Date | string
 }
 
-// Helper function to get time in specific timezone
-export const getTimeInTimezone = (date: Date, timezone: string): Date => {
-  const timeString = date.toLocaleString('en-US', { timeZone: timezone })
-  return new Date(timeString)
+// Helper function to get current time in Dubai timezone
+export const getDubaiTime = (): Date => {
+  const now = new Date()
+  // Get Dubai time using toLocaleString
+  const dubaiTimeString = now.toLocaleString('en-US', {
+    timeZone: 'Asia/Dubai',
+  })
+  return new Date(dubaiTimeString)
 }
 
-// Helper function to create date in specific timezone
-export const createDateInTimezone = (
-  baseDate: Date,
+// Helper function to get current date in Dubai timezone
+export const getDubaiDate = (): Date => {
+  const dubaiTime = getDubaiTime()
+  // Create date at midnight in Dubai timezone
+  return new Date(
+    dubaiTime.getFullYear(),
+    dubaiTime.getMonth(),
+    dubaiTime.getDate()
+  )
+}
+
+// Helper function to create a date in Dubai timezone
+export const createDubaiDate = (
+  year: number,
+  month: number,
+  day: number,
   hour: number,
-  minute: number,
-  timezone: string
+  minute: number
 ): Date => {
-  // Create date string in the target timezone
-  const dateString = baseDate.toLocaleDateString('en-CA', {
-    timeZone: timezone,
-  })
-
-  // Create time string
-  const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:00`
-
-  // Combine date and time
-  const dateTimeString = `${dateString}T${timeString}`
-
-  // Create Date object (this will be interpreted in the local timezone of the server)
-  // but the actual time values will represent the time in the target timezone
-  return new Date(dateTimeString)
+  const utcDate = new Date(Date.UTC(year, month - 1, day, hour - 4, minute, 0))
+  return utcDate
 }
 
 export const generateAvailableTimeSlots = (
@@ -144,11 +148,6 @@ export const generateAvailableTimeSlots = (
     while (currentSlot < dayEnd) {
       const slotEnd = new Date(currentSlot.getTime() + 60 * 60 * 1000) // Add 1 hour
 
-      // Ensure slotEnd doesn't exceed dayEnd
-      if (slotEnd > dayEnd) {
-        break
-      }
-
       // Check if slot overlaps with any booking
       const isAvailable = !bookings.some(booking => {
         const bookingStart = new Date(booking.startTime)
@@ -218,105 +217,37 @@ export const getTargetToday = (date: Date) => {
   return new Date(dateString)
 }
 
-// Server-safe version that works with specified timezone
-export const generateAvailableTimeSlotsWithTimezone = (
+// Simple function to generate time slots without complex timezone logic
+export const generateSimpleTimeSlots = (
   openingTime: string,
   closingTime: string,
   bookings: BookingTimeRange[],
-  targetDate: Date,
-  timezone: string = 'Asia/Dubai'
+  targetDate: Date
 ) => {
   try {
-    // Validate input parameters
-    if (!openingTime || !closingTime || !targetDate) {
-      throw new Error('Missing required parameters')
-    }
-
     // Parse opening and closing times
     const [openHour, openMinute] = openingTime.split(':').map(Number)
     const [closeHour, closeMinute] = closingTime.split(':').map(Number)
 
-    if (
-      isNaN(openHour) ||
-      isNaN(openMinute) ||
-      isNaN(closeHour) ||
-      isNaN(closeMinute)
-    ) {
-      throw new Error('Invalid time format. Use HH:MM format')
-    }
-
-    if (openHour < 0 || openHour > 23 || closeHour < 0 || closeHour > 23) {
-      throw new Error('Hours must be between 0 and 23')
-    }
-
-    if (
-      openMinute < 0 ||
-      openMinute > 59 ||
-      closeMinute < 0 ||
-      closeMinute > 59
-    ) {
-      throw new Error('Minutes must be between 0 and 59')
-    }
-
-    // Convert targetDate to Date object if it's a string
-    const targetDateObj = targetDate
-    if (isNaN(targetDateObj.getTime())) {
-      throw new Error('Invalid target date')
-    }
-
-    // Get current time in the specified timezone
-    const currentTime = getTimeInTimezone(new Date(), timezone)
-
-    // Check if targetDate is today by comparing date strings in the specified timezone
-    const targetDateString = targetDateObj.toLocaleDateString('en-CA', {
-      timeZone: timezone,
-    })
-    const currentDateString = currentTime.toLocaleDateString('en-CA', {
-      timeZone: timezone,
-    })
-    const isToday = targetDateString === currentDateString
-
-    // Create start time for the target date
-    let effectiveStartHour = openHour
-    let effectiveStartMinute = openMinute
-
-    if (isToday) {
-      const currentHour = currentTime.getHours()
-      const currentMinute = currentTime.getMinutes()
-
-      // Round up to the next hour if we have minutes
-      effectiveStartHour = currentMinute > 0 ? currentHour + 1 : currentHour
-      effectiveStartMinute = 0
-
-      // For today, use the later of the opening time or current time
-      effectiveStartHour = Math.max(effectiveStartHour, openHour)
-      if (effectiveStartHour === openHour) {
-        effectiveStartMinute = Math.max(effectiveStartMinute, openMinute)
-      }
-
-      // If we've passed closing time for today, return empty slots
-      if (
-        effectiveStartHour > closeHour ||
-        (effectiveStartHour === closeHour &&
-          effectiveStartMinute >= closeMinute)
-      ) {
-        return []
-      }
-    }
-
-    // Create start and end times for the target date in the specified timezone
-    const dayStart = createDateInTimezone(
-      targetDateObj,
-      effectiveStartHour,
-      effectiveStartMinute,
-      timezone
+    // Create start and end times for the target date in UTC
+    // Dubai time is UTC+4, so we need to subtract 4 hours to get UTC time
+    const dayStart = new Date(
+      Date.UTC(
+        targetDate.getFullYear(),
+        targetDate.getMonth(),
+        targetDate.getDate(),
+        openHour - 4, // Convert Dubai time to UTC
+        openMinute
+      )
     )
-
-    const dayEnd = createDateInTimezone(
-      targetDateObj,
-      closeHour,
-      closeMinute,
-      timezone
+    const dayEnd = new Date(
+      Date.UTC(
+        targetDate.getFullYear(),
+        targetDate.getMonth(),
+        targetDate.getDate(),
+        closeHour - 4, // Convert Dubai time to UTC
+        closeMinute
+      )
     )
 
     // Validate that dayStart is before dayEnd
@@ -330,11 +261,6 @@ export const generateAvailableTimeSlotsWithTimezone = (
     // Generate hourly slots for the day
     while (currentSlot < dayEnd) {
       const slotEnd = new Date(currentSlot.getTime() + 60 * 60 * 1000) // Add 1 hour
-
-      // Ensure slotEnd doesn't exceed dayEnd
-      if (slotEnd > dayEnd) {
-        break
-      }
 
       // Check if slot overlaps with any booking
       const isAvailable = !bookings.some(booking => {
@@ -372,32 +298,30 @@ export const generateAvailableTimeSlotsWithTimezone = (
 
     return slots
   } catch (error) {
-    console.error('Error generating available time slots:', error)
+    console.error('Error generating simple time slots:', error)
     return []
   }
 }
 
-export const formatTime = (time: string) => {
+export const formatTime = (time: string, timezone: string = 'local') => {
   return new Date(time).toLocaleTimeString('en-GB', {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
+    timeZone: timezone === 'local' ? undefined : timezone,
   })
 }
 
 export const formatTimeRange = (
   startTime: string,
-  duration: number
+  duration: number,
+  timezone: string = 'local'
 ): string => {
   const start = new Date(startTime)
   const end = new Date(start.getTime() + duration * 60 * 60 * 1000)
 
-  const startFormatted = formatTime(startTime)
-  const endFormatted = end.toLocaleTimeString('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  })
+  const startFormatted = formatTime(startTime, timezone)
+  const endFormatted = formatTime(end.toISOString(), timezone)
 
   return `${startFormatted} - ${endFormatted}`
 }
@@ -414,12 +338,21 @@ export const isSlotWithinWorkingHours = (
   const [openHour, openMinute] = openingTime.split(':').map(Number)
   const [closeHour, closeMinute] = closingTime.split(':').map(Number)
 
-  const openTime = new Date(start)
-  openTime.setHours(openHour, openMinute, 0, 0)
-
-  const closeTime = new Date(start)
-  closeTime.setHours(closeHour, closeMinute, 0, 0)
-
+  // Create working hours times using Dubai timezone
+  const openTime = createDubaiDate(
+    start.getFullYear(),
+    start.getMonth() + 1,
+    start.getDate(),
+    openHour,
+    openMinute
+  )
+  const closeTime = createDubaiDate(
+    start.getFullYear(),
+    start.getMonth() + 1,
+    start.getDate(),
+    closeHour,
+    closeMinute
+  )
   return start >= openTime && end <= closeTime
 }
 

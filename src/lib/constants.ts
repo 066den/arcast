@@ -16,11 +16,19 @@ export const BOOKING_STATUS = {
   PAID: 'PAID',
 } as const
 
+export const ORDER_STATUS = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+} as const
+
 export const PAYMENT_STATUS = {
-  UNPAID: 'UNPAID',
-  PAID: 'PAID',
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
   REFUNDED: 'REFUNDED',
-  PARTIAL: 'PARTIAL',
 } as const
 
 export const PAYMENT_METHODS = {
@@ -88,7 +96,22 @@ export const API_ENDPOINTS = {
   STUDIOS: '/api/studios',
   PACKAGES: '/api/packages',
   CONTACT: '/api/contact',
-  PAYMENT: '/api/payment',
+  CALL_REQUEST: '/api/call-request',
+  PAYMENT_LINK: '/api/payment-link',
+  BLOG: '/api/blog',
+  ORDERS: '/api/orders',
+} as const
+
+export const ROUTES = {
+  BOOKING: '/booking',
+  SERVICES: '/services',
+  CASE_STUDIES: '/case-studies',
+  CONTENT_FACTORY: '/content-factory',
+  BLOG: '/blog',
+  ABOUT_US: '/about-us',
+  FOR_BUSINESS: '/business',
+  ADMIN: '/admin',
+  OUR_SETUPS: '/our-setups',
 } as const
 
 export const HTTP_STATUS = {
@@ -120,6 +143,10 @@ export const ERROR_MESSAGES = {
     CONFLICT: 'Selected time conflicts with existing bookings',
     FAILED: 'Failed to create booking',
     PAST_DATE: 'Cannot book slots for past dates',
+    SELECT_TIME: 'Please select a time',
+  },
+  ORDER: {
+    NOT_FOUND: 'Order not found',
   },
   STUDIO: {
     NOT_FOUND: 'Studio not found',
@@ -127,10 +154,14 @@ export const ERROR_MESSAGES = {
     CAPACITY_EXCEEDED: 'Number of seats exceeds studio capacity',
     OUTSIDE_WORKING_HOURS: 'Selected time is outside of studio working hours',
     FAILED_TO_FETCH_TIMES: 'Failed to fetch times',
+    FAILED_TO_FETCH_STUDIOS: 'Failed to fetch studios',
+    FAILED_TO_UPDATE_STUDIO: 'Failed to update studio',
+    FAILED_TO_CREATE_STUDIO: 'Failed to create studio',
   },
   PAYMENT: {
     FAILED: 'Payment processing failed',
     INVALID_AMOUNT: 'Invalid payment amount',
+    ALREADY_EXISTS: 'Payment already exists',
   },
   NOTION: {
     CONNECTION_FAILED: 'Failed to connect to Notion',
@@ -147,6 +178,22 @@ export const ERROR_MESSAGES = {
   SERVICE: {
     NOT_FOUND: 'Additional service not found',
   },
+  FILE: {
+    TYPE_NOT_ALLOWED: 'File type not allowed',
+    SIZE_EXCEEDED: 'File size exceeded',
+  },
+  CONTACT: {
+    FAILED: 'Failed to submit contact form',
+  },
+  CALL_REQUEST: {
+    FAILED: 'Failed to submit call request',
+  },
+  PRISMA: {
+    NOT_INITIALIZED: 'Prisma client is not initialized',
+  },
+  ARTICLE: {
+    NOT_FOUND: 'Article not found',
+  },
 } as const
 
 // ========== SUCCESS MESSAGES ==========
@@ -160,8 +207,14 @@ export const SUCCESS_MESSAGES = {
   CONTACT: {
     SUBMITTED: 'Contact form submitted successfully',
   },
+  CALL_REQUEST: {
+    SUBMITTED: 'Call request submitted successfully',
+  },
   PAYMENT: {
     PROCESSED: 'Payment processed successfully',
+  },
+  FILE: {
+    UPLOADED: 'File uploaded successfully',
   },
 } as const
 
@@ -177,7 +230,7 @@ export const VALIDATION = {
   MAX_MESSAGE_LENGTH: 1000,
 } as const
 
-// ========== CURRENCY CONSTANTS ==========
+// ========== PAYMENT CONSTANTS ==========
 
 export const CURRENCIES = {
   AED: 'AED',
@@ -191,18 +244,48 @@ export const CURRENCY_SYMBOLS = {
   EUR: '€',
 } as const
 
+// ========== MAMO PAY CONSTANTS ==========
+
+export const PAYMENT_PROVIDER = {
+  TITLE: 'ARcast Booking',
+  CURRENCY: 'AED',
+  RETURN_URL: `${process.env.NEXT_PUBLIC_APP_URL}/booking/success`,
+  FAILURE_RETURN_URL: `${process.env.NEXT_PUBLIC_APP_URL}/booking/failed`,
+} as const
+
 // ========== FILE CONSTANTS ==========
 
 export const ALLOWED_FILE_TYPES = {
-  IMAGES: ['image/jpeg', 'image/png', 'image/webp'],
+  IMAGES: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
+  VIDEOS: [
+    'video/mp4',
+    'video/webm',
+    'video/ogg',
+    'video/avi',
+    'video/mov',
+    'video/quicktime',
+  ],
   DOCUMENTS: ['application/pdf', 'application/msword'],
-  AUDIO: ['audio/mpeg', 'audio/wav', 'audio/aac'],
+  AUDIO: ['audio/mpeg', 'audio/wav', 'audio/aac', 'audio/ogg'],
 } as const
 
 export const MAX_FILE_SIZE = {
   IMAGE: 5 * 1024 * 1024, // 5MB
+  VIDEO: 1000 * 1024 * 1024, // 1000MB
   DOCUMENT: 10 * 1024 * 1024, // 10MB
   AUDIO: 50 * 1024 * 1024, // 50MB
+} as const
+
+export const ASPECT_RATIOS = {
+  SQUARE: 1, // 1:1 - square
+  LANDSCAPE: 16 / 9, // 16:9 - wide format
+  PORTRAIT: 3 / 4, // 3:4 - portrait
+  GOLDEN: 1.618, // Golden ratio
+  CLASSIC: 4 / 3, // 4:3 - classic
+  WIDE: 21 / 9, // 21:9 - ultra wide
+  INSTAGRAM: 1, // 1:1 - Instagram square
+  STORY: 9 / 16, // 9:16 - Instagram Stories
+  COVER: 2 / 3, // 2:3 - book cover
 } as const
 
 // ========== EXPORT TYPES ==========
@@ -215,6 +298,8 @@ export type LeadStatus = keyof typeof LEAD_STATUS
 export type LeadSource = keyof typeof LEAD_SOURCES
 export type ContactStatus = keyof typeof CONTACT_STATUS
 export type Currency = keyof typeof CURRENCIES
+export type AspectRatio = keyof typeof ASPECT_RATIOS
+export type PaymentProvider = keyof typeof PAYMENT_PROVIDER
 
 // ========== DEFAULT EXPORT ==========
 
@@ -232,4 +317,5 @@ export default {
   ERROR_MESSAGES,
   SUCCESS_MESSAGES,
   CURRENCIES,
+  ASPECT_RATIOS,
 } as const

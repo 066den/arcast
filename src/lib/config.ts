@@ -1,4 +1,19 @@
-import { Box, Calendar, User, Phone, Home, Radio } from 'lucide-react'
+import {
+  Book,
+  Box,
+  Calendar,
+  Radio,
+  Settings,
+  Wrench,
+  Users,
+  FileText,
+  Play,
+  ClipboardList,
+  UsersRound,
+  Percent,
+  UserCheck,
+} from 'lucide-react'
+import { ROUTES } from './constants'
 
 export const siteConfig = {
   name: 'ARcast',
@@ -17,82 +32,75 @@ export const siteConfig = {
     phone: '+971 50 824 9795',
     whatsapp: '+971 50 824 9795',
     address: 'Dubai, UAE',
+    bookingEmail: 'booking@arcast.studio',
   },
 } as const
 
 export const navigation = [
-  { name: 'Home', href: '/' },
-  { name: 'Studios', href: '/studios', icon: Radio },
-  { name: 'Services', href: '/services', icon: Box },
-  { name: 'Booking', href: '/booking', icon: Calendar },
-  { name: 'About Us', href: '/about', icon: User },
-  { name: 'Contact Us', href: '/contact', icon: Phone },
+  { name: 'Services', href: ROUTES.SERVICES },
+  { name: 'Case Studies', href: ROUTES.CASE_STUDIES },
+  { name: 'Content Factory', href: ROUTES.CONTENT_FACTORY },
+  { name: 'Blog', href: ROUTES.BLOG },
+  { name: 'About Us', href: ROUTES.ABOUT_US },
+  { name: 'Our Setups', href: ROUTES.OUR_SETUPS },
+  { name: 'For Business', href: ROUTES.FOR_BUSINESS },
 ] as const
 
 export const adminNavigation = [
-  { name: 'Home', href: '/', icon: Home },
-  { name: 'Studios', href: '/studios', icon: Radio },
-  { name: 'Services', href: '/services', icon: Box },
-  { name: 'Booking', href: '/booking', icon: Calendar },
-  { name: 'About Us', href: '/about', icon: User },
-  { name: 'Contact Us', href: '/contact', icon: Phone },
+  { name: 'Bookings', href: ROUTES.ADMIN, icon: Calendar },
+  { name: 'Studios', href: ROUTES.ADMIN + '/studios', icon: Radio },
+  { name: 'Services', href: ROUTES.ADMIN + '/services', icon: Box },
+  {
+    name: 'Case Studies',
+    href: ROUTES.ADMIN + '/case-studies',
+    icon: FileText,
+  },
+  { name: 'Orders', href: ROUTES.ADMIN + '/orders', icon: ClipboardList },
+  { name: 'Leads', href: ROUTES.ADMIN + '/leads', icon: UserCheck },
+  { name: 'Clients', href: ROUTES.ADMIN + '/clients', icon: UsersRound },
+  {
+    name: 'Discount Codes',
+    href: ROUTES.ADMIN + '/discount-codes',
+    icon: Percent,
+  },
+  { name: 'Samples', href: ROUTES.ADMIN + '/samples', icon: Play },
+  { name: 'Equipment', href: ROUTES.ADMIN + '/equipment', icon: Wrench },
+  { name: 'Staff', href: ROUTES.ADMIN + '/staff', icon: Users },
+  { name: 'Blog', href: ROUTES.ADMIN + '/blog', icon: Book },
+  { name: 'Settings', href: ROUTES.ADMIN + '/settings', icon: Settings },
 ] as const
 
-export const features = [
-  {
-    title: 'Professional Equipment',
-    description:
-      'State-of-the-art recording equipment including Shure SM7B microphones, professional audio interfaces, and studio monitors.',
-    icon: '🎙️',
-    color: 'blue',
-  },
-  {
-    title: 'Flexible Scheduling',
-    description:
-      '24/7 online booking system with real-time availability and instant confirmation for your convenience.',
-    icon: '📅',
-    color: 'purple',
-  },
-  {
-    title: 'Studio Quality',
-    description:
-      'Professionally treated acoustic environments and sound isolation for crystal-clear podcast recordings.',
-    icon: '🎧',
-    color: 'green',
-  },
-  {
-    title: 'Expert Support',
-    description:
-      'Technical assistance and guidance from experienced audio engineers to ensure perfect sound quality.',
-    icon: '👨‍🔬',
-    color: 'orange',
-  },
+export const legalNavigation = [
+  { name: 'Terms of Service', href: '/terms-of-service' },
+  { name: 'Privacy Policy', href: '/privacy-policy' },
+  { name: 'Data Deletion', href: '/data-deletion' },
 ] as const
 
-export const testimonials = [
+export const supportNavigation = [
+  { name: 'Contact Us', href: '/contact-us' },
+] as const
+
+export const aboutFeatures = [
   {
-    id: 'anna-petrova',
-    name: 'Anna Petrova',
-    podcast: 'Tech Talk Podcast',
-    rating: 5,
-    text: "Professional equipment and amazing atmosphere. We've recorded over 20 episodes here!",
-    image: '/images/testimonials/anna.jpg',
+    title: 'Full-cycle production',
+    description:
+      'Conversations that break the surface and explore what really matters. Episodes that spark thoughts and challenge perspectives.',
+    image: '/assets/images/production.webp',
+    url: '/services#full-cycle',
   },
   {
-    id: 'mikhail-sidorov',
-    name: 'Mikhail Sidorov',
-    podcast: 'Business Stories',
-    rating: 5,
-    text: 'Convenient booking system and top-notch sound quality. Highly recommend!',
-    image: '/images/testimonials/mikhail.jpg',
+    title: 'Strategy & competitor analysis',
+    description:
+      'Conversations that break the surface and explore what really matters. Episodes that spark thoughts and challenge perspectives.',
+    image: '/assets/images/strategy.webp',
+    url: '/services#reels',
   },
   {
-    id: 'elena-kozlova',
-    name: 'Elena Kozlova',
-    podcast: 'Psychology Insights',
-    rating: 5,
-    text: 'Comfortable studio with thoughtful acoustics. Guests feel relaxed and natural.',
-    image: '/images/testimonials/elena.jpg',
+    title: 'Publishing & growth support',
+    description:
+      'Conversations that break the surface and explore what really matters. Episodes that spark thoughts and challenge perspectives.',
+    image: '/assets/images/publishing.webp',
+    url: '/services#media',
   },
 ] as const
 
@@ -159,16 +167,14 @@ export const seoConfig = {
 
 // Export types for TypeScript
 export type NavigationItem = (typeof navigation)[number]
-export type Feature = (typeof features)[number]
-export type Testimonial = (typeof testimonials)[number]
+export type AboutFeature = (typeof aboutFeatures)[number]
 export type SocialLink = (typeof socialLinks)[number]
 
 // Default export for convenience
 export default {
   siteConfig,
   navigation,
-  features,
-  testimonials,
+  aboutFeatures,
   socialLinks,
   seoConfig,
 } as const

@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { BookingFormData } from '@/types/api'
-import { z } from 'zod'
+import { BookingFormData, BookingResponse } from '@/types/api'
 import { isSlotWithinWorkingHours } from '@/utils/time'
-import { createNotionBookingEntry } from '@/lib/notion'
+import { createNotionBookingEntry, createNotionLeadEntry } from '@/lib/notion'
 import {
   BOOKING_STATUS,
   DISCOUNT_TYPE,
@@ -12,10 +11,41 @@ import {
   VAT_RATE,
 } from '@/lib/constants'
 import { validateBooking } from '@/lib/schemas'
+import { getPaymentLinkForBooking } from '@/services/paymentServices'
+import { Decimal } from '@prisma/client/runtime/library'
 
-// Helper function to calculate base cost
 function calculateBaseCost(pricePerHour: number, duration: number): number {
   return parseFloat(pricePerHour.toString()) * duration
+}
+
+export async function GET() {
+  try {
+    const bookings = await prisma.booking.findMany({
+      include: {
+        studio: true,
+        lead: true,
+        contentPackage: true,
+        service: true,
+        discountCode: true,
+        bookingAdditionalServices: {
+          include: {
+            service: true,
+          },
+        },
+        payment: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    })
+    return NextResponse.json({ success: true, data: bookings })
+  } catch (error) {
+    console.error('Error fetching bookings:', error)
+    return NextResponse.json(
+      { success: false, error: ERROR_MESSAGES.BOOKING.FAILED },
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
+    )
+  }
 }
 
 export async function POST(req: Request) {
@@ -40,6 +70,7 @@ export async function POST(req: Request) {
     const {
       studioId,
       packageId,
+      serviceId,
       numberOfSeats,
       selectedTime,
       duration,
@@ -135,22 +166,36 @@ export async function POST(req: Request) {
       )
     }
 
-    // Get package price
-    const packageData = await prisma.studioPackage.findUnique({
-      where: { id: packageId },
-    })
+    let serviceData = null
+    let packageData = null
+    if (serviceId) {
+      serviceData = await prisma.service.findUnique({
+        where: { id: serviceId },
+      })
 
-    if (!packageData) {
-      return NextResponse.json(
-        { success: false, error: ERROR_MESSAGES.PACKAGE.NOT_FOUND },
-        { status: HTTP_STATUS.NOT_FOUND }
-      )
+      if (!serviceData) {
+        return NextResponse.json(
+          { success: false, error: ERROR_MESSAGES.SERVICE.NOT_FOUND },
+          { status: HTTP_STATUS.NOT_FOUND }
+        )
+      }
     }
 
-    // Validate discount code
-    let validatedDiscount: { id: string; type: string; value: number } | null =
+    if (packageId) {
+      packageData = await prisma.package.findUnique({
+        where: { id: packageId },
+      })
+      if (!packageData) {
+        return NextResponse.json(
+          { success: false, error: ERROR_MESSAGES.PACKAGE.NOT_FOUND },
+          { status: HTTP_STATUS.NOT_FOUND }
+        )
+      }
+    }
+
+    let validatedDiscount: { id: string; type: string; value: Decimal } | null =
       null
-    console.log(discountCode)
+
     if (discountCode) {
       const validDiscount = await prisma.discountCode.findUnique({
         where: { code: discountCode },
@@ -183,28 +228,34 @@ export async function POST(req: Request) {
         }
       }
 
-      validatedDiscount = validDiscount
+      validatedDiscount = {
+        id: validDiscount.id,
+        type: validDiscount.type,
+        value: validDiscount.value,
+      }
     }
 
     // Pre-fetch additional services to validate
     const additionalServicesData: Array<{
       additionalServiceId: string
       quantity: number
-      price: string
+      unitPrice: number
+      totalPrice: number
     }> = []
     let additionalServicesCost = 0
 
     if (additionalServices && additionalServices.length > 0) {
-      const serviceIds = additionalServices.map(service => service.id)
-      const availableServices = await prisma.additionalService.findMany({
-        where: {
-          id: { in: serviceIds },
-          isActive: true,
-        },
-      })
+      const additionalServiceIds = additionalServices.map(service => service.id)
+      const availableAdditionalServices =
+        await prisma.additionalService.findMany({
+          where: {
+            id: { in: additionalServiceIds },
+            isActive: true,
+          },
+        })
 
       const serviceMap = new Map()
-      availableServices.forEach(service => {
+      availableAdditionalServices.forEach((service: any) => {
         serviceMap.set(service.id, service)
       })
 
@@ -225,30 +276,36 @@ export async function POST(req: Request) {
         additionalServicesData.push({
           additionalServiceId: additionalService.id,
           quantity,
-          price: additionalService.price,
+          unitPrice: parseFloat(additionalService.price.toString()),
+          totalPrice: serviceCost,
         })
       }
     }
 
     // Calculate costs
     const baseCost = calculateBaseCost(
-      parseFloat(packageData.price_per_hour.toString()),
+      parseFloat(
+        serviceData
+          ? serviceData.price.toString()
+          : packageData
+            ? packageData.basePrice.toString()
+            : '0'
+      ),
       duration
     )
     const totalBeforeDiscount = baseCost + additionalServicesCost
     const discountAmount = validatedDiscount
       ? validatedDiscount.type === DISCOUNT_TYPE.PERCENTAGE
-        ? (totalBeforeDiscount * validatedDiscount.value) / 100
-        : validatedDiscount.value
+        ? (totalBeforeDiscount * Number(validatedDiscount.value)) / 100
+        : Number(validatedDiscount.value)
       : 0
-    const costAfterDiscount = totalBeforeDiscount - discountAmount
+    const costAfterDiscount = totalBeforeDiscount - Number(discountAmount)
     const finalVatAmount = (costAfterDiscount * VAT_RATE) / 100
     const finalTotalCost = costAfterDiscount + finalVatAmount
 
     // 2. Now start a shorter transaction that only does essential writes
     const result = await prisma.$transaction(
-      async tx => {
-        // Handle lead creation/update
+      async (tx: any) => {
         let bookingLead
         if (lead.email) {
           const existingLead = await tx.lead.findFirst({
@@ -306,23 +363,31 @@ export async function POST(req: Request) {
             totalCost: finalTotalCost,
             vatAmount: finalVatAmount,
             discountAmount,
+            finalAmount: finalTotalCost,
             discountCodeId: validatedDiscount?.id,
             status: BOOKING_STATUS.PENDING,
             studioId,
-            packageId,
+            contentPackageId: packageId,
+            serviceId: serviceId,
             leadId: bookingLead.id,
-            additionalServices: {
-              create: additionalServicesData,
+            bookingAdditionalServices: {
+              create: additionalServicesData.map(
+                ({ additionalServiceId, ...rest }) => ({
+                  ...rest,
+                  serviceId: additionalServiceId,
+                })
+              ),
             },
           },
           include: {
             studio: true,
-            package: true,
+            contentPackage: true,
+            service: true,
             lead: true,
             discountCode: true,
-            additionalServices: {
+            bookingAdditionalServices: {
               include: {
-                additionalService: true,
+                service: true,
               },
             },
           },
@@ -343,55 +408,53 @@ export async function POST(req: Request) {
       }
     )
 
-    // Format the response
-    const formattedAdditionalServices = result.additionalServices.map(
-      service => ({
-        id: service.id,
-        quantity: service.quantity,
-        price: service.price,
-        service: {
-          id: service.additionalService.id,
-          title: service.additionalService.title,
-          type: service.additionalService.type,
-          description: service.additionalService.description,
-        },
-      })
-    )
-
-    const response = {
+    const response: BookingResponse = {
       id: result.id,
       startTime: result.startTime,
       endTime: result.endTime,
       totalCost: parseFloat(result.totalCost.toString()),
-      vatAmount: parseFloat(result.vatAmount.toString()),
+      vatAmount: result.vatAmount ? parseFloat(result.vatAmount.toString()) : 0,
       discountAmount: result.discountAmount
         ? parseFloat(result.discountAmount.toString())
         : 0,
-      studio: {
-        id: result.studio.id,
-        name: result.studio.name,
-      },
-      package: {
-        id: result.package.id,
-        name: result.package.name,
-      },
-      lead: {
-        id: result.lead.id,
-        fullName: result.lead.fullName,
-        email: result.lead.email,
-        phoneNumber: result.lead.phoneNumber,
-      },
-      additionalServices: formattedAdditionalServices,
+      finalAmount: result.finalAmount
+        ? parseFloat(result.finalAmount.toString())
+        : parseFloat(result.totalCost.toString()),
     }
 
     // Create Notion entry
     try {
       await createNotionBookingEntry(result)
+      if (result.lead) {
+        await createNotionLeadEntry(result.lead)
+      }
     } catch (notionError) {
       console.error('Failed to create Notion entry:', notionError)
     }
 
-    return NextResponse.json({ success: true, data: response })
+    try {
+      console.log('Creating payment link for booking:', result.id)
+      const paymentLink = await getPaymentLinkForBooking(result.id)
+      if (paymentLink && paymentLink.paymentLink) {
+        response.paymentUrl = `${paymentLink.paymentLink.payment_url}?embedded=true&parent_origin=${process.env.NEXT_PUBLIC_APP_URL}&enable_postmessage=true`
+        console.log('Payment URL created successfully:', response.paymentUrl)
+      } else {
+        console.warn('Payment link creation returned null or undefined')
+      }
+    } catch (error) {
+      console.error('Failed to create payment link:', {
+        bookingId: result.id,
+        error: error instanceof Error ? error.message : error,
+        stack: error instanceof Error ? error.stack : undefined,
+      })
+
+      return NextResponse.json(
+        { success: false, error: ERROR_MESSAGES.PAYMENT.FAILED },
+        { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
+      )
+    }
+
+    return NextResponse.json(response)
   } catch (error) {
     console.error('Error creating booking:', error)
     return NextResponse.json(

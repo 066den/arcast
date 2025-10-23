@@ -1,70 +1,101 @@
-'use client'
-
-import { Users, MapPin, Star } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { Studio } from '../../types'
+import Image from 'next/image'
+import {
+  Carousel,
+  CarouselItem,
+  CarouselContent,
+  CarouselPrevious,
+  CarouselNext,
+} from '../ui/carousel'
 
 interface StudioCardProps {
   studio: Studio
-  isSelected: boolean
-  onClick: (id: string) => void
+  isSelected?: boolean
+  isSelection?: boolean
+  onClick?: (id: string) => void
 }
 
-export function StudioCard({ studio, isSelected, onClick }: StudioCardProps) {
+export function StudioCard({
+  studio,
+  isSelected,
+  isSelection,
+  onClick,
+}: StudioCardProps) {
+  const { name, imageUrl, gallery } = studio
   const handleClick = () => {
-    onClick(studio.id)
+    if (onClick) {
+      onClick(studio.id)
+    }
   }
 
   return (
-    <div
-      className={`p-6 border-2 rounded-xl cursor-pointer transition-all hover:shadow-lg ${
-        isSelected
-          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-lg'
-          : 'border-slate-200 hover:border-slate-300 bg-white dark:bg-slate-800'
-      }`}
-      onClick={handleClick}
-    >
-      <div className="flex items-start justify-between mb-4">
-        <div>
-          <h3 className="font-bold text-xl text-slate-900 dark:text-white mb-2">
-            {studio.name}
-          </h3>
-          <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
-            {studio.description}
-          </p>
-        </div>
-        {isSelected && (
-          <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-            <svg
-              className="w-4 h-4 text-white"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                clipRule="evenodd"
+    <>
+      <div
+        className={cn(
+          'relative aspect-[4/3] w-full max-w-[542px] overflow-hidden md:rounded-5xl rounded-3xl bg-white shadow-sm'
+        )}
+      >
+        <Carousel className="h-full w-full">
+          <CarouselContent className="h-full">
+            <CarouselItem className="relative h-full">
+              <Image
+                src={imageUrl || ''}
+                alt={name}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover"
               />
-            </svg>
+            </CarouselItem>
+            {gallery.map((image, index) => (
+              <CarouselItem key={image} className="relative h-full">
+                <Image
+                  src={image || ''}
+                  alt={`${name} - Gallery ${index + 1}`}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover"
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-4 opacity-30 hover:opacity-100" />
+          <CarouselNext className="right-4 opacity-30 hover:opacity-100" />
+        </Carousel>
+        {/* <Image
+          src={imageUrl || ''}
+          alt={name}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover"
+        /> */}
+
+        {/* <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center">
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <Eye className="size-14 text-white" />
+          </div>
+        </div> */}
+
+        <div className="absolute bottom-0 left-0 right-0 md:py-5 p-5 md:px-10">
+          <h3 className="sm:text-[2em] text-[1.5em] font-nunito-sans font-bold text-white leading-tight text-shadow-md">
+            {name}
+          </h3>
+        </div>
+
+        {isSelection && (
+          <div
+            onClick={e => {
+              e.stopPropagation()
+              handleClick()
+            }}
+            className="absolute sm:top-6 top-4 sm:right-6 right-4 sm:size-11 size-8 flex items-center justify-center bg-primary rounded-full border-3 cursor-pointer border-white"
+          >
+            {isSelected && (
+              <div className="md:size-8 size-6 bg-accent rounded-full" />
+            )}
           </div>
         )}
       </div>
-
-      <div className="space-y-3">
-        <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-          <Users className="h-4 w-4" />
-          <span>Capacity: {studio.capacity} people</span>
-        </div>
-
-        <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-          <MapPin className="h-4 w-4" />
-          <span>Location: {studio.location}</span>
-        </div>
-
-        <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-          <Star className="h-4 w-4" />
-          <span>Rating: 4.8/5</span>
-        </div>
-      </div>
-    </div>
+    </>
   )
 }

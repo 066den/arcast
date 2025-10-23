@@ -1,0 +1,32 @@
+[
+  {
+    "title": "30+ short-form videos",
+    "description": "Reels, TikToks, Shorts every month",
+    "icon": "30-short-videos"
+  },
+  {
+    "title": "2–3 long-form videos",
+    "description": "Perfect for YouTube content",
+    "icon": "23-lonf-videos"
+  },
+  {
+    "title": "High-End Studio",
+    "description": "Professional quality production",
+    "icon": "high-end-studio"
+  },
+  {
+    "title": "Crisp Editing",
+    "description": "Ready-to-post delivery",
+    "icon": "crisp-editing"
+  },
+  {
+    "title": "Fast Turnaround",
+    "description": "Quick delivery of content",
+    "icon": "fast-turnaround"
+  },
+  {
+    "title": "Tailored Content",
+    "description": "Customized for your brand & audience",
+    "icon": "tailored-content"
+  }
+]

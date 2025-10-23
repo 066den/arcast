@@ -1,4 +1,4 @@
-// src/utils/notion.utils.js - Улучшенная версия
+// src/utils/notion.utils.js - Enhanced version
 import { Client } from '@notionhq/client'
 
 const notion = new Client({
@@ -9,6 +9,7 @@ const notion = new Client({
 const DATABASE_ID = process.env.NOTION_DATABASE_ID
 const LEADS_DATABASE_ID = process.env.NOTION_LEADS_DATABASE_ID
 const CONTACT_DATABASE_ID = process.env.NOTION_CONTACT_DATABASE_ID
+const ORDERS_DATABASE_ID = process.env.NOTION_ORDERS_DATABASE_ID
 
 // Cache for database schemas
 const schemaCache = new Map()
@@ -140,7 +141,6 @@ export async function createNotionBookingEntry(booking) {
 
     // Get database schema for validation (optional)
     // const schema = await getDatabaseSchema(DATABASE_ID)
-    // console.log('📊 Database schema loaded')
 
     // Prepare properties object
     const properties = {
@@ -232,6 +232,105 @@ export async function createNotionBookingEntry(booking) {
 }
 
 /**
+ * Create an order entry in Notion
+ */
+export async function createNotionOrderEntry(order) {
+  try {
+    if (!isNotionConfigured()) {
+      console.warn('Notion not configured, skipping order entry creation')
+      return null
+    }
+
+    if (!ORDERS_DATABASE_ID) {
+      console.warn(
+        'NOTION_ORDERS_DATABASE_ID not configured, skipping Notion order entry'
+      )
+      return null
+    }
+
+    const properties = {
+      Name: {
+        title: createTitle(order.serviceName),
+      },
+      OrderID: {
+        rich_text: createRichText(order.id.toString()),
+      },
+      'Service Name': {
+        rich_text: createRichText(order.serviceName),
+      },
+      'Customer Name': {
+        rich_text: createRichText(order.lead.fullName),
+      },
+      'Customer Email': {
+        email: order.lead.email,
+      },
+      'Phone Number': {
+        phone_number: order.lead.phoneNumber,
+      },
+      Whatsapp: {
+        phone_number: order.lead.whatsappNumber || order.lead.phoneNumber,
+      },
+      'Total Cost': {
+        number: parseFloat(order.totalCost.toString()),
+      },
+      'Final Amount': {
+        number: parseFloat(
+          order.finalAmount?.toString() || order.totalCost.toString()
+        ),
+      },
+      Status: {
+        select: {
+          name: order.status,
+        },
+      },
+      'Order Date': {
+        date: {
+          start: order.createdAt.toISOString(),
+        },
+      },
+    }
+
+    if (order.description) {
+      properties['Description'] = {
+        rich_text: createRichText(order.description),
+      }
+    }
+
+    if (order.requirements) {
+      properties['Requirements'] = {
+        rich_text: createRichText(order.requirements),
+      }
+    }
+
+    if (order.deadline) {
+      properties['Deadline'] = {
+        date: {
+          start: order.deadline.toISOString(),
+        },
+      }
+    }
+
+    if (order.estimatedDays) {
+      properties['Estimated Days'] = {
+        number: order.estimatedDays,
+      }
+    }
+
+    const response = await notion.pages.create({
+      parent: {
+        database_id: ORDERS_DATABASE_ID,
+      },
+      properties,
+    })
+
+    return response
+  } catch (error) {
+    console.error('❌ Error creating Notion order entry:', error)
+    return null
+  }
+}
+
+/**
  * Create a lead entry in Notion
  */
 export async function createNotionLeadEntry(lead) {
@@ -264,12 +363,12 @@ export async function createNotionLeadEntry(lead) {
       },
       Status: {
         select: {
-          name: lead.status || 'New',
+          name: 'New',
         },
       },
       Source: {
         select: {
-          name: lead.source || 'Website',
+          name: 'Website',
         },
       },
       Created: {
@@ -286,7 +385,6 @@ export async function createNotionLeadEntry(lead) {
       properties,
     })
 
-    console.log('✅ Successfully created Notion lead entry:', response.id)
     return response
   } catch (error) {
     console.error('❌ Error creating Notion lead entry:', error)
@@ -296,9 +394,6 @@ export async function createNotionLeadEntry(lead) {
   }
 }
 
-/**
- * Create a contact form entry in Notion (for contact page)
- */
 export async function createNotionContactEntry(contactData) {
   try {
     if (!CONTACT_DATABASE_ID) {
@@ -319,22 +414,10 @@ export async function createNotionContactEntry(contactData) {
         email: contactData.email,
       },
       Phone: {
-        rich_text: createRichText(
-          `${contactData.countryCode} ${contactData.phoneNumber}`.trim()
-        ),
+        rich_text: createRichText(`+${contactData.phone}`.trim()),
       },
       Message: {
         rich_text: createRichText(contactData.message),
-      },
-      Status: {
-        select: {
-          name: 'New',
-        },
-      },
-      Created: {
-        date: {
-          start: new Date().toISOString(),
-        },
       },
     }
 
@@ -345,11 +428,10 @@ export async function createNotionContactEntry(contactData) {
       properties,
     })
 
-    console.log('✅ Successfully created Notion contact entry:', response.id)
     return response
   } catch (error) {
     console.error('❌ Error creating Notion contact entry:', error)
-    return null
+    throw new Error(error.message)
   }
 }
 
@@ -399,7 +481,6 @@ export async function updateNotionBookingStatus(
       properties,
     })
 
-    console.log(`✅ Updated Notion booking status to: ${status}`)
     return response
   } catch (error) {
     console.error('❌ Error updating Notion booking status:', error)
@@ -477,16 +558,13 @@ export async function getNotionBookings(filters = {}) {
 export async function testNotionConnection() {
   try {
     const user = await notion.users.me()
-    console.log('✅ Notion connection successful:', user.name)
 
     // Test database access
     if (DATABASE_ID) {
       try {
         const schema = await getDatabaseSchema(DATABASE_ID, false)
-        console.log(
-          '✅ Database access successful, fields:',
-          Object.keys(schema).length
-        )
+        // Database access successful
+        console.log(schema)
       } catch (dbError) {
         console.error('❌ Database access failed:', dbError.message)
         return {
@@ -516,11 +594,13 @@ export const NOTION_DATABASES = {
   BOOKINGS: DATABASE_ID,
   LEADS: LEADS_DATABASE_ID,
   CONTACTS: CONTACT_DATABASE_ID,
+  ORDERS: ORDERS_DATABASE_ID,
 }
 
 // ========== DEFAULT EXPORT ==========
 const notionUtils = {
   createNotionBookingEntry,
+  createNotionOrderEntry,
   createNotionLeadEntry,
   createNotionContactEntry,
   updateNotionBookingStatus,

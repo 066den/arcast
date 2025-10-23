@@ -1,31 +1,54 @@
+'use client'
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
 } from '@/components/ui/sidebar'
 import { adminNavigation } from '@/lib/config'
 import Link from 'next/link'
 import { siteConfig } from '@/lib/config'
+import { usePathname } from 'next/navigation'
+import Image from 'next/image'
 
-const AppSidebar = () => {
+const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
+  const pathname = usePathname()
+
+  // Function to check if a navigation item is active
+  const isActive = (href: string) => {
+    if (href === '/admin') {
+      // For the main admin page, only highlight if exactly matching
+      return pathname === href
+    }
+    // For other pages, check if pathname starts with the href
+    return pathname.startsWith(href)
+  }
+
   return (
-    <Sidebar>
+    <Sidebar {...props}>
+      <SidebarHeader className="items-center">
+        <Link href="/">
+          <Image
+            src="/icons/logo-dark.svg"
+            alt={siteConfig.name}
+            width={140}
+            height={40}
+            priority
+          />
+        </Link>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>{siteConfig.name}</SidebarGroupLabel>
-          <SidebarSeparator />
           <SidebarGroupContent>
             <SidebarMenu>
               {adminNavigation.map(item => (
                 <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton asChild>
-                    <Link href={`/admin${item.href}`}>
+                  <SidebarMenuButton asChild isActive={isActive(item.href)}>
+                    <Link href={item.href} className="flex items-center gap-2">
                       <item.icon />
                       <span>{item.name}</span>
                     </Link>

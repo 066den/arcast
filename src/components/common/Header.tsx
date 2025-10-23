@@ -1,39 +1,112 @@
+'use client'
+
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '../ui/button'
 import Image from 'next/image'
 import { navigation, siteConfig } from '@/lib/config'
 import Link from 'next/link'
+import { ChevronRightIcon } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import { ROUTES } from '@/lib/constants'
+import BurgerButton from '../ui/BurgerButton'
+import MobileMenu from './MobileMenu'
 
 const Header = () => {
+  const pathname = usePathname()
+  const router = useRouter()
+  const isBooking = pathname === ROUTES.BOOKING
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const scrollPositionRef = useRef(0)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    if (isMobileMenuOpen) {
+      scrollPositionRef.current = window.scrollY
+      document.body.style.position = 'fixed'
+      document.body.style.top = `-${scrollPositionRef.current}px`
+      document.body.style.width = '100%'
+    } else {
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+      window.scrollTo(0, scrollPositionRef.current)
+    }
+
+    return () => {
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+    }
+  }, [isMobileMenuOpen])
+
+  const handleGetStarted = () => {
+    router.push(ROUTES.OUR_SETUPS)
+  }
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen)
+  }
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false)
+  }
+
   return (
-    <header className="top-0 left-0 right-0 z-50 border-b bg-transparent backdrop-blur-xs dark:bg-slate-900/80">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Link href="/" className="text-xl font-bold">
-              <Image
-                src="/icons/logo-dark.svg"
-                alt={siteConfig.name}
-                width={140}
-                height={40}
-              />
-            </Link>
-          </div>
-          <nav className="hidden md:flex items-center space-x-6">
+    <header className="sticky top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xs">
+      <div className="px-2 xl:px-8 py-2 xl:py-3 flex items-center justify-between">
+        <div className="flex items-center px-4 space-x-4 xl:space-x-16">
+          <Link href="/" className="text-xl font-bold">
+            <Image
+              src="/icons/logo-dark.svg"
+              alt={siteConfig.name}
+              width={140}
+              height={40}
+            />
+          </Link>
+          <nav className="hidden lg:flex items-center xl:space-x-4 space-x-2">
             {navigation.map(item => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
+                className={cn(
+                  'py-2 px-2 xl:px-4 tracking-[-0.02em] font-nunito-sans hover:text-accent transition-colors',
+                  {
+                    'underline underline-offset-4 decoration-accent decoration-2':
+                      item.href === pathname,
+                  }
+                )}
               >
                 {item.name}
               </Link>
             ))}
           </nav>
-          <Button size="md" className="hidden sm:inline-flex">
-            Book Your Session
-          </Button>
+        </div>
+
+        <div className="flex items-center">
+          {!isBooking && (
+            <Button
+              size="lg"
+              variant="primary"
+              icon={<ChevronRightIcon className="size-7" />}
+              className="hidden lg:flex group"
+              onClick={handleGetStarted}
+            >
+              Get started
+            </Button>
+          )}
+
+          <BurgerButton
+            isOpen={isMobileMenuOpen}
+            onClick={toggleMobileMenu}
+            className="lg:hidden mr-4"
+          />
         </div>
       </div>
+
+      <MobileMenu isOpen={isMobileMenuOpen} onClose={closeMobileMenu} />
     </header>
   )
 }

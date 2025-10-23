@@ -1,217 +1,215 @@
-# Docker Guide
+# Docker Setup для Arcast
 
-This guide covers how to use Docker with your Arcast application.
+Этот документ описывает как настроить и использовать Docker для проекта Arcast.
 
-## 🐳 Quick Start
+## Структура Docker файлов
 
-### Build and Run with Docker Compose
+- `Dockerfile` - основной production образ
+- `Dockerfile.dev` - образ для разработки
+- `Dockerfile.prod` - оптимизированный production образ
+- `docker-compose.yml` - оркестрация сервисов
+- `.dockerignore` - файлы исключаемые из Docker контекста
+
+## Быстрый старт
+
+### 1. Production окружение
 
 ```bash
-# Build and start the application
-docker-compose up --build
+# Запуск production сервисов
+docker-compose up -d
 
-# Run in background
-docker-compose up -d --build
+# Просмотр логов
+docker-compose logs -f app
 
-# Stop the application
+# Остановка сервисов
 docker-compose down
 ```
 
-### Development Mode
+### 2. Development окружение
 
 ```bash
-# Start development environment
-docker-compose --profile dev up --build
+# Запуск development сервисов
+docker-compose --profile dev up -d
 
-# Access the app at http://localhost:3001
+# Просмотр логов
+docker-compose logs -f app-dev
+
+# Остановка сервисов
+docker-compose down
 ```
 
-### Production Mode
+### 3. Полное окружение с Nginx
 
 ```bash
-# Start production environment with Nginx
-docker-compose --profile production up --build
-
-# Access the app at http://localhost:80
-```
-
-## 🔧 Manual Docker Commands
-
-### Build the Image
-
-```bash
-# Build production image
-docker build -t arcast-app .
-
-# Build development image
-docker build -f Dockerfile.dev -t arcast-app:dev .
-```
-
-### Run the Container
-
-```bash
-# Run production container
-docker run -p 3000:3000 arcast-app
-
-# Run development container
-docker run -p 3001:3000 -v $(pwd):/app arcast-app:dev
-```
-
-## 📁 Docker Files
-
-- `Dockerfile` - Production build
-- `Dockerfile.dev` - Development build with hot reload
-- `docker-compose.yml` - Multi-service orchestration
-- `nginx.conf` - Nginx reverse proxy configuration
-
-## 🌍 Environment Variables
-
-Create a `.env` file for Docker:
-
-```env
-NODE_ENV=production
-NEXT_TELEMETRY_DISABLED=1
-PORT=3000
-```
-
-## 🚀 Production Deployment
-
-### 1. Build Production Image
-
-```bash
-docker build -t arcast-app:latest .
-```
-
-### 2. Run with Nginx
-
-```bash
+# Запуск всех сервисов включая Nginx
 docker-compose --profile production up -d
 ```
 
-### 3. Scale Application
+## Сервисы
 
-```bash
-docker-compose up -d --scale app=3
-```
+### App (Production)
 
-## 🔍 Monitoring and Logs
+- **Порт**: 3000
+- **Dockerfile**: `Dockerfile`
+- **Health check**: `http://localhost:3000/api/health`
 
-### View Logs
+### App-dev (Development)
 
-```bash
-# View all logs
-docker-compose logs
+- **Порт**: 3001
+- **Dockerfile**: `Dockerfile.dev`
+- **Volumes**: Hot reload с локальными файлами
+- **Health check**: `http://localhost:3001/api/health`
 
-# View specific service logs
-docker-compose logs app
+### PostgreSQL
 
-# Follow logs in real-time
-docker-compose logs -f app
-```
+- **Порт**: 5432
+- **Database**: arcast
+- **User**: postgres
+- **Password**: postgres
 
-### Health Checks
+### Nginx (Optional)
 
-The application includes health checks:
+- **Порт**: 80
+- **Profile**: production
+- **Config**: `nginx.conf`
 
-```bash
-# Check container health
-docker ps
+## Переменные окружения
 
-# Test health endpoint
-curl http://localhost/health
-```
-
-## 🛠️ Troubleshooting
-
-### Common Issues
-
-1. **Port Already in Use**
-   ```bash
-   # Find process using port
-   lsof -i :3000
-   
-   # Kill process
-   kill -9 <PID>
-   ```
-
-2. **Permission Issues**
-   ```bash
-   # Fix file permissions
-   sudo chown -R $USER:$USER .
-   ```
-
-3. **Build Failures**
-   ```bash
-   # Clean Docker cache
-   docker system prune -a
-   
-   # Rebuild without cache
-   docker-compose build --no-cache
-   ```
-
-### Debugging
-
-```bash
-# Enter running container
-docker-compose exec app sh
-
-# View container resources
-docker stats
-
-# Inspect container
-docker inspect <container_id>
-```
-
-## 📊 Performance Optimization
-
-### Multi-stage Builds
-
-The production Dockerfile uses multi-stage builds to:
-- Reduce final image size
-- Separate build and runtime dependencies
-- Optimize layer caching
-
-### Resource Limits
-
-Add resource limits to docker-compose.yml:
+Основные переменные окружения настроены в `docker-compose.yml`:
 
 ```yaml
-services:
-  app:
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '0.5'
+DATABASE_URL: postgresql://postgres:postgres@postgres:5432/arcast
+NEXTAUTH_SECRET: your-nextauth-secret-key-change-this-in-production
+NEXTAUTH_URL: http://localhost:3000
+NEXT_PUBLIC_APP_URL: http://localhost:3000
 ```
 
-## 🔒 Security Best Practices
+Для production окружения создайте `.env` файл с реальными значениями:
 
-1. **Use Non-root User**
-   - The production image runs as `nextjs` user
-   - Avoid running containers as root
+```bash
+# Скопируйте env.example и настройте переменные
+cp env.example .env
+```
 
-2. **Scan for Vulnerabilities**
-   ```bash
-   # Install Trivy
-   docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-     aquasec/trivy image arcast-app:latest
-   ```
+## Команды для разработки
 
-3. **Keep Images Updated**
-   ```bash
-   # Update base images
-   docker pull node:18-alpine
-   docker-compose build --no-cache
-   ```
+### Пересборка образов
 
-## 📚 Additional Resources
+```bash
+# Пересборка production образа
+docker-compose build app
 
-- [Docker Documentation](https://docs.docker.com/)
-- [Docker Compose Documentation](https://docs.docker.com/compose/)
-- [Next.js Docker Guide](https://nextjs.org/docs/deployment#docker-image)
-- [Nginx Documentation](https://nginx.org/en/docs/)
+# Пересборка development образа
+docker-compose build app-dev
 
----
+# Пересборка всех образов
+docker-compose build
+```
 
-For more help, check the main README.md or open an issue in the repository.
+### Работа с базой данных
+
+```bash
+# Подключение к базе данных
+docker-compose exec postgres psql -U postgres -d arcast
+
+# Выполнение миграций
+docker-compose exec app npx prisma migrate deploy
+
+# Генерация Prisma клиента
+docker-compose exec app npx prisma generate
+```
+
+### Просмотр логов
+
+```bash
+# Все сервисы
+docker-compose logs -f
+
+# Конкретный сервис
+docker-compose logs -f app
+docker-compose logs -f postgres
+```
+
+## Troubleshooting
+
+### Проблемы с портами
+
+Если порты заняты, измените их в `docker-compose.yml`:
+
+```yaml
+ports:
+  - '3002:3000' # Измените 3000 на свободный порт
+```
+
+### Проблемы с базой данных
+
+```bash
+# Пересоздание volume базы данных
+docker-compose down -v
+docker-compose up -d postgres
+```
+
+### Проблемы с кэшем
+
+```bash
+# Очистка Docker кэша
+docker system prune -a
+
+# Пересборка без кэша
+docker-compose build --no-cache
+```
+
+## Production развертывание
+
+### 1. Подготовка
+
+```bash
+# Создайте .env файл с production переменными
+cp env.example .env
+# Отредактируйте .env файл
+```
+
+### 2. Запуск
+
+```bash
+# Запуск production окружения
+docker-compose --profile production up -d
+```
+
+### 3. Мониторинг
+
+```bash
+# Проверка статуса сервисов
+docker-compose ps
+
+# Проверка health checks
+docker-compose exec app curl -f http://localhost:3000/api/health
+```
+
+## Безопасность
+
+⚠️ **Важно для production**:
+
+1. Измените пароли по умолчанию
+2. Используйте сильные секретные ключи
+3. Настройте SSL/TLS
+4. Ограничьте доступ к портам базы данных
+5. Регулярно обновляйте образы
+
+## Производительность
+
+### Оптимизация образов
+
+- Используется multi-stage build для уменьшения размера
+- Кэширование слоев Docker
+- Исключение ненужных файлов через `.dockerignore`
+
+### Мониторинг ресурсов
+
+```bash
+# Использование ресурсов
+docker stats
+
+# Информация об образах
+docker images
+```

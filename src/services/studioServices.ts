@@ -1,5 +1,7 @@
+import { ERROR_MESSAGES } from '@/lib/constants'
 import { prisma } from '@/lib/prisma'
-import { generateAvailableTimeSlots } from '../utils/time'
+//import { generateAvailableTimeSlots } from '../utils/time'
+//import { Booking } from '../types'
 
 export const getStudios = async () => {
   const today = new Date()
@@ -16,17 +18,13 @@ export const getStudios = async () => {
   targetFriday.setHours(0, 0, 0, 0)
 
   if (!prisma) {
-    throw new Error('Prisma client is not initialized')
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
   }
-
+  //throw new Error('test')
   try {
     const studios = await prisma.studio.findMany({
+      orderBy: [{ createdAt: 'asc' }, { name: 'asc' }],
       include: {
-        packages: {
-          include: {
-            packagePerks: true,
-          },
-        },
         bookings: {
           where: {
             AND: [
@@ -46,58 +44,12 @@ export const getStudios = async () => {
       },
     })
 
-    // Add availability information to each studio
     const studiosWithAvailability = studios.map(studio => {
-      // Determine the end date based on studio type
-      const endDate =
-        studio.name === 'Mobile Studio Service' ? targetFriday : twoWeeksFromNow
-
-      // Filter bookings within the relevant date range
-      const relevantBookings = studio.bookings.filter(booking => {
-        const bookingStart = new Date(booking.startTime)
-        const bookingEnd = new Date(booking.endTime)
-        return (
-          // Check if booking overlaps with the date range
-          (bookingStart >= today && bookingStart <= endDate) ||
-          (bookingEnd >= today && bookingEnd <= endDate) ||
-          (bookingStart <= today && bookingEnd >= endDate)
-        )
-      })
-
-      // Generate time slots with the proper end date
-      const timeSlots = generateAvailableTimeSlots(
-        studio.openingTime,
-        studio.closingTime,
-        relevantBookings,
-        endDate
-      )
-
-      // Calculate actual availability
-      const availableSlots = timeSlots.filter(slot => slot.available).length
-      //console.log(studio)
-      // Transform studio data to match frontend expectations
-
       return {
         ...studio,
-        packages: studio.packages.map(pkg => ({
-          ...pkg,
-          price_per_hour: Number(pkg.price_per_hour),
-        })),
         description: `Professional recording studio with ${studio.totalSeats} seats, located in ${studio.location}. Available from ${studio.openingTime} to ${studio.closingTime}.`,
         capacity: studio.totalSeats,
-
-        // Availability information
-        isFullyBooked:
-          studio.name === 'Mobile Studio Service'
-            ? false
-            : availableSlots === 0,
-        availableSlots:
-          studio.name === 'Mobile Studio Service'
-            ? timeSlots.length
-            : availableSlots,
-        totalSlots: timeSlots.length,
-        // Exclude bookings from response to reduce payload size
-        bookings: undefined,
+        bookings: [],
       }
     })
 
@@ -111,27 +63,144 @@ export const getStudios = async () => {
   }
 }
 
-export const getPackages = async () => {
+export const getSamples = async () => {
   if (!prisma) {
-    throw new Error('Prisma client is not initialized')
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
   }
-
   try {
-    const packages = await prisma.studioPackage.findMany({
+    const samples = await prisma.sample.findMany({
       include: {
-        packagePerks: true,
+        serviceType: true,
       },
     })
-
-    return packages.map(pkg => ({
-      ...pkg,
-      price_per_hour: Number(pkg.price_per_hour),
-    }))
+    return samples
   } catch (error) {
-    console.error('Error fetching packages:', error)
+    console.error('Error fetching samples:', error)
     if (error instanceof Error) {
-      throw new Error(`Failed to fetch packages: ${error.message}`)
+      throw new Error(`Failed to fetch samples: ${error.message}`)
     }
-    throw new Error('Failed to fetch packages')
+    throw new Error('Failed to fetch samples')
+  }
+}
+
+export const getSamplesByServiceType = async (serviceTypeId: string) => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+  try {
+    const samples = await prisma.sample.findMany({})
+    return samples
+  } catch (error) {
+    console.error('Error fetching samples by service type:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch samples: ${error.message}`)
+    }
+    throw new Error('Failed to fetch samples')
+  }
+}
+
+export const getCases = async () => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+  try {
+    const cases = await prisma.caseStudy.findMany({
+      where: {
+        isActive: true,
+      },
+      include: {
+        client: true,
+        equipment: true, // Direct relation to equipment
+        staff: true, // Direct relation to staff
+        caseContent: {
+          orderBy: {
+            order: 'asc',
+          },
+        },
+      },
+    })
+    return cases
+  } catch (error) {
+    console.error('Error fetching cases:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch cases: ${error.message}`)
+    }
+    throw new Error('Failed to fetch cases')
+  }
+}
+
+export const getCaseById = async (id: string) => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+  try {
+    const caseStudy = await prisma.caseStudy.findUnique({
+      where: { id },
+      include: {
+        client: true,
+        equipment: true, // Direct relation to equipment
+        staff: true, // Direct relation to staff
+        caseContent: {
+          orderBy: {
+            order: 'asc',
+          },
+        },
+      },
+    })
+    return caseStudy
+  } catch (error) {
+    console.error('Error fetching case:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch case: ${error.message}`)
+    }
+    throw new Error('Failed to fetch case')
+  }
+}
+
+export const getClients = async () => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+  try {
+    const clients = await prisma.client.findMany()
+    return clients
+  } catch (error) {
+    console.error('Error fetching clients:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch clients: ${error.message}`)
+    }
+    throw new Error('Failed to fetch clients')
+  }
+}
+
+export const getStaff = async () => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+  try {
+    const staff = await prisma.staff.findMany()
+    return staff
+  } catch (error) {
+    console.error('Error fetching staff:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch staff: ${error.message}`)
+    }
+    throw new Error('Failed to fetch staff')
+  }
+}
+
+export const getEquipment = async () => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+  try {
+    const equipment = await prisma.equipment.findMany()
+    return equipment
+  } catch (error) {
+    console.error('Error fetching equipment:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch equipment: ${error.message}`)
+    }
+    throw new Error('Failed to fetch equipment')
   }
 }
