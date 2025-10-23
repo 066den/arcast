@@ -1,13 +1,8 @@
 import { Suspense } from 'react'
 import { Preloader } from '@/components/ui/preloader'
 import ClientsTable from '@/components/admin/ClientsTable'
-import { prisma } from '@/lib/prisma'
+import { fetchClients } from '@/services/clientServices'
 import type { ClientRow } from '@/types/admin'
-
-async function fetchClients() {
-  const clients = await prisma.client.findMany({ orderBy: { name: 'asc' } })
-  return clients
-}
 
 export default async function ClientsPage() {
   const clients = await fetchClients()

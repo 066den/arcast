@@ -28,3 +28,18 @@ export type ClientRow = {
   featured: boolean
   imageUrl?: string | null
 }
+
+export type DiscountCode = {
+  id: string
+  code: string
+  type: 'PERCENTAGE' | 'FIXED_AMOUNT' | string
+  value: number
+  currency: string
+  isActive: boolean
+  startDate: string | Date
+  endDate: string | Date
+  usageLimit?: number | null
+  usedCount?: number
+  firstTimeOnly?: boolean
+  minOrderAmount?: number | null
+}

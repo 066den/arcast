@@ -1,24 +1,7 @@
 import { Suspense } from 'react'
 import { Preloader } from '@/components/ui/preloader'
 import SamplesTable from '@/components/admin/SamplesTable'
-import { prisma } from '@/lib/prisma'
-
-async function fetchSamples() {
-  try {
-    const samples = await prisma.sample.findMany({
-      include: {
-        serviceType: true,
-      },
-      orderBy: {
-        id: 'desc',
-      },
-    })
-    return samples
-  } catch (error) {
-    console.error('Error fetching samples:', error)
-    return []
-  }
-}
+import { fetchSamples } from '@/services/sampleServices'
 
 export default async function SamplesPage() {
   const samples = await fetchSamples()

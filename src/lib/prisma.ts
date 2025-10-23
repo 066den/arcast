@@ -3,10 +3,7 @@ import { withAccelerate } from '@prisma/extension-accelerate'
 
 const prismaClientSingleton = () => {
   const client = new PrismaClient({
-    log:
-      process.env.NODE_ENV === 'development'
-        ? ['query', 'error', 'warn']
-        : ['error'],
+    log: ['error'],
     errorFormat: 'pretty',
   })
   // Применяем accelerate только если есть URL для него

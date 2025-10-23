@@ -4,7 +4,6 @@ import { createNotionOrderEntry, createNotionLeadEntry } from '@/lib/notion'
 import { z } from 'zod'
 import { validateOrder } from '@/lib/schemas'
 import { OrderFormData, OrderResponse } from '@/types/api'
-import { OrderStatus, Service } from '@prisma/client'
 import { getPaymentLinkForOrder } from '@/services/paymentServices'
 import {
   DISCOUNT_TYPE,
@@ -39,16 +38,9 @@ export async function POST(req: Request) {
       )
     }
 
-    const {
-      serviceId,
-      discountCode,
-      requirements,
-      estimatedDays,
-      deadline,
-      lead,
-    } = body
+    const { serviceId, discountCode, lead } = body
 
-    let serviceData: Service | null = null
+    let serviceData: any = null
     if (serviceId) {
       serviceData = await prisma.service.findUnique({
         where: { id: serviceId },
@@ -119,7 +111,7 @@ export async function POST(req: Request) {
     const finalTotalCost = costAfterDiscount + finalVatAmount
 
     const result = await prisma.$transaction(
-      async tx => {
+      async (tx: any) => {
         let orderLead = await tx.lead.findFirst({
           where: {
             OR: [{ email: lead.email }, { phoneNumber: lead.phoneNumber }],
@@ -262,7 +254,7 @@ export async function GET(req: NextRequest) {
     const status = searchParams.get('status')
     const skip = (page - 1) * limit
 
-    const where = status ? { status: status as OrderStatus } : {}
+    const where = status ? { status: status as any } : {}
 
     const [orders, total] = await Promise.all([
       prisma.order.findMany({
@@ -281,7 +273,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      orders: orders.map(order => ({
+      orders: orders.map((order: any) => ({
         id: order.id,
         serviceName: order.serviceName,
         description: order.description,

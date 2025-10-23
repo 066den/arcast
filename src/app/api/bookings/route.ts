@@ -255,7 +255,7 @@ export async function POST(req: Request) {
         })
 
       const serviceMap = new Map()
-      availableAdditionalServices.forEach(service => {
+      availableAdditionalServices.forEach((service: any) => {
         serviceMap.set(service.id, service)
       })
 
@@ -305,7 +305,7 @@ export async function POST(req: Request) {
 
     // 2. Now start a shorter transaction that only does essential writes
     const result = await prisma.$transaction(
-      async tx => {
+      async (tx: any) => {
         let bookingLead
         if (lead.email) {
           const existingLead = await tx.lead.findFirst({

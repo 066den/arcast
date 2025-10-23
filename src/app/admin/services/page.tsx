@@ -1,36 +1,7 @@
 import { Suspense } from 'react'
 import { Preloader } from '@/components/ui/preloader'
 import ServicesTable from '@/components/admin/ServicesTable'
-import { prisma } from '@/lib/prisma'
-
-async function fetchServices() {
-  try {
-    const services = await prisma.service.findMany({
-      include: {
-        serviceType: true,
-      },
-      orderBy: [
-        {
-          serviceType: {
-            sortOrder: 'asc',
-          },
-        },
-        {
-          name: 'asc',
-        },
-      ],
-    })
-
-    // Convert Decimal objects to numbers for client components
-    return services.map(service => ({
-      ...service,
-      price: Number(service.price),
-    }))
-  } catch (error) {
-    console.error('Error fetching services:', error)
-    return []
-  }
-}
+import { fetchServices } from '@/services/serviceServices'
 
 export default async function ServicesPage() {
   const services = await fetchServices()
