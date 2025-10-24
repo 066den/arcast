@@ -10,7 +10,7 @@ export const validateFile = (file: File): string | null => {
   }
 
   if (file.size > MAX_FILE_SIZE.IMAGE) {
-    return ERROR_MESSAGES.FILE.SIZE_EXCEEDED
+    return ERROR_MESSAGES.FILE.IMAGE_SIZE_EXCEEDED
   }
 
   return null
@@ -26,7 +26,7 @@ export const validateVideoFile = (file: File): string | null => {
   }
 
   if (file.size > MAX_FILE_SIZE.VIDEO) {
-    return ERROR_MESSAGES.FILE.SIZE_EXCEEDED
+    return ERROR_MESSAGES.FILE.VIDEO_SIZE_EXCEEDED
   }
 
   return null
@@ -42,7 +42,7 @@ export const validateAudioFile = (file: File): string | null => {
   }
 
   if (file.size > MAX_FILE_SIZE.AUDIO) {
-    return ERROR_MESSAGES.FILE.SIZE_EXCEEDED
+    return ERROR_MESSAGES.FILE.AUDIO_SIZE_EXCEEDED
   }
 
   return null
@@ -58,7 +58,7 @@ export const validateDocumentFile = (file: File): string | null => {
   }
 
   if (file.size > MAX_FILE_SIZE.DOCUMENT) {
-    return ERROR_MESSAGES.FILE.SIZE_EXCEEDED
+    return ERROR_MESSAGES.FILE.DOCUMENT_SIZE_EXCEEDED
   }
 
   return null
