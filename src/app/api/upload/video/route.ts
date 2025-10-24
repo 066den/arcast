@@ -42,48 +42,13 @@ export async function POST(request: NextRequest) {
       return response
     }
 
-    console.log('User authenticated:', session.user.email)
 
-    console.log('📥 Parsing form data...')
-
-    // For large files, use streaming approach
-    const contentLength = request.headers.get('content-length')
-    const fileSize = contentLength ? parseInt(contentLength) : 0
-
-    let formData: FormData
-    let parseTime: number
-
-    if (fileSize > 200 * 1024 * 1024) {
-      // 200MB
-      console.log(
-        `⚠️ Very large file detected: ${(fileSize / (1024 * 1024)).toFixed(2)}MB`
-      )
-      console.log('🔄 Using streaming approach...')
-
-      // For very large files, we'll need to handle them differently
-      // For now, let's try to parse normally but with a timeout
-      const parsePromise = request.formData()
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Form data parsing timeout')), 60000) // 1 minute timeout
-      })
-
-      formData = (await Promise.race([
-        parsePromise,
-        timeoutPromise,
-      ])) as FormData
-      parseTime = Date.now()
-      console.log(`📊 Form data parsed in ${(parseTime - startTime) / 1000}s`)
-    } else {
-      formData = await request.formData()
-      parseTime = Date.now()
-      console.log(`📊 Form data parsed in ${(parseTime - startTime) / 1000}s`)
-    }
+    const formData = await request.formData()
     const file = formData.get('videoFile') as File
     const folder = formData.get('folder') as string
     const usePresignedPost = formData.get('usePresignedPost') === 'true'
 
     if (!file) {
-      console.log('No video file provided in request')
       const response = NextResponse.json(
         { error: 'No video file provided' },
         { status: 400 }
@@ -92,23 +57,10 @@ export async function POST(request: NextRequest) {
       return response
     }
 
-    console.log('File received:', {
-      name: file.name,
-      size: file.size,
-      type: file.type,
-    })
 
-    // For large files, show additional info
-    if (file.size > 100 * 1024 * 1024) {
-      console.log(
-        `⚠️ Large file detected: ${(file.size / (1024 * 1024)).toFixed(2)}MB`
-      )
-      console.log('⏳ This may take several minutes to process...')
-    }
 
     const validation = validateVideoFile(file)
     if (validation) {
-      console.log('File validation failed:', validation)
       const response = NextResponse.json({ error: validation }, { status: 400 })
       response.headers.set('Access-Control-Allow-Origin', '*')
       return response
@@ -117,15 +69,9 @@ export async function POST(request: NextRequest) {
     const fileExtension = file.name.split('.').pop()
     const fileName = `${uuidv4()}.${fileExtension}`
 
-    console.log('Processing video upload:', {
-      fileName,
-      usePresignedPost,
-      fileSize: file.size,
-    })
 
     if (usePresignedPost) {
       // Use presigned POST for faster uploads
-      console.log('Generating presigned POST for direct upload...')
 
       const presignedPost = await generatePresignedPost(fileName, {
         folder: folder || 'samples',

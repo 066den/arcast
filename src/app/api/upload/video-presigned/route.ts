@@ -71,13 +71,6 @@ export async function POST(request: NextRequest) {
     const presignedPost = await generatePresignedPost(fileName, {
       folder: folder || 'samples',
       contentType: file.type,
-      metadata: {
-        originalName: file.name,
-        uploadedAt: new Date().toISOString(),
-        uploadedBy: session.user.email || 'unknown',
-        fileType: 'video',
-        fileSize: file.size.toString(),
-      },
       expiresIn: 3600, // 1 hour
       maxFileSize: 1024 * 1024 * 1024, // 1GB for large videos
     })

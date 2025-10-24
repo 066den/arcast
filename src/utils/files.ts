@@ -92,24 +92,13 @@ export const getUploadedVideo = async (
       uploadMethod = 'direct upload (medium file)'
     }
 
-    console.log(
-      `📊 File size: ${(file.size / (1024 * 1024)).toFixed(2)}MB, using ${uploadMethod}`
-    )
 
-    console.log('📤 Sending request to API...')
-
-    // For large files, show progress
-    if (file.size > 50 * 1024 * 1024) {
-      // 50MB
-      console.log('⏳ Large file detected, this may take several minutes...')
-    }
 
     const response = await fetch('/api/upload/video', {
       method: 'POST',
       body: formData,
     })
 
-    console.log('📊 API Response status:', response.status)
 
     if (!response.ok) {
       let errorMessage = 'Failed to upload video'
@@ -189,10 +178,10 @@ export const getUploadedVideo = async (
         })
 
         console.log('⏳ Starting S3 upload with 10-minute timeout...')
-        const uploadResponse = await Promise.race([
+        const uploadResponse = (await Promise.race([
           uploadPromise,
           timeoutPromise,
-        ])
+        ])) as Response
 
         console.log('📊 S3 Upload status:', uploadResponse.status)
 
@@ -205,7 +194,7 @@ export const getUploadedVideo = async (
         console.log('✅ S3 Upload successful!')
         console.log('🔗 CDN URL:', result.presignedPost.cdnUrl)
         return result.presignedPost.cdnUrl
-      } catch (error) {
+      } catch (error: any) {
         console.warn(
           '⚠️ Presigned POST failed, falling back to direct upload:',
           error.message
