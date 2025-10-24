@@ -218,6 +218,28 @@ export default function VideoUpload({
                       </div>
                       <div className="text-sm text-muted-foreground">
                         Size: {(videoFile.size / (1024 * 1024)).toFixed(2)} MB
+                        {videoFile.size > 100 * 1024 * 1024 &&
+                          videoFile.size <= 200 * 1024 * 1024 && (
+                            <div className="text-orange-600 text-xs mt-1">
+                              ⚠️ Large file - will use direct upload (slower but
+                              more reliable)
+                            </div>
+                          )}
+                        {videoFile.size > 300 * 1024 * 1024 && (
+                          <div className="text-green-600 text-xs mt-1">
+                            🚀 Very large file - will use multipart upload
+                            (fastest for huge files)
+                            <br />⚡ Optimized for maximum speed and reliability
+                          </div>
+                        )}
+                        {videoFile.size > 100 * 1024 * 1024 &&
+                          videoFile.size <= 300 * 1024 * 1024 && (
+                            <div className="text-blue-600 text-xs mt-1">
+                              📤 Large file - will use direct upload (reliable
+                              method)
+                              <br />⏳ This may take several minutes
+                            </div>
+                          )}
                       </div>
 
                       {isUploading && (
@@ -225,7 +247,11 @@ export default function VideoUpload({
                           <div className="flex items-center justify-center gap-2 text-blue-600">
                             <Loader2 className="h-4 w-4 animate-spin" />
                             <span className="text-sm font-medium">
-                              Uploading video...
+                              {videoFile.size > 300 * 1024 * 1024
+                                ? 'Uploading very large video with multipart (optimized for speed)...'
+                                : videoFile.size > 100 * 1024 * 1024
+                                  ? 'Uploading large video (this may take several minutes)...'
+                                  : 'Uploading video...'}
                             </span>
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2">

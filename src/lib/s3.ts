@@ -3,23 +3,27 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
   GetObjectCommand,
+  CreateMultipartUploadCommand,
+  UploadPartCommand,
+  CompleteMultipartUploadCommand,
+  AbortMultipartUploadCommand,
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
 
-// AWS S3 Configuration for DigitalOcean Spaces
 const s3Client = new S3Client({
-  region: 'blr1',
-  endpoint: 'https://blr1.digitaloceanspaces.com',
+  region: process.env.AWS_REGION || 'us-east-1',
+  endpoint: process.env.AWS_ENDPOINT || 'https://blr1.digitaloceanspaces.com',
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'DO801ZANC8M4JR4ANL7Z',
     secretAccessKey:
       process.env.AWS_SECRET_ACCESS_KEY ||
       'R1umCcwzZQtooGLR1eccRTNh0KBVqrptLZVpWlEmZEo',
   },
-  forcePathStyle: false, // DigitalOcean Spaces uses virtual-hosted-style URLs
+  forcePathStyle: false,
 })
 
-const BUCKET_NAME = 'arcast-s3'
+const BUCKET_NAME = process.env.AWS_BUCKET_NAME || 'arcast-s3'
 
 export interface UploadResult {
   url: string
@@ -32,6 +36,20 @@ export interface UploadOptions {
   folder?: string
   contentType?: string
   metadata?: Record<string, string>
+}
+
+export interface PresignedPostOptions {
+  folder?: string
+  contentType?: string
+  expiresIn?: number
+  maxFileSize?: number
+}
+
+export interface PresignedPostResult {
+  url: string
+  fields: Record<string, string>
+  fileKey: string
+  cdnUrl: string
 }
 
 /**
@@ -153,6 +171,157 @@ export const generatePresignedAccessUrl = async (
   } catch (error) {
     console.error('Error generating presigned access URL:', error)
     throw new Error('Failed to generate presigned access URL')
+  }
+}
+
+/**
+ * Upload large file using multipart upload for better performance
+ */
+export const uploadLargeFileToS3 = async (
+  file: File,
+  fileName: string,
+  options: UploadOptions = {}
+): Promise<UploadResult> => {
+  let fileKey: string = ''
+  let UploadId: string | undefined
+
+  try {
+    const {
+      folder = 'uploads',
+      contentType = 'video/mp4',
+      metadata = {},
+    } = options
+
+    const fileExtension = fileName.split('.').pop()
+    const uniqueFileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExtension}`
+    fileKey = folder ? `${folder}/${uniqueFileName}` : uniqueFileName
+
+    // Create multipart upload
+    const createCommand = new CreateMultipartUploadCommand({
+      Bucket: BUCKET_NAME,
+      Key: fileKey,
+      ContentType: contentType,
+      Metadata: metadata,
+    })
+
+    const { UploadId: createdUploadId } = await s3Client.send(createCommand)
+    UploadId = createdUploadId
+
+    // Upload parts (5MB each)
+    const partSize = 5 * 1024 * 1024 // 5MB
+    const totalParts = Math.ceil(file.size / partSize)
+    const uploadedParts: { ETag: string; PartNumber: number }[] = []
+
+    for (let partNumber = 1; partNumber <= totalParts; partNumber++) {
+      const start = (partNumber - 1) * partSize
+      const end = Math.min(start + partSize, file.size)
+      const chunk = file.slice(start, end)
+
+      // Convert File chunk to ArrayBuffer for proper handling
+      const arrayBuffer = await chunk.arrayBuffer()
+      const buffer = Buffer.from(arrayBuffer)
+
+      const uploadCommand = new UploadPartCommand({
+        Bucket: BUCKET_NAME,
+        Key: fileKey,
+        PartNumber: partNumber,
+        UploadId,
+        Body: buffer,
+      })
+
+      const { ETag } = await s3Client.send(uploadCommand)
+      uploadedParts.push({ ETag: ETag!, PartNumber: partNumber })
+    }
+
+    // Complete multipart upload
+    const completeCommand = new CompleteMultipartUploadCommand({
+      Bucket: BUCKET_NAME,
+      Key: fileKey,
+      UploadId,
+      MultipartUpload: {
+        Parts: uploadedParts,
+      },
+    })
+
+    await s3Client.send(completeCommand)
+
+    const cdnUrl = getCdnUrl(fileKey)
+
+    return {
+      url: `https://${BUCKET_NAME}.blr1.digitaloceanspaces.com/${fileKey}`,
+      cdnUrl,
+      key: fileKey,
+      bucket: BUCKET_NAME,
+    }
+  } catch (error) {
+    console.error('Error in multipart upload:', error)
+
+    // Try to abort the multipart upload if it was created
+    if (typeof UploadId !== 'undefined') {
+      try {
+        const abortCommand = new AbortMultipartUploadCommand({
+          Bucket: BUCKET_NAME,
+          Key: fileKey,
+          UploadId,
+        })
+        await s3Client.send(abortCommand)
+      } catch (abortError) {
+        console.error('Failed to abort multipart upload:', abortError)
+      }
+    }
+
+    throw new Error('Failed to upload large file')
+  }
+}
+
+/**
+ * Generate a presigned POST for direct client uploads
+ * This is more efficient than presigned PUT for file uploads
+ */
+export const generatePresignedPost = async (
+  fileName: string,
+  options: PresignedPostOptions = {}
+): Promise<PresignedPostResult> => {
+  try {
+    const {
+      folder = 'uploads',
+      contentType = 'video/mp4',
+      expiresIn = 3600, // 1 hour
+      maxFileSize = 500 * 1024 * 1024, // 500MB default
+    } = options
+
+    // Generate unique file key
+    const fileExtension = fileName.split('.').pop()
+    const uniqueFileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExtension}`
+    const fileKey = folder ? `${folder}/${uniqueFileName}` : uniqueFileName
+
+    // Create presigned POST with simplified conditions
+    const { url, fields } = await createPresignedPost(s3Client, {
+      Bucket: BUCKET_NAME,
+      Key: fileKey,
+      Fields: {
+        acl: 'public-read',
+        'Content-Type': contentType,
+      },
+      Conditions: [
+        { acl: 'public-read' },
+        { 'Content-Type': contentType },
+        ['content-length-range', 0, maxFileSize],
+      ],
+      Expires: expiresIn,
+    })
+
+    const cdnUrl = getCdnUrl(fileKey)
+
+    return {
+      url,
+      fields,
+      fileKey,
+      cdnUrl,
+    }
+  } catch (error) {
+    console.error('Error generating presigned POST:', error)
+    throw new Error('Failed to generate presigned POST')
   }
 }
 
