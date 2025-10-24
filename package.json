@@ -25,7 +25,8 @@
     "admin:seed": "node scripts/seed-admin.js",
     "admin:reset-password": "node scripts/reset-admin-password.js",
     "test:s3": "node scripts/test-s3-config.js",
-    "postinstall": "prisma generate",
+    "stage:import": "node scripts/import-from-stage.js",
+    "postinstall": "sh -c \"if [ -f ./prisma/schema.prisma ]; then npx prisma generate --schema=prisma/schema.prisma; else echo 'No prisma schema, skipping generate'; fi\"",
     "vercel-build": "prisma generate && next build"
   },
   "dependencies": {

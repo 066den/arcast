@@ -79,37 +79,7 @@ export default function VideoUpload({
       }, 500)
     } catch (error) {
       console.error('Error uploading video:', error)
-
-      // Provide more specific error messages based on the error type
-      let errorMessage = 'Failed to upload video'
-
-      if (error instanceof Error) {
-        if (
-          error.message.includes('413') ||
-          error.message.includes('Content Too Large')
-        ) {
-          errorMessage =
-            'Video file is too large. Please choose a smaller file or compress your video.'
-        } else if (
-          error.message.includes('400') ||
-          error.message.includes('Bad Request')
-        ) {
-          errorMessage =
-            'Invalid video file. Please check the file format and try again.'
-        } else if (
-          error.message.includes('401') ||
-          error.message.includes('Unauthorized')
-        ) {
-          errorMessage = 'You need to be logged in to upload videos.'
-        } else if (error.message.includes('Network')) {
-          errorMessage =
-            'Network error. Please check your connection and try again.'
-        } else if (error.message.includes('JSON')) {
-          errorMessage = 'Server error. Please try again later.'
-        }
-      }
-
-      toast.error(errorMessage)
+      toast.error('Failed to upload video')
       setIsUploading(false)
       setUploadProgress(0)
     }

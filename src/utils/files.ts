@@ -76,18 +76,8 @@ export const getUploadedVideo = async (
     })
 
     if (!response.ok) {
-      let errorMessage = 'Failed to upload video'
-
-      try {
-        const errorData = await response.json()
-        errorMessage = errorData.error || errorMessage
-      } catch (parseError) {
-        // If response is not JSON, use status text or default message
-        errorMessage = response.statusText || errorMessage
-      }
-
-      // Add status code to error message for better debugging
-      throw new Error(`${response.status}: ${errorMessage}`)
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Failed to upload video')
     }
 
     const result = await response.json()
