@@ -77,8 +77,7 @@ Thumbs.db
 # Husky
 .husky/
 
-# Prisma migrations (keep schema but exclude migrations for production)
-prisma/migrations/
+# Prisma migrations are included in the image to allow migrate deploy
 
 # Development files
 README.md

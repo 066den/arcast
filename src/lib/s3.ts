@@ -11,8 +11,10 @@ const s3Client = new S3Client({
   region: 'blr1',
   endpoint: 'https://blr1.digitaloceanspaces.com',
   credentials: {
-    accessKeyId: 'DO801ZANC8M4JR4ANL7Z',
-    secretAccessKey: 'R1umCcwzZQtooGLR1eccRTNh0KBVqrptLZVpWlEmZEo',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'DO801ZANC8M4JR4ANL7Z',
+    secretAccessKey:
+      process.env.AWS_SECRET_ACCESS_KEY ||
+      'R1umCcwzZQtooGLR1eccRTNh0KBVqrptLZVpWlEmZEo',
   },
   forcePathStyle: false, // DigitalOcean Spaces uses virtual-hosted-style URLs
 })

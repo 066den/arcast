@@ -23,6 +23,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  serverExternalPackages: [],
   experimental: {
     optimizeCss: false, // Disable CSS optimization for TailwindCSS v4 compatibility
   },

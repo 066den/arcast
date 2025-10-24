@@ -181,6 +181,11 @@ export const ERROR_MESSAGES = {
   FILE: {
     TYPE_NOT_ALLOWED: 'File type not allowed',
     SIZE_EXCEEDED: 'File size exceeded',
+    VIDEO_SIZE_EXCEEDED:
+      'Video file is too large. Maximum size is 1GB. Please compress your video or choose a smaller file.',
+    IMAGE_SIZE_EXCEEDED: 'Image file is too large. Maximum size is 5MB.',
+    AUDIO_SIZE_EXCEEDED: 'Audio file is too large. Maximum size is 50MB.',
+    DOCUMENT_SIZE_EXCEEDED: 'Document file is too large. Maximum size is 10MB.',
   },
   CONTACT: {
     FAILED: 'Failed to submit contact form',
