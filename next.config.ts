@@ -23,9 +23,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  serverExternalPackages: [],
   experimental: {
     optimizeCss: false, // Disable CSS optimization for TailwindCSS v4 compatibility
-    serverComponentsExternalPackages: [],
   },
   // Ensure proper CSS handling for TailwindCSS v4
   webpack: (config, { isServer }) => {
