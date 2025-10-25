@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
-import {
-  uploadToS3,
-  generatePresignedPost,
-  uploadLargeFileToS3,
-} from '@/lib/s3'
 import { validateVideoFile } from '@/lib/validate'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -69,11 +64,14 @@ export async function POST(request: NextRequest) {
     const fileExtension = file.name.split('.').pop()
     const fileName = `${uuidv4()}.${fileExtension}`
 
+    // Lazy-load S3 helpers at runtime to avoid build-time evaluation
+    const s3 = await import('@/lib/s3')
+
 
     if (usePresignedPost) {
       // Use presigned POST for faster uploads
 
-      const presignedPost = await generatePresignedPost(fileName, {
+      const presignedPost = await s3.generatePresignedPost(fileName, {
         folder: folder || 'samples',
         contentType: file.type,
         expiresIn: 3600, // 1 hour
@@ -119,7 +117,7 @@ export async function POST(request: NextRequest) {
         // 300MB
         console.log('🚀 Using multipart upload for very large file:', fileName)
         try {
-          result = await uploadLargeFileToS3(file, fileName, {
+          result = await s3.uploadLargeFileToS3(file, fileName, {
             folder: folder || 'samples',
             contentType: file.type,
             metadata: {
@@ -134,7 +132,7 @@ export async function POST(request: NextRequest) {
             multipartError
           )
           console.log('📤 Falling back to direct upload:', fileName)
-          result = await uploadToS3(file, fileName, {
+          result = await s3.uploadToS3(file, fileName, {
             folder: folder || 'samples',
             contentType: file.type,
             metadata: {
@@ -146,7 +144,7 @@ export async function POST(request: NextRequest) {
         }
       } else {
         console.log('📤 Using direct upload:', fileName)
-        result = await uploadToS3(file, fileName, {
+        result = await s3.uploadToS3(file, fileName, {
           folder: folder || 'samples',
           contentType: file.type,
           metadata: {

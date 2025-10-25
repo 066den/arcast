@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
-import { generatePresignedPost } from '@/lib/s3'
-import { v4 as uuidv4 } from 'uuid'
+// Defer S3 import to runtime to avoid module evaluation during build analysis
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+export const maxDuration = 300
 
 // Handle CORS preflight requests
 export async function OPTIONS() {
@@ -18,6 +21,9 @@ export async function OPTIONS() {
 
 export async function POST(request: NextRequest) {
   try {
+    // Lazy-load to prevent build-time evaluation (helps with "Failed to collect page data")
+    const { generatePresignedPost } = await import('@/lib/s3')
+
     console.log('Starting presigned POST generation...')
 
     const session = await auth()
