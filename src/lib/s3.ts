@@ -25,6 +25,51 @@ const s3Client = new S3Client({
 
 const BUCKET_NAME = process.env.AWS_BUCKET_NAME || 'arcast-s3'
 
+const ENDPOINT = process.env.AWS_ENDPOINT || 'https://blr1.digitaloceanspaces.com'
+const PUBLIC_ENDPOINT =
+  process.env.NEXT_PUBLIC_S3_PUBLIC_ENDPOINT || ENDPOINT
+
+const isMinio = (() => {
+  try {
+    const h = new URL(ENDPOINT).hostname
+    return h.includes('minio')
+  } catch {
+    return false
+  }
+})()
+
+// Build a browser-accessible public URL
+// - For MinIO we prefer PATH-STYLE using PUBLIC_ENDPOINT host (e.g. http://localhost:9000/bucket/key),
+//   so it works from outside Docker without DNS for bucket subdomains.
+// - For DO Spaces keep the original virtual-hosted style/CDN style.
+const buildPublicUrl = (fileKey: string): string => {
+  try {
+    const pub = new URL(PUBLIC_ENDPOINT)
+    const proto = pub.protocol || 'http:'
+    const host = pub.hostname
+    const port = pub.port ? `:${pub.port}` : ''
+    if (host.includes('minio')) {
+      // Path-style for MinIO (accessible from host)
+      return `${proto}//${host}${port}/${BUCKET_NAME}/${fileKey}`
+    }
+    // Virtual-hosted style for DO Spaces and other S3-compatible endpoints
+    return `${proto}//${BUCKET_NAME}.${host}${port}/${fileKey}`
+  } catch {
+    // PUBLIC_ENDPOINT is invalid; fall back to ENDPOINT
+    try {
+      const ep = new URL(ENDPOINT)
+      const proto = ep.protocol || 'http:'
+      const host = ep.hostname
+      const port = ep.port ? `:${ep.port}` : ''
+      return `${proto}//${BUCKET_NAME}.${host}${port}/${fileKey}`
+    } catch {
+      // Last resort: join strings safely
+      const base = (ENDPOINT || '').replace(/\/+$/, '')
+      return `${base}/${BUCKET_NAME}/${fileKey}`
+    }
+  }
+}
+
 export interface UploadResult {
   url: string
   cdnUrl: string
@@ -56,6 +101,10 @@ export interface PresignedPostResult {
  * Get CDN URL for a file (if CDN is enabled)
  */
 export const getCdnUrl = (fileKey: string): string => {
+  if (isMinio) {
+    // For MinIO use same public URL (no CDN)
+    return buildPublicUrl(fileKey)
+  }
   return `https://${BUCKET_NAME}.blr1.cdn.digitaloceanspaces.com/${fileKey}`
 }
 
@@ -98,8 +147,8 @@ export const uploadToS3 = async (
     await s3Client.send(command)
 
     // Return the public URL and CDN URL
-    const publicUrl = `https://${BUCKET_NAME}.blr1.digitaloceanspaces.com/${fileKey}`
-    const cdnUrl = `https://${BUCKET_NAME}.blr1.cdn.digitaloceanspaces.com/${fileKey}`
+    const publicUrl = buildPublicUrl(fileKey)
+    const cdnUrl = getCdnUrl(fileKey)
 
     return {
       url: publicUrl,
@@ -248,7 +297,7 @@ export const uploadLargeFileToS3 = async (
     const cdnUrl = getCdnUrl(fileKey)
 
     return {
-      url: `https://${BUCKET_NAME}.blr1.digitaloceanspaces.com/${fileKey}`,
+      url: buildPublicUrl(fileKey),
       cdnUrl,
       key: fileKey,
       bucket: BUCKET_NAME,
@@ -347,9 +396,14 @@ export const extractFileKeyFromUrl = (url: string): string | null => {
 export const isS3Url = (url: string): boolean => {
   try {
     const urlObj = new URL(url)
+    const host = urlObj.hostname
+    if (host.includes('minio')) {
+      // Path-style: host is PUBLIC_ENDPOINT host (e.g. localhost), accept it
+      return true
+    }
     return (
-      urlObj.hostname.includes('digitaloceanspaces.com') &&
-      urlObj.hostname.startsWith(BUCKET_NAME)
+      host.includes('digitaloceanspaces.com') &&
+      host.startsWith(BUCKET_NAME)
     )
   } catch {
     return false
