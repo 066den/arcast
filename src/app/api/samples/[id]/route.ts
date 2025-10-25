@@ -55,6 +55,16 @@ export async function PUT(
       name = formData.get('name') as string
       videoUrl = formData.get('videoUrl') as string
       serviceTypeId = formData.get('serviceTypeId') as string
+
+      // Normalize relative '/samples/...' to absolute CDN/public URL
+      if (videoUrl && /^\/?samples\//.test(videoUrl)) {
+        try {
+          const s3 = await import('@/lib/s3')
+          const key = (videoUrl as string).replace(/^\/+/, '') // "samples/..."
+          videoUrl = s3.getCdnUrl(key)
+        } catch {}
+      }
+
       const thumbnailFile = formData.get('thumbnailFile') as File
 
       if (!name) {
@@ -88,6 +98,15 @@ export async function PUT(
       thumbUrl = body.thumbUrl || null
       videoUrl = body.videoUrl || null
       serviceTypeId = body.serviceTypeId || null
+
+      // Normalize relative '/samples/...' to absolute CDN/public URL
+      if (videoUrl && /^\/?samples\//.test(videoUrl)) {
+        try {
+          const s3 = await import('@/lib/s3')
+          const key = (videoUrl as string).replace(/^\/+/, '') // "samples/..."
+          videoUrl = s3.getCdnUrl(key)
+        } catch {}
+      }
 
       if (!name) {
         return NextResponse.json(

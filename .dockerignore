@@ -86,14 +86,16 @@ README.md
 # Backup files
 backups/
 
-# Scripts (not needed in production)
-scripts/
+# Include scripts in image (used for migrations/maintenance)
+# Previously excluded: "scripts/"
+# Now keeping scripts so they’re copied in Docker image
+# (see Dockerfile where we COPY /app/scripts -> /app/scripts)
 
 # Test files
 **/*.test.*
 **/*.spec.*
-test/
-tests/
+test*
+tests*
 
 # Documentation
 docs/

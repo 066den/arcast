@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
         console.log('🚀 Using multipart upload for very large file:', fileName)
         try {
           result = await s3.uploadLargeFileToS3(file, fileName, {
-            folder: folder || 'samples',
+            folder: folder || 'arcast-s3/samples',
             contentType: file.type,
             metadata: {
               originalName: file.name,
@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
           )
           console.log('📤 Falling back to direct upload:', fileName)
           result = await s3.uploadToS3(file, fileName, {
-            folder: folder || 'samples',
+            folder: folder || 'arcast-s3/samples',
             contentType: file.type,
             metadata: {
               originalName: file.name,
@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
       } else {
         console.log('📤 Using direct upload:', fileName)
         result = await s3.uploadToS3(file, fileName, {
-          folder: folder || 'samples',
+          folder: folder || 'arcast-s3/samples',
           contentType: file.type,
           metadata: {
             originalName: file.name,
