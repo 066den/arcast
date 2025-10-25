@@ -2,7 +2,11 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import { validateFile } from '@/lib/validate'
-import { deleteUploadedFile, getUploadedFile } from '@/utils/files'
+import { deleteUploadedFile } from '@/utils/files'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+export const maxDuration = 300
 
 export async function POST(
   req: Request,
@@ -31,13 +35,26 @@ export async function POST(
       return NextResponse.json({ error: validation }, { status: 400 })
     }
 
-    const imageUrl = await getUploadedFile(file, 'case-studies')
-    if (!imageUrl) {
-      return NextResponse.json(
-        { error: 'Failed to upload image' },
-        { status: 400 }
-      )
-    }
+    // Upload to S3 (lazy import to avoid build-time evaluation in build step)
+    const s3 = await import('@/lib/s3')
+
+    const fileExt = (file.name.split('.').pop() || 'jpg').toLowerCase()
+    const uniqueFileName = `${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2)}.${fileExt}`
+
+    const uploadRes = await s3.uploadToS3(file, uniqueFileName, {
+      folder: 'case-studies',
+      contentType: file.type,
+      metadata: {
+        originalName: file.name,
+        uploadedAt: new Date().toISOString(),
+        entity: 'case-study',
+        entityId: id,
+      },
+    })
+
+    const imageUrl = uploadRes.cdnUrl || uploadRes.url
 
     const existingCaseStudy = await prisma.caseStudy.findUnique({
       where: { id },
@@ -111,8 +128,18 @@ export async function DELETE(
       (url: any) => url !== imageUrl
     )
 
-    // Delete the file from storage
-    await deleteUploadedFile(imageUrl)
+    // Delete the file from storage (S3 if applicable, fallback to local deletion)
+    try {
+      const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import('@/lib/s3')
+      if (isS3Url(imageUrl)) {
+        const key = extractFileKeyFromUrl(imageUrl)
+        if (key) {
+          await deleteFromS3(key)
+        }
+      } else {
+        await deleteUploadedFile(imageUrl)
+      }
+    } catch {}
 
     const updatedCaseStudy = await prisma.caseStudy.update({
       where: { id },

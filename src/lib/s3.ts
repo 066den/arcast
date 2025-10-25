@@ -45,25 +45,31 @@ const s3Client = new S3Client({
 
 
 // Build a browser-accessible public URL
-// - For MinIO we prefer PATH-STYLE using PUBLIC_ENDPOINT host (e.g. http://localhost:9000/bucket/key),
-//   so it works from outside Docker without DNS for bucket subdomains.
-// - For DO Spaces keep the original virtual-hosted style/CDN style.
+// - Prefer PATH-STYLE for MinIO/localhost/IP/when port present or when FORCE_PATH_STYLE=true
+// - For DO Spaces keep the virtual-hosted style.
+const shouldUsePathStyle = (host: string, port?: string): boolean => {
+  if (FORCE_PATH_STYLE) return true
+  const lower = host.toLowerCase()
+  const isLocal = lower === 'localhost' || lower === '127.0.0.1'
+  const isIp = /^[0-9.]+$/.test(host)
+  return lower.includes('minio') || isLocal || isIp || !!port
+}
+
 const buildPublicUrl = (fileKey: string): string => {
-  if (PUBLIC_ENDPOINT) {
-    try {
-      const pub = new URL(PUBLIC_ENDPOINT)
-      const proto = pub.protocol || 'http:'
-      const host = pub.hostname
-      const port = pub.port ? `:${pub.port}` : ''
-      if (host.includes('minio')) {
-        // Path-style for MinIO (accessible from host)
-        return `${proto}//${host}${port}/${BUCKET_NAME}/${fileKey}`
-      }
-      // Virtual-hosted style for DO Spaces and other S3-compatible endpoints
-      return `${proto}//${BUCKET_NAME}.${host}${port}/${fileKey}`
-    } catch {
-      // fall through to ENDPOINT
+  // Try PUBLIC_ENDPOINT first
+  try {
+    const pub = new URL(PUBLIC_ENDPOINT)
+    const proto = pub.protocol || 'http:'
+    const host = pub.hostname
+    const portStr = pub.port ? `:${pub.port}` : ''
+    if (shouldUsePathStyle(host, pub.port)) {
+      // Path-style
+      return `${proto}//${host}${portStr}/${BUCKET_NAME}/${fileKey}`
     }
+    // Virtual-hosted style
+    return `${proto}//${BUCKET_NAME}.${host}${portStr}/${fileKey}`
+  } catch {
+    // ignore and fall through to ENDPOINT
   }
 
   // Fallback: derive from ENDPOINT
@@ -71,8 +77,11 @@ const buildPublicUrl = (fileKey: string): string => {
     const ep = new URL(ENDPOINT)
     const proto = ep.protocol || 'http:'
     const host = ep.hostname
-    const port = ep.port ? `:${ep.port}` : ''
-    return `${proto}//${BUCKET_NAME}.${host}${port}/${fileKey}`
+    const portStr = ep.port ? `:${ep.port}` : ''
+    if (shouldUsePathStyle(host, ep.port)) {
+      return `${proto}//${host}${portStr}/${BUCKET_NAME}/${fileKey}`
+    }
+    return `${proto}//${BUCKET_NAME}.${host}${portStr}/${fileKey}`
   } catch {
     // Last resort: join strings safely
     const base = (ENDPOINT || '').replace(/\/+$/, '')
