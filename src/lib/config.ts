@@ -12,6 +12,8 @@ import {
   UsersRound,
   Percent,
   UserCheck,
+  Tag,
+  Package,
 } from 'lucide-react'
 import { ROUTES } from './constants'
 
@@ -50,6 +52,8 @@ export const adminNavigation = [
   { name: 'Bookings', href: ROUTES.ADMIN, icon: Calendar },
   { name: 'Studios', href: ROUTES.ADMIN + '/studios', icon: Radio },
   { name: 'Services', href: ROUTES.ADMIN + '/services', icon: Box },
+  { name: 'Packages', href: ROUTES.ADMIN + '/packages', icon: Package },
+  { name: 'Service Types', href: ROUTES.ADMIN + '/service-types', icon: Tag },
   {
     name: 'Case Studies',
     href: ROUTES.ADMIN + '/case-studies',
