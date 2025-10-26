@@ -23,11 +23,27 @@ const s3Client = new S3Client({
   forcePathStyle: false,
 })
 
+// Create a separate S3 client for presigned POST with public endpoint
+const s3ClientPublic = new S3Client({
+  region: process.env.AWS_REGION || 'us-east-1',
+  endpoint:
+    process.env.AWS_PUBLIC_ENDPOINT ||
+    process.env.AWS_ENDPOINT ||
+    'https://blr1.digitaloceanspaces.com',
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'DO801ZANC8M4JR4ANL7Z',
+    secretAccessKey:
+      process.env.AWS_SECRET_ACCESS_KEY ||
+      'R1umCcwzZQtooGLR1eccRTNh0KBVqrptLZVpWlEmZEo',
+  },
+  forcePathStyle: true, // Use path-style for MinIO
+})
+
 const BUCKET_NAME = process.env.AWS_BUCKET_NAME || 'arcast-s3'
 
-const ENDPOINT = process.env.AWS_ENDPOINT || 'https://blr1.digitaloceanspaces.com'
-const PUBLIC_ENDPOINT =
-  process.env.NEXT_PUBLIC_S3_PUBLIC_ENDPOINT || ENDPOINT
+const ENDPOINT =
+  process.env.AWS_ENDPOINT || 'https://blr1.digitaloceanspaces.com'
+const PUBLIC_ENDPOINT = process.env.NEXT_PUBLIC_S3_PUBLIC_ENDPOINT || ENDPOINT
 
 const isMinio = (() => {
   try {
@@ -344,8 +360,8 @@ export const generatePresignedPost = async (
     const uniqueFileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExtension}`
     const fileKey = folder ? `${folder}/${uniqueFileName}` : uniqueFileName
 
-    // Create presigned POST with simplified conditions
-    const { url, fields } = await createPresignedPost(s3Client, {
+    // Create presigned POST with simplified conditions using public client
+    const { url, fields } = await createPresignedPost(s3ClientPublic, {
       Bucket: BUCKET_NAME,
       Key: fileKey,
       Fields: {
@@ -402,8 +418,7 @@ export const isS3Url = (url: string): boolean => {
       return true
     }
     return (
-      host.includes('digitaloceanspaces.com') &&
-      host.startsWith(BUCKET_NAME)
+      host.includes('digitaloceanspaces.com') && host.startsWith(BUCKET_NAME)
     )
   } catch {
     return false
