@@ -1,29 +1,10 @@
 import { Suspense } from 'react'
 import { Preloader } from '@/components/ui/preloader'
 import SampleCreateForm from '@/components/admin/SampleCreateForm'
-import { prisma } from '@/lib/prisma'
-
-async function fetchServiceTypes() {
-  try {
-    const serviceTypes = await prisma.serviceType.findMany({
-      where: {
-        samples: {
-          some: {},
-        },
-      },
-      orderBy: {
-        name: 'asc',
-      },
-    })
-    return serviceTypes
-  } catch (error) {
-    console.error('Error fetching service types:', error)
-    return []
-  }
-}
+import { getServiceTypesForAdmin } from '@/services/servicesServices'
 
 export default async function CreateSamplePage() {
-  const serviceTypes = await fetchServiceTypes()
+  const serviceTypes = await getServiceTypesForAdmin()
 
   return (
     <div className="p-4">

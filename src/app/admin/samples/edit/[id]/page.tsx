@@ -3,6 +3,7 @@ import { Preloader } from '@/components/ui/preloader'
 import SampleEditForm from '@/components/admin/SampleEditForm'
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
+import { getServiceTypesForAdmin } from '@/services/servicesServices'
 
 async function fetchSample(id: string) {
   try {
@@ -20,25 +21,6 @@ async function fetchSample(id: string) {
   }
 }
 
-async function fetchServiceTypes() {
-  try {
-    const serviceTypes = await prisma.serviceType.findMany({
-      where: {
-        samples: {
-          some: {},
-        },
-      },
-      orderBy: {
-        name: 'asc',
-      },
-    })
-    return serviceTypes
-  } catch (error) {
-    console.error('Error fetching service types:', error)
-    return []
-  }
-}
-
 interface EditSamplePageProps {
   params: Promise<{
     id: string
@@ -50,7 +32,7 @@ export default async function EditSamplePage({ params }: EditSamplePageProps) {
 
   const [sample, serviceTypes] = await Promise.all([
     fetchSample(id),
-    fetchServiceTypes(),
+    getServiceTypesForAdmin(),
   ])
 
   if (!sample) {

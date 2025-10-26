@@ -16,9 +16,12 @@ const EpisodeSection = ({
   initialSamples,
 }: EpisodeSectionProps) => {
   const [typePackages, setTypePackages] = useState<string>('podcast')
-
+  console.log(initialServiceTypes)
   const filteredServiceTypes = initialServiceTypes.filter(
-    serviceType => serviceType.slug !== 'social'
+    serviceType =>
+      serviceType.slug !== 'social' &&
+      serviceType.samples &&
+      serviceType.samples.length > 0
   )
 
   const filteredSamples = initialSamples.filter(sample => {

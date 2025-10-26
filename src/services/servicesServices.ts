@@ -2,6 +2,31 @@ import { ERROR_MESSAGES } from '@/lib/constants'
 import { prisma } from '@/lib/prisma'
 import { PackageWithServices } from '@/types'
 
+export const getServiceTypesForAdmin = async () => {
+  if (!prisma) {
+    throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
+  }
+
+  try {
+    const serviceTypes = await prisma.serviceType.findMany({
+      where: {
+        isActive: true,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    })
+
+    return serviceTypes
+  } catch (error) {
+    console.error('Error fetching service types for admin:', error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch service types: ${error.message}`)
+    }
+    throw new Error('Failed to fetch service types')
+  }
+}
+
 export const getServices = async () => {
   if (!prisma) {
     throw new Error(ERROR_MESSAGES.PRISMA.NOT_INITIALIZED)
