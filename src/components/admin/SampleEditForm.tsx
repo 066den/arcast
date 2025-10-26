@@ -188,12 +188,17 @@ export default function SampleEditForm({
                   <SelectValue placeholder="Choose a service type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">No service type</SelectItem>
-                  {serviceTypes.map(serviceType => (
-                    <SelectItem key={serviceType.id} value={serviceType.id}>
-                      {serviceType.name}
+                  {serviceTypes.length > 0 ? (
+                    serviceTypes.map(serviceType => (
+                      <SelectItem key={serviceType.id} value={serviceType.id}>
+                        {serviceType.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="No service types found">
+                      No service types found
                     </SelectItem>
-                  ))}
+                  )}
                 </SelectContent>
               </Select>
             </div>

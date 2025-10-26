@@ -23,6 +23,11 @@ async function fetchSample(id: string) {
 async function fetchServiceTypes() {
   try {
     const serviceTypes = await prisma.serviceType.findMany({
+      where: {
+        samples: {
+          some: {},
+        },
+      },
       orderBy: {
         name: 'asc',
       },

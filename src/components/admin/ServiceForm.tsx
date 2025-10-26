@@ -67,7 +67,11 @@ const ServiceForm = ({
     defaultValues: {
       name: service?.name || '',
       description: service?.description || '',
-      serviceTypeId: service?.serviceTypeId || '',
+      serviceTypeId: service?.serviceTypeId
+        ? service?.serviceTypeId
+        : serviceTypes.length > 0
+          ? serviceTypes[0].id
+          : undefined,
       price: service?.price?.toString() || '',
       currency: service?.currency || 'AED',
       isPopular: service?.isPopular || false,
@@ -121,7 +125,9 @@ const ServiceForm = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Name *</Label>
+                <Label size="lg" htmlFor="name">
+                  Name *
+                </Label>
                 <Input
                   id="name"
                   {...register('name')}
@@ -130,20 +136,34 @@ const ServiceForm = ({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="serviceTypeId">Service Type *</Label>
+                <Label size="lg" htmlFor="serviceTypeId">
+                  Service Type *
+                </Label>
                 <Select
                   value={watchedServiceTypeId}
                   onValueChange={value => setValue('serviceTypeId', value)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select service type" />
+                    <SelectValue
+                      placeholder={
+                        serviceTypes.length > 0
+                          ? `${serviceTypes[0]?.name}`
+                          : 'No service types found'
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
-                    {serviceTypes.map(type => (
-                      <SelectItem key={type.id} value={type.id}>
-                        {type.name}
+                    {serviceTypes.length > 0 ? (
+                      serviceTypes.map(type => (
+                        <SelectItem key={type.id} value={type.id}>
+                          {type.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="No service types found">
+                        No service types found
                       </SelectItem>
-                    ))}
+                    )}
                   </SelectContent>
                 </Select>
                 {errors.serviceTypeId && (
@@ -155,7 +175,9 @@ const ServiceForm = ({
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="price">Price *</Label>
+                  <Label size="lg" htmlFor="price">
+                    Price *
+                  </Label>
                   <Input
                     id="price"
                     type="number"
@@ -166,7 +188,9 @@ const ServiceForm = ({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="currency">Currency *</Label>
+                  <Label size="lg" htmlFor="currency">
+                    Currency *
+                  </Label>
                   <Select
                     value={watchedIsActive ? watch('currency') : 'AED'}
                     onValueChange={value => setValue('currency', value)}
@@ -184,7 +208,9 @@ const ServiceForm = ({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label size="lg" htmlFor="description">
+                  Description
+                </Label>
                 <Textarea
                   id="description"
                   {...register('description')}
@@ -193,7 +219,7 @@ const ServiceForm = ({
               </div>
 
               <div className="space-y-2">
-                <Label>Includes</Label>
+                <Label size="lg">Includes</Label>
                 <div className="space-y-2">
                   <div className="flex gap-2">
                     <Input
@@ -244,7 +270,9 @@ const ServiceForm = ({
                       setValue('isPopular', !!checked)
                     }
                   />
-                  <Label htmlFor="isPopular">Popular Service</Label>
+                  <Label size="lg" htmlFor="isPopular">
+                    Popular Service
+                  </Label>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -253,7 +281,9 @@ const ServiceForm = ({
                     checked={watchedIsActive}
                     onCheckedChange={checked => setValue('isActive', !!checked)}
                   />
-                  <Label htmlFor="isActive">Active</Label>
+                  <Label size="lg" htmlFor="isActive">
+                    Active
+                  </Label>
                 </div>
               </div>
             </div>

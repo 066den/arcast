@@ -6,6 +6,11 @@ import { prisma } from '@/lib/prisma'
 async function fetchServiceTypes() {
   try {
     const serviceTypes = await prisma.serviceType.findMany({
+      where: {
+        samples: {
+          some: {},
+        },
+      },
       orderBy: {
         name: 'asc',
       },

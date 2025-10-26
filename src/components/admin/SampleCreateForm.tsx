@@ -37,22 +37,16 @@ export default function SampleCreateForm({
   const [formData, setFormData] = useState({
     name: '',
     videoUrl: '',
-    serviceTypeId: 'none',
+    serviceTypeId: serviceTypes.length > 0 ? serviceTypes[0].id : null,
   })
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value,
-    }))
+    setFormData(prev => ({ ...prev, [field]: value }))
   }
 
-  const handleVideoSelect = (videoUrl: string, videoFile?: File) => {
-    setFormData(prev => ({
-      ...prev,
-      videoUrl,
-    }))
+  const handleVideoSelect = (videoUrl: string) => {
+    setFormData(prev => ({ ...prev, videoUrl }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,7 +62,7 @@ export default function SampleCreateForm({
         thumbnailFile,
       }
 
-      const newSample = await createSample(dataToSubmit)
+      await createSample(dataToSubmit)
       toast.success('Sample created successfully')
       router.push('/admin/samples')
     } catch (error) {
@@ -121,7 +115,7 @@ export default function SampleCreateForm({
                 Service Type
               </Label>
               <Select
-                value={formData.serviceTypeId}
+                value={formData.serviceTypeId || undefined}
                 onValueChange={value =>
                   handleInputChange('serviceTypeId', value)
                 }
@@ -130,12 +124,15 @@ export default function SampleCreateForm({
                   <SelectValue placeholder="Choose a service type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">No service type</SelectItem>
-                  {serviceTypes.map(serviceType => (
-                    <SelectItem key={serviceType.id} value={serviceType.id}>
-                      {serviceType.name}
-                    </SelectItem>
-                  ))}
+                  {serviceTypes.length > 0 ? (
+                    serviceTypes.map(serviceType => (
+                      <SelectItem key={serviceType.id} value={serviceType.id}>
+                        {serviceType.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="none">No service type</SelectItem>
+                  )}
                 </SelectContent>
               </Select>
             </div>
