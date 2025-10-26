@@ -8,7 +8,6 @@ import { Lead } from '@/types'
 import { MamoPaymentLinkResponse } from '@/types/api'
 import { formatDateDubai, formatTimeDubai } from '@/utils/dateFormat'
 import { ApiError, apiRequest } from '@/lib/api'
-import { Order } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 
 // Utility function to check payment service configuration
@@ -73,6 +72,7 @@ export const getPaymentLinkForBooking = async (bookingId: string) => {
       lead: booking.lead,
       isBooking: true,
     })
+
     if (!createdPaymentLink) {
       throw new Error('Failed to create payment link')
     }

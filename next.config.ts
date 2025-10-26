@@ -26,14 +26,16 @@ const nextConfig: NextConfig = {
     optimizeCss: false, // Disable CSS optimization for TailwindCSS v4 compatibility
   },
   images: {
-    // IMPORTANT:
-    // In Docker/dev the Next.js image optimizer fetches the "remote" URL server-side.
+    // IMPORTANT: Disable image optimization when NEXT_IMAGE_UNOPTIMIZED=true
+    // In Docker, the Next.js image optimizer fetches the "remote" URL server-side.
     // URLs like http://localhost:9000/... (MinIO) are NOT reachable from inside the Next container,
-    // causing 400 from /_next/image. To avoid this, disable optimizer in non-production
-    // or when explicitly requested via env.
-    unoptimized:
-      process.env.NEXT_IMAGE_UNOPTIMIZED === 'true' ||
-      process.env.NODE_ENV !== 'production',
+    // causing 400 from /_next/image.
+    unoptimized: process.env.NEXT_IMAGE_UNOPTIMIZED === 'true',
+    // Allow loading from local paths and uploads directory
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    domains: ['localhost'],
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],

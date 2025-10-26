@@ -3,6 +3,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - AWS_REGION=us-east-1
+        - AWS_ENDPOINT=http://minio:9000
+        - AWS_ACCESS_KEY_ID=minioadmin
+        - AWS_SECRET_ACCESS_KEY=minioadmin123
+        - AWS_S3_BUCKET_NAME=arcast-s3
+        - AWS_BUCKET_NAME=arcast-s3
     ports:
       - '3000:3000'
     env_file:

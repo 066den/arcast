@@ -23,6 +23,22 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
 
+# Build arguments for environment variables
+ARG AWS_REGION
+ARG AWS_ENDPOINT
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+ARG AWS_S3_BUCKET_NAME
+ARG AWS_BUCKET_NAME
+
+# Set environment variables for build
+ENV AWS_REGION=${AWS_REGION}
+ENV AWS_ENDPOINT=${AWS_ENDPOINT}
+ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+ENV AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+ENV AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+ENV AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
+
 # Generate Prisma client
 RUN npx prisma generate
 
