@@ -479,4 +479,33 @@ export const isS3Url = (url: string): boolean => {
   }
 }
 
+/**
+ * Normalize video URL to ensure consistent format (full CDN URL)
+ * Handles multiple input formats:
+ * - Full CDN URLs: https://cdn.example.com/path/to/file.mp4
+ * - Full public URLs: https://public.example.com/bucket/path/to/file.mp4
+ * - Relative S3 paths: samples/video.mp4 or /samples/video.mp4
+ * - Legacy formats: any other valid URL format
+ */
+export const normalizeVideoUrl = (
+  url: string | null | undefined
+): string | null => {
+  if (!url) return null
+
+  // If already a full URL (http/https), return as is
+  if (/^https?:\/\//.test(url)) {
+    return url
+  }
+
+  // If it's a relative path like "samples/..." or "/samples/..."
+  const cleanPath = url.replace(/^\/+/, '') // Remove leading slashes
+  if (/^samples\//.test(cleanPath) || /^arcast-s3\/samples\//.test(cleanPath)) {
+    // Convert to full CDN URL
+    return getCdnUrl(cleanPath)
+  }
+
+  // For other relative paths, try to build URL
+  return getCdnUrl(cleanPath)
+}
+
 export { s3Client, BUCKET_NAME }

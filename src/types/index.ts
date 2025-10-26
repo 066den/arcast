@@ -186,6 +186,11 @@ export interface AdditionalService {
   order?: number
 }
 
+export interface SelectedAdditionalService {
+  id: string
+  quantity: number
+}
+
 export interface Feature {
   title: string
   description: string

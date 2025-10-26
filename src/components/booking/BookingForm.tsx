@@ -73,9 +73,15 @@ const BookingForm = ({
   const [isPaymentModalOpen, openPaymentModal, closePaymentModal] = useFlag()
   const [totalAmount, setTotalAmount] = useState(0)
   const [additionalServices, setAdditionalServices] = useState<
-    AdditionalService[]
+    Array<{ id: string; quantity: number }>
   >([])
   const [paymentUrl, setPaymentUrl] = useState('')
+
+  const handleAdditionalServicesChange = (
+    services: Array<{ id: string; quantity: number }>
+  ) => {
+    setAdditionalServices(services)
+  }
 
   const [formKey, setFormKey] = useState(0)
 
@@ -135,7 +141,10 @@ const BookingForm = ({
               whatsappNumber: formData.phoneNumber,
               recordingLocation: '',
             },
-            additionalServices,
+            additionalServices: additionalServices.map(s => ({
+              id: s.id,
+              quantity: s.quantity,
+            })),
           }),
         })
       } else {
@@ -261,13 +270,7 @@ const BookingForm = ({
             </div>
 
             {selectStudioId && (
-              <motion.div
-                variants={cardVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                className="lg:space-y-24 space-y-12"
-              >
+              <div className="lg:space-y-24 space-y-12">
                 <div className="lg:space-y-12 space-y-8">
                   <h2>
                     Choose preferred <span className="text-accent">date</span> &{' '}
@@ -343,18 +346,21 @@ const BookingForm = ({
                   </h2>
                   {initialAdditionalServices?.length > 0 && (
                     <div className="grid grid-cols-1 md:grid-cols-2 justify-items-center gap-y-8 xl:gap-x-16 lg:gap-x-8 gap-4 max-w-7xl mx-auto">
-                      {initialAdditionalServices.map(service => (
-                        <ServiceCheckbox
-                          key={service.id}
-                          service={service}
-                          onChange={setAdditionalServices}
-                          selectedServices={additionalServices}
-                        />
-                      ))}
+                      {initialAdditionalServices.map(service => {
+                        if (!service || !service.id) return null
+                        return (
+                          <ServiceCheckbox
+                            key={`service-${service.id}`}
+                            service={service}
+                            onChange={handleAdditionalServicesChange}
+                            selectedServices={additionalServices || []}
+                          />
+                        )
+                      })}
                     </div>
                   )}
                 </div>
-              </motion.div>
+              </div>
             )}
           </>
         )}
@@ -411,17 +417,6 @@ const BookingForm = ({
               </div>
             </div>
 
-            {submitError && (
-              <motion.div
-                variants={notificationVariants}
-                initial="hidden"
-                animate="visible"
-                className="bg-red-100 border rounded-lg p-3"
-              >
-                <p className="text-red-600">{submitError}</p>
-              </motion.div>
-            )}
-
             {submitSuccess && (
               <motion.div
                 variants={notificationVariants}
@@ -454,6 +449,16 @@ const BookingForm = ({
             initialServiceTypes={initialServiceTypes || []}
             additionalServices={initialAdditionalServices}
           />
+          {submitError && (
+            <motion.div
+              variants={notificationVariants}
+              initial="hidden"
+              animate="visible"
+              className="bg-red-100 border rounded-lg p-3"
+            >
+              <p className="text-red-600">{submitError}</p>
+            </motion.div>
+          )}
           <div className="flex justify-center">
             <Button
               type="submit"

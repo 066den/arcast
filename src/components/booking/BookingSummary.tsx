@@ -16,7 +16,7 @@ interface BookingSummaryProps {
   selectedStudio: string
   selectedService?: string
   selectedPackage?: string
-  selectedAdditionalServices: AdditionalService[]
+  selectedAdditionalServices: Array<{ id: string; quantity: number }>
   initialServiceTypes: ServiceType[]
   studios: Studio[]
   packages?: Package[]
@@ -38,6 +38,7 @@ export function BookingSummary({
   additionalServices,
 }: BookingSummaryProps) {
   const { selectServiceTypeSlug } = useBooking()
+
   const services = useMemo(() => {
     const selectedType = initialServiceTypes.find(
       type => selectServiceTypeSlug === type.slug
@@ -64,8 +65,12 @@ export function BookingSummary({
 
     selectedAdditionalServices.forEach(service => {
       const selectedService = additionalServices.find(s => s.id === service.id)
-      if (selectedService) {
-        total += Number(selectedService.price) * (service.quantity || 1)
+      if (selectedService && selectedService.price) {
+        const price =
+          typeof selectedService.price === 'number'
+            ? selectedService.price
+            : parseFloat(selectedService.price.toString())
+        total += price * (service.quantity || 1)
       }
     })
 
@@ -75,6 +80,16 @@ export function BookingSummary({
   const formatDate = (dateString: Date | undefined) => {
     if (!dateString) return ''
     return formatDateDubai(new Date(dateString))
+  }
+
+  if (!selectedAdditionalServices || !additionalServices) {
+    return (
+      <Card className="bg-muted">
+        <CardContent>
+          <p>Loading...</p>
+        </CardContent>
+      </Card>
+    )
   }
 
   return (
@@ -105,46 +120,40 @@ export function BookingSummary({
           </div>
         )}
 
-        {/* {selectedService && services && (
-          <div className="flex justify-between gap-2">
-            <h4 className="text-2xl font-medium mb-2">Selected Service</h4>
-            <p className="text-sm">
-              {services.find(s => s.id === selectedService)?.name}
-            </p>
-          </div>
-        )} */}
-
         {selectedDate && selectedTime && (
           <div className="p-3 bg-slate-800 rounded-lg">
-            <h4 className="font-medium mb-2  text-white">Session Details</h4>
-            <p className="text-sm  text-slate-300">
-              {formatDate(selectedDate)}
-            </p>
-            <p className="text-sm  text-slate-300">
+            <h4 className="font-medium mb-2 text-white">Session Details</h4>
+            <p className="text-sm text-slate-300">{formatDate(selectedDate)}</p>
+            <p className="text-sm text-slate-300">
               Time: {formatTimeRange(selectedTime, duration || 1, 'Asia/Dubai')}
             </p>
-            <p className="text-sm  text-slate-300">Duration: ({duration}h)</p>
-            <p className="text-sm  text-slate-300">Guests: {guests}</p>
+            <p className="text-sm text-slate-300">Duration: ({duration}h)</p>
+            <p className="text-sm text-slate-300">Guests: {guests}</p>
           </div>
         )}
 
         {selectedAdditionalServices.length > 0 && (
           <div className="p-3 bg-slate-800 rounded-lg">
-            <h4 className="font-medium mb-2  text-white">
-              Additional Services
-            </h4>
-            <ul className="text-sm  text-slate-300 space-y-1">
+            <h4 className="font-medium mb-2 text-white">Additional Services</h4>
+            <ul className="text-sm text-slate-300 space-y-1">
               {selectedAdditionalServices.map(({ id, quantity }) => {
                 const service = additionalServices.find(s => s.id === id)
-                return service ? (
+                if (!service) return null
+
+                const price =
+                  typeof service.price === 'number'
+                    ? service.price
+                    : parseFloat(service.price.toString())
+                const totalPrice = price * (quantity || 1)
+
+                return (
                   <li key={id} className="flex justify-between items-center">
                     <span>{service.name}</span>
                     <span className="font-medium">
-                      {Number(service.price) * (quantity || 1)}{' '}
-                      {service.currency}
+                      {totalPrice} {service.currency}
                     </span>
                   </li>
-                ) : null
+                )
               })}
             </ul>
           </div>

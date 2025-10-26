@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import { getUploadedFile } from '@/utils/files'
 import { validateFile } from '@/lib/validate'
+import { normalizeVideoUrl } from '@/lib/s3'
 
 export async function GET(
   request: NextRequest,
@@ -21,7 +22,13 @@ export async function GET(
       return NextResponse.json({ error: 'Sample not found' }, { status: 404 })
     }
 
-    return NextResponse.json(sample)
+    // Normalize video URL to ensure consistent format
+    const normalizedSample = {
+      ...sample,
+      videoUrl: normalizeVideoUrl(sample.videoUrl),
+    }
+
+    return NextResponse.json(normalizedSample)
   } catch (error) {
     console.error('Error fetching sample:', error)
     return NextResponse.json(
@@ -55,15 +62,6 @@ export async function PUT(
       name = formData.get('name') as string
       videoUrl = formData.get('videoUrl') as string
       serviceTypeId = formData.get('serviceTypeId') as string
-
-      // Normalize relative '/samples/...' to absolute CDN/public URL
-      if (videoUrl && /^\/?samples\//.test(videoUrl)) {
-        try {
-          const s3 = await import('@/lib/s3')
-          const key = (videoUrl as string).replace(/^\/+/, '') // "samples/..."
-          videoUrl = s3.getCdnUrl(key)
-        } catch {}
-      }
 
       const thumbnailFile = formData.get('thumbnailFile') as File
 
@@ -99,15 +97,6 @@ export async function PUT(
       videoUrl = body.videoUrl || null
       serviceTypeId = body.serviceTypeId || null
 
-      // Normalize relative '/samples/...' to absolute CDN/public URL
-      if (videoUrl && /^\/?samples\//.test(videoUrl)) {
-        try {
-          const s3 = await import('@/lib/s3')
-          const key = (videoUrl as string).replace(/^\/+/, '') // "samples/..."
-          videoUrl = s3.getCdnUrl(key)
-        } catch {}
-      }
-
       if (!name) {
         return NextResponse.json(
           { error: 'Sample name is required' },
@@ -123,7 +112,7 @@ export async function PUT(
       thumbUrl?: string | null
     } = {
       name,
-      videoUrl,
+      videoUrl, // Store as provided - will be normalized on retrieval
       serviceTypeId: serviceTypeId || null,
     }
 
@@ -140,7 +129,13 @@ export async function PUT(
       },
     })
 
-    return NextResponse.json(sample)
+    // Return normalized URL
+    const normalizedSample = {
+      ...sample,
+      videoUrl: normalizeVideoUrl(sample.videoUrl),
+    }
+
+    return NextResponse.json(normalizedSample)
   } catch (error) {
     console.error('Error updating sample:', error)
     return NextResponse.json(
