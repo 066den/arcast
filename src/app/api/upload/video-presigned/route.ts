@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/auth'
-import { generatePresignedPost } from '@/lib/s3'
+// S3 helper будет импортирован лениво внутри обработчика, чтобы избежать выполнения на этапе сборки
 import { validateVideoFile } from '@/lib/validate'
 import { v4 as uuidv4 } from 'uuid'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+export const maxDuration = 300
 
 // Handle CORS preflight requests
 export async function OPTIONS() {
@@ -66,6 +70,9 @@ export async function POST(request: NextRequest) {
     const fileName = `${uuidv4()}.${fileExtension}`
 
     console.log('Generating presigned POST for:', fileName)
+
+    // Ленивый импорт S3-хелпера, чтобы исключить выполнение кода при анализе сборки
+    const { generatePresignedPost } = await import('@/lib/s3')
 
     // Generate presigned POST for direct upload
     const presignedPost = await generatePresignedPost(fileName, {

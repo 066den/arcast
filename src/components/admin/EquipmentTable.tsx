@@ -11,9 +11,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import { Edit, Trash2, Plus, Image as ImageIcon } from 'lucide-react'
+import Image from 'next/image'
 import EquipmentForm from './EquipmentForm'
 import { ConfirmModal } from '@/components/modals/modal'
 
@@ -34,7 +34,7 @@ export default function EquipmentTable({ initialData }: EquipmentTableProps) {
   const [editingEquipment, setEditingEquipment] = useState<Equipment | null>(
     null
   )
-  const [isLoading, setIsLoading] = useState(false)
+  const [, setIsLoading] = useState(false)
   const [deleteDialog, setDeleteDialog] = useState<{
     isOpen: boolean
     equipment: Equipment | null
@@ -189,13 +189,14 @@ export default function EquipmentTable({ initialData }: EquipmentTableProps) {
                 <TableRow key={item.id}>
                   <TableCell>
                     {item.imageUrl ? (
-                      <img
+                      <Image
                         src={item.imageUrl}
                         alt={item.name || 'Equipment'}
-                        className="w-12 h-12 object-cover rounded"
-                        onError={e => {
-                          e.currentTarget.style.display = 'none'
-                        }}
+                        width={48}
+                        height={48}
+                        className="object-cover rounded"
+                        loader={({ src }) => src}
+                        unoptimized
                       />
                     ) : (
                       <div className="w-12 h-12 bg-muted rounded flex items-center justify-center">

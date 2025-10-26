@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
-import { getUploadedFile, deleteUploadedFile } from '@/utils/files'
+import { deleteUploadedFile } from '@/utils/files'
 import { validateFile } from '@/lib/validate'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+export const maxDuration = 300
 
 export async function GET(
   request: NextRequest,
@@ -69,19 +73,38 @@ export async function PUT(
         return NextResponse.json({ error: validation }, { status: 400 })
       }
 
-      // Delete old image if it exists
+      // Delete old image if it exists (S3-aware)
       if (existingStaff.imageUrl) {
-        await deleteUploadedFile(existingStaff.imageUrl)
+        try {
+          const oldUrl = existingStaff.imageUrl
+          const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import('@/lib/s3')
+          if (isS3Url(oldUrl)) {
+            const key = extractFileKeyFromUrl(oldUrl)
+            if (key) await deleteFromS3(key)
+          } else {
+            await deleteUploadedFile(oldUrl)
+          }
+        } catch {}
       }
 
-      const uploadedUrl = await getUploadedFile(imageFile, 'staff')
-      if (!uploadedUrl) {
-        return NextResponse.json(
-          { error: 'Failed to upload image' },
-          { status: 400 }
-        )
-      }
-      imageUrl = uploadedUrl
+      // Upload new image to S3
+      const s3 = await import('@/lib/s3')
+      const fileExt = (imageFile.name.split('.').pop() || 'jpg').toLowerCase()
+      const uniqueFileName = `${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2)}.${fileExt}`
+
+      const uploadRes = await s3.uploadToS3(imageFile, uniqueFileName, {
+        folder: 'staff',
+        contentType: imageFile.type,
+        metadata: {
+          originalName: imageFile.name,
+          uploadedAt: new Date().toISOString(),
+          entity: 'staff',
+          entityId: id,
+        },
+      })
+      imageUrl = uploadRes.cdnUrl || uploadRes.url
     }
 
     const staff = await prisma.staff.update({

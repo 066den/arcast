@@ -24,7 +24,6 @@ export default async function AdminPage() {
     return value as unknown
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const serializedBookings = bookings.map((b: any) => ({
     ...b,
     totalCost: toNumber(b.totalCost),

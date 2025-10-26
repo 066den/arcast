@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/table'
 import { toast } from 'sonner'
 import { Edit, Trash2, Plus, Image as ImageIcon } from 'lucide-react'
+import Image from 'next/image'
 import StaffForm from './StaffForm'
 import { ConfirmModal } from '@/components/modals/modal'
 
@@ -31,7 +32,6 @@ export default function StaffTable({ initialData }: StaffTableProps) {
   const [staff, setStaff] = useState<Staff[]>(initialData)
   const [showForm, setShowForm] = useState(false)
   const [editingStaff, setEditingStaff] = useState<Staff | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
   const [deleteDialog, setDeleteDialog] = useState<{
     isOpen: boolean
     staff: Staff | null
@@ -39,7 +39,6 @@ export default function StaffTable({ initialData }: StaffTableProps) {
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleSave = async (staffData: Staff, imageFile?: File | null) => {
-    setIsLoading(true)
 
     try {
       const url = editingStaff ? `/api/staff/${editingStaff.id}` : '/api/staff'
@@ -79,7 +78,6 @@ export default function StaffTable({ initialData }: StaffTableProps) {
       console.error('Save error:', error)
       throw error
     } finally {
-      setIsLoading(false)
     }
   }
 
@@ -174,13 +172,14 @@ export default function StaffTable({ initialData }: StaffTableProps) {
                 <TableRow key={item.id}>
                   <TableCell>
                     {item.imageUrl ? (
-                      <img
+                      <Image
                         src={item.imageUrl}
                         alt={item.name || 'Staff'}
-                        className="w-12 h-12 object-cover rounded"
-                        onError={e => {
-                          e.currentTarget.style.display = 'none'
-                        }}
+                        width={48}
+                        height={48}
+                        className="object-cover rounded"
+                        loader={({ src }) => src}
+                        unoptimized
                       />
                     ) : (
                       <div className="w-12 h-12 bg-muted rounded flex items-center justify-center">

@@ -20,30 +20,32 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
   const resolvedParams = use(params)
 
   useEffect(() => {
-    fetchArticle()
-  }, [resolvedParams.id])
-
-  const fetchArticle = async () => {
-    try {
-      const response = await fetch(`/api/blog/${resolvedParams.id}`)
-      if (!response.ok) {
-        if (response.status === 404) {
-          toast.error('Article not found')
-          router.push('/admin/blog')
-          return
+    let cancelled = false
+    ;(async () => {
+      try {
+        const response = await fetch(`/api/blog/${resolvedParams.id}`)
+        if (!response.ok) {
+          if (response.status === 404) {
+            toast.error('Article not found')
+            router.push('/admin/blog')
+            return
+          }
+          throw new Error('Failed to fetch article')
         }
-        throw new Error('Failed to fetch article')
+        const data = await response.json()
+        if (!cancelled) setArticle(data)
+      } catch (error) {
+        console.error('Error fetching article:', error)
+        toast.error('Error loading article')
+        router.push('/admin/blog')
+      } finally {
+        if (!cancelled) setIsLoading(false)
       }
-      const data = await response.json()
-      setArticle(data)
-    } catch (error) {
-      console.error('Error fetching article:', error)
-      toast.error('Error loading article')
-      router.push('/admin/blog')
-    } finally {
-      setIsLoading(false)
+    })()
+    return () => {
+      cancelled = true
     }
-  }
+  }, [resolvedParams.id, router])
 
   if (isLoading) {
     return (

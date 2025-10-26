@@ -11,78 +11,80 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
 
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION || 'us-east-1',
-  endpoint: process.env.AWS_ENDPOINT || 'https://blr1.digitaloceanspaces.com',
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'DO801ZANC8M4JR4ANL7Z',
-    secretAccessKey:
-      process.env.AWS_SECRET_ACCESS_KEY ||
-      'R1umCcwzZQtooGLR1eccRTNh0KBVqrptLZVpWlEmZEo',
-  },
-  forcePathStyle: false,
-})
-
-// Create a separate S3 client for presigned POST with public endpoint
-const s3ClientPublic = new S3Client({
-  region: process.env.AWS_REGION || 'us-east-1',
-  endpoint:
-    process.env.AWS_PUBLIC_ENDPOINT ||
-    process.env.AWS_ENDPOINT ||
-    'https://blr1.digitaloceanspaces.com',
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'DO801ZANC8M4JR4ANL7Z',
-    secretAccessKey:
-      process.env.AWS_SECRET_ACCESS_KEY ||
-      'R1umCcwzZQtooGLR1eccRTNh0KBVqrptLZVpWlEmZEo',
-  },
-  forcePathStyle: true, // Use path-style for MinIO
-})
-
-const BUCKET_NAME = process.env.AWS_BUCKET_NAME || 'arcast-s3'
-
-const ENDPOINT =
-  process.env.AWS_ENDPOINT || 'https://blr1.digitaloceanspaces.com'
-const PUBLIC_ENDPOINT = process.env.NEXT_PUBLIC_S3_PUBLIC_ENDPOINT || ENDPOINT
-
-const isMinio = (() => {
-  try {
-    const h = new URL(ENDPOINT).hostname
-    return h.includes('minio')
-  } catch {
-    return false
+const requireEnv = (name: string): string => {
+  const v = process.env[name]
+  if (!v) {
+    throw new Error(`Missing required environment variable: ${name}`)
   }
+  return v
+}
+
+const AWS_REGION = requireEnv('AWS_REGION')
+const ENDPOINT = requireEnv('AWS_ENDPOINT')
+const AWS_ACCESS_KEY_ID = requireEnv('AWS_ACCESS_KEY_ID')
+const AWS_SECRET_ACCESS_KEY = requireEnv('AWS_SECRET_ACCESS_KEY')
+const BUCKET_NAME = (() => {
+  const v = process.env.AWS_S3_BUCKET_NAME || process.env.AWS_BUCKET_NAME
+  if (!v) throw new Error('Missing AWS_S3_BUCKET_NAME or AWS_BUCKET_NAME')
+  return v
 })()
+const PUBLIC_ENDPOINT = process.env.NEXT_PUBLIC_S3_PUBLIC_ENDPOINT || ENDPOINT
+const CDN_ENDPOINT =
+  process.env.NEXT_PUBLIC_S3_CDN_ENDPOINT || process.env.S3_CDN_ENDPOINT
+const FORCE_PATH_STYLE = process.env.AWS_FORCE_PATH_STYLE === 'true'
+
+const s3Client = new S3Client({
+  region: AWS_REGION,
+  endpoint: ENDPOINT,
+  credentials: {
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_SECRET_ACCESS_KEY,
+  },
+  forcePathStyle: FORCE_PATH_STYLE,
+})
 
 // Build a browser-accessible public URL
-// - For MinIO we prefer PATH-STYLE using PUBLIC_ENDPOINT host (e.g. http://localhost:9000/bucket/key),
-//   so it works from outside Docker without DNS for bucket subdomains.
-// - For DO Spaces keep the original virtual-hosted style/CDN style.
+// - Prefer PATH-STYLE for MinIO/localhost/IP/when port present or when FORCE_PATH_STYLE=true
+// - For DO Spaces keep the virtual-hosted style.
+const shouldUsePathStyle = (host: string, port?: string): boolean => {
+  if (FORCE_PATH_STYLE) return true
+  const lower = host.toLowerCase()
+  const isLocal = lower === 'localhost' || lower === '127.0.0.1'
+  const isIp = /^[0-9.]+$/.test(host)
+  return lower.includes('minio') || isLocal || isIp || !!port
+}
+
 const buildPublicUrl = (fileKey: string): string => {
+  // Try PUBLIC_ENDPOINT first
   try {
     const pub = new URL(PUBLIC_ENDPOINT)
     const proto = pub.protocol || 'http:'
     const host = pub.hostname
-    const port = pub.port ? `:${pub.port}` : ''
-    if (host.includes('minio')) {
-      // Path-style for MinIO (accessible from host)
-      return `${proto}//${host}${port}/${BUCKET_NAME}/${fileKey}`
+    const portStr = pub.port ? `:${pub.port}` : ''
+    if (shouldUsePathStyle(host, pub.port)) {
+      // Path-style
+      return `${proto}//${host}${portStr}/${BUCKET_NAME}/${fileKey}`
     }
-    // Virtual-hosted style for DO Spaces and other S3-compatible endpoints
-    return `${proto}//${BUCKET_NAME}.${host}${port}/${fileKey}`
+    // Virtual-hosted style
+    return `${proto}//${BUCKET_NAME}.${host}${portStr}/${fileKey}`
   } catch {
-    // PUBLIC_ENDPOINT is invalid; fall back to ENDPOINT
-    try {
-      const ep = new URL(ENDPOINT)
-      const proto = ep.protocol || 'http:'
-      const host = ep.hostname
-      const port = ep.port ? `:${ep.port}` : ''
-      return `${proto}//${BUCKET_NAME}.${host}${port}/${fileKey}`
-    } catch {
-      // Last resort: join strings safely
-      const base = (ENDPOINT || '').replace(/\/+$/, '')
-      return `${base}/${BUCKET_NAME}/${fileKey}`
+    // ignore and fall through to ENDPOINT
+  }
+
+  // Fallback: derive from ENDPOINT
+  try {
+    const ep = new URL(ENDPOINT)
+    const proto = ep.protocol || 'http:'
+    const host = ep.hostname
+    const portStr = ep.port ? `:${ep.port}` : ''
+    if (shouldUsePathStyle(host, ep.port)) {
+      return `${proto}//${host}${portStr}/${BUCKET_NAME}/${fileKey}`
     }
+    return `${proto}//${BUCKET_NAME}.${host}${portStr}/${fileKey}`
+  } catch {
+    // Last resort: join strings safely
+    const base = (ENDPOINT || '').replace(/\/+$/, '')
+    return `${base}/${BUCKET_NAME}/${fileKey}`
   }
 }
 
@@ -117,11 +119,20 @@ export interface PresignedPostResult {
  * Get CDN URL for a file (if CDN is enabled)
  */
 export const getCdnUrl = (fileKey: string): string => {
-  if (isMinio) {
-    // For MinIO use same public URL (no CDN)
-    return buildPublicUrl(fileKey)
+  // Строго: CDN используется только если явно задан в .env,
+  // иначе возвращаем публичный URL, сформированный из PUBLIC_ENDPOINT/ENDPOINT
+  if (CDN_ENDPOINT) {
+    try {
+      const u = new URL(CDN_ENDPOINT)
+      const base = `${u.protocol}//${u.host}${u.pathname.replace(/\/+$/, '')}`
+      return `${base}/${fileKey}`
+    } catch {
+      const base = (CDN_ENDPOINT || '').replace(/\/+$/, '')
+      return `${base}/${fileKey}`
+    }
   }
-  return `https://${BUCKET_NAME}.blr1.cdn.digitaloceanspaces.com/${fileKey}`
+
+  return buildPublicUrl(fileKey)
 }
 
 /**
@@ -360,8 +371,8 @@ export const generatePresignedPost = async (
     const uniqueFileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExtension}`
     const fileKey = folder ? `${folder}/${uniqueFileName}` : uniqueFileName
 
-    // Create presigned POST with simplified conditions using public client
-    const { url, fields } = await createPresignedPost(s3ClientPublic, {
+    // Create presigned POST with simplified conditions
+    const { url, fields } = await createPresignedPost(s3Client, {
       Bucket: BUCKET_NAME,
       Key: fileKey,
       Fields: {
@@ -411,15 +422,58 @@ export const extractFileKeyFromUrl = (url: string): string | null => {
  */
 export const isS3Url = (url: string): boolean => {
   try {
-    const urlObj = new URL(url)
-    const host = urlObj.hostname
-    if (host.includes('minio')) {
-      // Path-style: host is PUBLIC_ENDPOINT host (e.g. localhost), accept it
+    const target = new URL(url)
+    const host = target.hostname
+
+    const publicHost = (() => {
+      try {
+        return new URL(PUBLIC_ENDPOINT).hostname
+      } catch {
+        return undefined
+      }
+    })()
+    const endpointHost = (() => {
+      try {
+        return new URL(ENDPOINT).hostname
+      } catch {
+        return undefined
+      }
+    })()
+    const cdnHost = (() => {
+      try {
+        return CDN_ENDPOINT ? new URL(CDN_ENDPOINT).hostname : undefined
+      } catch {
+        return undefined
+      }
+    })()
+
+    // Direct match against configured hosts
+    if (
+      (publicHost && host === publicHost) ||
+      (endpointHost && host === endpointHost) ||
+      (cdnHost && host === cdnHost)
+    ) {
       return true
     }
-    return (
-      host.includes('digitaloceanspaces.com') && host.startsWith(BUCKET_NAME)
-    )
+
+    // Virtual-hosted style: <bucket>.<endpointHost>
+    if (
+      endpointHost &&
+      host.endsWith(`.${endpointHost}`) &&
+      host.startsWith(`${BUCKET_NAME}.`)
+    ) {
+      return true
+    }
+
+    // DO Spaces CDN pattern: <bucket>.<region>.cdn.digitaloceanspaces.com
+    if (
+      host.endsWith('.cdn.digitaloceanspaces.com') &&
+      host.startsWith(`${BUCKET_NAME}.`)
+    ) {
+      return true
+    }
+
+    return false
   } catch {
     return false
   }

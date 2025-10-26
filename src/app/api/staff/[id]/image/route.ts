@@ -2,7 +2,11 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import { validateFile } from '@/lib/validate'
-import { deleteUploadedFile, getUploadedFile } from '@/utils/files'
+import { deleteUploadedFile } from '@/utils/files'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+export const maxDuration = 300
 
 export async function POST(
   req: Request,
@@ -31,13 +35,26 @@ export async function POST(
       return NextResponse.json({ error: validation }, { status: 400 })
     }
 
-    const imageUrl = await getUploadedFile(file, 'staff')
-    if (!imageUrl) {
-      return NextResponse.json(
-        { error: 'Failed to upload image' },
-        { status: 400 }
-      )
-    }
+    // Lazy-load S3 helpers at runtime
+    const s3 = await import('@/lib/s3')
+
+    const fileExt = (file.name.split('.').pop() || 'jpg').toLowerCase()
+    const uniqueFileName = `${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2)}.${fileExt}`
+
+    const uploadRes = await s3.uploadToS3(file, uniqueFileName, {
+      folder: 'staff',
+      contentType: file.type,
+      metadata: {
+        originalName: file.name,
+        uploadedAt: new Date().toISOString(),
+        entity: 'staff',
+        entityId: id,
+      },
+    })
+
+    const imageUrl = uploadRes.cdnUrl || uploadRes.url
 
     const existingStaff = await prisma.staff.findUnique({
       where: { id },
@@ -48,7 +65,18 @@ export async function POST(
     }
 
     if (existingStaff.imageUrl) {
-      await deleteUploadedFile(existingStaff.imageUrl)
+      try {
+        const oldUrl = existingStaff.imageUrl
+        const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import('@/lib/s3')
+        if (isS3Url(oldUrl)) {
+          const key = extractFileKeyFromUrl(oldUrl)
+          if (key) {
+            await deleteFromS3(key)
+          }
+        } else {
+          await deleteUploadedFile(oldUrl)
+        }
+      } catch {}
     }
 
     const updatedStaff = await prisma.staff.update({
@@ -91,7 +119,18 @@ export async function DELETE(
     }
 
     if (existingStaff.imageUrl) {
-      await deleteUploadedFile(existingStaff.imageUrl)
+      try {
+        const oldUrl = existingStaff.imageUrl
+        const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import('@/lib/s3')
+        if (isS3Url(oldUrl)) {
+          const key = extractFileKeyFromUrl(oldUrl)
+          if (key) {
+            await deleteFromS3(key)
+          }
+        } else {
+          await deleteUploadedFile(oldUrl)
+        }
+      } catch {}
     }
 
     const updatedStaff = await prisma.staff.update({

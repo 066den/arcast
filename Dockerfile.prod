@@ -42,6 +42,10 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
+# Include application scripts in the image (for migrations/maintenance)
+COPY --from=builder /app/scripts ./scripts
+# Ensure scripts are executable for non-root runtime user
+RUN chmod -R a+rx ./scripts || true
 
 # Set the correct permission for prerender cache
 RUN mkdir .next

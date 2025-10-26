@@ -1,7 +1,6 @@
 import {
   SidebarInset,
   SidebarProvider,
-  SidebarTrigger,
 } from '@/components/ui/sidebar'
 import AppSidebar from '@/components/admin/AppSidebar'
 import AdminHeader from '@/components/admin/AdminHeader'
