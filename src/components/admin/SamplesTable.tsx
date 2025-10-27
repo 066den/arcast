@@ -3,7 +3,6 @@
 import { Sample } from '@/types'
 import { useState } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import {
   ColumnDef,
   flexRender,
@@ -30,7 +29,6 @@ import {
   Eye,
   Plus,
   MoreHorizontal,
-  Calendar,
   Image as ImageIcon,
   Play,
 } from 'lucide-react'
@@ -42,12 +40,7 @@ import {
 } from '../ui/dropdown-menu'
 import { toast } from 'sonner'
 import { ConfirmModal } from '@/components/modals/modal'
-import {
-  ApiError,
-  deleteSample,
-  updateSample,
-  deleteSampleImage,
-} from '@/lib/api'
+import { ApiError, deleteSample, deleteSampleImage } from '@/lib/api'
 
 interface SamplesTableProps {
   initialData: Sample[]
@@ -61,7 +54,15 @@ const SamplesTable = ({ initialData }: SamplesTableProps) => {
     sample: Sample | null
   }>({ isOpen: false, sample: null })
   const [isDeleting, setIsDeleting] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+
+  // Normalize video URL to remove arcast-s3 bucket prefix
+  const normalizeVideoUrl = (url: string | null): string => {
+    if (!url) return ''
+    if (url.includes('localhost:9000/arcast-s3/')) {
+      return url.replace('arcast-s3/', '')
+    }
+    return url
+  }
 
   const handleEdit = (sample: Sample) => {
     // Navigate to edit page
@@ -101,14 +102,14 @@ const SamplesTable = ({ initialData }: SamplesTableProps) => {
 
   const handleView = (sample: Sample) => {
     if (sample.videoUrl) {
-      window.open(sample.videoUrl, '_blank')
+      const normalizedUrl = normalizeVideoUrl(sample.videoUrl)
+      window.open(normalizedUrl, '_blank')
     } else {
       toast.error('No video URL available')
     }
   }
 
   const handleImageRemove = async (sampleId: string) => {
-    setIsLoading(true)
     try {
       await deleteSampleImage(sampleId)
       setSamples(prev =>
@@ -118,14 +119,11 @@ const SamplesTable = ({ initialData }: SamplesTableProps) => {
       )
       toast.success('Image removed successfully')
     } catch (error) {
-      console.error('Error removing image:', error)
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
         toast.error('Failed to remove image')
       }
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -192,15 +190,16 @@ const SamplesTable = ({ initialData }: SamplesTableProps) => {
       accessorKey: 'videoUrl',
       cell: ({ row }: { row: Row<Sample> }) => {
         const videoUrl = row.original.videoUrl
+        const normalizedUrl = normalizeVideoUrl(videoUrl)
         return (
           <div className="max-w-[400px]">
-            {videoUrl ? (
+            {normalizedUrl ? (
               <div className="flex items-center gap-2">
                 <Play className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground truncate">
-                  {videoUrl.length > 50
-                    ? `${videoUrl.substring(0, 50)}...`
-                    : videoUrl}
+                  {normalizedUrl.length > 50
+                    ? `${normalizedUrl.substring(0, 50)}...`
+                    : normalizedUrl}
                 </span>
               </div>
             ) : (

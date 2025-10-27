@@ -15,7 +15,10 @@ export function useBooking() {
   const { studio, service, package: packageId, serviceType } = selectedIndices
 
   const isBooking = useMemo(() => {
-    return serviceType === 'podcast' || serviceType === 'beneficial'
+    return (
+      serviceType === 'podcast-production' ||
+      serviceType === 'beneficial-packages'
+    )
   }, [serviceType])
 
   return {

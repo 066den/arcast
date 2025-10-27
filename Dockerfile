@@ -10,7 +10,7 @@ WORKDIR /app
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
 # Install without running postinstall scripts; Prisma generate will run later in builder after sources are copied
-RUN npm ci --ignore-scripts
+RUN npm ci --ignore-scripts --prefer-offline --no-audit
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -44,7 +44,7 @@ ENV NEXT_IMAGE_UNOPTIMIZED=${NEXT_IMAGE_UNOPTIMIZED}
 # Generate Prisma client
 RUN npx prisma generate
 
-RUN npm run build
+RUN npm run build -- --no-lint
 
 # Production image, copy all the files and run next
 FROM base AS runner

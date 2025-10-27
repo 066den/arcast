@@ -54,7 +54,10 @@ const shouldUsePathStyle = (host: string, port?: string): boolean => {
   return lower.includes('minio') || isLocal || isIp || !!port
 }
 
-const buildPublicUrl = (fileKey: string): string => {
+const buildPublicUrl = (
+  fileKey: string,
+  bucket: string = BUCKET_NAME
+): string => {
   // Try PUBLIC_ENDPOINT first
   try {
     const pub = new URL(PUBLIC_ENDPOINT)
@@ -63,10 +66,10 @@ const buildPublicUrl = (fileKey: string): string => {
     const portStr = pub.port ? `:${pub.port}` : ''
     if (shouldUsePathStyle(host, pub.port)) {
       // Path-style
-      return `${proto}//${host}${portStr}/${BUCKET_NAME}/${fileKey}`
+      return `${proto}//${host}${portStr}/${bucket}/${fileKey}`
     }
     // Virtual-hosted style
-    return `${proto}//${BUCKET_NAME}.${host}${portStr}/${fileKey}`
+    return `${proto}//${bucket}.${host}${portStr}/${fileKey}`
   } catch {
     // ignore and fall through to ENDPOINT
   }
@@ -78,13 +81,13 @@ const buildPublicUrl = (fileKey: string): string => {
     const host = ep.hostname
     const portStr = ep.port ? `:${ep.port}` : ''
     if (shouldUsePathStyle(host, ep.port)) {
-      return `${proto}//${host}${portStr}/${BUCKET_NAME}/${fileKey}`
+      return `${proto}//${host}${portStr}/${bucket}/${fileKey}`
     }
-    return `${proto}//${BUCKET_NAME}.${host}${portStr}/${fileKey}`
+    return `${proto}//${bucket}.${host}${portStr}/${fileKey}`
   } catch {
     // Last resort: join strings safely
     const base = (ENDPOINT || '').replace(/\/+$/, '')
-    return `${base}/${BUCKET_NAME}/${fileKey}`
+    return `${base}/${bucket}/${fileKey}`
   }
 }
 
@@ -146,8 +149,17 @@ export const uploadToS3 = async (
   try {
     const { folder = 'uploads', contentType, metadata = {} } = options
 
+    // For 'samples' folder, use 'samples' bucket instead of BUCKET_NAME
+    const bucketName = folder === 'samples' ? 'samples' : BUCKET_NAME
+
     // Generate unique file key
-    const fileKey = folder ? `${folder}/${fileName}` : fileName
+    // For 'samples' bucket, we don't need the folder prefix in the key
+    const fileKey =
+      folder === 'samples'
+        ? fileName
+        : folder
+          ? `${folder}/${fileName}`
+          : fileName
 
     // Prepare file buffer
     let fileBuffer: Buffer
@@ -162,7 +174,7 @@ export const uploadToS3 = async (
 
     // Upload parameters
     const uploadParams = {
-      Bucket: BUCKET_NAME,
+      Bucket: bucketName,
       Key: fileKey,
       Body: fileBuffer,
       ContentType: fileContentType,
@@ -174,14 +186,19 @@ export const uploadToS3 = async (
     await s3Client.send(command)
 
     // Return the public URL and CDN URL
-    const publicUrl = buildPublicUrl(fileKey)
-    const cdnUrl = getCdnUrl(fileKey)
+    // For bucket 'samples', we need just the filename without the folder prefix
+    const urlKey =
+      bucketName === 'samples' && fileKey.includes('/')
+        ? fileKey.split('/').pop()!
+        : fileKey
+    const publicUrl = buildPublicUrl(urlKey, bucketName)
+    const cdnUrl = buildPublicUrl(urlKey, bucketName)
 
     return {
       url: publicUrl,
       cdnUrl: cdnUrl,
       key: fileKey,
-      bucket: BUCKET_NAME,
+      bucket: bucketName,
     }
   } catch (error) {
     console.error('Error uploading to S3:', error)
@@ -492,20 +509,61 @@ export const normalizeVideoUrl = (
 ): string | null => {
   if (!url) return null
 
-  // If already a full URL (http/https), return as is
+  // Handle full URLs (http/https)
   if (/^https?:\/\//.test(url)) {
-    return url
+    try {
+      const urlObj = new URL(url)
+
+      // Check if this is a localhost URL with arcast-s3 bucket
+      if (urlObj.hostname === 'localhost' && urlObj.port === '9000') {
+        const pathParts = urlObj.pathname.split('/').filter(Boolean)
+
+        // Check if path contains arcast-s3/samples/...
+        if (pathParts.length >= 2 && pathParts[0] === 'arcast-s3') {
+          if (pathParts[1] === 'samples' && pathParts.length >= 3) {
+            // Extract file key: everything after arcast-s3/samples/
+            const fileKey = pathParts.slice(2).join('/')
+            // Build correct URL with samples bucket directly
+            return `http://localhost:9000/samples/${fileKey}`
+          }
+        }
+      }
+
+      // If path contains arcast-s3, replace with samples
+      if (url.includes('arcast-s3')) {
+        const fixedUrl = url.replace(/\/arcast-s3\//g, '/samples/')
+        return fixedUrl
+      }
+
+      // For other S3 URLs that are already correct, return as is
+      if (isS3Url(url)) {
+        return url
+      }
+
+      // For other full URLs, return as is
+      return url
+    } catch (e) {
+      console.error('Error parsing URL:', url, e)
+      return url
+    }
   }
 
-  // If it's a relative path like "samples/..." or "/samples/..."
+  // Handle relative paths
   const cleanPath = url.replace(/^\/+/, '') // Remove leading slashes
-  if (/^samples\//.test(cleanPath) || /^arcast-s3\/samples\//.test(cleanPath)) {
-    // Convert to full CDN URL
+
+  // If path starts with arcast-s3/samples/, extract just samples/... part
+  if (cleanPath.startsWith('arcast-s3/samples/')) {
+    const fileKey = cleanPath.replace(/^arcast-s3\//, '')
+    return getCdnUrl(fileKey)
+  }
+
+  // If path starts with samples/, use it directly
+  if (cleanPath.startsWith('samples/')) {
     return getCdnUrl(cleanPath)
   }
 
-  // For other relative paths, try to build URL
-  return getCdnUrl(cleanPath)
+  // For other relative paths, assume samples/ prefix
+  return getCdnUrl(`samples/${cleanPath}`)
 }
 
 export { s3Client, BUCKET_NAME }

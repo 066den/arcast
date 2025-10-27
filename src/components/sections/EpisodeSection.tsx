@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { Sample, ServiceType } from '@/types'
 import SmoothOverlappingCarousel from '../ui/smooth-overlapping-carousel'
 import ServiceTypesList from '../servicesComponents/ServiceTypesList'
-import { useState } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 
 interface EpisodeSectionProps {
@@ -15,14 +15,31 @@ const EpisodeSection = ({
   initialServiceTypes,
   initialSamples,
 }: EpisodeSectionProps) => {
-  const [typePackages, setTypePackages] = useState<string>('podcast')
-
-  const filteredServiceTypes = initialServiceTypes.filter(
-    serviceType =>
-      serviceType.slug !== 'social' &&
-      serviceType.samples &&
-      serviceType.samples.length > 0
+  const filteredServiceTypes = useMemo(
+    () =>
+      initialServiceTypes.filter(
+        serviceType => serviceType.samples && serviceType.samples.length > 0
+      ),
+    [initialServiceTypes]
   )
+
+  // Use first available service type as default
+  const firstServiceTypeSlug = useMemo(
+    () => filteredServiceTypes[0]?.slug || '',
+    [filteredServiceTypes]
+  )
+
+  const [typePackages, setTypePackages] = useState<string>(firstServiceTypeSlug)
+
+  // Reset to first service type if current has no samples
+  useEffect(() => {
+    const currentSamples = initialSamples.filter(
+      sample => sample?.serviceType?.slug === typePackages
+    )
+    if (currentSamples.length === 0 && firstServiceTypeSlug) {
+      setTypePackages(firstServiceTypeSlug)
+    }
+  }, [typePackages, initialSamples, firstServiceTypeSlug])
 
   const filteredSamples = initialSamples.filter(sample => {
     return sample?.serviceType?.slug === typePackages

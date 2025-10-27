@@ -45,7 +45,9 @@ const SmoothOverlappingCarousel = ({
   const playVideo = useCallback(
     (videoUrl: string) => {
       if (videoUrl) {
-        setSelectedVideoUrl(videoUrl)
+        // Normalize URL by removing arcast-s3 bucket prefix
+        const normalizedUrl = videoUrl.replace('/arcast-s3/', '/samples/')
+        setSelectedVideoUrl(normalizedUrl)
         videoOpen()
       }
     },
@@ -53,7 +55,7 @@ const SmoothOverlappingCarousel = ({
   )
 
   const handleCloseVideo = useCallback(() => {
-    //setSelectedVideoUrl(null)
+    setSelectedVideoUrl(null)
     videoClose()
   }, [videoClose])
 
@@ -84,7 +86,6 @@ const SmoothOverlappingCarousel = ({
 
   useEffect(() => {
     if (!autoplay || isHovered || items.length <= 1) return
-
     const interval = setInterval(() => {
       setCurrentIndex(prev => (prev + 1) % items.length)
     }, autoplayDelay)
@@ -94,25 +95,53 @@ const SmoothOverlappingCarousel = ({
 
   if (items.length < 3) {
     return (
-      <div className={cn('relative w-full h-[400px]', className)}>
-        <div className="flex items-center justify-center gap-4">
-          {items.map(item => (
-            <div
-              key={item.id}
-              className="relative group cursor-pointer w-[325px] h-[360px]"
-            >
-              <Image
-                src={item.thumbUrl || ''}
-                alt={item.name || ''}
-                width={325}
-                height={360}
-                className="rounded-2xl shadow-2xl transition-transform duration-300 group-hover:scale-105 w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl" />
-            </div>
-          ))}
+      <>
+        <div className={cn('relative w-full h-[400px]', className)}>
+          <div className="flex items-center justify-center gap-4">
+            {items.map(item => (
+              <div
+                key={item.id}
+                className="relative group cursor-pointer w-[325px] h-[360px]"
+                onClick={() => item.videoUrl && playVideo(item.videoUrl)}
+              >
+                <Image
+                  src={item.thumbUrl || ''}
+                  alt={item.name || ''}
+                  width={325}
+                  height={360}
+                  className="rounded-2xl shadow-2xl transition-transform duration-300 group-hover:scale-105 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-20 h-20 bg-white/80 rounded-full flex items-center justify-center shadow-lg transition-all duration-500 ease-in-out group-hover:bg-white">
+                    <Play
+                      className="text-black ml-1 size-8"
+                      fill="currentColor"
+                    />
+                  </div>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl" />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+        <VideoModal
+          isOpen={isVideoModalOpen}
+          title={
+            selectedVideoUrl
+              ? items.find(item => item.videoUrl === selectedVideoUrl)?.name ||
+                ''
+              : ''
+          }
+          videoUrl={selectedVideoUrl || ''}
+          poster={
+            selectedVideoUrl
+              ? items.find(item => item.videoUrl === selectedVideoUrl)
+                  ?.thumbUrl || undefined
+              : undefined
+          }
+          onClose={handleCloseVideo}
+        />
+      </>
     )
   }
 
@@ -216,9 +245,9 @@ const SmoothOverlappingCarousel = ({
 
       <VideoModal
         isOpen={isVideoModalOpen}
-        title={items[currentIndex].name || ''}
+        title={items[currentIndex]?.name || ''}
         videoUrl={selectedVideoUrl || ''}
-        poster={items[currentIndex].thumbUrl || undefined}
+        poster={items[currentIndex]?.thumbUrl || undefined}
         onClose={handleCloseVideo}
       />
     </div>

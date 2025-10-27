@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
-import { deleteUploadedFile } from '@/utils/files'
+import { deleteUploadedFile, getUploadedFile } from '@/utils/files'
 import { validateFile } from '@/lib/validate'
 
 export const runtime = 'nodejs'
@@ -79,40 +79,17 @@ export async function PUT(
         return NextResponse.json({ error: validation }, { status: 400 })
       }
 
-      // Delete old image if it exists (S3 or local)
+      // Delete old image if it exists
       if (existingEquipment.imageUrl) {
         try {
-          const oldUrl = existingEquipment.imageUrl
-          const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import('@/lib/s3')
-          if (isS3Url(oldUrl)) {
-            const key = extractFileKeyFromUrl(oldUrl)
-            if (key) {
-              await deleteFromS3(key)
-            }
-          } else {
-            await deleteUploadedFile(oldUrl)
-          }
-        } catch {}
+          await deleteUploadedFile(existingEquipment.imageUrl)
+        } catch (error) {
+          console.error('Error deleting old image:', error)
+        }
       }
 
-      // Upload to S3
-      const s3 = await import('@/lib/s3')
-      const fileExt = (imageFile.name.split('.').pop() || 'jpg').toLowerCase()
-      const uniqueFileName = `${Date.now()}-${Math.random()
-        .toString(36)
-        .slice(2)}.${fileExt}`
-
-      const uploadRes = await s3.uploadToS3(imageFile, uniqueFileName, {
-        folder: 'equipment',
-        contentType: imageFile.type,
-        metadata: {
-          originalName: imageFile.name,
-          uploadedAt: new Date().toISOString(),
-          entity: 'equipment',
-          entityId: id,
-        },
-      })
-      imageUrl = uploadRes.cdnUrl || uploadRes.url
+      // Upload new image to local storage (consistent with POST)
+      imageUrl = await getUploadedFile(imageFile, 'equipment')
     }
 
     const equipment = await prisma.equipment.update({

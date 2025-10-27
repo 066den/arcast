@@ -95,11 +95,14 @@ export async function POST(req: Request) {
       }
     }
 
+    // Normalize video URL before storing in DB
+    const normalizedVideoUrl = normalizeVideoUrl(videoUrl)
+
     const sample = await prisma.sample.create({
       data: {
         name,
         thumbUrl,
-        videoUrl, // Store as provided - will be normalized on retrieval
+        videoUrl: normalizedVideoUrl, // Store normalized URL
         serviceTypeId: serviceTypeId || null,
       },
       include: {
@@ -107,13 +110,7 @@ export async function POST(req: Request) {
       },
     })
 
-    // Return normalized URL for consistent format
-    const normalizedSample = {
-      ...sample,
-      videoUrl: normalizeVideoUrl(sample.videoUrl),
-    }
-
-    return NextResponse.json(normalizedSample)
+    return NextResponse.json(sample)
   } catch (error) {
     console.error('Error creating sample:', error)
     return NextResponse.json(

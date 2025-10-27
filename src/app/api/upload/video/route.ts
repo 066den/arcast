@@ -37,11 +37,9 @@ export async function POST(request: NextRequest) {
       return response
     }
 
-
     const formData = await request.formData()
     const file = formData.get('videoFile') as File
     const folder = formData.get('folder') as string
-    const usePresignedPost = formData.get('usePresignedPost') === 'true'
 
     if (!file) {
       const response = NextResponse.json(
@@ -51,8 +49,6 @@ export async function POST(request: NextRequest) {
       response.headers.set('Access-Control-Allow-Origin', '*')
       return response
     }
-
-
 
     const validation = validateVideoFile(file)
     if (validation) {
@@ -64,125 +60,50 @@ export async function POST(request: NextRequest) {
     const fileExtension = file.name.split('.').pop()
     const fileName = `${uuidv4()}.${fileExtension}`
 
-    // Lazy-load S3 helpers at runtime to avoid build-time evaluation
+    // Use S3 for video uploads
     const s3 = await import('@/lib/s3')
 
+    // Direct upload to S3
+    const uploadStartTime = Date.now()
+    console.log('📤 Uploading video to S3:', fileName)
 
-    if (usePresignedPost) {
-      // Use presigned POST for faster uploads
-
-      const presignedPost = await s3.generatePresignedPost(fileName, {
-        folder: folder || 'samples',
-        contentType: file.type,
-        expiresIn: 3600, // 1 hour
-        maxFileSize: 1024 * 1024 * 1024, // 1GB for large videos
-      })
-
-      console.log('Presigned POST generated successfully')
-
-      const response = NextResponse.json({
-        success: true,
-        message: 'Presigned POST generated for video upload',
-        presignedPost: {
-          url: presignedPost.url,
-          fields: presignedPost.fields,
-          fileKey: presignedPost.fileKey,
-          cdnUrl: presignedPost.cdnUrl,
-        },
+    const result = await s3.uploadToS3(file, fileName, {
+      folder: folder || 'samples',
+      contentType: file.type,
+      metadata: {
         originalName: file.name,
-        size: file.size,
-        uploadMethod: 'presigned-post',
-        instructions: {
-          method: 'POST',
-          description: 'Upload file directly to S3 using presigned POST',
-          note: 'This is more efficient for large video files',
-        },
-      })
+        uploadedAt: new Date().toISOString(),
+        fileType: 'video',
+      },
+    })
 
-      // Add CORS headers
-      response.headers.set('Access-Control-Allow-Origin', '*')
-      response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS')
-      response.headers.set(
-        'Access-Control-Allow-Headers',
-        'Content-Type, Authorization'
-      )
+    const uploadEndTime = Date.now()
+    const uploadDuration = (uploadEndTime - uploadStartTime) / 1000
+    console.log(
+      `✅ Upload successful in ${uploadDuration.toFixed(2)}s:`,
+      result.url
+    )
 
-      return response
-    } else {
-      // Use multipart upload for very large files, direct upload for others
-      const uploadStartTime = Date.now()
-      let result: any
+    const response = NextResponse.json({
+      success: true,
+      message: 'Video uploaded successfully',
+      videoUrl: result.cdnUrl || result.url,
+      originalName: file.name,
+      size: file.size,
+      uploadMethod: 'direct',
+      uploadDuration: uploadDuration,
+      totalDuration: (Date.now() - startTime) / 1000,
+    })
 
-      if (file.size > 300 * 1024 * 1024) {
-        // 300MB
-        console.log('🚀 Using multipart upload for very large file:', fileName)
-        try {
-          result = await s3.uploadLargeFileToS3(file, fileName, {
-            folder: folder || 'arcast-s3/samples',
-            contentType: file.type,
-            metadata: {
-              originalName: file.name,
-              uploadedAt: new Date().toISOString(),
-              fileType: 'video',
-            },
-          })
-        } catch (multipartError) {
-          console.warn(
-            '⚠️ Multipart upload failed, falling back to direct upload:',
-            multipartError
-          )
-          console.log('📤 Falling back to direct upload:', fileName)
-          result = await s3.uploadToS3(file, fileName, {
-            folder: folder || 'arcast-s3/samples',
-            contentType: file.type,
-            metadata: {
-              originalName: file.name,
-              uploadedAt: new Date().toISOString(),
-              fileType: 'video',
-            },
-          })
-        }
-      } else {
-        console.log('📤 Using direct upload:', fileName)
-        result = await s3.uploadToS3(file, fileName, {
-          folder: folder || 'arcast-s3/samples',
-          contentType: file.type,
-          metadata: {
-            originalName: file.name,
-            uploadedAt: new Date().toISOString(),
-            fileType: 'video',
-          },
-        })
-      }
+    // Add CORS headers
+    response.headers.set('Access-Control-Allow-Origin', '*')
+    response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS')
+    response.headers.set(
+      'Access-Control-Allow-Headers',
+      'Content-Type, Authorization'
+    )
 
-      const uploadEndTime = Date.now()
-      const uploadDuration = (uploadEndTime - uploadStartTime) / 1000
-      console.log(
-        `✅ Upload successful in ${uploadDuration.toFixed(2)}s:`,
-        result.url
-      )
-
-      const response = NextResponse.json({
-        success: true,
-        message: 'Video uploaded successfully',
-        videoUrl: result.cdnUrl,
-        originalName: file.name,
-        size: file.size,
-        uploadMethod: 'direct',
-        uploadDuration: uploadDuration,
-        totalDuration: (Date.now() - startTime) / 1000,
-      })
-
-      // Add CORS headers
-      response.headers.set('Access-Control-Allow-Origin', '*')
-      response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS')
-      response.headers.set(
-        'Access-Control-Allow-Headers',
-        'Content-Type, Authorization'
-      )
-
-      return response
-    }
+    return response
   } catch (error) {
     console.error('Error uploading video:', error)
 

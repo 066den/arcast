@@ -72,8 +72,8 @@ const ServicesCarousel = ({
               ))
             ) : packages.length > 0 &&
               (isBooking
-                ? selectServiceTypeSlug === 'beneficial'
-                : typePackages === 'beneficial') ? (
+                ? selectServiceTypeSlug === 'beneficial-packages'
+                : typePackages === 'beneficial-packages') ? (
               packages.map(packageData => (
                 <CarouselItem
                   key={packageData.id}

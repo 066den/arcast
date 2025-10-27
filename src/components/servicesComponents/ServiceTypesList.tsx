@@ -7,6 +7,7 @@ import {
 } from '@/lib/motion-variants'
 import { cn } from '@/lib/utils'
 import { useBooking } from '@/hooks/storeHooks/useBooking'
+import { useEffect, useCallback } from 'react'
 
 interface ServiceTypesListProps {
   initialServiceTypes: ServiceType[]
@@ -24,10 +25,24 @@ const ServiceTypesList = ({
   isBooking = false,
 }: ServiceTypesListProps) => {
   const { selectServiceType, selectServiceTypeSlug } = useBooking()
-  const handleSetTypePackages = (typePackages: string) => {
-    setTypePackages(typePackages)
-    selectServiceType(typePackages)
-  }
+  const handleSetTypePackages = useCallback(
+    (typePackages: string) => {
+      setTypePackages(typePackages)
+      selectServiceType(typePackages)
+    },
+    [setTypePackages, selectServiceType]
+  )
+
+  useEffect(() => {
+    if (!selectServiceTypeSlug && !typePackages) {
+      handleSetTypePackages(initialServiceTypes[0]?.slug || '')
+    }
+  }, [
+    initialServiceTypes,
+    selectServiceTypeSlug,
+    typePackages,
+    handleSetTypePackages,
+  ])
 
   return (
     <motion.div
@@ -69,11 +84,11 @@ const ServiceTypesList = ({
             title="Beneficial packages"
             isActive={
               isBooking
-                ? selectServiceTypeSlug === 'beneficial'
-                : typePackages === 'beneficial'
+                ? selectServiceTypeSlug === 'beneficial-packages'
+                : typePackages === 'beneficial-packages'
             }
             isHorizontal={isBooking}
-            onClick={() => handleSetTypePackages('beneficial')}
+            onClick={() => handleSetTypePackages('beneficial-packages')}
           />
         </motion.div>
       )}

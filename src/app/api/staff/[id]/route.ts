@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
-import { deleteUploadedFile } from '@/utils/files'
+import { deleteUploadedFile, getUploadedFile } from '@/utils/files'
 import { validateFile } from '@/lib/validate'
 
 export const runtime = 'nodejs'
@@ -12,9 +12,9 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params
-
   try {
+    const { id } = await params
+
     const staff = await prisma.staff.findUnique({
       where: {
         id,
@@ -73,40 +73,44 @@ export async function PUT(
         return NextResponse.json({ error: validation }, { status: 400 })
       }
 
-      // Delete old image if it exists (S3-aware)
+      // Delete old image if it exists
       if (existingStaff.imageUrl) {
         try {
-          const oldUrl = existingStaff.imageUrl
-          const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import('@/lib/s3')
-          if (isS3Url(oldUrl)) {
-            const key = extractFileKeyFromUrl(oldUrl)
-            if (key) await deleteFromS3(key)
-          } else {
-            await deleteUploadedFile(oldUrl)
-          }
-        } catch {}
+          await deleteUploadedFile(existingStaff.imageUrl)
+        } catch (error) {
+          console.error('Error deleting old image:', error)
+        }
       }
 
-      // Upload new image to S3
-      const s3 = await import('@/lib/s3')
-      const fileExt = (imageFile.name.split('.').pop() || 'jpg').toLowerCase()
-      const uniqueFileName = `${Date.now()}-${Math.random()
-        .toString(36)
-        .slice(2)}.${fileExt}`
-
-      const uploadRes = await s3.uploadToS3(imageFile, uniqueFileName, {
-        folder: 'staff',
-        contentType: imageFile.type,
-        metadata: {
-          originalName: imageFile.name,
-          uploadedAt: new Date().toISOString(),
-          entity: 'staff',
-          entityId: id,
-        },
-      })
-      imageUrl = uploadRes.cdnUrl || uploadRes.url
+      // Upload new image to local storage (consistent with POST)
+      try {
+        console.log('About to upload image:', {
+          fileName: imageFile.name,
+          fileSize: imageFile.size,
+          fileType: imageFile.type,
+        })
+        imageUrl = await getUploadedFile(imageFile, 'staff')
+        console.log('Image uploaded successfully:', imageUrl)
+      } catch (uploadError) {
+        console.error('Error uploading image:', uploadError)
+        console.error(
+          'Upload error stack:',
+          uploadError instanceof Error ? uploadError.stack : 'No stack trace'
+        )
+        return NextResponse.json(
+          {
+            error: 'Failed to upload image',
+            details:
+              uploadError instanceof Error
+                ? uploadError.message
+                : 'Unknown error',
+          },
+          { status: 500 }
+        )
+      }
     }
 
+    console.log('Updating staff in database...')
     const staff = await prisma.staff.update({
       where: {
         id,
@@ -118,11 +122,21 @@ export async function PUT(
       },
     })
 
+    console.log('Staff updated successfully:', staff.name)
     return NextResponse.json(staff)
   } catch (error) {
     console.error('Error updating staff:', error)
+    console.error(
+      'Error stack:',
+      error instanceof Error ? error.stack : 'No stack'
+    )
+    console.error('Full error object:', JSON.stringify(error, null, 2))
     return NextResponse.json(
-      { error: 'Failed to update staff' },
+      {
+        error: 'Failed to update staff',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        type: error?.constructor?.name || 'Unknown',
+      },
       { status: 500 }
     )
   }
@@ -132,9 +146,9 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params
-
   try {
+    const { id } = await params
+
     const session = await auth()
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

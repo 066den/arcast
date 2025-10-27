@@ -34,10 +34,14 @@ export default function SampleCreateForm({
 }: SampleCreateFormProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const filteredServiceTypes = serviceTypes.filter(
+    serviceType => serviceType.name !== 'Beneficial Packages'
+  )
   const [formData, setFormData] = useState({
     name: '',
     videoUrl: '',
-    serviceTypeId: serviceTypes.length > 0 ? serviceTypes[0].id : null,
+    serviceTypeId:
+      filteredServiceTypes.length > 0 ? filteredServiceTypes[0].id : null,
   })
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
 
