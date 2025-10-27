@@ -30,6 +30,7 @@ ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
 ARG AWS_S3_BUCKET_NAME
 ARG AWS_BUCKET_NAME
+ARG NEXT_IMAGE_UNOPTIMIZED
 
 # Set environment variables for build
 ENV AWS_REGION=${AWS_REGION}
@@ -38,6 +39,7 @@ ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
 ENV AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
 ENV AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
 ENV AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
+ENV NEXT_IMAGE_UNOPTIMIZED=${NEXT_IMAGE_UNOPTIMIZED}
 
 # Generate Prisma client
 RUN npx prisma generate
@@ -69,6 +71,9 @@ RUN chown nextjs:nodejs .next
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Create public directory and symlink for static files
+RUN mkdir -p public/uploads && chown -R nextjs:nodejs public
 # Copy full node_modules to ensure Prisma CLI deps (e.g., @prisma/config and 'effect') are present
 COPY --from=deps /app/node_modules ./node_modules
 
