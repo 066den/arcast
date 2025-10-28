@@ -13,7 +13,7 @@ export async function GET() {
 
     return NextResponse.json(articles)
   } catch (error) {
-    console.error('Error fetching blog articles:', error)
+    
     return NextResponse.json(
       { error: 'Failed to fetch blog articles' },
       { status: 500 }
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(article)
   } catch (error) {
-    console.error('Error creating blog article:', error)
+    
     return NextResponse.json(
       { error: 'Failed to create blog article' },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }

@@ -77,7 +77,6 @@ async function getDatabaseSchema(databaseId, useCache = true) {
 
     return response.properties
   } catch (error) {
-    console.error(`Error retrieving database schema for ${databaseId}:`, error)
     throw error
   }
 }
@@ -94,7 +93,6 @@ export async function getDatabaseProperties() {
     const schema = await getDatabaseSchema(DATABASE_ID, false)
     return Object.keys(schema)
   } catch (error) {
-    console.error('Error getting database properties:', error)
     return null
   }
 }
@@ -132,7 +130,6 @@ function validateLeadData(lead) {
 export async function createNotionBookingEntry(booking) {
   try {
     if (!isNotionConfigured()) {
-      console.warn('Notion not configured, skipping booking entry creation')
       return null
     }
 
@@ -223,8 +220,6 @@ export async function createNotionBookingEntry(booking) {
 
     return response
   } catch (error) {
-    console.error('❌ Error creating Notion booking entry:', error)
-
     // Don't throw error to avoid breaking the main booking flow
     // Just log it and return null
     return null
@@ -237,14 +232,10 @@ export async function createNotionBookingEntry(booking) {
 export async function createNotionOrderEntry(order) {
   try {
     if (!isNotionConfigured()) {
-      console.warn('Notion not configured, skipping order entry creation')
       return null
     }
 
     if (!ORDERS_DATABASE_ID) {
-      console.warn(
-        'NOTION_ORDERS_DATABASE_ID not configured, skipping Notion order entry'
-      )
       return null
     }
 
@@ -325,7 +316,6 @@ export async function createNotionOrderEntry(order) {
 
     return response
   } catch (error) {
-    console.error('❌ Error creating Notion order entry:', error)
     return null
   }
 }
@@ -336,9 +326,6 @@ export async function createNotionOrderEntry(order) {
 export async function createNotionLeadEntry(lead) {
   try {
     if (!LEADS_DATABASE_ID) {
-      console.warn(
-        'NOTION_LEADS_DATABASE_ID not configured, skipping Notion lead entry'
-      )
       return null
     }
 
@@ -387,8 +374,6 @@ export async function createNotionLeadEntry(lead) {
 
     return response
   } catch (error) {
-    console.error('❌ Error creating Notion lead entry:', error)
-
     // Don't throw error to avoid breaking the main lead creation flow
     return null
   }
@@ -397,9 +382,6 @@ export async function createNotionLeadEntry(lead) {
 export async function createNotionContactEntry(contactData) {
   try {
     if (!CONTACT_DATABASE_ID) {
-      console.warn(
-        'NOTION_CONTACT_DATABASE_ID not configured, skipping contact entry'
-      )
       return null
     }
 
@@ -430,7 +412,6 @@ export async function createNotionContactEntry(contactData) {
 
     return response
   } catch (error) {
-    console.error('❌ Error creating Notion contact entry:', error)
     throw new Error(error.message)
   }
 }
@@ -483,7 +464,6 @@ export async function updateNotionBookingStatus(
 
     return response
   } catch (error) {
-    console.error('❌ Error updating Notion booking status:', error)
     return null
   }
 }
@@ -547,7 +527,6 @@ export async function getNotionBookings(filters = {}) {
       createdAt: page.created_time,
     }))
   } catch (error) {
-    console.error('❌ Error fetching Notion bookings:', error)
     return []
   }
 }
@@ -564,9 +543,7 @@ export async function testNotionConnection() {
       try {
         const schema = await getDatabaseSchema(DATABASE_ID, false)
         // Database access successful
-        console.log(schema)
       } catch (dbError) {
-        console.error('❌ Database access failed:', dbError.message)
         return {
           success: false,
           error: `Database access failed: ${dbError.message}`,
@@ -574,7 +551,6 @@ export async function testNotionConnection() {
         }
       }
     } else {
-      console.warn('⚠️ NOTION_DATABASE_ID not configured')
       return {
         success: false,
         error: 'NOTION_DATABASE_ID not configured',
@@ -584,7 +560,6 @@ export async function testNotionConnection() {
 
     return { success: true, user: user.name, databaseId: DATABASE_ID }
   } catch (error) {
-    console.error('❌ Notion connection failed:', error)
     return { success: false, error: error.message }
   }
 }

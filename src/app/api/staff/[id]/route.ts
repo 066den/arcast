@@ -27,7 +27,6 @@ export async function GET(
 
     return NextResponse.json(staff)
   } catch (error) {
-    console.error('Error fetching staff:', error)
     return NextResponse.json(
       { error: 'Failed to fetch staff' },
       { status: 500 }
@@ -77,26 +76,13 @@ export async function PUT(
       if (existingStaff.imageUrl) {
         try {
           await deleteUploadedFile(existingStaff.imageUrl)
-        } catch (error) {
-          console.error('Error deleting old image:', error)
-        }
+        } catch (error) {}
       }
 
       // Upload new image to local storage (consistent with POST)
       try {
-        console.log('About to upload image:', {
-          fileName: imageFile.name,
-          fileSize: imageFile.size,
-          fileType: imageFile.type,
-        })
         imageUrl = await getUploadedFile(imageFile, 'staff')
-        console.log('Image uploaded successfully:', imageUrl)
       } catch (uploadError) {
-        console.error('Error uploading image:', uploadError)
-        console.error(
-          'Upload error stack:',
-          uploadError instanceof Error ? uploadError.stack : 'No stack trace'
-        )
         return NextResponse.json(
           {
             error: 'Failed to upload image',
@@ -110,7 +96,6 @@ export async function PUT(
       }
     }
 
-    console.log('Updating staff in database...')
     const staff = await prisma.staff.update({
       where: {
         id,
@@ -122,20 +107,12 @@ export async function PUT(
       },
     })
 
-    console.log('Staff updated successfully:', staff.name)
     return NextResponse.json(staff)
   } catch (error) {
-    console.error('Error updating staff:', error)
-    console.error(
-      'Error stack:',
-      error instanceof Error ? error.stack : 'No stack'
-    )
-    console.error('Full error object:', JSON.stringify(error, null, 2))
     return NextResponse.json(
       {
         error: 'Failed to update staff',
         details: error instanceof Error ? error.message : 'Unknown error',
-        type: error?.constructor?.name || 'Unknown',
       },
       { status: 500 }
     )
@@ -162,7 +139,6 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Staff deleted successfully' })
   } catch (error) {
-    console.error('Error deleting staff:', error)
     return NextResponse.json(
       { error: 'Failed to delete staff' },
       { status: 500 }

@@ -22,7 +22,7 @@ export async function GET() {
 
     return NextResponse.json(caseStudies)
   } catch (error) {
-    console.error('Error fetching case studies:', error)
+    
     return NextResponse.json(
       { error: 'Failed to fetch case studies' },
       { status: 500 }
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(caseStudy, { status: 201 })
   } catch (error) {
-    console.error('Error creating case study:', error)
+    
     return NextResponse.json(
       { error: 'Failed to create case study' },
       { status: 500 }

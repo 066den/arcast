@@ -27,7 +27,7 @@ export async function fetchPackagesAdmin() {
 
     return packages
   } catch (error) {
-    console.error('Error fetching packages:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch packages: ${error.message}`)
     }

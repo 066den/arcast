@@ -14,7 +14,7 @@ export async function GET() {
 
     return NextResponse.json(equipment)
   } catch (error) {
-    console.error('Error fetching equipment:', error)
+    
     return NextResponse.json(
       { error: 'Failed to fetch equipment' },
       { status: 500 }
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(equipment, { status: 201 })
   } catch (error) {
-    console.error('Error creating equipment:', error)
+    
     return NextResponse.json(
       { error: 'Failed to create equipment' },
       { status: 500 }

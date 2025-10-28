@@ -45,7 +45,7 @@ export async function POST(req: Request) {
       },
     })
   } catch (error) {
-    console.error('Error creating call request:', error)
+    
     return NextResponse.json(
       { success: false, error: ERROR_MESSAGES.CALL_REQUEST.FAILED },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }

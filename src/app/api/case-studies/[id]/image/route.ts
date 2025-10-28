@@ -82,7 +82,7 @@ export async function POST(
       imageUrl,
     })
   } catch (error) {
-    console.error('Error uploading case study image:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -152,7 +152,7 @@ export async function DELETE(
       caseStudy: updatedCaseStudy,
     })
   } catch (error) {
-    console.error('Error removing case study image:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

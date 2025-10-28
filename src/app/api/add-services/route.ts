@@ -30,7 +30,7 @@ export async function GET() {
       services: transformedServices,
     })
   } catch (error) {
-    console.error('Error fetching services:', error)
+    
     return NextResponse.json(
       { success: false, error: 'Failed to fetch services' },
       { status: 500 }
@@ -60,7 +60,7 @@ export async function POST(req: Request) {
       service: newService,
     })
   } catch (error) {
-    console.error('Error creating service:', error)
+    
     return NextResponse.json(
       { success: false, error: 'Failed to create service' },
       { status: 500 }

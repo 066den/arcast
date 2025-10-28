@@ -75,7 +75,7 @@ export async function POST(
       studio: updatedStudio,
     })
   } catch (error) {
-    console.error('Error updating studio image:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -127,7 +127,7 @@ export async function DELETE(req: Request) {
       studio: updatedStudio,
     })
   } catch (error) {
-    console.error('Error removing studio image:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

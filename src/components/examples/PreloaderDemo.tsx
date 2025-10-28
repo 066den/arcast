@@ -28,7 +28,7 @@ export function PreloaderDemo() {
         variant: 'wave',
       })
     } catch (error) {
-      console.error('Operation failed:', error)
+      
     }
   }
 

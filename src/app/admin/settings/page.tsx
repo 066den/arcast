@@ -48,7 +48,7 @@ export default function AdminSettingsPage() {
       })
     } catch (error) {
       toast.error('An error occurred while changing password')
-      console.error('Change password error:', error)
+      
     } finally {
       setIsLoading(false)
     }

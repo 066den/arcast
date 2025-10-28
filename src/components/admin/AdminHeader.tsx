@@ -31,7 +31,7 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
       toast.success('Successfully signed out')
     } catch (error) {
       toast.error('Error signing out')
-      console.error('Sign out error:', error)
+      
     }
   }
 

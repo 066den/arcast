@@ -62,7 +62,7 @@ const EditArticleForm = ({ article }: EditArticleFormProps) => {
       toast.success('Article updated successfully')
       router.push(ROUTES.ADMIN + ROUTES.BLOG)
     } catch (error) {
-      console.error('Error updating article:', error)
+      
       toast.error('Error updating article')
     }
   })

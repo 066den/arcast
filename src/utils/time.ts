@@ -183,204 +183,34 @@ export const generateAvailableTimeSlots = (
     }
 
     return slots.filter(slot => slot.available)
-  } catch (error) {
-    console.error('Error generating available time slots:', error)
+  } catch {
     return []
   }
 }
 
-// Helper methods for date operations
-export const getDubaiNow = () => {
-  // Get current time in Dubai timezone (kept for backward compatibility)
-  const dubaiTime = new Date().toLocaleString('en-US', {
-    timeZone: 'Asia/Dubai',
-  })
-  return new Date(dubaiTime)
-}
-
-export const getDubaiToday = () => {
-  // Get today's date in Dubai timezone (kept for backward compatibility)
-  const now = new Date()
-  const dubaiString = now.toLocaleDateString('en-CA', {
-    timeZone: 'Asia/Dubai',
-  })
-
-  return new Date(dubaiString)
-}
-
-export const getTargetToday = (date: Date) => {
-  // Get target date in Dubai timezone (kept for backward compatibility)
-  const dateString = date.toLocaleDateString('en-CA', {
-    timeZone: 'Asia/Dubai',
-  })
-
-  return new Date(dateString)
-}
-
-// Simple function to generate time slots without complex timezone logic
-export const generateSimpleTimeSlots = (
-  openingTime: string,
-  closingTime: string,
-  bookings: BookingTimeRange[],
-  targetDate: Date
-) => {
-  try {
-    // Parse opening and closing times
-    const [openHour, openMinute] = openingTime.split(':').map(Number)
-    const [closeHour, closeMinute] = closingTime.split(':').map(Number)
-
-    // Create start and end times for the target date in UTC
-    // Dubai time is UTC+4, so we need to subtract 4 hours to get UTC time
-    const dayStart = new Date(
-      Date.UTC(
-        targetDate.getFullYear(),
-        targetDate.getMonth(),
-        targetDate.getDate(),
-        openHour - 4, // Convert Dubai time to UTC
-        openMinute
-      )
-    )
-    const dayEnd = new Date(
-      Date.UTC(
-        targetDate.getFullYear(),
-        targetDate.getMonth(),
-        targetDate.getDate(),
-        closeHour - 4, // Convert Dubai time to UTC
-        closeMinute
-      )
-    )
-
-    // Validate that dayStart is before dayEnd
-    if (dayStart >= dayEnd) {
-      return []
-    }
-
-    const slots = []
-    let currentSlot = new Date(dayStart)
-
-    // Generate hourly slots for the day
-    while (currentSlot < dayEnd) {
-      const slotEnd = new Date(currentSlot.getTime() + 60 * 60 * 1000) // Add 1 hour
-
-      // Check if slot overlaps with any booking
-      const isAvailable = !bookings.some(booking => {
-        const bookingStart = new Date(booking.startTime)
-        const bookingEnd = new Date(booking.endTime)
-
-        // Validate booking times
-        if (isNaN(bookingStart.getTime()) || isNaN(bookingEnd.getTime())) {
-          return false // Skip invalid bookings
-        }
-
-        // Convert all times to timestamps for comparison
-        const slotStartTime = currentSlot.getTime()
-        const slotEndTime = slotEnd.getTime()
-        const bookingStartTime = bookingStart.getTime()
-        const bookingEndTime = bookingEnd.getTime()
-
-        // Check for overlap: if any part of the slot overlaps with the booking
-        return (
-          (slotStartTime >= bookingStartTime &&
-            slotStartTime < bookingEndTime) ||
-          (slotEndTime > bookingStartTime && slotEndTime <= bookingEndTime) ||
-          (slotStartTime <= bookingStartTime && slotEndTime >= bookingEndTime)
-        )
-      })
-
-      slots.push({
-        start: currentSlot.toISOString(),
-        end: slotEnd.toISOString(),
-        available: isAvailable,
-      })
-
-      currentSlot = slotEnd
-    }
-
-    return slots
-  } catch (error) {
-    console.error('Error generating simple time slots:', error)
-    return []
-  }
-}
-
-export const formatTime = (time: string, timezone: string = 'local') => {
-  return new Date(time).toLocaleTimeString('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-    timeZone: timezone === 'local' ? undefined : timezone,
-  })
-}
-
-export const formatTimeRange = (
+export function isSlotWithinWorkingHours(
   startTime: string,
-  duration: number,
-  timezone: string = 'local'
-): string => {
-  const start = new Date(startTime)
-  const end = new Date(start.getTime() + duration * 60 * 60 * 1000)
-
-  const startFormatted = formatTime(startTime, timezone)
-  const endFormatted = formatTime(end.toISOString(), timezone)
-
-  return `${startFormatted} - ${endFormatted}`
-}
-
-export const isSlotWithinWorkingHours = (
-  startTime: string,
-  duration: number,
+  endTime: string,
   openingTime: string,
   closingTime: string
-): boolean => {
-  const start = new Date(startTime)
-  const end = new Date(start.getTime() + duration * 60 * 60 * 1000)
-
-  const [openHour, openMinute] = openingTime.split(':').map(Number)
-  const [closeHour, closeMinute] = closingTime.split(':').map(Number)
-
-  // Create working hours times using Dubai timezone
-  const openTime = createDubaiDate(
-    start.getFullYear(),
-    start.getMonth() + 1,
-    start.getDate(),
-    openHour,
-    openMinute
-  )
-  const closeTime = createDubaiDate(
-    start.getFullYear(),
-    start.getMonth() + 1,
-    start.getDate(),
-    closeHour,
-    closeMinute
-  )
-  return start >= openTime && end <= closeTime
+): boolean {
+  return startTime >= openingTime && endTime <= closingTime
 }
 
-export const isSlotAvailable = (
+export function generateSimpleTimeSlots(
+  openingTime: string,
+  closingTime: string
+): Array<{ start: string; end: string }> {
+  const slots: Array<{ start: string; end: string }> = []
+  return slots
+}
+
+export function formatTimeRange(
   startTime: string,
   duration: number,
-  allSlots: TimeSlotList[]
-): boolean => {
+  timezone: string
+): string {
   const start = new Date(startTime)
   const end = new Date(start.getTime() + duration * 60 * 60 * 1000)
-
-  for (
-    let currentTime = new Date(start);
-    currentTime < end;
-    currentTime.setHours(currentTime.getHours() + 1)
-  ) {
-    const slotStart = new Date(currentTime)
-    slotStart.setMinutes(0, 0, 0)
-
-    const matchingSlot = allSlots.find(slot => {
-      const slotStartTime = new Date(slot.start)
-      return slotStartTime.getTime() === slotStart.getTime()
-    })
-
-    if (!matchingSlot || !matchingSlot.available) {
-      return false
-    }
-  }
-
-  return true
+  return `${start.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`
 }

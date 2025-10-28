@@ -20,7 +20,7 @@ export async function GET() {
 
     return NextResponse.json(serviceTypes)
   } catch (error) {
-    console.error('Error fetching service types:', error)
+    
     return NextResponse.json(
       { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
       { status: 500 }
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(serviceType)
   } catch (error) {
-    console.error('Error creating service type:', error)
+    
     return NextResponse.json(
       { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
       { status: 500 }

@@ -66,7 +66,7 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
       await updateStudio(studio.id, data)
       toast.success('Studio updated successfully')
     } catch (error) {
-      console.error('Error updating studio:', error)
+      
       toast.error('Error updating studio')
     }
   })
@@ -80,7 +80,7 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
       await updateStudioImage(studio.id, file)
       toast.success('Image uploaded successfully')
     } catch (error) {
-      console.error('Error uploading image:', error)
+      
 
       toast.error(
         error instanceof ApiError ? error.message : 'Error uploading image'
@@ -93,7 +93,7 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
       await updateStudioGallery(studio.id, file)
       toast.success('Gallery uploaded successfully')
     } catch (error) {
-      console.error('Error uploading gallery:', error)
+      
       toast.error('Error uploading gallery')
     }
   }
@@ -103,7 +103,7 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
       await deleteStudioGallery(studio.id, image)
       toast.success('Gallery deleted successfully')
     } catch (error) {
-      console.error('Error deleting gallery:', error)
+      
       toast.error('Error deleting gallery')
     }
   }
@@ -114,7 +114,7 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
       await deleteStudio(studio.id)
       setShowDeleteModal(false)
     } catch (error) {
-      console.error('Error deleting studio:', error)
+      
     } finally {
       setIsDeleting(false)
     }

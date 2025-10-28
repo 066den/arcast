@@ -58,7 +58,7 @@ const ContactForm = ({ isOpen, onClose }: ContactFormProps) => {
       setSubmitSuccess(true)
       reset()
     } catch (error) {
-      console.error('Error submitting contact form:', error)
+      
       if (error instanceof Error) {
         toast.error(error.message)
       } else {

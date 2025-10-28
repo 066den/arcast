@@ -24,11 +24,11 @@ export async function POST(request: NextRequest) {
     // Lazy-load to prevent build-time evaluation (helps with "Failed to collect page data")
     const { generatePresignedPost } = await import('@/lib/s3')
 
-    console.log('Starting presigned POST generation...')
+    
 
     const session = await auth()
     if (!session?.user) {
-      console.log('Unauthorized access attempt')
+      
       const response = NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -37,13 +37,13 @@ export async function POST(request: NextRequest) {
       return response
     }
 
-    console.log('User authenticated:', session.user.email)
+    
 
     const body = await request.json()
     const { fileName, contentType, folder, maxFileSize } = body
 
     if (!fileName) {
-      console.log('No file name provided')
+      
       const response = NextResponse.json(
         { error: 'File name is required' },
         { status: 400 }
@@ -52,12 +52,7 @@ export async function POST(request: NextRequest) {
       return response
     }
 
-    console.log('Generating presigned POST for:', {
-      fileName,
-      contentType,
-      folder,
-      maxFileSize,
-    })
+    
 
     const presignedPost = await generatePresignedPost(fileName, {
       folder: folder || 'samples',
@@ -66,7 +61,7 @@ export async function POST(request: NextRequest) {
       maxFileSize: maxFileSize || 500 * 1024 * 1024, // 500MB default
     })
 
-    console.log('Presigned POST generated successfully')
+    
 
     const response = NextResponse.json({
       success: true,
@@ -89,15 +84,11 @@ export async function POST(request: NextRequest) {
 
     return response
   } catch (error) {
-    console.error('Error generating presigned POST:', error)
+    
 
     // More detailed error logging
     if (error instanceof Error) {
-      console.error('Error details:', {
-        message: error.message,
-        stack: error.stack,
-        name: error.name,
-      })
+      
     }
 
     const response = NextResponse.json(

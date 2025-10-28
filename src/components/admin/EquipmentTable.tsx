@@ -69,7 +69,7 @@ export default function EquipmentTable({ initialData }: EquipmentTableProps) {
 
       if (!response.ok) {
         const errorText = await response.text()
-        console.error('Server error response:', errorText)
+        
         try {
           const errorData = JSON.parse(errorText)
           throw new Error(
@@ -95,7 +95,7 @@ export default function EquipmentTable({ initialData }: EquipmentTableProps) {
       setShowForm(false)
       setEditingEquipment(null)
     } catch (error) {
-      console.error('Save error:', error)
+      
       throw error
     } finally {
       setIsLoading(false)
@@ -132,7 +132,7 @@ export default function EquipmentTable({ initialData }: EquipmentTableProps) {
       )
       toast.success('Equipment deleted')
     } catch (error) {
-      console.error('Delete error:', error)
+      
       toast.error('Error deleting equipment')
     } finally {
       setIsDeleting(false)

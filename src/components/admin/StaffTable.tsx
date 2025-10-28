@@ -75,7 +75,7 @@ export default function StaffTable({ initialData }: StaffTableProps) {
       setShowForm(false)
       setEditingStaff(null)
     } catch (error) {
-      console.error('Save error:', error)
+      
       throw error
     } finally {
     }
@@ -106,7 +106,7 @@ export default function StaffTable({ initialData }: StaffTableProps) {
       setStaff(prev => prev.filter(item => item.id !== deleteDialog.staff!.id))
       toast.success('Staff member deleted')
     } catch (error) {
-      console.error('Delete error:', error)
+      
       toast.error('Error deleting staff member')
     } finally {
       setIsDeleting(false)

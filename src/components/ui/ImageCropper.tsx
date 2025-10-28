@@ -138,7 +138,7 @@ export const ImageCropper = ({
         )
       })
     } catch (error) {
-      console.error('Error cropping image:', error)
+      
     }
   }, [completedCrop, onCropComplete])
 

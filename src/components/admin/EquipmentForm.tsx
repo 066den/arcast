@@ -52,7 +52,7 @@ export default function EquipmentForm({
       toast.success(equipment ? 'Equipment updated' : 'Equipment created')
     } catch (error) {
       toast.error('Error saving equipment')
-      console.error('Save error:', error)
+      
     } finally {
       setIsLoading(false)
     }

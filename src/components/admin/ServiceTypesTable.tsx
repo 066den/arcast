@@ -81,7 +81,7 @@ export default function ServiceTypesTable({
       setShowForm(false)
       setEditingType(undefined)
     } catch (error) {
-      console.error('Save error:', error)
+      
       toast.error(
         error instanceof Error ? error.message : 'Error saving service type'
       )
@@ -121,7 +121,7 @@ export default function ServiceTypesTable({
       )
       toast.success('Service type deleted')
     } catch (error) {
-      console.error('Delete error:', error)
+      
       toast.error(
         error instanceof Error ? error.message : 'Error deleting service type'
       )

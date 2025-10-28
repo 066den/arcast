@@ -48,7 +48,7 @@ export const getPaymentLinkForBooking = async (bookingId: string) => {
     })
 
     if (!booking) {
-      console.error('Booking not found:', bookingId)
+      
       throw new Error(ERROR_MESSAGES.BOOKING.NOT_FOUND)
     }
 
@@ -89,18 +89,11 @@ export const getPaymentLinkForBooking = async (bookingId: string) => {
       },
     })
 
-    console.log('Payment record created:', {
-      paymentId: payment.id,
-      externalId: payment.externalId,
-    })
+    
 
     return { payment, paymentLink: createdPaymentLink }
   } catch (error) {
-    console.error('Error in getPaymentLinkForBooking:', {
-      bookingId,
-      error: error instanceof Error ? error.message : error,
-      stack: error instanceof Error ? error.stack : undefined,
-    })
+    
     throw error
   }
 }
@@ -111,7 +104,7 @@ export const getPaymentLinkForOrder = async (orderId: string) => {
   }
 
   try {
-    console.log('Getting payment link for order:', orderId)
+    
 
     const order = await prisma.order.findUnique({
       where: { id: orderId },
@@ -121,15 +114,11 @@ export const getPaymentLinkForOrder = async (orderId: string) => {
     })
 
     if (!order) {
-      console.error('Order not found:', orderId)
+      
       throw new Error(ERROR_MESSAGES.ORDER.NOT_FOUND)
     }
 
-    console.log('Booking found:', {
-      id: order.id,
-      totalCost: order.totalCost,
-      leadEmail: order.lead?.email,
-    })
+    
 
     const existingPayment = await prisma.orderPayment.findUnique({
       where: { orderId: order.id },
@@ -168,11 +157,7 @@ export const getPaymentLinkForOrder = async (orderId: string) => {
 
     return { payment, paymentLink: createdPaymentLink }
   } catch (error) {
-    console.error('Error in getPaymentLinkForOrder:', {
-      orderId,
-      error: error instanceof Error ? error.message : error,
-      stack: error instanceof Error ? error.stack : undefined,
-    })
+    
     throw error
   }
 }
@@ -198,10 +183,7 @@ const createPaymentLink = async ({
     // Check payment service configuration
     const configCheck = checkPaymentServiceConfig()
     if (!configCheck.isValid) {
-      console.error('Payment service configuration is invalid:', {
-        missing: configCheck.missing,
-        config: configCheck.config,
-      })
+      
       throw new Error(
         `Payment service configuration error: Missing ${configCheck.missing.join(', ')}`
       )
@@ -240,19 +222,10 @@ const createPaymentLink = async ({
 
     return paymentLink
   } catch (error) {
-    console.error('Error creating payment link:', {
-      error: error instanceof Error ? error.message : error,
-      stack: error instanceof Error ? error.stack : undefined,
-      bookingId: id,
-      leadEmail: lead.email,
-    })
+    
 
     if (error instanceof ApiError) {
-      console.error('API Error details:', {
-        statusCode: error.statusCode,
-        code: error.code,
-        message: error.message,
-      })
+      
       throw new Error(`Failed to create payment link: ${error.message}`)
     }
     throw new Error('Failed to create payment link')

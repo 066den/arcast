@@ -78,7 +78,7 @@ export default function VideoUpload({
         setIsUploaded(true)
       }, 500)
     } catch (error) {
-      console.error('Error uploading video:', error)
+      
 
       // Provide more specific error messages based on the error type
       let errorMessage = 'Failed to upload video'

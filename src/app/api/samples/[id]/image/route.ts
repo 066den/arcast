@@ -64,7 +64,7 @@ export async function POST(
       sample: updatedSample,
     })
   } catch (error) {
-    console.error('Error uploading sample image:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -119,7 +119,7 @@ export async function DELETE(
       sample: updatedSample,
     })
   } catch (error) {
-    console.error('Error removing sample image:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

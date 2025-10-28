@@ -35,7 +35,7 @@ export default function EditArticlePage({ params }: EditArticlePageProps) {
         const data = await response.json()
         if (!cancelled) setArticle(data)
       } catch (error) {
-        console.error('Error fetching article:', error)
+        
         toast.error('Error loading article')
         router.push('/admin/blog')
       } finally {

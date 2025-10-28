@@ -29,7 +29,7 @@ export async function GET() {
 
     return NextResponse.json(packages)
   } catch (error) {
-    console.error('Error fetching packages:', error)
+    
     return NextResponse.json(
       { error: 'Failed to fetch packages' },
       { status: 500 }
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(newPackage, { status: 201 })
   } catch (error) {
-    console.error('Error creating package:', error)
+    
     return NextResponse.json(
       { error: 'Failed to create package' },
       { status: 500 }

@@ -81,7 +81,7 @@ const ArticlesTable = ({ initialData }: ArticlesTableProps) => {
       setData(prev => prev.filter(item => item.id !== deleteDialog.article!.id))
       toast.success('Article deleted successfully')
     } catch (error) {
-      console.error('Delete error:', error)
+      
       toast.error('Error deleting article')
     } finally {
       setIsDeleting(false)

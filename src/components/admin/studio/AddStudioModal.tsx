@@ -58,7 +58,7 @@ const AddStudioModal = ({ isOpen, onClose }: AddStudioModalProps) => {
       reset()
       toast.success('Studio added successfully')
     } catch (error) {
-      console.error(error)
+      
       toast.error(ERROR_MESSAGES.STUDIO.FAILED_TO_CREATE_STUDIO)
     }
   })

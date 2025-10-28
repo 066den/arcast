@@ -20,7 +20,7 @@ export async function fetchCaseStudies() {
 
     return caseStudies
   } catch (error) {
-    console.error('Error fetching case studies:', error)
+    
     return []
   }
 }

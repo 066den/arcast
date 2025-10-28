@@ -70,7 +70,7 @@ export default function SampleCreateForm({
       toast.success('Sample created successfully')
       router.push('/admin/samples')
     } catch (error) {
-      console.error('Error creating sample:', error)
+      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {

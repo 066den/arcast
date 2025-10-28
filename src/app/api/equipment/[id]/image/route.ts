@@ -95,7 +95,7 @@ export async function POST(
       equipment: updatedEquipment,
     })
   } catch (error) {
-    console.error('Error updating equipment image:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -152,7 +152,7 @@ export async function DELETE(
       equipment: updatedEquipment,
     })
   } catch (error) {
-    console.error('Error removing equipment image:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

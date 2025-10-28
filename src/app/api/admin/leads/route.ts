@@ -78,7 +78,7 @@ export async function GET() {
 
     return NextResponse.json({ leads: serializedLeads })
   } catch (error) {
-    console.error('Error fetching leads:', error)
+    
     return NextResponse.json(
       { error: 'Failed to fetch leads' },
       { status: 500 }

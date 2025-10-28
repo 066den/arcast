@@ -32,7 +32,7 @@ export async function GET(
 
     return NextResponse.json(booking)
   } catch (error) {
-    console.error('Error fetching booking:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -84,7 +84,7 @@ export async function PUT(
 
     return NextResponse.json(booking)
   } catch (error) {
-    console.error('Error updating booking:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

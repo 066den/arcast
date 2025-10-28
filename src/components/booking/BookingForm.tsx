@@ -181,7 +181,7 @@ const BookingForm = ({
     } catch (error) {
       if (error instanceof ApiError) {
         setSubmitError(error.message)
-        console.error('Error submitting booking:', error)
+        
       } else {
         setSubmitError(ERROR_MESSAGES.BOOKING.FAILED)
       }
@@ -224,7 +224,7 @@ const BookingForm = ({
           setAvailableTimes([])
         }
       } catch (error) {
-        console.error('Error fetching times:', error)
+        
         if (error instanceof ApiError) {
           toast.error(error.message)
         } else {

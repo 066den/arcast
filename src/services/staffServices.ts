@@ -9,7 +9,7 @@ export async function fetchStaff() {
     })
     return staff
   } catch (error) {
-    console.error('Error fetching staff:', error)
+    
     return []
   }
 }

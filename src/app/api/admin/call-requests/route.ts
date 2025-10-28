@@ -17,7 +17,7 @@ export async function GET() {
 
     return NextResponse.json({ callRequests })
   } catch (error) {
-    console.error('Error fetching call requests:', error)
+    
     return NextResponse.json(
       { error: 'Failed to fetch call requests' },
       { status: 500 }

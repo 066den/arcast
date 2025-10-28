@@ -23,11 +23,11 @@ export async function OPTIONS() {
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('Starting presigned POST video upload process...')
+    
 
     const session = await auth()
     if (!session?.user) {
-      console.log('Unauthorized access attempt')
+      
       const response = NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -36,14 +36,14 @@ export async function POST(request: NextRequest) {
       return response
     }
 
-    console.log('User authenticated:', session.user.email)
+    
 
     const formData = await request.formData()
     const file = formData.get('videoFile') as File
     const folder = formData.get('folder') as string
 
     if (!file) {
-      console.log('No video file provided in request')
+      
       const response = NextResponse.json(
         { error: 'No video file provided' },
         { status: 400 }
@@ -52,15 +52,11 @@ export async function POST(request: NextRequest) {
       return response
     }
 
-    console.log('File received:', {
-      name: file.name,
-      size: file.size,
-      type: file.type,
-    })
+    
 
     const validation = validateVideoFile(file)
     if (validation) {
-      console.log('File validation failed:', validation)
+      
       const response = NextResponse.json({ error: validation }, { status: 400 })
       response.headers.set('Access-Control-Allow-Origin', '*')
       return response
@@ -69,7 +65,7 @@ export async function POST(request: NextRequest) {
     const fileExtension = file.name.split('.').pop()
     const fileName = `${uuidv4()}.${fileExtension}`
 
-    console.log('Generating presigned POST for:', fileName)
+    
 
     // Ленивый импорт S3-хелпера, чтобы исключить выполнение кода при анализе сборки
     const { generatePresignedPost } = await import('@/lib/s3')
@@ -82,7 +78,7 @@ export async function POST(request: NextRequest) {
       maxFileSize: 1024 * 1024 * 1024, // 1GB for large videos
     })
 
-    console.log('Presigned POST generated successfully')
+    
 
     const response = NextResponse.json({
       success: true,
@@ -112,15 +108,11 @@ export async function POST(request: NextRequest) {
 
     return response
   } catch (error) {
-    console.error('Error generating presigned POST for video:', error)
+    
 
     // More detailed error logging
     if (error instanceof Error) {
-      console.error('Error details:', {
-        message: error.message,
-        stack: error.stack,
-        name: error.name,
-      })
+      
     }
 
     const response = NextResponse.json(

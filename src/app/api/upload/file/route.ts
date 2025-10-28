@@ -47,7 +47,7 @@ export async function POST(req: Request) {
       size: file.size,
     })
   } catch (error) {
-    console.error('Error uploading file:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

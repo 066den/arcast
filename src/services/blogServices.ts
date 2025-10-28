@@ -9,7 +9,7 @@ export const getArticles = async () => {
     const articles = await prisma.blogRecord.findMany()
     return articles
   } catch (error) {
-    console.error('Error fetching articles:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch articles: ${error.message}`)
     }
@@ -25,7 +25,7 @@ export const getArticleById = async (id: string) => {
     const article = await prisma.blogRecord.findUnique({ where: { id } })
     return article
   } catch (error) {
-    console.error('Error fetching article by id:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch article by id: ${error.message}`)
     }

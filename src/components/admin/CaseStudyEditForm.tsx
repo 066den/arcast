@@ -184,7 +184,7 @@ export default function CaseStudyEditForm({
 
       toast.success('Image uploaded successfully')
     } catch (error) {
-      console.error('Error uploading image:', error)
+      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -207,7 +207,7 @@ export default function CaseStudyEditForm({
 
       toast.success('Image removed successfully')
     } catch (error) {
-      console.error('Error removing image:', error)
+      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -234,7 +234,7 @@ export default function CaseStudyEditForm({
       toast.success('Case study updated successfully')
       router.push('/admin/case-studies')
     } catch (error) {
-      console.error('Error updating case study:', error)
+      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {

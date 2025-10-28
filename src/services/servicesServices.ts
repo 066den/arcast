@@ -19,7 +19,7 @@ export const getServiceTypesForAdmin = async () => {
 
     return serviceTypes
   } catch (error) {
-    console.error('Error fetching service types for admin:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch service types: ${error.message}`)
     }
@@ -52,7 +52,7 @@ export const getServices = async () => {
 
     return processedServices
   } catch (error) {
-    console.error('Error fetching services:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch services: ${error.message}`)
     }
@@ -88,7 +88,7 @@ export const getServicesByType = async (slug: string) => {
 
     return processedServices
   } catch (error) {
-    console.error('Error fetching services by type:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch services by type: ${error.message}`)
     }
@@ -136,7 +136,7 @@ export const getServiceTypes = async () => {
 
     return processedServiceTypes
   } catch (error) {
-    console.error('Error fetching services types:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch services types: ${error.message}`)
     }
@@ -196,7 +196,7 @@ export const getPackages = async (): Promise<PackageWithServices[]> => {
 
     return processedPackages
   } catch (error) {
-    console.error('Error fetching packages:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch packages: ${error.message}`)
     }
@@ -220,7 +220,7 @@ export const getAdditionalServices = async () => {
       price: service.price ? Number(service.price) : 0,
     }))
   } catch (error) {
-    console.error('Error fetching additional services:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch additional services: ${error.message}`)
     }

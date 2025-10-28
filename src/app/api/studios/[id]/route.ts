@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { generateSimpleTimeSlots } from '../../../../utils/time'
+import { generateAvailableTimeSlots } from '../../../../utils/time'
 import { Studio, TimeSlotList } from '../../../../types'
 import { BOOKING_STATUS, ERROR_MESSAGES, HTTP_STATUS } from '@/lib/constants'
 import { validateStudio } from '@/lib/schemas'
@@ -52,11 +52,9 @@ export async function GET(
       )
     }
 
-    console.log('Fetching studio:', { id, date, view, duration })
     const studio = await getStudioWithBookings(id, targetDate, view)
 
     if (!studio) {
-      console.error('Studio not found:', id)
       return NextResponse.json(
         { error: ERROR_MESSAGES.STUDIO.NOT_FOUND },
         { status: HTTP_STATUS.NOT_FOUND }
@@ -111,11 +109,6 @@ export async function GET(
       { status: HTTP_STATUS.BAD_REQUEST }
     )
   } catch (error) {
-    console.error('Error fetching studio availability:', error)
-    console.error('Error details:', {
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    })
     return NextResponse.json(
       {
         error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
@@ -153,9 +146,7 @@ export async function DELETE(
     if (existingStudio.imageUrl) {
       try {
         await deleteUploadedFile(existingStudio.imageUrl)
-      } catch (error) {
-        console.error('Error deleting studio image:', error)
-      }
+      } catch (error) {}
     }
 
     // Delete gallery images
@@ -163,9 +154,7 @@ export async function DELETE(
       for (const imageUrl of existingStudio.gallery) {
         try {
           await deleteUploadedFile(imageUrl)
-        } catch (error) {
-          console.error('Error deleting gallery image:', error)
-        }
+        } catch (error) {}
       }
     }
 
@@ -176,7 +165,6 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Studio deleted successfully' })
   } catch (error) {
-    console.error('Error deleting studio:', error)
     return NextResponse.json(
       { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
       { status: 500 }
@@ -237,7 +225,6 @@ export async function PATCH(
 
     return NextResponse.json(updatedStudio)
   } catch (error) {
-    console.error('Error updating studio:', error)
     return NextResponse.json(
       { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
       { status: 500 }
@@ -355,7 +342,7 @@ const generateDayAvailability = async (
     : []
 
   // Generate time slots using simple function
-  const timeSlots = generateSimpleTimeSlots(
+  const timeSlots = generateAvailableTimeSlots(
     studio.openingTime,
     studio.closingTime,
     dayBookings,
@@ -438,7 +425,7 @@ const generateMonthAvailability = async (
       : []
 
     // Generate time slots using simple function
-    const timeSlots = generateSimpleTimeSlots(
+    const timeSlots = generateAvailableTimeSlots(
       studio.openingTime,
       studio.closingTime,
       dayBookings,

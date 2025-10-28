@@ -9,7 +9,7 @@ export async function fetchEquipment() {
     })
     return equipment
   } catch (error) {
-    console.error('Error fetching equipment:', error)
+    
     return []
   }
 }

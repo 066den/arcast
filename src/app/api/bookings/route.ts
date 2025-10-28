@@ -40,7 +40,7 @@ export async function GET() {
     })
     return NextResponse.json({ success: true, data: bookings })
   } catch (error) {
-    console.error('Error fetching bookings:', error)
+    
     return NextResponse.json(
       { success: false, error: ERROR_MESSAGES.BOOKING.FAILED },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
@@ -104,10 +104,14 @@ export async function POST(req: Request) {
       )
     }
 
+    // Calculate start and end time
+    const startTime = new Date(selectedTime)
+    const endTime = new Date(startTime.getTime() + duration * 60 * 60 * 1000)
+
     if (
       !isSlotWithinWorkingHours(
-        selectedTime,
-        duration,
+        startTime.toISOString(),
+        endTime.toISOString(),
         studio.openingTime,
         studio.closingTime
       )
@@ -429,24 +433,20 @@ export async function POST(req: Request) {
         await createNotionLeadEntry(result.lead)
       }
     } catch (notionError) {
-      console.error('Failed to create Notion entry:', notionError)
+      
     }
 
     try {
-      console.log('Creating payment link for booking:', result.id)
+      
       const paymentLink = await getPaymentLinkForBooking(result.id)
       if (paymentLink && paymentLink.paymentLink) {
         response.paymentUrl = `${paymentLink.paymentLink.payment_url}?embedded=true&parent_origin=${process.env.NEXT_PUBLIC_APP_URL}&enable_postmessage=true`
-        console.log('Payment URL created successfully:', response.paymentUrl)
+        
       } else {
-        console.warn('Payment link creation returned null or undefined')
+        
       }
     } catch (error) {
-      console.error('Failed to create payment link:', {
-        bookingId: result.id,
-        error: error instanceof Error ? error.message : error,
-        stack: error instanceof Error ? error.stack : undefined,
-      })
+      
 
       return NextResponse.json(
         { success: false, error: ERROR_MESSAGES.PAYMENT.FAILED },
@@ -456,7 +456,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(response)
   } catch (error) {
-    console.error('Error creating booking:', error)
+    
     return NextResponse.json(
       { success: false, error: ERROR_MESSAGES.BOOKING.FAILED },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }

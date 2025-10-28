@@ -108,7 +108,7 @@ export default function ServicesTable({ initialData }: ServicesTableProps) {
       setShowForm(false)
       setEditingService(undefined)
     } catch (error) {
-      console.error('Save error:', error)
+      
       toast.error('Error saving service')
     } finally {
       setIsLoading(false)
@@ -145,7 +145,7 @@ export default function ServicesTable({ initialData }: ServicesTableProps) {
       )
       toast.success('Service deleted')
     } catch (error) {
-      console.error('Delete error:', error)
+      
       toast.error('Error deleting service')
     } finally {
       setIsDeleting(false)

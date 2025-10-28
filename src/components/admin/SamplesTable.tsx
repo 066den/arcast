@@ -84,7 +84,7 @@ const SamplesTable = ({ initialData }: SamplesTableProps) => {
       )
       toast.success('Sample deleted successfully')
     } catch (error) {
-      console.error('Delete error:', error)
+      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {

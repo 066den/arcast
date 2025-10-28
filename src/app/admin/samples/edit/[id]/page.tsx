@@ -16,7 +16,7 @@ async function fetchSample(id: string) {
 
     return sample
   } catch (error) {
-    console.error('Error fetching sample:', error)
+    
     return null
   }
 }

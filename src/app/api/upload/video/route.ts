@@ -23,12 +23,10 @@ export async function OPTIONS() {
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('Starting video upload process...')
     const startTime = Date.now()
 
     const session = await auth()
     if (!session?.user) {
-      console.log('Unauthorized access attempt')
       const response = NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -65,7 +63,6 @@ export async function POST(request: NextRequest) {
 
     // Direct upload to S3
     const uploadStartTime = Date.now()
-    console.log('📤 Uploading video to S3:', fileName)
 
     const result = await s3.uploadToS3(file, fileName, {
       folder: folder || 'samples',
@@ -79,10 +76,6 @@ export async function POST(request: NextRequest) {
 
     const uploadEndTime = Date.now()
     const uploadDuration = (uploadEndTime - uploadStartTime) / 1000
-    console.log(
-      `✅ Upload successful in ${uploadDuration.toFixed(2)}s:`,
-      result.url
-    )
 
     const response = NextResponse.json({
       success: true,
@@ -105,16 +98,7 @@ export async function POST(request: NextRequest) {
 
     return response
   } catch (error) {
-    console.error('Error uploading video:', error)
-
     // More detailed error logging
-    if (error instanceof Error) {
-      console.error('Error details:', {
-        message: error.message,
-        stack: error.stack,
-        name: error.name,
-      })
-    }
 
     const response = NextResponse.json(
       {

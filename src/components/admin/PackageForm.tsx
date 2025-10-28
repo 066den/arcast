@@ -111,7 +111,7 @@ const PackageForm = ({
         setServices(data)
       }
     } catch (error) {
-      console.error('Error fetching services:', error)
+      
       toast.error('Error loading services')
     }
   }

@@ -22,7 +22,7 @@ export async function fetchBookings() {
     })
     return bookings
   } catch (error) {
-    console.error('Error fetching bookings:', error)
+    
     return []
   }
 }

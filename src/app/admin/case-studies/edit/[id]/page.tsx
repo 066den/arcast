@@ -22,7 +22,7 @@ async function fetchCaseStudy(id: string) {
 
     return caseStudy
   } catch (error) {
-    console.error('Error fetching case study:', error)
+    
     return null
   }
 }
@@ -64,7 +64,7 @@ async function fetchRelatedData() {
 
     return { clients, staff, equipment }
   } catch (error) {
-    console.error('Error fetching related data:', error)
+    
     return { clients: [], staff: [], equipment: [] }
   }
 }

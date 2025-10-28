@@ -12,7 +12,7 @@ export async function fetchSamples() {
     })
     return samples
   } catch (error) {
-    console.error('Error fetching samples:', error)
+    
     return []
   }
 }

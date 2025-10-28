@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     const validatedData = validateOrder(body)
 
     if (!validatedData.success) {
-      console.error('Validation error:', validatedData.error)
+      
       return NextResponse.json(
         {
           error: ERROR_MESSAGES.INVALID_REQUEST,
@@ -178,7 +178,7 @@ export async function POST(req: Request) {
         await createNotionLeadEntry(result.lead)
       }
     } catch (notionError) {
-      console.error('Failed to create Notion entry:', notionError)
+      
       // Don't fail the entire request if Notion fails
     }
 
@@ -202,14 +202,10 @@ export async function POST(req: Request) {
       if (paymentLink && paymentLink.paymentLink) {
         response.paymentUrl = `${paymentLink.paymentLink.payment_url}?embedded=true&parent_origin=${process.env.NEXT_PUBLIC_APP_URL}&enable_postmessage=true`
       } else {
-        console.warn('Payment link creation returned null or undefined')
+        
       }
     } catch (error) {
-      console.error('Failed to create payment link:', {
-        orderId: result.id,
-        error: error instanceof Error ? error.message : error,
-        stack: error instanceof Error ? error.stack : undefined,
-      })
+      
 
       return NextResponse.json(
         { success: false, error: ERROR_MESSAGES.PAYMENT.FAILED },
@@ -219,7 +215,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(response)
   } catch (error) {
-    console.error('Error creating order:', error)
+    
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -308,7 +304,7 @@ export async function GET(req: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Error fetching orders:', error)
+    
     return NextResponse.json(
       { success: false, error: 'Failed to fetch orders' },
       { status: 500 }

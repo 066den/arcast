@@ -14,7 +14,7 @@ export async function GET() {
       },
     })
   } catch (error) {
-    console.error('Error checking payment service health:', error)
+    
     return NextResponse.json(
       {
         success: false,

@@ -11,7 +11,6 @@ export async function GET() {
     const studiosWithAvailability = await getStudios()
     return NextResponse.json(studiosWithAvailability)
   } catch (error) {
-    console.error('Error fetching studios:', error)
     return NextResponse.json(
       { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
       { status: 500 }
@@ -91,11 +90,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json(newStudio)
   } catch (error) {
-    console.error('Error creating studio:', error)
-    console.error('Error details:', {
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    })
     return NextResponse.json(
       {
         error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,

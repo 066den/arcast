@@ -9,17 +9,13 @@ import {
   TableHeader,
   TableRow,
 } from '../ui/table'
-import { Badge } from '../ui/badge'
 import { Checkbox } from '../ui/checkbox'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
-import { Calendar, Filter, Percent, Plus, Search } from 'lucide-react'
+import { Percent, Plus, Search, Pencil } from 'lucide-react'
 import { toast } from 'sonner'
-import {
-  createDiscountCode,
-  deleteDiscountCode,
-  updateDiscountCode,
-} from '@/lib/api'
+import { updateDiscountCode, getDiscountCodes } from '@/lib/api'
+import AddDiscountCodeModal from './discount/AddDiscountCodeModal'
 
 type Code = {
   id: string
@@ -34,6 +30,8 @@ type Code = {
   usedCount?: number
   firstTimeOnly?: boolean
   minOrderAmount?: number | null
+  applicableContentTypes?: string[]
+  createdAt?: string | Date
 }
 
 export default function DiscountCodesTable({
@@ -44,6 +42,8 @@ export default function DiscountCodesTable({
   const [codes, setCodes] = useState(initialData)
   const [search, setSearch] = useState('')
   const [isPending, startTransition] = useTransition()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingCode, setEditingCode] = useState<Code | null>(null)
 
   const filtered = useMemo(
     () =>
@@ -63,6 +63,25 @@ export default function DiscountCodesTable({
     } catch {
       toast.error('Failed to update discount code')
     }
+  }
+
+  const handleRefresh = async () => {
+    try {
+      const updatedCodes = await getDiscountCodes()
+      setCodes(updatedCodes as Code[])
+    } catch {
+      toast.error('Failed to refresh codes')
+    }
+  }
+
+  const handleEditClick = (code: Code) => {
+    setEditingCode(code)
+    setIsModalOpen(true)
+  }
+
+  const handleModalClose = () => {
+    setIsModalOpen(false)
+    setEditingCode(null)
   }
 
   const formatDate = (d: string | Date) =>
@@ -87,13 +106,18 @@ export default function DiscountCodesTable({
         <Button
           size="sm"
           className="gap-2"
-          onClick={() =>
-            toast.message('Use API createDiscountCode to add new code')
-          }
+          onClick={() => setIsModalOpen(true)}
         >
           <Plus className="h-4 w-4" /> New Code
         </Button>
       </div>
+
+      <AddDiscountCodeModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onSuccess={handleRefresh}
+        editingCode={editingCode}
+      />
 
       <div className="overflow-hidden rounded-md border">
         <Table>
@@ -104,6 +128,9 @@ export default function DiscountCodesTable({
               <TableHead>Active</TableHead>
               <TableHead>Period</TableHead>
               <TableHead>Usage</TableHead>
+              <TableHead>Restrictions</TableHead>
+              <TableHead>Created</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -140,6 +167,43 @@ export default function DiscountCodesTable({
                     {c.usedCount ?? 0}
                     {c.usageLimit ? ` / ${c.usageLimit}` : ''}
                   </div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-sm space-y-1">
+                    {c.firstTimeOnly && (
+                      <div className="text-blue-600">First-time only</div>
+                    )}
+                    {c.minOrderAmount && (
+                      <div className="text-orange-600">
+                        Min: {c.minOrderAmount} {c.currency}
+                      </div>
+                    )}
+                    {c.applicableContentTypes &&
+                      c.applicableContentTypes.length > 0 && (
+                        <div className="text-purple-600">
+                          {c.applicableContentTypes.join(', ')}
+                        </div>
+                      )}
+                    {!c.firstTimeOnly &&
+                      !c.minOrderAmount &&
+                      !c.applicableContentTypes && (
+                        <div className="text-muted-foreground">None</div>
+                      )}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-sm text-muted-foreground">
+                    {formatDate(c.createdAt || c.startDate)}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => handleEditClick(c)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}

@@ -90,7 +90,7 @@ export async function POST(
       staff: updatedStaff,
     })
   } catch (error) {
-    console.error('Error updating staff image:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -144,7 +144,7 @@ export async function DELETE(
       staff: updatedStaff,
     })
   } catch (error) {
-    console.error('Error removing staff image:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

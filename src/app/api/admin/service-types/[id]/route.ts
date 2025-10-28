@@ -31,7 +31,7 @@ export async function GET(_req: Request, context: RouteContext) {
 
     return NextResponse.json(serviceType)
   } catch (error) {
-    console.error('Error fetching service type:', error)
+    
     return NextResponse.json(
       { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
       { status: 500 }
@@ -77,7 +77,7 @@ export async function PUT(req: Request, context: RouteContext) {
 
     return NextResponse.json(serviceType)
   } catch (error) {
-    console.error('Error updating service type:', error)
+    
     return NextResponse.json(
       { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
       { status: 500 }
@@ -124,7 +124,7 @@ export async function DELETE(_req: Request, context: RouteContext) {
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error deleting service type:', error)
+    
     return NextResponse.json(
       { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
       { status: 500 }

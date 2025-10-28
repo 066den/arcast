@@ -24,7 +24,7 @@ export async function fetchServices() {
       price: Number(service.price),
     }))
   } catch (error) {
-    console.error('Error fetching services:', error)
+    
     return []
   }
 }

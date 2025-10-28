@@ -26,7 +26,7 @@ export async function GET(
       { status: 404 }
     )
   } catch (error) {
-    console.error('Failed to create payment link:', error)
+    
 
     let statusCode = 500
     let errorMessage = 'Failed to create payment link'

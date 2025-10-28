@@ -73,7 +73,7 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
       })
       toast.success('Booking status updated successfully')
     } catch (error) {
-      console.error('Error updating booking status:', error)
+      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {

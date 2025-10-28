@@ -164,6 +164,37 @@ export const blogRecordSchema = z.object({
   mainText: z.string().min(1, { message: 'Main text is required' }),
 })
 
+export const discountCodeSchema = z.object({
+  code: z
+    .string()
+    .min(1, { message: 'Code is required' })
+    .max(50, { message: 'Code must be less than 50 characters' })
+    .regex(/^[A-Z0-9_-]+$/, {
+      message:
+        'Code must contain only uppercase letters, numbers, underscores, and hyphens',
+    }),
+  type: z.enum(['PERCENTAGE', 'FIXED_AMOUNT'], {
+    message: 'Type is required',
+  }),
+  value: z.coerce.number().positive({ message: 'Value must be positive' }),
+  currency: z.string().default('AED'),
+  isActive: z.boolean().default(true),
+  startDate: z.string().min(1, { message: 'Start date is required' }),
+  endDate: z.string().min(1, { message: 'End date is required' }),
+  usageLimit: z.coerce
+    .number()
+    .positive({ message: 'Usage limit must be positive' })
+    .nullable()
+    .optional(),
+  firstTimeOnly: z.boolean().default(false),
+  minOrderAmount: z.coerce
+    .number()
+    .positive({ message: 'Minimum order amount must be positive' })
+    .nullable()
+    .optional(),
+  applicableContentTypes: z.array(z.string()).default([]),
+})
+
 export const studioImageUploadSchema = z.object({
   studioId: z.string().min(1, { message: 'Studio ID is required' }),
   imageUrl: z.url({ message: 'Invalid image URL' }),
@@ -197,6 +228,10 @@ export const validateBlogRecord = (data: unknown) => {
   return blogRecordSchema.safeParse(data)
 }
 
+export const validateDiscountCode = (data: unknown) => {
+  return discountCodeSchema.safeParse(data)
+}
+
 export type LeadSchema = z.infer<typeof bookingLeadSchema>
 export type StudioSchema = z.infer<typeof studioSchema>
 export type StudioFormSchema = z.infer<typeof studioFormSchema>
@@ -205,3 +240,4 @@ export type ContactFormSchema = z.infer<typeof contactFormSchema>
 export type CallRequestFormSchema = z.infer<typeof callRequestFormSchema>
 export type BlogRecordSchema = z.infer<typeof blogRecordSchema>
 export type OrderSchema = z.infer<typeof orderSchema>
+export type DiscountCodeSchema = z.infer<typeof discountCodeSchema>

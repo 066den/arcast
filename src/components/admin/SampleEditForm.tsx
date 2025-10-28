@@ -85,7 +85,7 @@ export default function SampleEditForm({
       }
       toast.success('Image uploaded successfully')
     } catch (error) {
-      console.error('Error uploading image:', error)
+      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -102,7 +102,7 @@ export default function SampleEditForm({
       await deleteSampleImage(sample.id)
       toast.success('Image removed successfully')
     } catch (error) {
-      console.error('Error removing image:', error)
+      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -130,7 +130,7 @@ export default function SampleEditForm({
       toast.success('Sample updated successfully')
       router.push('/admin/samples')
     } catch (error) {
-      console.error('Error updating sample:', error)
+      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {

@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     )
   } catch (error) {
-    console.error('Change password error:', error)
+    
     return NextResponse.json(
       { error: 'An error occurred while changing password' },
       { status: 500 }

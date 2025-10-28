@@ -52,7 +52,7 @@ const CreateArticleForm = () => {
       toast.success('Article created successfully')
       //router.push(ROUTES.ADMIN + ROUTES.BLOG)
     } catch (error) {
-      console.error('Error creating article:', error)
+      
     }
   })
 

@@ -79,7 +79,7 @@ export default function CaseStudiesTable({
       setCaseStudies(prev => prev.filter(cs => cs.id !== id))
       toast.success('Case study deleted successfully')
     } catch (error) {
-      console.error('Error deleting case study:', error)
+      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -108,7 +108,7 @@ export default function CaseStudiesTable({
       )
       toast.success('Image removed successfully')
     } catch (error) {
-      console.error('Error removing image:', error)
+      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -135,7 +135,7 @@ export default function CaseStudiesTable({
         `Case study ${!currentStatus ? 'activated' : 'deactivated'} successfully`
       )
     } catch (error) {
-      console.error('Error updating case study:', error)
+      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {

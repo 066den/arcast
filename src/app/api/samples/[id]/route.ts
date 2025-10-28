@@ -30,7 +30,7 @@ export async function GET(
 
     return NextResponse.json(normalizedSample)
   } catch (error) {
-    console.error('Error fetching sample:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -82,7 +82,7 @@ export async function PUT(
         try {
           thumbUrl = await getUploadedFile(thumbnailFile, 'samples')
         } catch (error) {
-          console.error('Error uploading thumbnail:', error)
+          
           return NextResponse.json(
             { error: 'Failed to upload thumbnail' },
             { status: 400 }
@@ -137,7 +137,7 @@ export async function PUT(
 
     return NextResponse.json(normalizedSample)
   } catch (error) {
-    console.error('Error updating sample:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -162,7 +162,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error deleting sample:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -44,7 +44,7 @@ export async function GET() {
       packages: transformedPackages,
     })
   } catch (error) {
-    console.error('Error fetching packages:', error)
+    
 
     // If it's a database connection error, return a more specific message
     if (error instanceof Error && error.message.includes('connect')) {
@@ -89,7 +89,7 @@ export async function POST(req: Request) {
       package: newPackage,
     })
   } catch (error) {
-    console.error('Error creating package:', error)
+    
     return NextResponse.json(
       { success: false, error: 'Failed to create package' },
       { status: 500 }

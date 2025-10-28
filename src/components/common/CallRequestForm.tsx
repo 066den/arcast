@@ -81,7 +81,7 @@ const CallRequestForm = ({ isOpen, onClose }: CallRequestFormProps) => {
       setSelectedDate(undefined)
       setSelectedTime('')
     } catch (error) {
-      console.error('Error submitting call request:', error)
+      
       if (error instanceof Error) {
         toast.error(error.message)
       } else {

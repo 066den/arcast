@@ -32,7 +32,7 @@ export async function GET(
 
     return NextResponse.json(caseStudy)
   } catch (error) {
-    console.error('Error fetching case study:', error)
+    
     return NextResponse.json(
       { error: 'Failed to fetch case study' },
       { status: 500 }
@@ -144,7 +144,7 @@ export async function PATCH(
 
     return NextResponse.json(updatedCaseStudy)
   } catch (error) {
-    console.error('Error updating case study:', error)
+    
     return NextResponse.json(
       { error: 'Failed to update case study' },
       { status: 500 }
@@ -179,7 +179,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Case study deleted successfully' })
   } catch (error) {
-    console.error('Error deleting case study:', error)
+    
     return NextResponse.json(
       { error: 'Failed to delete case study' },
       { status: 500 }

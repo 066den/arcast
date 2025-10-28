@@ -89,7 +89,7 @@ export default function PackagesTable({ initialData }: PackagesTableProps) {
         setPackages(serializedPackages)
       }
     } catch (error) {
-      console.error('Error refreshing packages:', error)
+      
     }
   }
 
@@ -164,7 +164,7 @@ export default function PackagesTable({ initialData }: PackagesTableProps) {
       // Refresh to get updated list with services
       await refreshPackages()
     } catch (error) {
-      console.error('Save error:', error)
+      
       toast.error('Error saving package')
     } finally {
       setIsLoading(false)
@@ -203,7 +203,7 @@ export default function PackagesTable({ initialData }: PackagesTableProps) {
       // Refresh to get updated list
       await refreshPackages()
     } catch (error) {
-      console.error('Delete error:', error)
+      
       toast.error('Error deleting package')
     } finally {
       setIsDeleting(false)

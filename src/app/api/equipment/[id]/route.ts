@@ -30,7 +30,6 @@ export async function GET(
 
     return NextResponse.json(equipment)
   } catch (error) {
-    console.error('Error fetching equipment:', error)
     return NextResponse.json(
       { error: 'Failed to fetch equipment' },
       { status: 500 }
@@ -62,13 +61,6 @@ export async function PUT(
         ? descriptionRaw.trim()
         : null
 
-    console.log('Update data:', {
-      id,
-      name,
-      description,
-      hasImageFile: !!imageFile,
-    })
-
     if (!name) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 })
     }
@@ -98,20 +90,12 @@ export async function PUT(
       if (existingEquipment.imageUrl) {
         try {
           await deleteUploadedFile(existingEquipment.imageUrl)
-        } catch (error) {
-          console.error('Error deleting old image:', error)
-        }
+        } catch (error) {}
       }
 
       // Upload new image to local storage (consistent with POST)
       imageUrl = await getUploadedFile(imageFile, 'equipment')
     }
-
-    console.log('Updating equipment with data:', {
-      name,
-      description,
-      imageUrl,
-    })
 
     const equipment = await prisma.equipment.update({
       where: {
@@ -126,11 +110,6 @@ export async function PUT(
 
     return NextResponse.json(equipment)
   } catch (error) {
-    console.error('Error updating equipment:', error)
-    console.error('Error details:', {
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    })
     return NextResponse.json(
       {
         error: 'Failed to update equipment',
@@ -161,7 +140,6 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Equipment deleted successfully' })
   } catch (error) {
-    console.error('Error deleting equipment:', error)
     return NextResponse.json(
       { error: 'Failed to delete equipment' },
       { status: 500 }

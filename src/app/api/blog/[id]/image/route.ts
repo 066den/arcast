@@ -72,7 +72,7 @@ export async function POST(
       article: updatedArticle,
     })
   } catch (error) {
-    console.error('Error updating article image:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

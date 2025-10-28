@@ -55,7 +55,7 @@ export const getStudios = async () => {
 
     return studiosWithAvailability
   } catch (error) {
-    console.error('Error fetching studios:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch studios: ${error.message}`)
     }
@@ -75,7 +75,7 @@ export const getSamples = async () => {
     })
     return samples
   } catch (error) {
-    console.error('Error fetching samples:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch samples: ${error.message}`)
     }
@@ -91,7 +91,7 @@ export const getSamplesByServiceType = async (serviceTypeId: string) => {
     const samples = await prisma.sample.findMany({})
     return samples
   } catch (error) {
-    console.error('Error fetching samples by service type:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch samples: ${error.message}`)
     }
@@ -121,7 +121,7 @@ export const getCases = async () => {
     })
     return cases
   } catch (error) {
-    console.error('Error fetching cases:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch cases: ${error.message}`)
     }
@@ -149,7 +149,7 @@ export const getCaseById = async (id: string) => {
     })
     return caseStudy
   } catch (error) {
-    console.error('Error fetching case:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch case: ${error.message}`)
     }
@@ -165,7 +165,7 @@ export const getClients = async () => {
     const clients = await prisma.client.findMany()
     return clients
   } catch (error) {
-    console.error('Error fetching clients:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch clients: ${error.message}`)
     }
@@ -181,7 +181,7 @@ export const getStaff = async () => {
     const staff = await prisma.staff.findMany()
     return staff
   } catch (error) {
-    console.error('Error fetching staff:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch staff: ${error.message}`)
     }
@@ -197,7 +197,7 @@ export const getEquipment = async () => {
     const equipment = await prisma.equipment.findMany()
     return equipment
   } catch (error) {
-    console.error('Error fetching equipment:', error)
+    
     if (error instanceof Error) {
       throw new Error(`Failed to fetch equipment: ${error.message}`)
     }

@@ -58,9 +58,7 @@ function verifyWebhookSignature(
   signature: string | null
 ): boolean {
   if (!process.env.MAMO_WEBHOOK_SECRET) {
-    console.warn(
-      'MAMO_WEBHOOK_SECRET not configured, skipping signature verification'
-    )
+    
     return true
   }
 
@@ -87,23 +85,19 @@ export async function POST(req: NextRequest) {
 
     // Verify signature
     if (!verifyWebhookSignature(rawBody, signature)) {
-      console.error('Invalid webhook signature')
+      
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
 
     const payload: MamoWebhookPayload = JSON.parse(rawBody)
 
-    console.log('Received MamoPay webhook:', {
-      eventType: payload.event_type,
-      externalId: payload.data.external_id,
-      status: payload.data.status,
-    })
+    
 
     const { event_type, data } = payload
     const externalId = data.external_id
 
     if (!externalId) {
-      console.error('No external_id in webhook payload')
+      
       return NextResponse.json(
         { error: 'Missing external_id' },
         { status: 400 }
@@ -122,7 +116,7 @@ export async function POST(req: NextRequest) {
     })
 
     if (!booking && !order) {
-      console.error('Booking or Order not found:', externalId)
+      
       return NextResponse.json({ error: 'Resource not found' }, { status: 404 })
     }
 
@@ -166,7 +160,7 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        console.log('Payment succeeded:', externalId)
+        
         break
       }
 
@@ -203,7 +197,7 @@ export async function POST(req: NextRequest) {
           })
         }
 
-        console.log('Payment failed:', externalId)
+        
         break
       }
 
@@ -229,7 +223,7 @@ export async function POST(req: NextRequest) {
           })
         }
 
-        console.log('Payment authorized:', externalId)
+        
         break
       }
 
@@ -267,13 +261,13 @@ export async function POST(req: NextRequest) {
           })
         }
 
-        console.log('Payment refunded:', externalId)
+        
         break
       }
 
       case 'charge.refund_initiated': {
         // Refund initiated (pending)
-        console.log('Refund initiated:', externalId)
+        
         // Optionally update payment metadata to track refund status
         if (booking?.payment) {
           await prisma.payment.update({
@@ -293,14 +287,14 @@ export async function POST(req: NextRequest) {
 
       case 'charge.refund_failed': {
         // Refund failed
-        console.log('Refund failed:', externalId)
+        
         // Optionally notify admin or customer
         break
       }
 
       case 'subscription.succeeded': {
         // Subscription payment successful (if using subscriptions in future)
-        console.log('Subscription payment succeeded:', externalId)
+        
         break
       }
 
@@ -309,17 +303,17 @@ export async function POST(req: NextRequest) {
       case 'payout.processed':
       case 'payout.failed': {
         // Informational events - just log
-        console.log(`Event ${event_type}:`, externalId)
+        
         break
       }
 
       default:
-        console.warn('Unknown event type:', event_type)
+        
     }
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error processing webhook:', error)
+    
     return NextResponse.json(
       {
         error: 'Internal server error',

@@ -43,10 +43,10 @@ function FailedPageContent() {
           errorResponse?.error ||
           'Failed to create payment link'
         showError(`Payment Error: ${errorMessage}`)
-        console.error('Payment link error:', response)
+        
       }
     } catch (error) {
-      console.error('Payment link request failed:', error)
+      
 
       const errorMessage = handleApiError(error)
       showError(`Payment Error: ${errorMessage}`)

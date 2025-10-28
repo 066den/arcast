@@ -35,7 +35,7 @@ export async function POST(req: Request) {
       data: { firstName, lastName, email, message, phone },
     })
   } catch (error) {
-    console.error('Error creating contact:', error)
+    
     return NextResponse.json(
       { success: false, error: ERROR_MESSAGES.CONTACT.FAILED },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }

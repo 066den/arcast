@@ -36,7 +36,7 @@ export default function AdminLoginPage() {
       }
     } catch (error) {
       toast.error('An error occurred during login')
-      console.error('Login error:', error)
+      
     } finally {
       setIsLoading(false)
     }

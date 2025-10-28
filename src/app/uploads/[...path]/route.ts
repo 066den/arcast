@@ -48,7 +48,7 @@ export async function GET(
       },
     })
   } catch (error) {
-    console.error('Error serving upload file:', error)
+    
     return new NextResponse('Internal server error', { status: 500 })
   }
 }

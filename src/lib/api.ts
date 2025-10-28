@@ -340,8 +340,7 @@ export async function apiRequest<T>(
     // Check if response is HTML (error page) instead of JSON
     const contentType = response.headers.get('content-type')
     if (contentType && !contentType.includes('application/json')) {
-      const text = await response.text()
-      console.error('Received non-JSON response:', text.substring(0, 200))
+      await response.text()
       throw new ApiError(
         'Server returned HTML instead of JSON. This usually indicates a server error.',
         response.status,

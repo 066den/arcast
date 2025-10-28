@@ -199,7 +199,7 @@ export const uploadToS3 = async (
       bucket: bucketName,
     }
   } catch (error) {
-    console.error('Error uploading to S3:', error)
+    
     throw new Error('Failed to upload file to S3')
   }
 }
@@ -217,7 +217,7 @@ export const deleteFromS3 = async (fileKey: string): Promise<boolean> => {
     await s3Client.send(command)
     return true
   } catch (error) {
-    console.error('Error deleting from S3:', error)
+    
     return false
   }
 }
@@ -240,7 +240,7 @@ export const generatePresignedUploadUrl = async (
 
     return await getSignedUrl(s3Client, command, { expiresIn })
   } catch (error) {
-    console.error('Error generating presigned URL:', error)
+    
     throw new Error('Failed to generate presigned URL')
   }
 }
@@ -260,7 +260,7 @@ export const generatePresignedAccessUrl = async (
 
     return await getSignedUrl(s3Client, command, { expiresIn })
   } catch (error) {
-    console.error('Error generating presigned access URL:', error)
+    
     throw new Error('Failed to generate presigned access URL')
   }
 }
@@ -345,7 +345,7 @@ export const uploadLargeFileToS3 = async (
       bucket: BUCKET_NAME,
     }
   } catch (error) {
-    console.error('Error in multipart upload:', error)
+    
 
     // Try to abort the multipart upload if it was created
     if (typeof UploadId !== 'undefined') {
@@ -357,7 +357,7 @@ export const uploadLargeFileToS3 = async (
         })
         await s3Client.send(abortCommand)
       } catch (abortError) {
-        console.error('Failed to abort multipart upload:', abortError)
+        
       }
     }
 
@@ -411,7 +411,7 @@ export const generatePresignedPost = async (
       cdnUrl,
     }
   } catch (error) {
-    console.error('Error generating presigned POST:', error)
+    
     throw new Error('Failed to generate presigned POST')
   }
 }
@@ -427,7 +427,7 @@ export const extractFileKeyFromUrl = (url: string): string | null => {
     // Remove leading slash and return the key
     return pathname.startsWith('/') ? pathname.slice(1) : pathname
   } catch (error) {
-    console.error('Error extracting file key from URL:', error)
+    
     return null
   }
 }
@@ -554,7 +554,7 @@ export const isS3Url = (url: string): boolean => {
 
 //       return url
 //     } catch (e) {
-//       console.error('Error parsing URL:', url, e)
+//       
 //       return url
 //     }
 //   }

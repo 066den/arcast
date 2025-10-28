@@ -28,7 +28,7 @@ export const getUploadedFile = async (
     // Return URL path
     return `/uploads/${nameDir}/${fileName}`
   } catch (error) {
-    console.error('Error uploading file:', error)
+    
     throw new Error('Failed to upload file')
   }
 }
@@ -52,7 +52,7 @@ export const deleteUploadedFile = async (fileUrl: string): Promise<boolean> => {
       }
     }
   } catch (error) {
-    console.error('Error deleting file from S3:', error)
+    
   }
 
   try {
@@ -61,7 +61,7 @@ export const deleteUploadedFile = async (fileUrl: string): Promise<boolean> => {
     await unlink(filePath)
     return true
   } catch (error) {
-    console.error('Error deleting local file:', error)
+    
     return false
   }
 }
@@ -77,11 +77,7 @@ export const getUploadedVideo = async (
   nameDir: string = 'videos'
 ): Promise<string> => {
   try {
-    console.log('🚀 Starting video upload with presigned POST...', {
-      fileName: file.name,
-      fileSize: file.size,
-      folder: nameDir,
-    })
+    
 
     const formData = new FormData()
     formData.append('videoFile', file)
@@ -124,15 +120,11 @@ export const getUploadedVideo = async (
     }
 
     const result = await response.json()
-    console.log('✅ API Response received:', {
-      uploadMethod: result.uploadMethod,
-      hasPresignedPost: !!result.presignedPost,
-      fileKey: result.presignedPost?.fileKey,
-    })
+    
 
     // Handle presigned POST response
     if (result.presignedPost) {
-      console.log('🔄 Starting direct S3 upload...')
+      
 
       // Upload directly to S3 using presigned POST
       const uploadFormData = new FormData()
@@ -152,24 +144,14 @@ export const getUploadedVideo = async (
       Object.entries(result.presignedPost.fields).forEach(([key, value]) => {
         if (requiredFields.includes(key)) {
           uploadFormData.append(key, value as string)
-          console.log(`📝 Added field: ${key}`)
+          
         } else {
-          console.log(`⚠️ Skipped metadata field: ${key}`)
+          
         }
       })
 
       // Add the file last
       uploadFormData.append('file', file)
-      console.log('📁 Added file to upload form')
-
-      console.log('🚀 Uploading to S3...')
-      console.log('🔗 S3 URL:', result.presignedPost.url)
-      console.log(
-        '📊 FormData entries:',
-        Array.from(uploadFormData.entries()).map(([key, value]) =>
-          key === 'file' ? `${key}: [File ${file.name}]` : `${key}: ${value}`
-        )
-      )
 
       try {
         // Add progress tracking for large files
@@ -185,40 +167,35 @@ export const getUploadedVideo = async (
           )
         })
 
-        console.log('⏳ Starting S3 upload with 10-minute timeout...')
+        
         const uploadResponse = (await Promise.race([
           uploadPromise,
           timeoutPromise,
         ])) as Response
 
-        console.log('📊 S3 Upload status:', uploadResponse.status)
+        
 
         if (!uploadResponse.ok) {
           const errorText = await uploadResponse.text()
-          console.error('❌ S3 Upload failed:', errorText)
+          
           throw new Error(`S3 upload failed: ${uploadResponse.status}`)
         }
 
-        console.log('✅ S3 Upload successful!')
-        console.log('🔗 CDN URL:', result.presignedPost.cdnUrl)
+        
+        
         return result.presignedPost.cdnUrl
       } catch (error: any) {
-        console.warn(
-          '⚠️ Presigned POST failed, falling back to direct upload:',
-          error.message
-        )
+        
 
         // Fallback: Use direct upload through server
-        console.log('🔄 Falling back to direct server upload...')
+        
 
         const fallbackFormData = new FormData()
         fallbackFormData.append('videoFile', file)
         fallbackFormData.append('folder', nameDir)
         fallbackFormData.append('usePresignedPost', 'false')
 
-        console.log(
-          '🔄 Fallback upload started - this may take 10-15 minutes for large files...'
-        )
+        
         const fallbackResponse = await fetch('/api/upload/video', {
           method: 'POST',
           body: fallbackFormData,
@@ -229,16 +206,16 @@ export const getUploadedVideo = async (
         }
 
         const fallbackResult = await fallbackResponse.json()
-        console.log('✅ Fallback upload successful!')
+        
         return fallbackResult.videoUrl
       }
     }
 
     // Fallback to direct upload response
-    console.log('📋 Using fallback direct upload response')
+    
     return result.videoUrl
   } catch (error) {
-    console.error('❌ Error uploading video:', error)
+    
     throw new Error('Failed to upload video')
   }
 }
@@ -273,7 +250,7 @@ export const getUploadedFileGeneric = async (
 
     return result.cdnUrl || result.url
   } catch (error) {
-    console.error('Error uploading file:', error)
+    
     throw new Error('Failed to upload file')
   }
 }

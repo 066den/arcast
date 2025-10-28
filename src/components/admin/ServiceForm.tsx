@@ -91,7 +91,7 @@ const ServiceForm = ({
         setServiceTypes(data)
       }
     } catch (error) {
-      console.error('Error fetching service types:', error)
+      
       toast.error('Error loading service types')
     }
   }

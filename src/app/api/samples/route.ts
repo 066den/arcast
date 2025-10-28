@@ -24,7 +24,7 @@ export async function GET() {
 
     return NextResponse.json(normalizedSamples)
   } catch (error) {
-    console.error('Error fetching samples:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
         try {
           thumbUrl = await getUploadedFile(thumbnailFile, 'samples')
         } catch (error) {
-          console.error('Error uploading thumbnail:', error)
+          
           return NextResponse.json(
             { error: 'Failed to upload thumbnail' },
             { status: 400 }
@@ -112,7 +112,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(sample)
   } catch (error) {
-    console.error('Error creating sample:', error)
+    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -14,7 +14,7 @@ export async function GET() {
 
     return NextResponse.json(staff)
   } catch (error) {
-    console.error('Error fetching staff:', error)
+    
     return NextResponse.json(
       { error: 'Failed to fetch staff' },
       { status: 500 }
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(staff, { status: 201 })
   } catch (error) {
-    console.error('Error creating staff:', error)
+    
     return NextResponse.json(
       { error: 'Failed to create staff' },
       { status: 500 }

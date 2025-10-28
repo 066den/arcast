@@ -48,7 +48,7 @@ export default function StaffForm({ staff, onSave, onCancel }: StaffFormProps) {
       toast.success(staff ? 'Staff updated' : 'Staff created')
     } catch (error) {
       toast.error('Error saving staff')
-      console.error('Save error:', error)
+      
     } finally {
       setIsLoading(false)
     }

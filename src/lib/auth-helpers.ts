@@ -37,7 +37,7 @@ export async function validateAdmin(username: string, password: string) {
   } catch (error) {
     // Only log critical errors
     if (error instanceof Error && !error.message.includes('connect')) {
-      console.error('Authorization error:', error.message)
+      
     }
 
     return null
