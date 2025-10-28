@@ -25,7 +25,6 @@ import {
   ApiError,
   deleteCaseStudy,
   updateCaseStudy,
-  deleteCaseStudyImage,
   getCaseStudies,
 } from '@/lib/api'
 import AddCaseStudyModal from './AddCaseStudyModal'
@@ -96,34 +95,6 @@ export default function CaseStudiesTable({
         toast.error(error.message)
       } else {
         toast.error('Failed to delete case study')
-      }
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleImageRemove = async (caseStudyId: string, imageUrl: string) => {
-    if (!confirm('Are you sure you want to remove this image?')) {
-      return
-    }
-
-    setIsLoading(true)
-    try {
-      await deleteCaseStudyImage(caseStudyId, imageUrl)
-
-      setCaseStudies(prev =>
-        prev.map(cs =>
-          cs.id === caseStudyId
-            ? { ...cs, imageUrls: cs.imageUrls.filter(url => url !== imageUrl) }
-            : cs
-        )
-      )
-      toast.success('Image removed successfully')
-    } catch (error) {
-      if (error instanceof ApiError) {
-        toast.error(error.message)
-      } else {
-        toast.error('Failed to remove image')
       }
     } finally {
       setIsLoading(false)

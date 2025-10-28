@@ -28,7 +28,7 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
 
   const unit = useMemo(() => {
     switch (serviceType?.slug) {
-      case 'podcast':
+      case 'podcast-production':
         return 'hour'
       default:
         return ''

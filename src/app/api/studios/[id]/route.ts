@@ -146,7 +146,7 @@ export async function DELETE(
     if (existingStudio.imageUrl) {
       try {
         await deleteUploadedFile(existingStudio.imageUrl)
-      } catch (error) {}
+      } catch {}
     }
 
     // Delete gallery images
@@ -154,7 +154,7 @@ export async function DELETE(
       for (const imageUrl of existingStudio.gallery) {
         try {
           await deleteUploadedFile(imageUrl)
-        } catch (error) {}
+        } catch {}
       }
     }
 
@@ -164,7 +164,7 @@ export async function DELETE(
     })
 
     return NextResponse.json({ message: 'Studio deleted successfully' })
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
       { status: 500 }
@@ -178,6 +178,11 @@ export async function PATCH(
 ) {
   const { id } = await params
   try {
+    const session = await auth()
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const body = await req.json()
     const { updateData } = body
 

@@ -82,7 +82,9 @@ export default function ServiceTypeForm({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name *</Label>
+            <Label size="lg" htmlFor="name">
+              Name *
+            </Label>
             <Input
               id="name"
               value={name}
@@ -93,7 +95,9 @@ export default function ServiceTypeForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="slug">Slug *</Label>
+            <Label size="lg" htmlFor="slug">
+              Slug *
+            </Label>
             <Input
               id="slug"
               value={slug}
@@ -107,7 +111,9 @@ export default function ServiceTypeForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label size="lg" htmlFor="description">
+              Description
+            </Label>
             <Textarea
               id="description"
               value={description}
@@ -118,7 +124,9 @@ export default function ServiceTypeForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="sortOrder">Sort Order</Label>
+            <Label size="lg" htmlFor="sortOrder">
+              Sort Order
+            </Label>
             <Input
               id="sortOrder"
               type="number"
@@ -134,7 +142,9 @@ export default function ServiceTypeForm({
 
           <div className="flex items-center justify-between space-x-2 rounded-md border p-4">
             <div className="space-y-0.5">
-              <Label htmlFor="isActive">Active</Label>
+              <Label size="lg" htmlFor="isActive">
+                Active
+              </Label>
               <p className="text-xs text-gray-500">
                 Only active service types are shown in the system
               </p>

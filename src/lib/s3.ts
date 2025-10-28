@@ -14,6 +14,7 @@ import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
 const requireEnv = (name: string): string => {
   const v = process.env[name]
   if (!v) {
+    console.error(`Missing required environment variable: ${name}`)
     throw new Error(`Missing required environment variable: ${name}`)
   }
   return v
@@ -33,16 +34,6 @@ const CDN_ENDPOINT =
   process.env.NEXT_PUBLIC_S3_CDN_ENDPOINT || process.env.S3_CDN_ENDPOINT
 const FORCE_PATH_STYLE = process.env.AWS_FORCE_PATH_STYLE === 'true'
 
-const S3_KEY_PREFIXES = new Set([
-  'samples',
-  'clients',
-  'case-studies',
-  'studios',
-  'staff',
-  'equipment',
-  'blog',
-  'uploads',
-])
 //const DEFAULT_VIDEO_PREFIX = 'samples'
 
 const s3Client = new S3Client({
@@ -201,7 +192,10 @@ export const uploadToS3 = async (
       bucket: bucketName,
     }
   } catch (error) {
-    throw new Error('Failed to upload file to S3')
+    console.error('S3 upload error:', error)
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error'
+    throw new Error(`Failed to upload file to S3: ${errorMessage}`)
   }
 }
 
@@ -528,9 +522,10 @@ export const isS3Url = (url: string): boolean => {
 //     //   return null
 //     // }
 
-//     if (!S3_KEY_PREFIXES.has(parts[0])) {
-//       return null
-//     }
+//     // Note: S3_KEY_PREFIXES validation would go here
+//     // if (!S3_KEY_PREFIXES.has(parts[0])) {
+//     //   return null
+//     // }
 
 //     return parts.join('/')
 //   }

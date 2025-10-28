@@ -66,7 +66,9 @@ const GalleryEditable = ({
   }
 
   const onSelectFile = (file: File) => {
-    onUpload?.(file)
+    if (file) {
+      onUpload?.(file)
+    }
   }
 
   const handleError = (error: Error) => {
@@ -89,15 +91,13 @@ const GalleryEditable = ({
               sizes="100px"
               className="object-cover"
             />
-            <Button
+            <button
               type="button"
-              variant="ghost"
-              size="icon"
-              className="absolute top-0 right-0 z-10"
+              className="absolute top-0 right-0 z-10 p-1 rounded hover:bg-destructive/10"
               onClick={() => onDelete(image)}
             >
               <X className="size-4" />
-            </Button>
+            </button>
           </div>
         ))}
         <Dropzone
@@ -105,13 +105,11 @@ const GalleryEditable = ({
           accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
           maxSize={MAX_FILE_SIZE.IMAGE}
           onError={handleError}
+          className="aspect-[4/3]"
         >
           <DropzoneEmptyState>
             <div className="flex items-center gap-4 justify-center">
-              <PlusIcon
-                className="size-8"
-                onClick={() => setIsCropping(true)}
-              />
+              <PlusIcon className="size-8" />
             </div>
           </DropzoneEmptyState>
           <DropzoneContent />

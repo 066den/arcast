@@ -99,16 +99,21 @@ export async function POST(request: NextRequest) {
     return response
   } catch (error) {
     // More detailed error logging
+    console.error('Video upload error:', error)
+
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error'
+    const errorStack = error instanceof Error ? error.stack : undefined
 
     const response = NextResponse.json(
       {
         error: 'Internal server error',
         details:
-          process.env.NODE_ENV === 'development'
-            ? error instanceof Error
-              ? error.message
-              : 'Unknown error'
-            : undefined,
+          process.env.NODE_ENV === 'development' ? errorMessage : undefined,
+        ...(process.env.NODE_ENV === 'development' &&
+          errorStack && {
+            stack: errorStack,
+          }),
       },
       { status: 500 }
     )

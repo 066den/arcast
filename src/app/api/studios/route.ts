@@ -3,8 +3,10 @@ import { prisma } from '@/lib/prisma'
 import { getStudios } from '@/services/studioServices'
 import { validateStudio } from '@/lib/schemas'
 import { ERROR_MESSAGES } from '@/lib/constants'
-import { getUploadedFile } from '@/utils/files'
 import { validateFile } from '@/lib/validate'
+import { writeFile, mkdir } from 'fs/promises'
+import { join } from 'path'
+import { v4 as uuidv4 } from 'uuid'
 
 export async function GET() {
   try {
@@ -67,14 +69,18 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: validation }, { status: 400 })
       }
 
-      const uploadedUrl = await getUploadedFile(imageFile, 'studios')
-      if (!uploadedUrl) {
-        return NextResponse.json(
-          { error: 'Failed to upload image' },
-          { status: 400 }
-        )
-      }
-      imageUrl = uploadedUrl
+      // Upload to local uploads directory
+      const fileExt = (imageFile.name.split('.').pop() || 'jpg').toLowerCase()
+      const uniqueFileName = `${uuidv4()}.${fileExt}`
+
+      const buffer = Buffer.from(await imageFile.arrayBuffer())
+      const uploadDir = join(process.cwd(), 'public', 'uploads', 'studios')
+      const uploadPath = join(uploadDir, uniqueFileName)
+
+      await mkdir(uploadDir, { recursive: true })
+      await writeFile(uploadPath, buffer)
+
+      imageUrl = `/uploads/studios/${uniqueFileName}`
     }
 
     const newStudio = await prisma.studio.create({

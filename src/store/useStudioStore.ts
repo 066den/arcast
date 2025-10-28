@@ -94,6 +94,9 @@ const useStudioStore = create<StudioStore>()(
         try {
           await apiRequest<Studio>(`${API_ENDPOINTS.STUDIOS}/${id}`, {
             method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+            },
             body: JSON.stringify({ updateData: update }),
           })
         } catch (error) {

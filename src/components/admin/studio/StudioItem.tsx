@@ -45,6 +45,7 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
     watch,
     setValue,
     handleSubmit,
+    reset,
     formState: { isValid },
   } = useForm<StudioSchema>({
     resolver: zodResolver(studioSchema),
@@ -60,18 +61,37 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
   const watchedOpeningTime = watch('openingTime')
   const watchedClosingTime = watch('closingTime')
 
+  const handleEdit = (e?: React.MouseEvent) => {
+    e?.preventDefault()
+    e?.stopPropagation()
+    reset({
+      name,
+      openingTime,
+      closingTime,
+      totalSeats,
+      location,
+    })
+    setIsEditing(true)
+  }
+
   const handleSave = handleSubmit(async (data: StudioSchema) => {
-    setIsEditing(false)
     try {
       await updateStudio(studio.id, data)
       toast.success('Studio updated successfully')
+      setIsEditing(false)
     } catch (error) {
-      
       toast.error('Error updating studio')
     }
   })
 
   const handleCancel = () => {
+    reset({
+      name,
+      openingTime,
+      closingTime,
+      totalSeats,
+      location,
+    })
     setIsEditing(false)
   }
 
@@ -80,8 +100,6 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
       await updateStudioImage(studio.id, file)
       toast.success('Image uploaded successfully')
     } catch (error) {
-      
-
       toast.error(
         error instanceof ApiError ? error.message : 'Error uploading image'
       )
@@ -93,7 +111,6 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
       await updateStudioGallery(studio.id, file)
       toast.success('Gallery uploaded successfully')
     } catch (error) {
-      
       toast.error('Error uploading gallery')
     }
   }
@@ -103,7 +120,6 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
       await deleteStudioGallery(studio.id, image)
       toast.success('Gallery deleted successfully')
     } catch (error) {
-      
       toast.error('Error deleting gallery')
     }
   }
@@ -114,7 +130,6 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
       await deleteStudio(studio.id)
       setShowDeleteModal(false)
     } catch (error) {
-      
     } finally {
       setIsDeleting(false)
     }
@@ -135,8 +150,9 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
             <div className="flex gap-2">
               <Button
                 variant="outline"
+                type="button"
                 size="sm"
-                onClick={() => setIsEditing(true)}
+                onClick={handleEdit}
               >
                 <span className="flex items-center gap-2">
                   <Edit className="h-4 w-4" />
@@ -146,6 +162,7 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
               <Button
                 variant="destructive"
                 size="sm"
+                type="button"
                 onClick={() => setShowDeleteModal(true)}
               >
                 <span className="flex items-center gap-2">
