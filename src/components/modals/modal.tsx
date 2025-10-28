@@ -125,7 +125,7 @@ export function ConfirmModal({
       description={description}
       size="sm"
       footer={
-        <div className="flex gap-2">
+        <div className="flex gap-2 px-4 pb-4">
           <Button variant="outline" onClick={onClose} disabled={loading}>
             {cancelText}
           </Button>

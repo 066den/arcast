@@ -68,7 +68,16 @@ export default function EquipmentTable({ initialData }: EquipmentTableProps) {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to save equipment')
+        const errorText = await response.text()
+        console.error('Server error response:', errorText)
+        try {
+          const errorData = JSON.parse(errorText)
+          throw new Error(
+            errorData.error || errorData.details || 'Failed to save equipment'
+          )
+        } catch {
+          throw new Error('Failed to save equipment')
+        }
       }
 
       const savedEquipment = await response.json()

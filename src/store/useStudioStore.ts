@@ -62,7 +62,8 @@ const useStudioStore = create<StudioStore>()(
         formData.append('openingTime', openingTime)
         formData.append('closingTime', closingTime)
         if (location) formData.append('location', location)
-        if (totalSeats) formData.append('totalSeats', totalSeats.toString())
+        if (totalSeats !== undefined)
+          formData.append('totalSeats', String(totalSeats))
         if (imageFile) formData.append('imageFile', imageFile)
 
         try {
@@ -193,7 +194,28 @@ const useStudioStore = create<StudioStore>()(
       },
 
       deleteStudio: async (studioId: string) => {
-        // TODO: Implement studio deletion
+        const { studios } = get()
+
+        try {
+          await apiRequest<{ message: string }>(
+            `${API_ENDPOINTS.STUDIOS}/${studioId}`,
+            {
+              method: 'DELETE',
+            }
+          )
+
+          const updatedStudios = studios?.filter(
+            studio => studio.id !== studioId
+          )
+          set({ studios: updatedStudios || [] })
+          toast.success('Studio deleted successfully')
+        } catch (error) {
+          if (error instanceof ApiError) {
+            toast.error(error.message)
+          } else {
+            toast.error(ERROR_MESSAGES.STUDIO.FAILED_TO_DELETE_STUDIO)
+          }
+        }
       },
     }),
     {

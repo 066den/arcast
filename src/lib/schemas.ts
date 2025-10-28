@@ -132,7 +132,7 @@ export const callRequestFormSchema = z.object({
     ),
 })
 
-export const studioSchema = z.object({
+const studioSchemaBase = z.object({
   name: z
     .string()
     .min(2, { message: 'Name must be at least 2 characters' })
@@ -144,7 +144,18 @@ export const studioSchema = z.object({
     .optional(),
   openingTime: z.string(),
   closingTime: z.string(),
-  totalSeats: z.number(),
+})
+
+export const studioSchema = studioSchemaBase.extend({
+  totalSeats: z
+    .number()
+    .positive({ message: 'Total seats must be a positive number' }),
+})
+
+export const studioFormSchema = studioSchemaBase.extend({
+  totalSeats: z.coerce
+    .number()
+    .positive({ message: 'Total seats must be a positive number' }),
 })
 
 export const blogRecordSchema = z.object({
@@ -188,6 +199,7 @@ export const validateBlogRecord = (data: unknown) => {
 
 export type LeadSchema = z.infer<typeof bookingLeadSchema>
 export type StudioSchema = z.infer<typeof studioSchema>
+export type StudioFormSchema = z.infer<typeof studioFormSchema>
 export type StudioImageUploadSchema = z.infer<typeof studioImageUploadSchema>
 export type ContactFormSchema = z.infer<typeof contactFormSchema>
 export type CallRequestFormSchema = z.infer<typeof callRequestFormSchema>

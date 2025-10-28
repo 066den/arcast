@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Studio } from '@/types'
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card'
 import { Button } from '../../ui/button'
-import { Clock, Edit, MapPin, Save, Users } from 'lucide-react'
+import { Clock, Edit, MapPin, Save, Users, Trash2 } from 'lucide-react'
 import { X } from 'lucide-react'
 import { Input } from '../../ui/input'
 import { Label } from '../../ui/label'
@@ -17,14 +17,18 @@ import { useStudios } from '@/hooks/storeHooks/useStudios'
 import { toast } from 'sonner'
 import { ApiError } from '@/lib/api'
 import GalleryEditable from '@/components/ui/GalleryEditable'
+import { ConfirmModal } from '@/components/modals/modal'
 
 const StudioItem = ({ studio }: { studio: Studio }) => {
   const [isEditing, setIsEditing] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const {
     updateStudioImage,
     updateStudio,
     updateStudioGallery,
     deleteStudioGallery,
+    deleteStudio,
   } = useStudios()
   const {
     name,
@@ -104,6 +108,18 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
     }
   }
 
+  const handleDeleteStudio = async () => {
+    setIsDeleting(true)
+    try {
+      await deleteStudio(studio.id)
+      setShowDeleteModal(false)
+    } catch (error) {
+      console.error('Error deleting studio:', error)
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   return (
     <form onSubmit={handleSave}>
       <Card>
@@ -116,16 +132,28 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
             )}
           </CardTitle>
           {!isEditing ? (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsEditing(true)}
-            >
-              <span className="flex items-center gap-2">
-                <Edit className="h-4 w-4" />
-                <span>Edit</span>
-              </span>
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsEditing(true)}
+              >
+                <span className="flex items-center gap-2">
+                  <Edit className="h-4 w-4" />
+                  <span>Edit</span>
+                </span>
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setShowDeleteModal(true)}
+              >
+                <span className="flex items-center gap-2">
+                  <Trash2 className="h-4 w-4" />
+                  <span>Delete</span>
+                </span>
+              </Button>
+            </div>
           ) : (
             <div className="flex gap-2">
               <Button
@@ -252,6 +280,18 @@ const StudioItem = ({ studio }: { studio: Studio }) => {
           </div>
         </CardContent>
       </Card>
+
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDeleteStudio}
+        title="Delete Studio"
+        description={`Are you sure you want to delete "${name}"? This will also delete all associated images and bookings. This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
+        loading={isDeleting}
+      />
     </form>
   )
 }

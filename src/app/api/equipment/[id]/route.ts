@@ -50,9 +50,24 @@ export async function PUT(
     }
 
     const formData = await request.formData()
-    const name = formData.get('name') as string
-    const description = formData.get('description') as string
+    const nameRaw = formData.get('name')
+    const descriptionRaw = formData.get('description')
     const imageFile = formData.get('imageFile') as File
+
+    // Convert empty strings to null for nullable fields
+    const name =
+      typeof nameRaw === 'string' && nameRaw.trim() ? nameRaw.trim() : null
+    const description =
+      typeof descriptionRaw === 'string' && descriptionRaw.trim()
+        ? descriptionRaw.trim()
+        : null
+
+    console.log('Update data:', {
+      id,
+      name,
+      description,
+      hasImageFile: !!imageFile,
+    })
 
     if (!name) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 })
@@ -92,6 +107,12 @@ export async function PUT(
       imageUrl = await getUploadedFile(imageFile, 'equipment')
     }
 
+    console.log('Updating equipment with data:', {
+      name,
+      description,
+      imageUrl,
+    })
+
     const equipment = await prisma.equipment.update({
       where: {
         id,
@@ -106,8 +127,15 @@ export async function PUT(
     return NextResponse.json(equipment)
   } catch (error) {
     console.error('Error updating equipment:', error)
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    })
     return NextResponse.json(
-      { error: 'Failed to update equipment' },
+      {
+        error: 'Failed to update equipment',
+        details: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 }
     )
   }

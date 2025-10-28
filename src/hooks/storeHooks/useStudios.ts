@@ -11,6 +11,7 @@ export function useStudios() {
     updateStudio,
     updateStudioGallery,
     deleteStudioGallery,
+    deleteStudio,
   } = useStudioStore()
 
   return {
@@ -23,5 +24,6 @@ export function useStudios() {
     updateStudio,
     updateStudioGallery,
     deleteStudioGallery,
+    deleteStudio,
   }
 }

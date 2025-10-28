@@ -4,12 +4,14 @@ import { generateSimpleTimeSlots } from '../../../../utils/time'
 import { Studio, TimeSlotList } from '../../../../types'
 import { BOOKING_STATUS, ERROR_MESSAGES, HTTP_STATUS } from '@/lib/constants'
 import { validateStudio } from '@/lib/schemas'
+import { auth } from '@/auth'
+import { deleteUploadedFile } from '@/utils/files'
 
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params
+  const { id } = await params
   const { searchParams } = new URL(request.url)
   const {
     date,
@@ -17,9 +19,24 @@ export async function GET(
     duration = '1',
   } = Object.fromEntries(searchParams)
 
+  if (!date) {
+    return NextResponse.json(
+      { error: ERROR_MESSAGES.INVALID_DATE_FORMAT },
+      { status: HTTP_STATUS.BAD_REQUEST }
+    )
+  }
+
   try {
     // Parse date string and create date at midnight in UTC
     const dateParts = date.split('-')
+
+    if (dateParts.length !== 3) {
+      return NextResponse.json(
+        { error: ERROR_MESSAGES.INVALID_DATE_FORMAT },
+        { status: HTTP_STATUS.BAD_REQUEST }
+      )
+    }
+
     const targetDate = new Date(
       Date.UTC(
         parseInt(dateParts[0]), // year
@@ -35,9 +52,11 @@ export async function GET(
       )
     }
 
+    console.log('Fetching studio:', { id, date, view, duration })
     const studio = await getStudioWithBookings(id, targetDate, view)
 
     if (!studio) {
+      console.error('Studio not found:', id)
       return NextResponse.json(
         { error: ERROR_MESSAGES.STUDIO.NOT_FOUND },
         { status: HTTP_STATUS.NOT_FOUND }
@@ -92,19 +111,84 @@ export async function GET(
       { status: HTTP_STATUS.BAD_REQUEST }
     )
   } catch (error) {
-    console.error('Error:', error)
+    console.error('Error fetching studio availability:', error)
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    })
+    return NextResponse.json(
+      {
+        error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
+    )
+  }
+}
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params
+
+  try {
+    const session = await auth()
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const existingStudio = await prisma.studio.findUnique({
+      where: { id },
+    })
+
+    if (!existingStudio) {
+      return NextResponse.json(
+        { error: ERROR_MESSAGES.STUDIO.NOT_FOUND },
+        { status: 404 }
+      )
+    }
+
+    // Delete studio image if exists
+    if (existingStudio.imageUrl) {
+      try {
+        await deleteUploadedFile(existingStudio.imageUrl)
+      } catch (error) {
+        console.error('Error deleting studio image:', error)
+      }
+    }
+
+    // Delete gallery images
+    if (existingStudio.gallery && existingStudio.gallery.length > 0) {
+      for (const imageUrl of existingStudio.gallery) {
+        try {
+          await deleteUploadedFile(imageUrl)
+        } catch (error) {
+          console.error('Error deleting gallery image:', error)
+        }
+      }
+    }
+
+    // Delete studio
+    await prisma.studio.delete({
+      where: { id },
+    })
+
+    return NextResponse.json({ message: 'Studio deleted successfully' })
+  } catch (error) {
+    console.error('Error deleting studio:', error)
     return NextResponse.json(
       { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
-      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
+      { status: 500 }
     )
   }
 }
 
 export async function PATCH(
   req: Request,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await context.params
+  const { id } = await params
   try {
     const body = await req.json()
     const { updateData } = body
@@ -114,6 +198,14 @@ export async function PATCH(
         { error: 'Studio ID is required' },
         { status: 400 }
       )
+    }
+
+    // Ensure totalSeats is converted to number if present
+    if (updateData.totalSeats !== undefined) {
+      const totalSeatsNum = parseInt(String(updateData.totalSeats), 10)
+      if (!isNaN(totalSeatsNum) && totalSeatsNum > 0) {
+        updateData.totalSeats = totalSeatsNum
+      }
     }
 
     const validation = validateStudio(updateData)

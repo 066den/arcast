@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { writeFile, mkdir } from 'fs/promises'
+import { join } from 'path'
+import { v4 as uuidv4 } from 'uuid'
 
 import { ERROR_MESSAGES, HTTP_STATUS } from '@/lib/constants'
 import { validateFile } from '@/lib/validate'
@@ -31,25 +34,18 @@ export async function POST(
       return NextResponse.json({ error: validation }, { status: 400 })
     }
 
-    // Upload to S3 (lazy import to avoid build-time evaluation)
-    const s3 = await import('@/lib/s3')
-
+    // Upload to local uploads directory
     const fileExt = (file.name.split('.').pop() || 'jpg').toLowerCase()
-    const uniqueFileName = `${Date.now()}-${Math.random()
-      .toString(36)
-      .slice(2)}.${fileExt}`
+    const uniqueFileName = `${uuidv4()}.${fileExt}`
 
-    const uploadRes = await s3.uploadToS3(file, uniqueFileName, {
-      folder: 'studios',
-      contentType: file.type,
-      metadata: {
-        originalName: file.name,
-        uploadedAt: new Date().toISOString(),
-        entity: 'studio',
-        entityId: id,
-      },
-    })
-    const imageUrl = uploadRes.cdnUrl || uploadRes.url
+    const buffer = Buffer.from(await file.arrayBuffer())
+    const uploadDir = join(process.cwd(), 'public', 'uploads', 'studios')
+    const uploadPath = join(uploadDir, uniqueFileName)
+
+    await mkdir(uploadDir, { recursive: true })
+    await writeFile(uploadPath, buffer)
+
+    const imageUrl = `/uploads/studios/${uniqueFileName}`
 
     const existingStudio = await prisma.studio.findUnique({
       where: { id },
@@ -64,16 +60,7 @@ export async function POST(
 
     if (existingStudio.imageUrl) {
       try {
-        const oldUrl = existingStudio.imageUrl
-        const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import('@/lib/s3')
-        if (isS3Url(oldUrl)) {
-          const key = extractFileKeyFromUrl(oldUrl)
-          if (key) {
-            await deleteFromS3(key)
-          }
-        } else {
-          await deleteUploadedFile(oldUrl)
-        }
+        await deleteUploadedFile(existingStudio.imageUrl)
       } catch {}
     }
 
@@ -121,19 +108,10 @@ export async function DELETE(req: Request) {
       )
     }
 
-    // Remove image from storage (S3 or local) before clearing reference
+    // Remove image from storage before clearing reference
     if (existingStudio.imageUrl) {
       try {
-        const oldUrl = existingStudio.imageUrl
-        const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import('@/lib/s3')
-        if (isS3Url(oldUrl)) {
-          const key = extractFileKeyFromUrl(oldUrl)
-          if (key) {
-            await deleteFromS3(key)
-          }
-        } else {
-          await deleteUploadedFile(oldUrl)
-        }
+        await deleteUploadedFile(existingStudio.imageUrl)
       } catch {}
     }
 

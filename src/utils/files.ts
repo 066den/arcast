@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import { unlink } from 'fs/promises'
+import { unlink, writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
 
 /**
@@ -16,19 +16,17 @@ export const getUploadedFile = async (
     const fileExtension = file.name.split('.').pop()
     const fileName = `${uuidv4()}.${fileExtension}`
 
-    const { uploadToS3 } = await import('@/lib/s3')
+    // Write to local uploads directory
+    const buffer = Buffer.from(await file.arrayBuffer())
+    const uploadDir = join(process.cwd(), 'public', 'uploads', nameDir)
+    const uploadPath = join(uploadDir, fileName)
 
-    const result = await uploadToS3(file, fileName, {
-      folder: nameDir,
-      contentType: file.type,
-      metadata: {
-        originalName: file.name,
-        uploadedAt: new Date().toISOString(),
-        folder: nameDir,
-      },
-    })
+    // Create directory if it doesn't exist
+    await mkdir(uploadDir, { recursive: true })
+    await writeFile(uploadPath, buffer)
 
-    return result.cdnUrl || result.url
+    // Return URL path
+    return `/uploads/${nameDir}/${fileName}`
   } catch (error) {
     console.error('Error uploading file:', error)
     throw new Error('Failed to upload file')
@@ -42,8 +40,9 @@ export const getUploadedFile = async (
  */
 export const deleteUploadedFile = async (fileUrl: string): Promise<boolean> => {
   try {
-    const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } =
-      await import('@/lib/s3')
+    const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import(
+      '@/lib/s3'
+    )
 
     if (isS3Url(fileUrl)) {
       const key = extractFileKeyFromUrl(fileUrl)
@@ -104,13 +103,10 @@ export const getUploadedVideo = async (
       uploadMethod = 'direct upload (medium file)'
     }
 
-
-
     const response = await fetch('/api/upload/video', {
       method: 'POST',
       body: formData,
     })
-
 
     if (!response.ok) {
       let errorMessage = 'Failed to upload video'

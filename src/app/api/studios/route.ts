@@ -24,9 +24,21 @@ export async function POST(req: Request) {
   const data = Object.fromEntries(formData)
 
   try {
+    const totalSeatsNum = parseInt(data.totalSeats as string, 10)
+
+    if (isNaN(totalSeatsNum) || totalSeatsNum <= 0) {
+      return NextResponse.json(
+        { error: 'totalSeats must be a positive number' },
+        { status: 400 }
+      )
+    }
+
     const validation = validateStudio({
-      ...data,
-      totalSeats: parseInt(data.totalSeats as string),
+      name: data.name as string,
+      location: data.location as string,
+      openingTime: data.openingTime as string,
+      closingTime: data.closingTime as string,
+      totalSeats: totalSeatsNum,
     })
     if (!validation.success) {
       return NextResponse.json(
@@ -38,8 +50,7 @@ export async function POST(req: Request) {
       )
     }
 
-    const { name, location, totalSeats, openingTime, closingTime, imageFile } =
-      data
+    const { name, location, openingTime, closingTime, imageFile } = data
 
     let imageUrl = null
 
@@ -71,7 +82,7 @@ export async function POST(req: Request) {
       data: {
         name: name as string,
         location: location as string,
-        totalSeats: parseInt(totalSeats as string),
+        totalSeats: totalSeatsNum,
         imageUrl,
         openingTime: openingTime as string,
         closingTime: closingTime as string,
@@ -81,8 +92,15 @@ export async function POST(req: Request) {
     return NextResponse.json(newStudio)
   } catch (error) {
     console.error('Error creating studio:', error)
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    })
     return NextResponse.json(
-      { error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR },
+      {
+        error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
+        details: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 }
     )
   }

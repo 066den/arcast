@@ -157,6 +157,7 @@ export const ERROR_MESSAGES = {
     FAILED_TO_FETCH_STUDIOS: 'Failed to fetch studios',
     FAILED_TO_UPDATE_STUDIO: 'Failed to update studio',
     FAILED_TO_CREATE_STUDIO: 'Failed to create studio',
+    FAILED_TO_DELETE_STUDIO: 'Failed to delete studio',
   },
   PAYMENT: {
     FAILED: 'Payment processing failed',

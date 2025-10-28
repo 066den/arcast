@@ -1,6 +1,6 @@
 import { Input } from '@/components/ui/input'
 import { Modal } from '@/components/modals/modal'
-import { StudioSchema, studioSchema } from '@/lib/schemas'
+import { studioFormSchema } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { TimePicker } from '@/components/ui/time-picker'
@@ -29,8 +29,8 @@ const AddStudioModal = ({ isOpen, onClose }: AddStudioModalProps) => {
     watch,
     setValue,
     reset,
-  } = useForm<StudioSchema>({
-    resolver: zodResolver(studioSchema),
+  } = useForm({
+    resolver: zodResolver(studioFormSchema),
     mode: 'all',
     defaultValues: {
       name: '',
@@ -44,10 +44,14 @@ const AddStudioModal = ({ isOpen, onClose }: AddStudioModalProps) => {
   const watchedOpeningTime = watch('openingTime')
   const watchedClosingTime = watch('closingTime')
 
-  const onSubmit = handleSubmit(async (formData: StudioSchema) => {
+  const onSubmit = handleSubmit(async formData => {
     try {
       await createStudio({
-        ...formData,
+        name: formData.name,
+        location: formData.location,
+        openingTime: formData.openingTime,
+        closingTime: formData.closingTime,
+        totalSeats: formData.totalSeats,
         imageFile,
       })
       onClose()
@@ -66,6 +70,7 @@ const AddStudioModal = ({ isOpen, onClose }: AddStudioModalProps) => {
       title="Add Studio"
       description="Add a new studio to the database"
       size="lg"
+      className="pb-8 scrollbar-gutter-stable"
     >
       {isLoading && (
         <div className="absolute top-0 left-0 w-full h-full z-10 flex items-center justify-center p-4">

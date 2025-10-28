@@ -30,9 +30,17 @@ export async function POST(request: NextRequest) {
     }
 
     const formData = await request.formData()
-    const name = formData.get('name') as string
-    const description = formData.get('description') as string
+    const nameRaw = formData.get('name')
+    const descriptionRaw = formData.get('description')
     const imageFile = formData.get('imageFile') as File
+
+    // Convert empty strings to null for nullable fields
+    const name =
+      typeof nameRaw === 'string' && nameRaw.trim() ? nameRaw.trim() : null
+    const description =
+      typeof descriptionRaw === 'string' && descriptionRaw.trim()
+        ? descriptionRaw.trim()
+        : null
 
     if (!name) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 })

@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { writeFile, mkdir } from 'fs/promises'
+import { join } from 'path'
+import { v4 as uuidv4 } from 'uuid'
 
 import { ERROR_MESSAGES, HTTP_STATUS } from '@/lib/constants'
 import { validateFile } from '@/lib/validate'
@@ -42,25 +45,25 @@ export async function POST(
       )
     }
 
-    // Upload to S3 (lazy import to avoid build-time evaluation)
-    const s3 = await import('@/lib/s3')
-
+    // Upload to local uploads directory
     const fileExt = (file.name.split('.').pop() || 'jpg').toLowerCase()
-    const uniqueFileName = `${Date.now()}-${Math.random()
-      .toString(36)
-      .slice(2)}.${fileExt}`
+    const uniqueFileName = `${uuidv4()}.${fileExt}`
 
-    const uploadRes = await s3.uploadToS3(file, uniqueFileName, {
-      folder: `studios/gallery/${id}`,
-      contentType: file.type,
-      metadata: {
-        originalName: file.name,
-        uploadedAt: new Date().toISOString(),
-        entity: 'studio-gallery',
-        entityId: id,
-      },
-    })
-    const imageUrl = uploadRes.cdnUrl || uploadRes.url
+    const buffer = Buffer.from(await file.arrayBuffer())
+    const uploadDir = join(
+      process.cwd(),
+      'public',
+      'uploads',
+      'studios',
+      'gallery',
+      id
+    )
+    const uploadPath = join(uploadDir, uniqueFileName)
+
+    await mkdir(uploadDir, { recursive: true })
+    await writeFile(uploadPath, buffer)
+
+    const imageUrl = `/uploads/studios/gallery/${id}/${uniqueFileName}`
 
     const updatedStudio = await prisma.studio.update({
       where: { id },
@@ -112,7 +115,9 @@ export async function DELETE(
     })
 
     try {
-      const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import('@/lib/s3')
+      const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import(
+        '@/lib/s3'
+      )
       if (isS3Url(imageUrl)) {
         const key = extractFileKeyFromUrl(imageUrl)
         if (key) {
