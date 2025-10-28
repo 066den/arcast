@@ -26,7 +26,7 @@ export function ServiceCheckbox({
   return (
     <div
       onClick={handleClick}
-      className={`flex gap-3 p-6 rounded-[1.25rem] shadow-xl/20 hover:shadow-xl/30 transition-all duration-300 cursor-pointer min-h-[165px] max-w-[540px] ${
+      className={`flex gap-3 p-6 rounded-[1.25rem] shadow-xl/20 hover:shadow-xl/30 transition-all duration-300 cursor-pointer min-h-[165px] max-w-[540px] w-full ${
         isChecked ? 'shadow-xl/30' : ''
       }`}
     >
