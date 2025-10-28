@@ -14,7 +14,9 @@ const PackagesSection = ({
   initialServiceTypes,
   initialPackages,
 }: PackagesSectionProps) => {
-  const [typePackages, setTypePackages] = useState<string>('podcast')
+  const [typePackages, setTypePackages] = useState<string>(
+    initialServiceTypes[0]?.slug || 'podcast-production'
+  )
 
   return (
     <section className="py-10 xl:py-20">

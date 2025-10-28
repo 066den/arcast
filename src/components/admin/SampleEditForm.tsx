@@ -85,7 +85,6 @@ export default function SampleEditForm({
       }
       toast.success('Image uploaded successfully')
     } catch (error) {
-      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -102,7 +101,6 @@ export default function SampleEditForm({
       await deleteSampleImage(sample.id)
       toast.success('Image removed successfully')
     } catch (error) {
-      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -130,7 +128,6 @@ export default function SampleEditForm({
       toast.success('Sample updated successfully')
       router.push('/admin/samples')
     } catch (error) {
-      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -215,7 +212,7 @@ export default function SampleEditForm({
           <CardHeader>
             <CardTitle>Thumbnail Image</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 flex flex-wrap">
             <div>
               <Label size="default" className="mb-2 block">
                 Upload New Thumbnail
@@ -224,7 +221,7 @@ export default function SampleEditForm({
                 onUpload={setThumbnailFile}
                 aspectRatio={ASPECT_RATIOS.SQUARE}
                 showCrop={true}
-                size="medium"
+                size="small"
                 className="mx-auto"
               />
             </div>
@@ -233,7 +230,7 @@ export default function SampleEditForm({
               <div className="space-y-4">
                 <Label size="default">Current Thumbnail</Label>
                 <div className="relative group max-w-md">
-                  <div className="relative aspect-square w-full h-48 rounded-lg overflow-hidden">
+                  <div className="relative aspect-square h-48 rounded-lg overflow-hidden">
                     <Image
                       src={sample.thumbUrl}
                       alt="Sample thumbnail"
