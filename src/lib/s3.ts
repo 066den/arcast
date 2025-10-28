@@ -34,6 +34,16 @@ const CDN_ENDPOINT =
   process.env.NEXT_PUBLIC_S3_CDN_ENDPOINT || process.env.S3_CDN_ENDPOINT
 const FORCE_PATH_STYLE = process.env.AWS_FORCE_PATH_STYLE === 'true'
 
+const S3_KEY_PREFIXES = new Set([
+  'samples',
+  'clients',
+  'case-studies',
+  'studios',
+  'staff',
+  'equipment',
+  'blog',
+  'uploads',
+])
 //const DEFAULT_VIDEO_PREFIX = 'samples'
 
 const s3Client = new S3Client({
@@ -522,10 +532,9 @@ export const isS3Url = (url: string): boolean => {
 //     //   return null
 //     // }
 
-//     // Note: S3_KEY_PREFIXES validation would go here
-//     // if (!S3_KEY_PREFIXES.has(parts[0])) {
-//     //   return null
-//     // }
+//     if (!S3_KEY_PREFIXES.has(parts[0])) {
+//       return null
+//     }
 
 //     return parts.join('/')
 //   }
