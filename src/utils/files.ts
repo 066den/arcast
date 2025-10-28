@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid'
-import { writeFile, mkdir, unlink } from 'fs/promises'
+import { unlink } from 'fs/promises'
 import { join } from 'path'
 
 /**
- * Upload a file to local uploads directory
+ * Upload a file to S3 storage
  * @param file - The file to upload
  * @param nameDir - Directory name for organization (e.g., 'images', 'videos', 'studios')
  * @returns Promise<string> - The public URL of the uploaded file
@@ -16,20 +16,19 @@ export const getUploadedFile = async (
     const fileExtension = file.name.split('.').pop()
     const fileName = `${uuidv4()}.${fileExtension}`
 
-    // Convert File to Buffer
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
+    const { uploadToS3 } = await import('@/lib/s3')
 
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = join(process.cwd(), 'public', 'uploads', nameDir)
-    await mkdir(uploadsDir, { recursive: true })
+    const result = await uploadToS3(file, fileName, {
+      folder: nameDir,
+      contentType: file.type,
+      metadata: {
+        originalName: file.name,
+        uploadedAt: new Date().toISOString(),
+        folder: nameDir,
+      },
+    })
 
-    // Write file to disk
-    const filePath = join(uploadsDir, fileName)
-    await writeFile(filePath, buffer)
-
-    // Return the public URL
-    return `/uploads/${nameDir}/${fileName}`
+    return result.cdnUrl || result.url
   } catch (error) {
     console.error('Error uploading file:', error)
     throw new Error('Failed to upload file')
@@ -43,14 +42,27 @@ export const getUploadedFile = async (
  */
 export const deleteUploadedFile = async (fileUrl: string): Promise<boolean> => {
   try {
-    // Extract file path from URL
+    const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } =
+      await import('@/lib/s3')
+
+    if (isS3Url(fileUrl)) {
+      const key = extractFileKeyFromUrl(fileUrl)
+      if (key) {
+        const deleted = await deleteFromS3(key)
+        if (deleted) return true
+      }
+    }
+  } catch (error) {
+    console.error('Error deleting file from S3:', error)
+  }
+
+  try {
     const urlPath = fileUrl.replace(/^\/uploads\//, '')
     const filePath = join(process.cwd(), 'public', 'uploads', urlPath)
-
     await unlink(filePath)
     return true
   } catch (error) {
-    console.error('Error deleting file:', error)
+    console.error('Error deleting local file:', error)
     return false
   }
 }
@@ -250,20 +262,20 @@ export const getUploadedFileGeneric = async (
     const fileExtension = file.name.split('.').pop()
     const fileName = `${uuidv4()}.${fileExtension}`
 
-    // Convert File to Buffer
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
+    const { uploadToS3 } = await import('@/lib/s3')
 
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = join(process.cwd(), 'public', 'uploads', nameDir)
-    await mkdir(uploadsDir, { recursive: true })
+    const result = await uploadToS3(file, fileName, {
+      folder: nameDir,
+      contentType: file.type,
+      metadata: {
+        originalName: file.name,
+        uploadedAt: new Date().toISOString(),
+        folder: nameDir,
+        fileCategory: 'generic',
+      },
+    })
 
-    // Write file to disk
-    const filePath = join(uploadsDir, fileName)
-    await writeFile(filePath, buffer)
-
-    // Return the public URL
-    return `/uploads/${nameDir}/${fileName}`
+    return result.cdnUrl || result.url
   } catch (error) {
     console.error('Error uploading file:', error)
     throw new Error('Failed to upload file')
