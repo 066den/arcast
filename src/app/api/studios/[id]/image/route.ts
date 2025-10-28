@@ -1,12 +1,8 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { writeFile, mkdir } from 'fs/promises'
-import { join } from 'path'
-import { v4 as uuidv4 } from 'uuid'
-
 import { ERROR_MESSAGES, HTTP_STATUS } from '@/lib/constants'
 import { validateFile } from '@/lib/validate'
-import { deleteUploadedFile } from '@/utils/files'
+import { getUploadedFile, deleteUploadedFile } from '@/utils/files'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -34,18 +30,8 @@ export async function POST(
       return NextResponse.json({ error: validation }, { status: 400 })
     }
 
-    // Upload to local uploads directory
-    const fileExt = (file.name.split('.').pop() || 'jpg').toLowerCase()
-    const uniqueFileName = `${uuidv4()}.${fileExt}`
-
-    const buffer = Buffer.from(await file.arrayBuffer())
-    const uploadDir = join(process.cwd(), 'public', 'uploads', 'studios')
-    const uploadPath = join(uploadDir, uniqueFileName)
-
-    await mkdir(uploadDir, { recursive: true })
-    await writeFile(uploadPath, buffer)
-
-    const imageUrl = `/uploads/studios/${uniqueFileName}`
+    // Upload to S3
+    const imageUrl = await getUploadedFile(file, 'studios')
 
     const existingStudio = await prisma.studio.findUnique({
       where: { id },
@@ -75,7 +61,6 @@ export async function POST(
       studio: updatedStudio,
     })
   } catch (error) {
-    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -127,7 +112,6 @@ export async function DELETE(req: Request) {
       studio: updatedStudio,
     })
   } catch (error) {
-    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
