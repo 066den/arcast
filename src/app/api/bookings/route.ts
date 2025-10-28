@@ -40,7 +40,6 @@ export async function GET() {
     })
     return NextResponse.json({ success: true, data: bookings })
   } catch (error) {
-    
     return NextResponse.json(
       { success: false, error: ERROR_MESSAGES.BOOKING.FAILED },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
@@ -124,10 +123,6 @@ export async function POST(req: Request) {
         { status: HTTP_STATUS.BAD_REQUEST }
       )
     }
-
-    // Calculate start and end time
-    const startTime = new Date(selectedTime)
-    const endTime = new Date(startTime.getTime() + duration * 60 * 60 * 1000)
 
     // Check for existing bookings that overlap with the selected time
     const existingBookings = await prisma.booking.findMany({
@@ -432,22 +427,15 @@ export async function POST(req: Request) {
       if (result.lead) {
         await createNotionLeadEntry(result.lead)
       }
-    } catch (notionError) {
-      
-    }
+    } catch (notionError) {}
 
     try {
-      
       const paymentLink = await getPaymentLinkForBooking(result.id)
       if (paymentLink && paymentLink.paymentLink) {
         response.paymentUrl = `${paymentLink.paymentLink.payment_url}?embedded=true&parent_origin=${process.env.NEXT_PUBLIC_APP_URL}&enable_postmessage=true`
-        
       } else {
-        
       }
     } catch (error) {
-      
-
       return NextResponse.json(
         { success: false, error: ERROR_MESSAGES.PAYMENT.FAILED },
         { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
@@ -456,7 +444,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json(response)
   } catch (error) {
-    
     return NextResponse.json(
       { success: false, error: ERROR_MESSAGES.BOOKING.FAILED },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }

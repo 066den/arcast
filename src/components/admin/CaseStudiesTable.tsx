@@ -26,7 +26,10 @@ import {
   deleteCaseStudy,
   updateCaseStudy,
   deleteCaseStudyImage,
+  getCaseStudies,
 } from '@/lib/api'
+import AddCaseStudyModal from './AddCaseStudyModal'
+import useFlag from '@/hooks/useFlag'
 
 interface CaseStudy {
   id: string
@@ -66,6 +69,16 @@ export default function CaseStudiesTable({
 }: CaseStudiesTableProps) {
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>(initialData)
   const [isLoading, setIsLoading] = useState(false)
+  const [isAddModalOpen, openAddModal, closeAddModal] = useFlag()
+
+  const handleAddSuccess = async () => {
+    try {
+      const updatedCaseStudies = (await getCaseStudies()) as CaseStudy[]
+      setCaseStudies(updatedCaseStudies)
+    } catch {
+      toast.error('Failed to refresh case studies')
+    }
+  }
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this case study?')) {
@@ -79,7 +92,6 @@ export default function CaseStudiesTable({
       setCaseStudies(prev => prev.filter(cs => cs.id !== id))
       toast.success('Case study deleted successfully')
     } catch (error) {
-      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -108,7 +120,6 @@ export default function CaseStudiesTable({
       )
       toast.success('Image removed successfully')
     } catch (error) {
-      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -135,7 +146,6 @@ export default function CaseStudiesTable({
         `Case study ${!currentStatus ? 'activated' : 'deactivated'} successfully`
       )
     } catch (error) {
-      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -157,7 +167,7 @@ export default function CaseStudiesTable({
           <h2 className="text-2xl font-semibold">Case Studies</h2>
           <Badge variant="secondary">{caseStudies.length} total</Badge>
         </div>
-        <Button>
+        <Button onClick={openAddModal}>
           <Plus className="h-4 w-4 mr-2" />
           Add Case Study
         </Button>
@@ -321,6 +331,12 @@ export default function CaseStudiesTable({
           </TableBody>
         </Table>
       </div>
+
+      <AddCaseStudyModal
+        isOpen={isAddModalOpen}
+        onClose={closeAddModal}
+        onSuccess={handleAddSuccess}
+      />
     </div>
   )
 }
