@@ -45,9 +45,7 @@ const SmoothOverlappingCarousel = ({
   const playVideo = useCallback(
     (videoUrl: string) => {
       if (videoUrl) {
-        // Normalize URL by removing arcast-s3 bucket prefix
-        const normalizedUrl = videoUrl.replace('/arcast-s3/', '/samples/')
-        setSelectedVideoUrl(normalizedUrl)
+        setSelectedVideoUrl(videoUrl)
         videoOpen()
       }
     },

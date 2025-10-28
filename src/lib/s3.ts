@@ -33,6 +33,18 @@ const CDN_ENDPOINT =
   process.env.NEXT_PUBLIC_S3_CDN_ENDPOINT || process.env.S3_CDN_ENDPOINT
 const FORCE_PATH_STYLE = process.env.AWS_FORCE_PATH_STYLE === 'true'
 
+const S3_KEY_PREFIXES = new Set([
+  'samples',
+  'clients',
+  'case-studies',
+  'studios',
+  'staff',
+  'equipment',
+  'blog',
+  'uploads',
+])
+//const DEFAULT_VIDEO_PREFIX = 'samples'
+
 const s3Client = new S3Client({
   region: AWS_REGION,
   endpoint: ENDPOINT,
@@ -149,17 +161,9 @@ export const uploadToS3 = async (
   try {
     const { folder = 'uploads', contentType, metadata = {} } = options
 
-    // For 'samples' folder, use 'samples' bucket instead of BUCKET_NAME
-    const bucketName = folder === 'samples' ? 'samples' : BUCKET_NAME
-
-    // Generate unique file key
-    // For 'samples' bucket, we don't need the folder prefix in the key
-    const fileKey =
-      folder === 'samples'
-        ? fileName
-        : folder
-          ? `${folder}/${fileName}`
-          : fileName
+    const bucketName = BUCKET_NAME
+    const normalizedFolder = folder.replace(/^\/+|\/+$/g, '')
+    const fileKey = normalizedFolder ? `${normalizedFolder}/${fileName}` : fileName
 
     // Prepare file buffer
     let fileBuffer: Buffer
@@ -185,18 +189,12 @@ export const uploadToS3 = async (
     const command = new PutObjectCommand(uploadParams)
     await s3Client.send(command)
 
-    // Return the public URL and CDN URL
-    // For bucket 'samples', we need just the filename without the folder prefix
-    const urlKey =
-      bucketName === 'samples' && fileKey.includes('/')
-        ? fileKey.split('/').pop()!
-        : fileKey
-    const publicUrl = buildPublicUrl(urlKey, bucketName)
-    const cdnUrl = buildPublicUrl(urlKey, bucketName)
+    const publicUrl = buildPublicUrl(fileKey, bucketName)
+    const cdnUrl = getCdnUrl(fileKey)
 
     return {
       url: publicUrl,
-      cdnUrl: cdnUrl,
+      cdnUrl,
       key: fileKey,
       bucket: bucketName,
     }
@@ -434,6 +432,35 @@ export const extractFileKeyFromUrl = (url: string): string | null => {
   }
 }
 
+const parseOrigin = (value?: string) => {
+  if (!value) return null
+  try {
+    const parsed = new URL(value)
+    return {
+      hostname: parsed.hostname,
+      port: parsed.port || '',
+    }
+  } catch {
+    return null
+  }
+}
+
+const PUBLIC_ORIGIN = parseOrigin(PUBLIC_ENDPOINT)
+const ENDPOINT_ORIGIN = parseOrigin(ENDPOINT)
+const CDN_ORIGIN = parseOrigin(CDN_ENDPOINT)
+
+const matchesOrigin = (
+  target: URL,
+  origin: { hostname: string; port: string } | null
+) => {
+  if (!origin) return false
+  if (target.hostname !== origin.hostname) return false
+  if (!origin.port) {
+    return target.port === '' || target.port === origin.port
+  }
+  return target.port === origin.port
+}
+
 /**
  * Check if URL is from our S3 bucket
  */
@@ -442,42 +469,20 @@ export const isS3Url = (url: string): boolean => {
     const target = new URL(url)
     const host = target.hostname
 
-    const publicHost = (() => {
-      try {
-        return new URL(PUBLIC_ENDPOINT).hostname
-      } catch {
-        return undefined
-      }
-    })()
-    const endpointHost = (() => {
-      try {
-        return new URL(ENDPOINT).hostname
-      } catch {
-        return undefined
-      }
-    })()
-    const cdnHost = (() => {
-      try {
-        return CDN_ENDPOINT ? new URL(CDN_ENDPOINT).hostname : undefined
-      } catch {
-        return undefined
-      }
-    })()
-
-    // Direct match against configured hosts
     if (
-      (publicHost && host === publicHost) ||
-      (endpointHost && host === endpointHost) ||
-      (cdnHost && host === cdnHost)
+      matchesOrigin(target, PUBLIC_ORIGIN) ||
+      matchesOrigin(target, ENDPOINT_ORIGIN) ||
+      matchesOrigin(target, CDN_ORIGIN)
     ) {
       return true
     }
 
     // Virtual-hosted style: <bucket>.<endpointHost>
     if (
-      endpointHost &&
-      host.endsWith(`.${endpointHost}`) &&
-      host.startsWith(`${BUCKET_NAME}.`)
+      ENDPOINT_ORIGIN &&
+      host.endsWith(`.${ENDPOINT_ORIGIN.hostname}`) &&
+      host.startsWith(`${BUCKET_NAME}.`) &&
+      (ENDPOINT_ORIGIN.port ? target.port === ENDPOINT_ORIGIN.port : true)
     ) {
       return true
     }
@@ -504,66 +509,66 @@ export const isS3Url = (url: string): boolean => {
  * - Relative S3 paths: samples/video.mp4 or /samples/video.mp4
  * - Legacy formats: any other valid URL format
  */
-export const normalizeVideoUrl = (
-  url: string | null | undefined
-): string | null => {
-  if (!url) return null
+// export const normalizeVideoUrl = (
+//   url: string | null | undefined
+// ): string | null => {
+//   if (!url) return null
 
-  // Handle full URLs (http/https)
-  if (/^https?:\/\//.test(url)) {
-    try {
-      const urlObj = new URL(url)
+//   const normalizeKey = (rawPath: string): string | null => {
+//     if (!rawPath) return null
+//     const trimmed = rawPath.replace(/^\/+/, '')
+//     if (!trimmed) return null
 
-      // Check if this is a localhost URL with arcast-s3 bucket
-      if (urlObj.hostname === 'localhost' && urlObj.port === '9000') {
-        const pathParts = urlObj.pathname.split('/').filter(Boolean)
+//     const withoutBucket = trimmed.startsWith(`${BUCKET_NAME}/`)
+//       ? trimmed.slice(BUCKET_NAME.length + 1)
+//       : trimmed
 
-        // Check if path contains arcast-s3/samples/...
-        if (pathParts.length >= 2 && pathParts[0] === 'arcast-s3') {
-          if (pathParts[1] === 'samples' && pathParts.length >= 3) {
-            // Extract file key: everything after arcast-s3/samples/
-            const fileKey = pathParts.slice(2).join('/')
-            // Build correct URL with samples bucket directly
-            return `http://localhost:9000/samples/${fileKey}`
-          }
-        }
-      }
+//     if (!withoutBucket) return null
 
-      // If path contains arcast-s3, replace with samples
-      if (url.includes('arcast-s3')) {
-        const fixedUrl = url.replace(/\/arcast-s3\//g, '/samples/')
-        return fixedUrl
-      }
+//     const parts = withoutBucket.split('/').filter(Boolean)
+//     if (!parts.length) return null
 
-      // For other S3 URLs that are already correct, return as is
-      if (isS3Url(url)) {
-        return url
-      }
+//     // if (parts.length === 1) {
+//     //   const [first] = parts
+//     //   if (first.includes('.')) {
+//     //     return `${DEFAULT_VIDEO_PREFIX}/${first}`
+//     //   }
+//     //   return null
+//     // }
 
-      // For other full URLs, return as is
-      return url
-    } catch (e) {
-      console.error('Error parsing URL:', url, e)
-      return url
-    }
-  }
+//     if (!S3_KEY_PREFIXES.has(parts[0])) {
+//       return null
+//     }
 
-  // Handle relative paths
-  const cleanPath = url.replace(/^\/+/, '') // Remove leading slashes
+//     return parts.join('/')
+//   }
 
-  // If path starts with arcast-s3/samples/, extract just samples/... part
-  if (cleanPath.startsWith('arcast-s3/samples/')) {
-    const fileKey = cleanPath.replace(/^arcast-s3\//, '')
-    return getCdnUrl(fileKey)
-  }
+//   // Handle full URLs (http/https)
+//   if (/^https?:\/\//.test(url)) {
+//     try {
+//       const urlObj = new URL(url)
+//       const normalizedKey = normalizeKey(urlObj.pathname)
+//       if (normalizedKey) {
+//         return getCdnUrl(normalizedKey)
+//       }
 
-  // If path starts with samples/, use it directly
-  if (cleanPath.startsWith('samples/')) {
-    return getCdnUrl(cleanPath)
-  }
+//       return url
+//     } catch (e) {
+//       console.error('Error parsing URL:', url, e)
+//       return url
+//     }
+//   }
 
-  // For other relative paths, assume samples/ prefix
-  return getCdnUrl(`samples/${cleanPath}`)
-}
+//   // Handle relative paths
+//   const cleanPath = url.replace(/^\/+/, '') // Remove leading slashes
+
+//   const normalizedKey = normalizeKey(cleanPath)
+//   if (normalizedKey) {
+//     return getCdnUrl(normalizedKey)
+//   }
+
+//   // For other relative paths, return as root-relative URL (for legacy/local assets)
+//   return url.startsWith('/') ? url : `/${url}`
+// }
 
 export { s3Client, BUCKET_NAME }

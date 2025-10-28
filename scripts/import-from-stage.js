@@ -6,6 +6,12 @@ const prisma = new PrismaClient()
 const SOURCE = process.env.STAGE_SEED_SOURCE_URL
 const BEARER = process.env.STAGE_SEED_BEARER
 const HEADERS_JSON = process.env.STAGE_SEED_HEADERS
+const BUCKET_NAME =
+  process.env.AWS_S3_BUCKET_NAME ||
+  process.env.AWS_BUCKET_NAME ||
+  'arcast-s3'
+const PUBLIC_ENDPOINT =
+  process.env.NEXT_PUBLIC_S3_PUBLIC_ENDPOINT || process.env.AWS_ENDPOINT || ''
 
 function joinUrl(base, path) {
   if (!base) return null
@@ -124,6 +130,83 @@ async function upsertEquipmentByName(name, data = {}) {
       select: { id: true },
     })
   ).id
+}
+
+function normalizeKeyParts(parts) {
+  const cleaned = []
+  for (const part of parts) {
+    if (!part) continue
+    if (part === 'samples') {
+      if (cleaned[cleaned.length - 1] !== 'samples') {
+        cleaned.push('samples')
+      }
+    } else {
+      cleaned.push(part)
+    }
+  }
+  if (!cleaned.length) return cleaned
+  if (!S3_KEY_PREFIXES.has(cleaned[0])) {
+    cleaned.unshift('samples')
+  }
+  return cleaned
+}
+
+function buildS3Url(fileKey) {
+  if (!PUBLIC_ENDPOINT) {
+    return `${BUCKET_NAME}/${fileKey}`
+  }
+  try {
+    const parsed = new URL(PUBLIC_ENDPOINT)
+    const proto = parsed.protocol || 'http:'
+    const host = parsed.hostname
+    const port = parsed.port ? `:${parsed.port}` : ''
+    const basePath = parsed.pathname.replace(/\/+$/, '')
+    return `${proto}//${host}${port}${basePath}/${BUCKET_NAME}/${fileKey}`
+  } catch {
+    const trimmed = PUBLIC_ENDPOINT.replace(/\/+$/, '')
+    return `${trimmed}/${BUCKET_NAME}/${fileKey}`
+  }
+}
+
+function normalizeSampleVideoUrl(url) {
+  if (!url) return null
+  const value = String(url).trim()
+  if (!value) return null
+
+  const collapse = key => normalizeKeyParts(key.split('/').filter(Boolean))
+
+  try {
+    const parsed = new URL(value)
+    const segments = parsed.pathname.split('/').filter(Boolean)
+    if (!segments.length) {
+      return parsed.toString()
+    }
+
+    let keyParts = segments
+    if (segments[0] === BUCKET_NAME) {
+      keyParts = segments.slice(1)
+    }
+
+    keyParts = collapse(keyParts)
+    if (!keyParts.length) return null
+
+    parsed.pathname = `/${BUCKET_NAME}/${keyParts.join('/')}`
+    return parsed.toString()
+  } catch {
+    const trimmed = value.replace(/^\/+/, '')
+    if (!trimmed) return null
+
+    let keyParts = trimmed.split('/').filter(Boolean)
+    if (!keyParts.length) return null
+    if (keyParts[0] === BUCKET_NAME) {
+      keyParts = keyParts.slice(1)
+    }
+
+    keyParts = collapse(keyParts)
+    if (!keyParts.length) return null
+
+    return buildS3Url(keyParts.join('/'))
+  }
 }
 
 async function importClients() {
@@ -303,7 +386,7 @@ async function importSamples() {
     const data = {
       name,
       thumbUrl: s.thumbUrl || null,
-      videoUrl: s.videoUrl || null,
+      videoUrl: normalizeSampleVideoUrl(s.videoUrl),
       serviceTypeId,
     }
     if (existing) {

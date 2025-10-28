@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import { getUploadedFile } from '@/utils/files'
 import { validateFile } from '@/lib/validate'
-import { normalizeVideoUrl } from '@/lib/s3'
+//import { normalizeVideoUrl } from '@/lib/s3'
 
 export async function GET(
   request: NextRequest,
@@ -25,7 +25,7 @@ export async function GET(
     // Normalize video URL to ensure consistent format
     const normalizedSample = {
       ...sample,
-      videoUrl: normalizeVideoUrl(sample.videoUrl),
+      videoUrl: sample.videoUrl//normalizeVideoUrl(sample.videoUrl),
     }
 
     return NextResponse.json(normalizedSample)
@@ -132,7 +132,7 @@ export async function PUT(
     // Return normalized URL
     const normalizedSample = {
       ...sample,
-      videoUrl: normalizeVideoUrl(sample.videoUrl),
+      videoUrl: sample.videoUrl//normalizeVideoUrl(sample.videoUrl),
     }
 
     return NextResponse.json(normalizedSample)

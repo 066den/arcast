@@ -55,14 +55,14 @@ const SamplesTable = ({ initialData }: SamplesTableProps) => {
   }>({ isOpen: false, sample: null })
   const [isDeleting, setIsDeleting] = useState(false)
 
-  // Normalize video URL to remove arcast-s3 bucket prefix
-  const normalizeVideoUrl = (url: string | null): string => {
-    if (!url) return ''
-    if (url.includes('localhost:9000/arcast-s3/')) {
-      return url.replace('arcast-s3/', '')
-    }
-    return url
-  }
+  // // Normalize video URL to remove arcast-s3 bucket prefix
+  // const normalizeVideoUrl = (url: string | null): string => {
+  //   if (!url) return ''
+  //   if (url.includes('localhost:9000/arcast-s3/')) {
+  //     return url.replace('arcast-s3/', '')
+  //   }
+  //   return url
+  // }
 
   const handleEdit = (sample: Sample) => {
     // Navigate to edit page
@@ -102,7 +102,7 @@ const SamplesTable = ({ initialData }: SamplesTableProps) => {
 
   const handleView = (sample: Sample) => {
     if (sample.videoUrl) {
-      const normalizedUrl = normalizeVideoUrl(sample.videoUrl)
+      const normalizedUrl = sample.videoUrl//normalizeVideoUrl(sample.videoUrl)
       window.open(normalizedUrl, '_blank')
     } else {
       toast.error('No video URL available')
@@ -190,7 +190,7 @@ const SamplesTable = ({ initialData }: SamplesTableProps) => {
       accessorKey: 'videoUrl',
       cell: ({ row }: { row: Row<Sample> }) => {
         const videoUrl = row.original.videoUrl
-        const normalizedUrl = normalizeVideoUrl(videoUrl)
+        const normalizedUrl = videoUrl//normalizeVideoUrl(videoUrl)
         return (
           <div className="max-w-[400px]">
             {normalizedUrl ? (
