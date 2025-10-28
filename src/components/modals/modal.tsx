@@ -12,9 +12,7 @@ import {
 
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import dynamic from 'next/dynamic'
-
-const ReactPlayer = dynamic(() => import('react-player'), { ssr: false })
+import ReactPlayer from 'react-player'
 
 interface ModalProps {
   isOpen: boolean
@@ -167,14 +165,31 @@ export function VideoModal({
       contentClassName="overflow-hidden p-0 pt-4"
       className="w-full h-auto px-0"
     >
-      <div className="video-modal-container w-full">
+      <div
+        className="relative w-full video-modal-container"
+        style={{
+          aspectRatio: '16/9',
+          minHeight: '400px',
+          maxHeight: '80vh',
+        }}
+      >
         <ReactPlayer
-          {...{
-            url: videoUrl,
+          src={videoUrl || ''}
+          width="100%"
+          height="100%"
+          controls
+          playing
+          poster={poster || ''}
+          preload="auto"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
             width: '100%',
-            controls: true,
-            playing: true,
-            light: poster,
+            height: '100%',
+            minWidth: '100%',
+            minHeight: '100%',
+            objectFit: 'contain',
           }}
         />
       </div>

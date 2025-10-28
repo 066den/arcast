@@ -163,7 +163,9 @@ export const uploadToS3 = async (
 
     const bucketName = BUCKET_NAME
     const normalizedFolder = folder.replace(/^\/+|\/+$/g, '')
-    const fileKey = normalizedFolder ? `${normalizedFolder}/${fileName}` : fileName
+    const fileKey = normalizedFolder
+      ? `${normalizedFolder}/${fileName}`
+      : fileName
 
     // Prepare file buffer
     let fileBuffer: Buffer
@@ -199,7 +201,6 @@ export const uploadToS3 = async (
       bucket: bucketName,
     }
   } catch (error) {
-    
     throw new Error('Failed to upload file to S3')
   }
 }
@@ -217,7 +218,6 @@ export const deleteFromS3 = async (fileKey: string): Promise<boolean> => {
     await s3Client.send(command)
     return true
   } catch (error) {
-    
     return false
   }
 }
@@ -240,7 +240,6 @@ export const generatePresignedUploadUrl = async (
 
     return await getSignedUrl(s3Client, command, { expiresIn })
   } catch (error) {
-    
     throw new Error('Failed to generate presigned URL')
   }
 }
@@ -260,7 +259,6 @@ export const generatePresignedAccessUrl = async (
 
     return await getSignedUrl(s3Client, command, { expiresIn })
   } catch (error) {
-    
     throw new Error('Failed to generate presigned access URL')
   }
 }
@@ -345,8 +343,6 @@ export const uploadLargeFileToS3 = async (
       bucket: BUCKET_NAME,
     }
   } catch (error) {
-    
-
     // Try to abort the multipart upload if it was created
     if (typeof UploadId !== 'undefined') {
       try {
@@ -356,9 +352,7 @@ export const uploadLargeFileToS3 = async (
           UploadId,
         })
         await s3Client.send(abortCommand)
-      } catch (abortError) {
-        
-      }
+      } catch (abortError) {}
     }
 
     throw new Error('Failed to upload large file')
@@ -411,7 +405,6 @@ export const generatePresignedPost = async (
       cdnUrl,
     }
   } catch (error) {
-    
     throw new Error('Failed to generate presigned POST')
   }
 }
@@ -427,7 +420,6 @@ export const extractFileKeyFromUrl = (url: string): string | null => {
     // Remove leading slash and return the key
     return pathname.startsWith('/') ? pathname.slice(1) : pathname
   } catch (error) {
-    
     return null
   }
 }
@@ -554,7 +546,7 @@ export const isS3Url = (url: string): boolean => {
 
 //       return url
 //     } catch (e) {
-//       
+//       console.error('Error parsing URL:', url, e)
 //       return url
 //     }
 //   }
