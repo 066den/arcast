@@ -14,14 +14,14 @@ import 'react-image-crop/dist/ReactCrop.css'
 
 interface ImageCropperProps {
   src: string
-  aspectRatio?: number
+  aspectRatio?: number | undefined
   onCropComplete?: (croppedFile: File) => void
   onCancel?: () => void
 }
 
 export const ImageCropper = ({
   src,
-  aspectRatio = 1,
+  aspectRatio,
   onCropComplete,
   onCancel,
 }: ImageCropperProps) => {
@@ -33,23 +33,42 @@ export const ImageCropper = ({
   const onImageLoad = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
       const { width, height } = e.currentTarget
-      const crop = centerCrop(
-        makeAspectCrop(
-          {
-            unit: '%',
-            width: 100,
-          },
-          aspectRatio,
+
+      if (aspectRatio !== undefined) {
+        // Initialize with a centered crop for aspect ratio
+        const crop = centerCrop(
+          makeAspectCrop(
+            {
+              unit: '%',
+              width: 90,
+            },
+            aspectRatio,
+            width,
+            height
+          ),
           width,
           height
-        ),
-        width,
-        height
-      )
-      setCrop(crop)
+        )
+        setCrop(crop)
+      } else {
+        // No aspect ratio - free crop
+        const crop: Crop = {
+          unit: '%',
+          x: 5,
+          y: 5,
+          width: 90,
+          height: 90,
+        }
+        setCrop(crop)
+      }
     },
     [aspectRatio]
   )
+
+  const handleReset = useCallback(() => {
+    setCrop(undefined)
+    setCompletedCrop(undefined)
+  }, [])
 
   const handleCropComplete = useCallback(async () => {
     if (!completedCrop || !imgRef.current || !previewCanvasRef.current) {
@@ -69,7 +88,7 @@ export const ImageCropper = ({
 
       // Create canvas with the dimensions of the cropped image in natural pixels
       const croppedCanvas = document.createElement('canvas')
-      const ctx = croppedCanvas.getContext('2d')
+      const ctx = croppedCanvas.getContext('2d', { willReadFrequently: true })
 
       if (!ctx) return
 
@@ -84,6 +103,10 @@ export const ImageCropper = ({
       // Ensure drawing scales back down for display size
       ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
       ctx.imageSmoothingQuality = 'high'
+
+      // Fill with white background to avoid black background in JPEG
+      ctx.fillStyle = 'white'
+      ctx.fillRect(0, 0, cropWidth, cropHeight)
 
       // Draw the cropped part of the image from the natural-sized coordinates
       ctx.drawImage(
@@ -135,18 +158,24 @@ export const ImageCropper = ({
         <div className="mb-4">
           <h3 className="text-lg font-semibold">Image Cropping</h3>
           <p className="text-sm text-muted-foreground">
-            Drag the corners to change the cropping area
+            Drag the corners or edges to resize the cropping area, or drag the
+            entire area to move it
           </p>
         </div>
 
         <div className="flex flex-col items-center space-y-4">
           <ReactCrop
             crop={crop}
-            onChange={(_, percentCrop) => setCrop(percentCrop)}
+            onChange={(_, percentCrop) => {
+              setCrop(percentCrop)
+            }}
             onComplete={c => setCompletedCrop(c)}
             aspect={aspectRatio}
             className="max-w-full max-h-[60vh]"
+            minWidth={20}
+            minHeight={20}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               ref={imgRef}
               alt="Crop me"
@@ -163,6 +192,9 @@ export const ImageCropper = ({
               disabled={!completedCrop}
             >
               Apply Crop
+            </Button>
+            <Button variant="outline" onClick={handleReset} type="button">
+              Reset
             </Button>
             <Button variant="outline" onClick={onCancel} type="button">
               Cancel

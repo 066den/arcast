@@ -27,7 +27,7 @@ const ImageEditable = ({
   src,
   alt,
   onUpload,
-  aspectRatio = 1,
+  aspectRatio,
   showCrop = true,
   className,
   size = 'medium',

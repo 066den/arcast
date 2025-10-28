@@ -9,7 +9,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
 import { Loader2, Save, X } from 'lucide-react'
 import ImageEditable from '@/components/ui/ImageEditable'
-import { ASPECT_RATIOS } from '@/lib/constants'
 
 interface Equipment {
   id: string
@@ -102,7 +101,6 @@ export default function EquipmentForm({
               size="small"
               alt="Equipment Image"
               onUpload={setImageFile}
-              aspectRatio={ASPECT_RATIOS.SQUARE}
               src={equipment?.imageUrl || undefined}
             />
           </div>

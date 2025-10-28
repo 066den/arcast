@@ -233,7 +233,7 @@ export default function SampleEditForm({
               <div className="space-y-4">
                 <Label size="default">Current Thumbnail</Label>
                 <div className="relative group max-w-md">
-                  <div className="relative w-full h-48 rounded-lg overflow-hidden">
+                  <div className="relative aspect-square w-full h-48 rounded-lg overflow-hidden">
                     <Image
                       src={sample.thumbUrl}
                       alt="Sample thumbnail"

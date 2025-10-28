@@ -86,6 +86,9 @@ README.md
 # Backup files
 backups/
 
+# Public uploads (can be very large)
+public/uploads/
+
 # Include scripts in image (used for migrations/maintenance)
 # Previously excluded: "scripts/"
 # Now keeping scripts so they’re copied in Docker image
