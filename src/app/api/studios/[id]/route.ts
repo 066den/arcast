@@ -536,11 +536,17 @@ const hasConsecutiveAvailableSlots = (
 
   // Check if the booking would extend beyond studio closing time
   const [closeHour, closeMinute] = studio.closingTime.split(':').map(Number)
-  const studioClosingTime = new Date(startTime)
-  studioClosingTime.setUTCHours(closeHour - 4, closeMinute, 0, 0) // Convert Dubai time to UTC
+
+  // Extract hours and minutes from required end time for comparison
+  // Compare using local time to match how slots are created
+  const endHour = requiredEndTime.getHours()
+  const endMinute = requiredEndTime.getMinutes()
 
   // If the required end time is after studio closing, this slot is not available
-  if (requiredEndTime > studioClosingTime) {
+  if (
+    endHour > closeHour ||
+    (endHour === closeHour && endMinute > closeMinute)
+  ) {
     return false
   }
 

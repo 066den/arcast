@@ -145,7 +145,7 @@ export const generateAvailableTimeSlots = (
     let currentSlot = new Date(dayStart)
 
     // Generate hourly slots for the day
-    while (currentSlot < dayEnd) {
+    while (currentSlot.getTime() < dayEnd.getTime()) {
       const slotEnd = new Date(currentSlot.getTime() + 60 * 60 * 1000) // Add 1 hour
 
       // Check if slot overlaps with any booking
@@ -212,5 +212,5 @@ export function formatTimeRange(
 ): string {
   const start = new Date(startTime)
   const end = new Date(start.getTime() + duration * 60 * 60 * 1000)
-  return `${start.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`
+  return `${start.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })} - ${end.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}`
 }
