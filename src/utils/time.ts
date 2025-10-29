@@ -1,5 +1,4 @@
 import { ERROR_MESSAGES } from '@/lib/constants'
-import { TimeSlotList } from '@/types'
 
 export type BookingTimeRange = {
   startTime: Date | string
@@ -197,19 +196,7 @@ export function isSlotWithinWorkingHours(
   return startTime >= openingTime && endTime <= closingTime
 }
 
-export function generateSimpleTimeSlots(
-  openingTime: string,
-  closingTime: string
-): Array<{ start: string; end: string }> {
-  const slots: Array<{ start: string; end: string }> = []
-  return slots
-}
-
-export function formatTimeRange(
-  startTime: string,
-  duration: number,
-  timezone: string
-): string {
+export function formatTimeRange(startTime: string, duration: number): string {
   const start = new Date(startTime)
   const end = new Date(start.getTime() + duration * 60 * 60 * 1000)
   return `${start.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })} - ${end.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}`

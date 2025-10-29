@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -45,9 +44,6 @@ const AdditionalServiceForm = ({
   onCancel,
   isLoading = false,
 }: AdditionalServiceFormProps) => {
-  const [imageUrls, setImageUrls] = useState<string[]>(service?.imageUrls || [])
-  const [newImageUrl, setNewImageUrl] = useState('')
-
   const {
     register,
     handleSubmit,
@@ -67,19 +63,8 @@ const AdditionalServiceForm = ({
     },
   })
 
-  const handleAddImageUrl = () => {
-    if (newImageUrl.trim()) {
-      setImageUrls(prev => [...prev, newImageUrl.trim()])
-      setNewImageUrl('')
-    }
-  }
-
-  const handleRemoveImageUrl = (index: number) => {
-    setImageUrls(prev => prev.filter((_, i) => i !== index))
-  }
-
   const handleFormSubmit = (data: AdditionalServiceFormData) => {
-    onSave(data, imageUrls)
+    onSave(data)
   }
 
   const type = watch('type')
