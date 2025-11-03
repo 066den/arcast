@@ -22,7 +22,11 @@ export async function GET(
       return NextResponse.json({ error: 'Service not found' }, { status: 404 })
     }
 
-    return NextResponse.json(service)
+    // Convert Decimal to number for JSON serialization
+    return NextResponse.json({
+      ...service,
+      price: Number(service.price),
+    })
   } catch (error) {
     
     return NextResponse.json(
@@ -102,7 +106,11 @@ export async function PUT(
       },
     })
 
-    return NextResponse.json(service)
+    // Convert Decimal to number for JSON serialization
+    return NextResponse.json({
+      ...service,
+      price: Number(service.price),
+    })
   } catch (error) {
     
     return NextResponse.json(
