@@ -101,9 +101,9 @@ services:
       - letsencrypt:/etc/letsencrypt
       - acme:/var/www/certbot
     depends_on:
-      app:
-        condition: service_healthy
+      - app
     command: sh /usr/local/bin/nginx-entrypoint.sh
+    restart: unless-stopped
 
   # MinIO S3-compatible object storage
   minio:
