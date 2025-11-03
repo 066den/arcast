@@ -414,21 +414,6 @@ const BookingForm = ({
                 />
               </div>
             </div>
-
-            {submitSuccess && (
-              <motion.div
-                variants={notificationVariants}
-                initial="hidden"
-                animate="visible"
-                className="bg-green-100 border border-green-300 rounded-lg p-3"
-              >
-                <p className="text-green-600">
-                  {isBooking
-                    ? "Booking submitted successfully! We'll contact you soon to confirm your session."
-                    : "Order submitted successfully! We'll contact you soon to confirm your order."}
-                </p>
-              </motion.div>
-            )}
           </div>
         </div>
 
@@ -447,6 +432,20 @@ const BookingForm = ({
             initialServiceTypes={initialServiceTypes || []}
             additionalServices={initialAdditionalServices}
           />
+          {submitSuccess && (
+            <motion.div
+              variants={notificationVariants}
+              initial="hidden"
+              animate="visible"
+              className="bg-green-100 border border-green-300 rounded-lg p-3"
+            >
+              <p className="text-green-600">
+                {isBooking
+                  ? "Booking submitted successfully! We'll contact you soon to confirm your session."
+                  : "Order submitted successfully! We'll contact you soon to confirm your order."}
+              </p>
+            </motion.div>
+          )}
           {submitError && (
             <motion.div
               variants={notificationVariants}
