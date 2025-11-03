@@ -27,7 +27,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { LeadSchema, bookingLeadSchema } from '@/lib/schemas'
 import InputPhoneNew from '../ui/InputPhoneNew'
 import { ApiError, apiRequest } from '@/lib/api'
-import { cardVariants, notificationVariants } from '@/lib/motion-variants'
+import { notificationVariants } from '@/lib/motion-variants'
 import { motion } from 'framer-motion'
 import PaymentModal from './PaymentModal'
 import useFlag from '@/hooks/useFlag'
@@ -181,7 +181,6 @@ const BookingForm = ({
     } catch (error) {
       if (error instanceof ApiError) {
         setSubmitError(error.message)
-        
       } else {
         setSubmitError(ERROR_MESSAGES.BOOKING.FAILED)
       }
@@ -224,7 +223,6 @@ const BookingForm = ({
           setAvailableTimes([])
         }
       } catch (error) {
-        
         if (error instanceof ApiError) {
           toast.error(error.message)
         } else {

@@ -29,7 +29,7 @@ const SelectTime = ({
             className="w-full rounded-xl p-2 h-8"
           >
             <span className="text-base">
-              {formatTimeRange(time.start, duration, 'Asia/Dubai')}
+              {formatTimeRange(time.start, duration)}
             </span>
           </Button>
         ))
