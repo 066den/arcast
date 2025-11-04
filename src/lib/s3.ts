@@ -50,6 +50,19 @@ const AUTO_FORCE_PATH_STYLE = (() => {
 })()
 const FORCE_PATH_STYLE = EXPLICIT_FORCE_PATH_STYLE || AUTO_FORCE_PATH_STYLE
 
+// Определяем MinIO-окружение для безопасной схемы загрузки (presigned PUT)
+const IS_MINIO = (() => {
+  try {
+    const ep = new URL(ENDPOINT)
+    const host = ep.hostname.toLowerCase()
+    const isLocal = host === 'localhost' || host === '127.0.0.1'
+    const isIp = /^[0-9.]+$/.test(host)
+    return host.includes('minio') || isLocal || isIp
+  } catch {
+    return false
+  }
+})()
+
 const S3_KEY_PREFIXES = new Set([
   'samples',
   'clients',
@@ -203,11 +216,32 @@ export const uploadToS3 = async (
       Bucket: bucketName,
       Key: fileKey,
       Body: fileBuffer,
-      ContentType: fileContentType,
     }
 
-    const command = new PutObjectCommand(uploadParams)
-    await s3Client.send(command)
+    if (IS_MINIO) {
+      // Для MinIO уходим от подписи заголовков и используем presigned PUT без дополнительных хедеров
+      const presignedUrl = await getSignedUrl(
+        s3Client,
+        new PutObjectCommand({
+          Bucket: bucketName,
+          Key: fileKey,
+        }),
+        { expiresIn: 300 }
+      )
+
+      const putRes = await fetch(presignedUrl, {
+        method: 'PUT',
+        // Node/Next runtime поддерживает BufferSource; используем Uint8Array для типовой совместимости
+        body: new Uint8Array(fileBuffer),
+      })
+
+      if (!putRes.ok) {
+        throw new Error(`Presigned PUT failed with status ${putRes.status}`)
+      }
+    } else {
+      const command = new PutObjectCommand(uploadParams)
+      await s3Client.send(command)
+    }
 
     const publicUrl = buildPublicUrl(fileKey, bucketName)
     const cdnUrl = getCdnUrl(fileKey)
@@ -317,8 +351,6 @@ export const uploadLargeFileToS3 = async (
     const createCommand = new CreateMultipartUploadCommand({
       Bucket: BUCKET_NAME,
       Key: fileKey,
-      ContentType: contentType,
-      Metadata: metadata,
     })
 
     const { UploadId: createdUploadId } = await s3Client.send(createCommand)
@@ -344,7 +376,6 @@ export const uploadLargeFileToS3 = async (
         PartNumber: partNumber,
         UploadId,
         Body: buffer,
-        ContentLength: buffer.length,
       })
 
       const { ETag } = await s3Client.send(uploadCommand)
