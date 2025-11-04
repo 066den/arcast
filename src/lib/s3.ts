@@ -32,7 +32,23 @@ const BUCKET_NAME = (() => {
 const PUBLIC_ENDPOINT = process.env.NEXT_PUBLIC_S3_PUBLIC_ENDPOINT || ENDPOINT
 const CDN_ENDPOINT =
   process.env.NEXT_PUBLIC_S3_CDN_ENDPOINT || process.env.S3_CDN_ENDPOINT
-const FORCE_PATH_STYLE = process.env.AWS_FORCE_PATH_STYLE === 'true'
+const EXPLICIT_FORCE_PATH_STYLE = process.env.AWS_FORCE_PATH_STYLE === 'true'
+const AUTO_FORCE_PATH_STYLE = (() => {
+  // Автоматически включаем path-style для MinIO/локальных/IP/с портом,
+  // чтобы подпись совпадала с тем, как MinIO канонизирует запрос
+  try {
+    const ep = new URL(ENDPOINT)
+    const host = ep.hostname.toLowerCase()
+    const isLocal = host === 'localhost' || host === '127.0.0.1'
+    const isIp = /^[0-9.]+$/.test(host)
+    const hasPort = !!ep.port
+    return host.includes('minio') || isLocal || isIp || hasPort
+  } catch {
+    // Если ENDPOINT некорректен — используем path-style по умолчанию
+    return true
+  }
+})()
+const FORCE_PATH_STYLE = EXPLICIT_FORCE_PATH_STYLE || AUTO_FORCE_PATH_STYLE
 
 const S3_KEY_PREFIXES = new Set([
   'samples',
@@ -178,6 +194,9 @@ export const uploadToS3 = async (
     } else {
       fileBuffer = file
     }
+    if (!fileContentType) {
+      fileContentType = 'application/octet-stream'
+    }
 
     // Upload parameters
     const uploadParams = {
@@ -185,12 +204,42 @@ export const uploadToS3 = async (
       Key: fileKey,
       Body: fileBuffer,
       ContentType: fileContentType,
+      ContentLength: fileBuffer.length,
       Metadata: metadata,
-      ACL: 'public-read' as const, // Make files publicly accessible
     }
 
     const command = new PutObjectCommand(uploadParams)
-    await s3Client.send(command)
+    try {
+      await s3Client.send(command)
+    } catch (err) {
+      const code = (err as any)?.Code || (err as any)?.name
+      if (code === 'SignatureDoesNotMatch') {
+        // Fallback: presigned PUT avoids payload signing/canonicalization issues on some MinIO setups
+        const presignedUrl = await getSignedUrl(
+          s3Client,
+          new PutObjectCommand({
+            Bucket: bucketName,
+            Key: fileKey,
+            ContentType: fileContentType || 'application/octet-stream',
+          }),
+          { expiresIn: 300 }
+        )
+        const put = await fetch(presignedUrl, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': fileContentType || 'application/octet-stream',
+          },
+          // Node 18+ fetch принимает BufferSource.
+          // Используем Uint8Array, чтобы удовлетворить типам и избежать Blob несовместимостей.
+          body: new Uint8Array(fileBuffer),
+        })
+        if (!put.ok) {
+          throw new Error(`Presigned PUT failed with status ${put.status}`)
+        }
+      } else {
+        throw err
+      }
+    }
 
     const publicUrl = buildPublicUrl(fileKey, bucketName)
     const cdnUrl = getCdnUrl(fileKey)
@@ -247,7 +296,6 @@ export const generatePresignedUploadUrl = async (
       Bucket: BUCKET_NAME,
       Key: fileKey,
       ContentType: contentType,
-      ACL: 'public-read',
     })
 
     return await getSignedUrl(s3Client, command, { expiresIn })
@@ -328,6 +376,7 @@ export const uploadLargeFileToS3 = async (
         PartNumber: partNumber,
         UploadId,
         Body: buffer,
+        ContentLength: buffer.length,
       })
 
       const { ETag } = await s3Client.send(uploadCommand)
@@ -397,11 +446,9 @@ export const generatePresignedPost = async (
       Bucket: BUCKET_NAME,
       Key: fileKey,
       Fields: {
-        acl: 'public-read',
         'Content-Type': contentType,
       },
       Conditions: [
-        { acl: 'public-read' },
         { 'Content-Type': contentType },
         ['content-length-range', 0, maxFileSize],
       ],
