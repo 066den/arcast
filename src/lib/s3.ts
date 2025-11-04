@@ -218,29 +218,23 @@ export const uploadToS3 = async (
       Body: fileBuffer,
     }
 
-    if (IS_MINIO) {
-      // Для MinIO уходим от подписи заголовков и используем presigned PUT без дополнительных хедеров
-      const presignedUrl = await getSignedUrl(
-        s3Client,
-        new PutObjectCommand({
-          Bucket: bucketName,
-          Key: fileKey,
-        }),
-        { expiresIn: 300 }
-      )
+    // Для MinIO используем presigned PUT без дополнительных хедеров, чтобы избежать проблем с подписью
+    const presignedUrl = await getSignedUrl(
+      s3Client,
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: fileKey,
+      }),
+      { expiresIn: 300 }
+    )
 
-      const putRes = await fetch(presignedUrl, {
-        method: 'PUT',
-        // Node/Next runtime поддерживает BufferSource; используем Uint8Array для типовой совместимости
-        body: new Uint8Array(fileBuffer),
-      })
+    const putRes = await fetch(presignedUrl, {
+      method: 'PUT',
+      body: new Uint8Array(fileBuffer),
+    })
 
-      if (!putRes.ok) {
-        throw new Error(`Presigned PUT failed with status ${putRes.status}`)
-      }
-    } else {
-      const command = new PutObjectCommand(uploadParams)
-      await s3Client.send(command)
+    if (!putRes.ok) {
+      throw new Error(`Presigned PUT failed with status ${putRes.status}`)
     }
 
     const publicUrl = buildPublicUrl(fileKey, bucketName)
@@ -351,6 +345,7 @@ export const uploadLargeFileToS3 = async (
     const createCommand = new CreateMultipartUploadCommand({
       Bucket: BUCKET_NAME,
       Key: fileKey,
+      ContentType: contentType,
     })
 
     const { UploadId: createdUploadId } = await s3Client.send(createCommand)
@@ -376,6 +371,7 @@ export const uploadLargeFileToS3 = async (
         PartNumber: partNumber,
         UploadId,
         Body: buffer,
+        ContentLength: buffer.length,
       })
 
       const { ETag } = await s3Client.send(uploadCommand)
