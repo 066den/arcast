@@ -198,48 +198,16 @@ export const uploadToS3 = async (
       fileContentType = 'application/octet-stream'
     }
 
-    // Upload parameters
+    // Upload parameters (минимальный набор для исключения расхождений подписи на MinIO)
     const uploadParams = {
       Bucket: bucketName,
       Key: fileKey,
       Body: fileBuffer,
       ContentType: fileContentType,
-      ContentLength: fileBuffer.length,
-      Metadata: metadata,
     }
 
     const command = new PutObjectCommand(uploadParams)
-    try {
-      await s3Client.send(command)
-    } catch (err) {
-      const code = (err as any)?.Code || (err as any)?.name
-      if (code === 'SignatureDoesNotMatch') {
-        // Fallback: presigned PUT avoids payload signing/canonicalization issues on some MinIO setups
-        const presignedUrl = await getSignedUrl(
-          s3Client,
-          new PutObjectCommand({
-            Bucket: bucketName,
-            Key: fileKey,
-            ContentType: fileContentType || 'application/octet-stream',
-          }),
-          { expiresIn: 300 }
-        )
-        const put = await fetch(presignedUrl, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': fileContentType || 'application/octet-stream',
-          },
-          // Node 18+ fetch принимает BufferSource.
-          // Используем Uint8Array, чтобы удовлетворить типам и избежать Blob несовместимостей.
-          body: new Uint8Array(fileBuffer),
-        })
-        if (!put.ok) {
-          throw new Error(`Presigned PUT failed with status ${put.status}`)
-        }
-      } else {
-        throw err
-      }
-    }
+    await s3Client.send(command)
 
     const publicUrl = buildPublicUrl(fileKey, bucketName)
     const cdnUrl = getCdnUrl(fileKey)
