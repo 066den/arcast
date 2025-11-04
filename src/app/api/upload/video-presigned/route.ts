@@ -111,8 +111,10 @@ export async function POST(request: NextRequest) {
     
 
     // More detailed error logging
+    console.error('Video presigned POST error:', error)
     if (error instanceof Error) {
-      
+      console.error('Error message:', error.message)
+      console.error('Error stack:', error.stack)
     }
 
     const response = NextResponse.json(

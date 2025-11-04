@@ -61,7 +61,65 @@ export async function POST(request: NextRequest) {
     // Use S3 for video uploads
     const s3 = await import('@/lib/s3')
 
-    // Direct upload to S3
+    // For MinIO, always use direct upload via MinIO client (more reliable than presigned POST)
+    const endpoint = process.env.AWS_ENDPOINT || ''
+    const isMinIO =
+      endpoint.includes('minio') ||
+      endpoint.includes('localhost') ||
+      endpoint.includes('127.0.0.1')
+
+    // Always use direct upload for MinIO to avoid presigned POST signature issues
+    const usePresignedPost = false // Disable presigned POST for MinIO
+
+    console.log('Video upload decision:', {
+      endpoint,
+      isMinIO,
+      fileSize: file.size,
+      usePresignedPost,
+    })
+
+    if (usePresignedPost) {
+      console.log('Using presigned POST for large file upload')
+      // Generate presigned POST for direct client upload (bypasses signature issues)
+      const presignedPost = await s3.generatePresignedPost(fileName, {
+        folder: folder || 'samples',
+        contentType: file.type,
+        expiresIn: 3600, // 1 hour
+        maxFileSize: 1024 * 1024 * 1024, // 1GB
+      })
+
+      const response = NextResponse.json({
+        success: true,
+        message: 'Presigned POST generated for video upload',
+        presignedPost: {
+          url: presignedPost.url,
+          fields: presignedPost.fields,
+          fileKey: presignedPost.fileKey,
+          cdnUrl: presignedPost.cdnUrl,
+        },
+        videoUrl: presignedPost.cdnUrl, // For compatibility with client code
+        originalName: file.name,
+        size: file.size,
+        uploadMethod: 'presigned-post',
+        instructions: {
+          method: 'POST',
+          description: 'Upload file directly to S3 using presigned POST',
+          note: 'This bypasses signature issues with MinIO for large files',
+        },
+      })
+
+      // Add CORS headers
+      response.headers.set('Access-Control-Allow-Origin', '*')
+      response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS')
+      response.headers.set(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization'
+      )
+
+      return response
+    }
+
+    // Direct upload to S3 for small files or non-MinIO providers
     const uploadStartTime = Date.now()
 
     const result = await s3.uploadToS3(file, fileName, {

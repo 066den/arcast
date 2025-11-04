@@ -94,7 +94,21 @@ export async function PUT(
       }
 
       // Upload new image to local storage (consistent with POST)
-      imageUrl = await getUploadedFile(imageFile, 'equipment')
+      try {
+        imageUrl = await getUploadedFile(imageFile, 'equipment')
+      } catch (uploadError) {
+        console.error('Equipment image upload error:', uploadError)
+        return NextResponse.json(
+          {
+            error: 'Failed to upload image',
+            details:
+              uploadError instanceof Error
+                ? uploadError.message
+                : 'Unknown error',
+          },
+          { status: 500 }
+        )
+      }
     }
 
     const equipment = await prisma.equipment.update({

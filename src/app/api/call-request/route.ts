@@ -45,9 +45,13 @@ export async function POST(req: Request) {
       },
     })
   } catch (error) {
-    
+    console.error('Call request error:', error)
     return NextResponse.json(
-      { success: false, error: ERROR_MESSAGES.CALL_REQUEST.FAILED },
+      { 
+        success: false, 
+        error: ERROR_MESSAGES.CALL_REQUEST.FAILED,
+        details: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
+      },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     )
   }

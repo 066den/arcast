@@ -24,9 +24,12 @@ export async function GET() {
 
     return NextResponse.json(normalizedSamples)
   } catch (error) {
-    
+    console.error('Samples fetch error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        error: 'Internal server error',
+        details: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
+      },
       { status: 500 }
     )
   }
@@ -50,8 +53,10 @@ export async function POST(req: Request) {
       // Handle form data with file upload
       const formData = await req.formData()
       name = formData.get('name') as string
-      videoUrl = formData.get('videoUrl') as string
-      serviceTypeId = formData.get('serviceTypeId') as string
+      const videoUrlValue = formData.get('videoUrl') as string
+      videoUrl = videoUrlValue && videoUrlValue.trim() ? videoUrlValue.trim() : null
+      const serviceTypeIdValue = formData.get('serviceTypeId') as string
+      serviceTypeId = serviceTypeIdValue && serviceTypeIdValue.trim() ? serviceTypeIdValue.trim() : null
 
       const thumbnailFile = formData.get('thumbnailFile') as File
 
@@ -72,9 +77,12 @@ export async function POST(req: Request) {
         try {
           thumbUrl = await getUploadedFile(thumbnailFile, 'samples')
         } catch (error) {
-          
+          console.error('Thumbnail upload error:', error)
           return NextResponse.json(
-            { error: 'Failed to upload thumbnail' },
+            { 
+              error: 'Failed to upload thumbnail',
+              details: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
+            },
             { status: 400 }
           )
         }
@@ -95,8 +103,8 @@ export async function POST(req: Request) {
       }
     }
 
-    // Normalize video URL before storing in DB
-    const normalizedVideoUrl = videoUrl//normalizeVideoUrl(videoUrl)
+    // Normalize video URL before storing in DB (convert empty strings to null)
+    const normalizedVideoUrl = videoUrl && typeof videoUrl === 'string' && videoUrl.trim() ? videoUrl.trim() : null
 
     const sample = await prisma.sample.create({
       data: {
@@ -112,9 +120,12 @@ export async function POST(req: Request) {
 
     return NextResponse.json(sample)
   } catch (error) {
-    
+    console.error('Sample create error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        error: 'Internal server error',
+        details: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
+      },
       { status: 500 }
     )
   }

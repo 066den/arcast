@@ -13,9 +13,12 @@ export async function GET() {
 
     return NextResponse.json(articles)
   } catch (error) {
-    
+    console.error('Blog fetch error:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch blog articles' },
+      { 
+        error: 'Failed to fetch blog articles',
+        details: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
+      },
       { status: 500 }
     )
   }
@@ -51,9 +54,12 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(article)
   } catch (error) {
-    
+    console.error('Blog create error:', error)
     return NextResponse.json(
-      { error: 'Failed to create blog article' },
+      { 
+        error: 'Failed to create blog article',
+        details: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
+      },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     )
   }

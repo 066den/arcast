@@ -27,8 +27,12 @@ export async function GET(
 
     return NextResponse.json(staff)
   } catch (error) {
+    console.error('Staff fetch error:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch staff' },
+      { 
+        error: 'Failed to fetch staff',
+        details: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
+      },
       { status: 500 }
     )
   }

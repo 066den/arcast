@@ -63,19 +63,40 @@ const IS_MINIO = (() => {
   }
 })()
 
-const S3_KEY_PREFIXES = new Set([
-  'samples',
-  'clients',
-  'case-studies',
-  'studios',
-  'staff',
-  'equipment',
-  'blog',
-  'uploads',
-])
-//const DEFAULT_VIDEO_PREFIX = 'samples'
+// Validate S3 configuration and log it (without exposing secrets)
+// Only log in runtime, not during build
+if (typeof window === 'undefined' && process.env.NODE_ENV !== 'test') {
+  try {
+    console.log('S3 Configuration:', {
+      region: AWS_REGION,
+      endpoint: ENDPOINT,
+      bucket: BUCKET_NAME,
+      forcePathStyle: FORCE_PATH_STYLE,
+      hasCredentials: !!(AWS_ACCESS_KEY_ID && AWS_SECRET_ACCESS_KEY),
+      publicEndpoint: PUBLIC_ENDPOINT,
+      cdnEndpoint: CDN_ENDPOINT || 'Not configured',
+      provider: ENDPOINT.includes('digitaloceanspaces.com')
+        ? 'DigitalOcean Spaces'
+        : ENDPOINT.includes('minio')
+          ? 'MinIO'
+          : ENDPOINT.includes('amazonaws.com')
+            ? 'AWS S3'
+            : 'Unknown',
+    })
+  } catch {
+    // Silently fail during build if env vars are not available
+    console.warn('S3 configuration not available during build')
+  }
+}
 
-const s3Client = new S3Client({
+// Configure S3 client with MinIO-specific settings
+const isMinIO =
+  ENDPOINT.includes('minio') ||
+  ENDPOINT.includes('localhost') ||
+  ENDPOINT.includes('127.0.0.1')
+
+// For MinIO, don't add checksum config to avoid signature issues
+const s3ClientConfig: any = {
   region: AWS_REGION,
   endpoint: ENDPOINT,
   credentials: {
@@ -83,7 +104,104 @@ const s3Client = new S3Client({
     secretAccessKey: AWS_SECRET_ACCESS_KEY,
   },
   forcePathStyle: FORCE_PATH_STYLE,
-})
+}
+
+// Only add checksum config for non-MinIO providers
+if (!isMinIO) {
+  s3ClientConfig.requestChecksumCalculation = 'when-required'
+  s3ClientConfig.responseChecksumValidation = 'when-supported'
+}
+
+// Custom middleware to remove checksum headers for MinIO
+// This must run AFTER signing (serialize step) to remove headers added by flexible-checksums
+const removeChecksumHeadersMiddleware = (next: any) => async (args: any) => {
+  const request = args.request
+  if (request && request.headers) {
+    // Log headers before removal for debugging
+    const headersBefore = Object.keys(request.headers).filter(
+      h =>
+        h.toLowerCase().includes('checksum') || h.toLowerCase().includes('md5')
+    )
+    if (headersBefore.length > 0) {
+      console.log('Removing checksum headers before request:', headersBefore)
+    }
+
+    // Remove all checksum-related headers
+    const checksumHeaders = [
+      'x-amz-checksum-algorithm',
+      'x-amz-checksum-crc32',
+      'x-amz-checksum-crc32c',
+      'x-amz-checksum-sha1',
+      'x-amz-checksum-sha256',
+      'Content-MD5',
+    ]
+    checksumHeaders.forEach(header => {
+      const lowerHeader = header.toLowerCase()
+      if (request.headers[header]) {
+        delete request.headers[header]
+        console.log(`Removed header: ${header}`)
+      }
+      if (request.headers[lowerHeader]) {
+        delete request.headers[lowerHeader]
+        console.log(`Removed header: ${lowerHeader}`)
+      }
+      // Also remove any case variations
+      Object.keys(request.headers).forEach(key => {
+        if (key.toLowerCase() === lowerHeader) {
+          delete request.headers[key]
+          console.log(`Removed header (case variant): ${key}`)
+        }
+      })
+    })
+  }
+  return next(args)
+}
+
+// For MinIO, create client without checksum middleware to avoid signature issues
+let s3Client: S3Client
+if (isMinIO) {
+  // Create client and then add middleware to remove checksum headers
+  s3Client = new S3Client(s3ClientConfig)
+
+  // Add custom middleware to remove checksum headers
+  try {
+    // Add middleware to finalizeRequest step with high priority to run AFTER signing
+    // This ensures checksum headers added by flexible-checksums are removed after signing
+    s3Client.middlewareStack.add(removeChecksumHeadersMiddleware, {
+      step: 'finalizeRequest',
+      priority: 'high',
+      tags: ['MINIO_CHECKSUM_REMOVAL'],
+    })
+    console.log(
+      'Added checksum header removal middleware to finalizeRequest step (high priority)'
+    )
+
+    // Try to remove checksum middleware using different methods
+    const middlewareIds = s3Client.middlewareStack.identify()
+    const checksumId = middlewareIds.find(
+      (id: string) =>
+        id.toLowerCase().includes('checksum') ||
+        id.toLowerCase().includes('flexible')
+    )
+    if (checksumId) {
+      try {
+        s3Client.middlewareStack.remove(checksumId)
+        console.log('Removed checksum middleware:', checksumId)
+      } catch (removeError) {
+        console.warn('Could not remove checksum middleware:', removeError)
+      }
+    }
+
+    // Log all middleware for debugging
+    console.log('Available middleware IDs:', middlewareIds)
+  } catch (error) {
+    console.warn('Could not configure checksum removal middleware:', error)
+  }
+
+  console.log('MinIO detected - checksums disabled in S3Client config')
+} else {
+  s3Client = new S3Client(s3ClientConfig)
+}
 
 // Build a browser-accessible public URL
 // - Prefer PATH-STYLE for MinIO/localhost/IP/when port present or when FORCE_PATH_STYLE=true
@@ -105,12 +223,36 @@ const buildPublicUrl = (
     const pub = new URL(PUBLIC_ENDPOINT)
     const proto = pub.protocol || 'http:'
     const host = pub.hostname
-    const portStr = pub.port ? `:${pub.port}` : ''
-    if (shouldUsePathStyle(host, pub.port)) {
-      // Path-style
+    // For HTTPS, don't include port if it's standard (443) or if not specified
+    // For HTTP, include port only if explicitly specified
+    let portStr = ''
+    if (proto === 'https:') {
+      // HTTPS: include port only if it's non-standard (not 443)
+      if (pub.port && pub.port !== '443') {
+        portStr = `:${pub.port}`
+      }
+    } else if (proto === 'http:') {
+      // HTTP: include port only if explicitly specified (not 80)
+      if (pub.port && pub.port !== '80') {
+        portStr = `:${pub.port}`
+      }
+    }
+
+    // For MinIO public endpoints, always use path-style with bucket prefix
+    // This works for both localhost and production (arcast.studio:9000)
+    if (
+      host.includes('s3.arcast.studio') ||
+      (host.includes('arcast.studio') && pub.port === '9000') ||
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      shouldUsePathStyle(host, pub.port)
+    ) {
+      // Path-style:
+      // - http://localhost/arcast-s3/samples/... (local)
+      // - https://arcast.studio:9000/arcast-s3/samples/... (production)
       return `${proto}//${host}${portStr}/${bucket}/${fileKey}`
     }
-    // Virtual-hosted style
+    // Virtual-hosted style (for non-MinIO providers)
     return `${proto}//${bucket}.${host}${portStr}/${fileKey}`
   } catch {
     // ignore and fall through to ENDPOINT
@@ -200,52 +342,159 @@ export const uploadToS3 = async (
     // Prepare file buffer
     let fileBuffer: Buffer
     let fileContentType = contentType
+    let fileSize: number
 
     if (file instanceof File) {
+      fileSize = file.size
       fileBuffer = Buffer.from(await file.arrayBuffer())
       fileContentType = fileContentType || file.type
+      console.log('Uploading file to S3:', {
+        fileName,
+        fileKey,
+        size: fileSize,
+        contentType: fileContentType,
+        folder,
+        bucket: bucketName,
+      })
     } else {
       fileBuffer = file
+      fileSize = file.length
+      console.log('Uploading buffer to S3:', {
+        fileName,
+        fileKey,
+        size: fileSize,
+        contentType: fileContentType,
+        folder,
+        bucket: bucketName,
+      })
     }
     if (!fileContentType) {
       fileContentType = 'application/octet-stream'
     }
 
-    // Upload parameters (минимальный набор для исключения расхождений подписи на MinIO)
-    const uploadParams = {
+    // For MinIO, use official MinIO client to bypass AWS SDK checksum middleware
+    // The MinIO client handles signature correctly without checksum issues
+    // Use dynamic import only on server side to avoid bundling in client code
+    if (isMinIO && typeof window === 'undefined') {
+      console.log(
+        'MinIO upload - using official MinIO client to avoid checksum middleware'
+      )
+
+      // Dynamic import MinIO client only on server side
+      const Minio = await import('minio')
+      const endpoint = new URL(ENDPOINT)
+
+      // Verify credentials are set
+      if (!AWS_ACCESS_KEY_ID || !AWS_SECRET_ACCESS_KEY) {
+        throw new Error('MinIO credentials are not configured')
+      }
+
+      // MinIO client configuration - minimal config for local MinIO
+      // Explicitly set region to avoid getBucketRegionAsync call that causes signature issues
+      const minioClient = new Minio.Client({
+        endPoint: endpoint.hostname,
+        port: endpoint.port ? parseInt(endpoint.port, 10) : 9000,
+        useSSL: endpoint.protocol === 'https:',
+        accessKey: AWS_ACCESS_KEY_ID,
+        secretKey: AWS_SECRET_ACCESS_KEY,
+        region: AWS_REGION || 'us-east-1', // Explicit region to avoid region lookup
+      })
+
+      const contentType = fileContentType || 'application/octet-stream'
+
+      // Prepare metadata - MinIO expects Content-Type as standard header
+      const metaData: Record<string, string> = {
+        'Content-Type': contentType,
+      }
+
+      // Add custom metadata with 'x-amz-meta-' prefix
+      Object.entries(metadata).forEach(([key, value]) => {
+        metaData[`x-amz-meta-${key}`] = String(value)
+      })
+
+      console.log('Uploading to MinIO via MinIO client:', {
+        fileKey,
+        fileSize,
+        contentType,
+        bucket: bucketName,
+        endpoint: `${endpoint.protocol}//${endpoint.hostname}:${endpoint.port || 9000}`,
+        hostname: endpoint.hostname,
+        port: endpoint.port || 9000,
+      })
+
+      // Use MinIO client - pass Buffer directly (it accepts Buffer)
+      await minioClient.putObject(
+        bucketName,
+        fileKey,
+        fileBuffer,
+        fileSize,
+        metaData
+      )
+
+      console.log('Successfully uploaded file to MinIO via MinIO client:', {
+        fileKey,
+        size: fileSize,
+      })
+
+      const publicUrl = buildPublicUrl(fileKey, bucketName)
+      const cdnUrl = getCdnUrl(fileKey)
+
+      console.log('Generated public URL for MinIO upload:', {
+        fileKey,
+        publicUrl,
+        cdnUrl,
+        publicEndpoint: PUBLIC_ENDPOINT,
+      })
+
+      return {
+        url: publicUrl,
+        cdnUrl,
+        key: fileKey,
+        bucket: bucketName,
+      }
+    }
+
+    // For non-MinIO providers, use direct PutObjectCommand
+    // Upload parameters
+    // Note: Some S3-compatible providers (like DigitalOcean Spaces) may not support ACL
+    // Files are made public through bucket policies or settings instead
+    const uploadParams: any = {
       Bucket: bucketName,
       Key: fileKey,
       Body: fileBuffer,
+      ContentType: fileContentType,
+      Metadata: metadata,
     }
 
-    // Для MinIO используем presigned PUT без дополнительных хедеров, чтобы избежать проблем с подписью
-    const presignedUrl = await getSignedUrl(
-      s3Client,
-      new PutObjectCommand({
-        Bucket: bucketName,
-        Key: fileKey,
-      }),
-      { expiresIn: 300 }
-    )
-
-    const putRes = await fetch(presignedUrl, {
-      method: 'PUT',
-      body: new Uint8Array(fileBuffer),
-    })
-
-    if (!putRes.ok) {
-      throw new Error(`Presigned PUT failed with status ${putRes.status}`)
+    // Try to set ACL if supported (some providers don't support this)
+    // DigitalOcean Spaces doesn't support ACL - files are public by default if bucket is public
+    try {
+      // Only add ACL if not using DigitalOcean Spaces (DO doesn't support ACL)
+      if (!ENDPOINT.includes('digitaloceanspaces.com')) {
+        uploadParams.ACL = 'public-read'
+      }
+    } catch {
+      // Ignore ACL errors if not supported
     }
+
+    const command = new PutObjectCommand(uploadParams)
+
+    console.log('Sending upload command to S3...')
+    const startTime = Date.now()
+    await s3Client.send(command)
+    const uploadTime = Date.now() - startTime
 
     const publicUrl = buildPublicUrl(fileKey, bucketName)
     const cdnUrl = getCdnUrl(fileKey)
 
-    console.log('Uploaded file:', {
+    console.log('Successfully uploaded file to S3:', {
       fileKey,
       bucket: bucketName,
       publicUrl,
       cdnUrl,
       cdnEnabled: !!CDN_ENDPOINT,
+      uploadTimeMs: uploadTime,
+      fileSize,
     })
 
     return {
@@ -258,6 +507,43 @@ export const uploadToS3 = async (
     console.error('S3 upload error:', error)
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error'
+    const errorDetails: any = {
+      fileName,
+      folder: options.folder,
+      bucket: BUCKET_NAME,
+      endpoint: ENDPOINT,
+      errorMessage,
+    }
+
+    if (error instanceof Error) {
+      errorDetails.errorName = error.name
+      errorDetails.errorStack = error.stack
+
+      // Check for common S3 errors
+      if (
+        error.message.includes('AccessDenied') ||
+        error.message.includes('403')
+      ) {
+        errorDetails.suggestion = 'Check S3 credentials and bucket permissions'
+      } else if (
+        error.message.includes('NoSuchBucket') ||
+        error.message.includes('404')
+      ) {
+        errorDetails.suggestion =
+          'Bucket does not exist. Create it or check bucket name'
+      } else if (error.message.includes('InvalidAccessKeyId')) {
+        errorDetails.suggestion =
+          'Invalid AWS Access Key ID. Check AWS_ACCESS_KEY_ID'
+      } else if (error.message.includes('SignatureDoesNotMatch')) {
+        errorDetails.suggestion =
+          'Invalid AWS Secret Access Key. Check AWS_SECRET_ACCESS_KEY'
+      } else if (error.message.includes('RequestTimeTooSkewed')) {
+        errorDetails.suggestion =
+          'System clock is out of sync. Sync system time'
+      }
+    }
+
+    console.error('S3 upload error details:', errorDetails)
     throw new Error(`Failed to upload file to S3: ${errorMessage}`)
   }
 }
@@ -275,6 +561,10 @@ export const deleteFromS3 = async (fileKey: string): Promise<boolean> => {
     await s3Client.send(command)
     return true
   } catch (error) {
+    console.error('Failed to delete file from S3:', error)
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error'
+    console.error('Delete error details:', { fileKey, errorMessage })
     return false
   }
 }
@@ -288,15 +578,25 @@ export const generatePresignedUploadUrl = async (
   expiresIn: number = 3600 // 1 hour
 ): Promise<string> => {
   try {
-    const command = new PutObjectCommand({
+    // Build command params - ACL may not be supported by all providers
+    const commandParams: any = {
       Bucket: BUCKET_NAME,
       Key: fileKey,
       ContentType: contentType,
-    })
+    }
 
+    // Only add ACL if not using DigitalOcean Spaces
+    if (!ENDPOINT.includes('digitaloceanspaces.com')) {
+      commandParams.ACL = 'public-read'
+    }
+
+    const command = new PutObjectCommand(commandParams)
     return await getSignedUrl(s3Client, command, { expiresIn })
   } catch (error) {
-    throw new Error('Failed to generate presigned URL')
+    console.error('Failed to generate presigned URL:', error)
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error'
+    throw new Error(`Failed to generate presigned URL: ${errorMessage}`)
   }
 }
 
@@ -315,7 +615,10 @@ export const generatePresignedAccessUrl = async (
 
     return await getSignedUrl(s3Client, command, { expiresIn })
   } catch (error) {
-    throw new Error('Failed to generate presigned access URL')
+    console.error('Failed to generate presigned access URL:', error)
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error'
+    throw new Error(`Failed to generate presigned access URL: ${errorMessage}`)
   }
 }
 
@@ -399,6 +702,11 @@ export const uploadLargeFileToS3 = async (
       bucket: BUCKET_NAME,
     }
   } catch (error) {
+    console.error('Failed to upload large file:', error)
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error'
+    console.error('Upload error details:', { fileKey, fileName, errorMessage })
+
     // Try to abort the multipart upload if it was created
     if (typeof UploadId !== 'undefined') {
       try {
@@ -408,10 +716,13 @@ export const uploadLargeFileToS3 = async (
           UploadId,
         })
         await s3Client.send(abortCommand)
-      } catch (abortError) {}
+        console.log('Multipart upload aborted successfully')
+      } catch (abortError) {
+        console.error('Failed to abort multipart upload:', abortError)
+      }
     }
 
-    throw new Error('Failed to upload large file')
+    throw new Error(`Failed to upload large file: ${errorMessage}`)
   }
 }
 
@@ -437,29 +748,35 @@ export const generatePresignedPost = async (
     const fileKey = folder ? `${folder}/${uniqueFileName}` : uniqueFileName
 
     // Create presigned POST with simplified conditions
-    const { url, fields } = await createPresignedPost(s3Client, {
-      Bucket: BUCKET_NAME,
-      Key: fileKey,
-      Fields: {
-        'Content-Type': contentType,
-      },
-      Conditions: [
-        { 'Content-Type': contentType },
-        ['content-length-range', 0, maxFileSize],
-      ],
-      Expires: expiresIn,
-    })
+    const { url, fields: generatedFields } = await createPresignedPost(
+      s3Client,
+      {
+        Bucket: BUCKET_NAME,
+        Key: fileKey,
+        Fields: {
+          'Content-Type': contentType,
+        },
+        Conditions: [
+          { 'Content-Type': contentType },
+          ['content-length-range', 0, maxFileSize],
+        ],
+        Expires: expiresIn,
+      }
+    )
 
     const cdnUrl = getCdnUrl(fileKey)
 
     return {
       url,
-      fields,
+      fields: generatedFields,
       fileKey,
       cdnUrl,
     }
   } catch (error) {
-    throw new Error('Failed to generate presigned POST')
+    console.error('Failed to generate presigned POST:', error)
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error'
+    throw new Error(`Failed to generate presigned POST: ${errorMessage}`)
   }
 }
 
@@ -473,7 +790,7 @@ export const extractFileKeyFromUrl = (url: string): string | null => {
 
     // Remove leading slash and return the key
     return pathname.startsWith('/') ? pathname.slice(1) : pathname
-  } catch (error) {
+  } catch {
     return null
   }
 }

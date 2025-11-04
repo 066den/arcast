@@ -35,9 +35,13 @@ export async function POST(req: Request) {
       data: { firstName, lastName, email, message, phone },
     })
   } catch (error) {
-    
+    console.error('Contact form error:', error)
     return NextResponse.json(
-      { success: false, error: ERROR_MESSAGES.CONTACT.FAILED },
+      { 
+        success: false, 
+        error: ERROR_MESSAGES.CONTACT.FAILED,
+        details: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
+      },
       { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     )
   }

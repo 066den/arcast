@@ -125,14 +125,21 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
     return undefined
   }
 
-  const formatDateTime = (date: Date | string) => {
-    return new Date(date).toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
+  const formatDateTime = (date: Date | string | null | undefined): string => {
+    if (!date) return 'N/A'
+    try {
+      const dateObj = typeof date === 'string' ? new Date(date) : date
+      if (isNaN(dateObj.getTime())) return 'Invalid date'
+      return dateObj.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    } catch {
+      return 'Invalid date'
+    }
   }
 
   const filteredBookings = useMemo(
@@ -164,14 +171,14 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
         return (
           <div className="max-w-[200px]">
             <div className="font-medium truncate">
-              {lead?.fullName || 'N/A'}
+              {String(lead?.fullName || 'N/A')}
             </div>
             <div className="text-sm text-muted-foreground truncate">
-              {lead?.email || 'N/A'}
+              {String(lead?.email || 'N/A')}
             </div>
             {lead?.phoneNumber && (
               <div className="text-sm text-muted-foreground">
-                {lead.phoneNumber}
+                {String(lead.phoneNumber)}
               </div>
             )}
           </div>
@@ -205,8 +212,17 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
             <div className="flex items-center gap-2">
               <User className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">
-                {booking.numberOfSeats} seat
-                {booking.numberOfSeats !== 1 ? 's' : ''}
+                {typeof booking.numberOfSeats === 'number'
+                  ? booking.numberOfSeats
+                  : Number(booking.numberOfSeats) || 0}{' '}
+                seat
+                {typeof booking.numberOfSeats === 'number'
+                  ? booking.numberOfSeats !== 1
+                    ? 's'
+                    : ''
+                  : Number(booking.numberOfSeats) !== 1
+                    ? 's'
+                    : ''}
               </span>
             </div>
           </div>
@@ -223,17 +239,17 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
             <div className="flex items-center gap-2 mb-1">
               <MapPin className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm font-medium">
-                {booking.studio?.name || 'N/A'}
+                {String(booking.studio?.name || 'N/A')}
               </span>
             </div>
             {booking.service && (
               <div className="text-sm text-muted-foreground">
-                Service: {booking.service.name}
+                Service: {String(booking.service.name || 'Unknown')}
               </div>
             )}
             {booking.contentPackage && (
               <div className="text-sm text-muted-foreground">
-                Package: {booking.contentPackage.name}
+                Package: {String(booking.contentPackage.name || 'Unknown')}
               </div>
             )}
           </div>
@@ -265,11 +281,14 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
                 <PlusCircle className="h-3 w-3 text-muted-foreground mt-1 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <div className="font-medium truncate">
-                    {item.service?.name || 'Unknown service'}
+                    {String(item.service?.name || 'Unknown service')}
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    Qty: {item.quantity} ×{' '}
-                    {formatCurrency(toNumber(item.unitPrice))} ={' '}
+                    Qty:{' '}
+                    {typeof item.quantity === 'number'
+                      ? item.quantity
+                      : Number(item.quantity) || 0}{' '}
+                    × {formatCurrency(toNumber(item.unitPrice))} ={' '}
                     {formatCurrency(toNumber(item.totalPrice))}
                   </div>
                 </div>
@@ -284,21 +303,20 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
       accessorKey: 'status',
       cell: ({ row }: { row: Row<Booking> }) => {
         const booking = row.original
+        // Ensure status is always a string to prevent React hydration errors
+        const statusValue = booking.status ? String(booking.status) : 'Unknown'
+        const statusString = String(booking.status || 'Unknown')
         return (
           <div className="min-w-[150px]">
             <Select
-              value={booking.status}
+              value={statusValue}
               onValueChange={value =>
                 handleStatusChange(booking.id, value as Booking['status'])
               }
               disabled={loadingId === booking.id || isPending}
             >
               <SelectTrigger className="w-full">
-                <SelectValue>
-                  <Badge variant={getStatusBadgeVariant(booking.status)}>
-                    {booking.status}
-                  </Badge>
-                </SelectValue>
+                <SelectValue placeholder={statusString} />
               </SelectTrigger>
               <SelectContent>
                 {Object.values(BOOKING_STATUS).map(status => (
@@ -351,7 +369,7 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
             ) : null}
             {booking.payment && (
               <div className="text-sm text-muted-foreground">
-                Payment: {booking.payment.status}
+                Payment: {String(booking.payment.status || 'Unknown')}
               </div>
             )}
           </div>

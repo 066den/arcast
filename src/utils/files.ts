@@ -35,7 +35,10 @@ export const getUploadedFile = async (
     })
     return result.cdnUrl || result.url
   } catch (error) {
-    throw new Error('Failed to upload file')
+    console.error('File upload error:', error)
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error'
+    throw new Error(`Failed to upload file: ${errorMessage}`)
   }
 }
 
@@ -66,7 +69,13 @@ export const deleteUploadedFile = async (fileUrl: string): Promise<boolean> => {
     const filePath = join(process.cwd(), 'public', 'uploads', urlPath)
     await unlink(filePath)
     return true
-  } catch (error) {
+  } catch (error: any) {
+    // Ignore ENOENT errors (file doesn't exist) - this is not critical
+    if (error?.code === 'ENOENT') {
+      const urlPath = fileUrl.replace(/^\/uploads\//, '')
+      console.log('Local file not found (may already be deleted):', urlPath)
+      return true // Treat as success since file doesn't exist
+    }
     console.error('Error deleting local file:', error)
     return false
   }
@@ -100,6 +109,7 @@ export const getUploadedVideo = async (
     } else if (file.size > 300 * 1024 * 1024) {
       uploadMethod = 'multipart upload (very large file)'
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       uploadMethod = 'direct upload (medium file)'
     }
 
@@ -114,7 +124,7 @@ export const getUploadedVideo = async (
       try {
         const errorData = await response.json()
         errorMessage = errorData.error || errorMessage
-      } catch (parseError) {
+      } catch {
         // If response is not JSON, use status text or default message
         errorMessage = response.statusText || errorMessage
       }
@@ -130,23 +140,9 @@ export const getUploadedVideo = async (
       // Upload directly to S3 using presigned POST
       const uploadFormData = new FormData()
 
-      // Add only required presigned fields (exclude metadata)
-      const requiredFields = [
-        'key',
-        'acl',
-        'Content-Type',
-        'Policy',
-        'X-Amz-Algorithm',
-        'X-Amz-Credential',
-        'X-Amz-Date',
-        'X-Amz-Signature',
-      ]
-
+      // Add all presigned fields (MinIO and other providers may have different field names)
       Object.entries(result.presignedPost.fields).forEach(([key, value]) => {
-        if (requiredFields.includes(key)) {
-          uploadFormData.append(key, value as string)
-        } else {
-        }
+        uploadFormData.append(key, value as string)
       })
 
       // Add the file last
@@ -178,7 +174,7 @@ export const getUploadedVideo = async (
         }
 
         return result.presignedPost.cdnUrl
-      } catch (error: any) {
+      } catch {
         // Fallback: Use direct upload through server
 
         const fallbackFormData = new FormData()
@@ -204,7 +200,7 @@ export const getUploadedVideo = async (
     // Fallback to direct upload response
 
     return result.videoUrl
-  } catch (error) {
+  } catch {
     throw new Error('Failed to upload video')
   }
 }
@@ -238,7 +234,7 @@ export const getUploadedFileGeneric = async (
     })
 
     return result.cdnUrl || result.url
-  } catch (error) {
+  } catch {
     throw new Error('Failed to upload file')
   }
 }

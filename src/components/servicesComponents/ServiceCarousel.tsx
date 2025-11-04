@@ -47,7 +47,11 @@ const ServicesCarousel = ({
         <CarouselContent
           className={cn(
             'w-full justify-start',
-            isBooking ? 'lg:justify-center' : '2xl:justify-center'
+            isBooking
+              ? 'lg:justify-center'
+              : packages.length < 4
+                ? '2xl:justify-center'
+                : 'justify-start'
           )}
         >
           <AnimatePresence mode="popLayout">

@@ -30,9 +30,12 @@ export async function GET(
 
     return NextResponse.json(normalizedSample)
   } catch (error) {
-    
+    console.error('Sample fetch error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        error: 'Internal server error',
+        details: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
+      },
       { status: 500 }
     )
   }
@@ -60,8 +63,10 @@ export async function PUT(
       // Handle form data with file upload
       const formData = await request.formData()
       name = formData.get('name') as string
-      videoUrl = formData.get('videoUrl') as string
-      serviceTypeId = formData.get('serviceTypeId') as string
+      const videoUrlValue = formData.get('videoUrl') as string
+      videoUrl = videoUrlValue && videoUrlValue.trim() ? videoUrlValue.trim() : null
+      const serviceTypeIdValue = formData.get('serviceTypeId') as string
+      serviceTypeId = serviceTypeIdValue && serviceTypeIdValue.trim() ? serviceTypeIdValue.trim() : null
 
       const thumbnailFile = formData.get('thumbnailFile') as File
 
@@ -82,9 +87,12 @@ export async function PUT(
         try {
           thumbUrl = await getUploadedFile(thumbnailFile, 'samples')
         } catch (error) {
-          
+          console.error('Thumbnail upload error:', error)
           return NextResponse.json(
-            { error: 'Failed to upload thumbnail' },
+            { 
+              error: 'Failed to upload thumbnail',
+              details: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
+            },
             { status: 400 }
           )
         }
@@ -94,8 +102,10 @@ export async function PUT(
       const body = await request.json()
       name = body.name
       thumbUrl = body.thumbUrl || null
-      videoUrl = body.videoUrl || null
-      serviceTypeId = body.serviceTypeId || null
+      const videoUrlValue = body.videoUrl
+      videoUrl = videoUrlValue && typeof videoUrlValue === 'string' && videoUrlValue.trim() ? videoUrlValue.trim() : null
+      const serviceTypeIdValue = body.serviceTypeId
+      serviceTypeId = serviceTypeIdValue && typeof serviceTypeIdValue === 'string' && serviceTypeIdValue.trim() ? serviceTypeIdValue.trim() : null
 
       if (!name) {
         return NextResponse.json(
@@ -105,6 +115,9 @@ export async function PUT(
       }
     }
 
+    // Normalize videoUrl to ensure it's either a valid string or null
+    const normalizedVideoUrl = videoUrl && typeof videoUrl === 'string' && videoUrl.trim() ? videoUrl.trim() : null
+
     const updateData: {
       name: string
       videoUrl: string | null
@@ -112,7 +125,7 @@ export async function PUT(
       thumbUrl?: string | null
     } = {
       name,
-      videoUrl, // Store as provided - will be normalized on retrieval
+      videoUrl: normalizedVideoUrl,
       serviceTypeId: serviceTypeId || null,
     }
 
@@ -137,9 +150,12 @@ export async function PUT(
 
     return NextResponse.json(normalizedSample)
   } catch (error) {
-    
+    console.error('Sample update error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        error: 'Internal server error',
+        details: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
+      },
       { status: 500 }
     )
   }
@@ -162,9 +178,12 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    
+    console.error('Sample delete error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        error: 'Internal server error',
+        details: process.env.NODE_ENV === 'development' && error instanceof Error ? error.message : undefined
+      },
       { status: 500 }
     )
   }

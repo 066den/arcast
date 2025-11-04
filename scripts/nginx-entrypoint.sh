@@ -39,11 +39,36 @@ fi
 
 # Fallback to self-signed if no valid certs found
 if [ ! -f /etc/nginx/certs/server.crt ] || [ ! -f /etc/nginx/certs/server.key ]; then
-  echo "Generating self-signed certificate fallback..."
+  echo "Generating self-signed certificate fallback with SAN..."
+  DOMAIN="${CERTBOT_DOMAIN:-localhost}"
+  # Create openssl config with SAN for both main domain and s3 subdomain
+  cat > /tmp/openssl.conf <<EOF
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+prompt = no
+
+[req_distinguished_name]
+CN = ${DOMAIN}
+
+[v3_req]
+keyUsage = keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = ${DOMAIN}
+DNS.2 = www.${DOMAIN}
+DNS.3 = s3.${DOMAIN}
+DNS.4 = localhost
+DNS.5 = *.localhost
+EOF
   openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     -keyout /etc/nginx/certs/server.key \
     -out /etc/nginx/certs/server.crt \
-    -subj "/CN=${CERTBOT_DOMAIN:-localhost}"
+    -config /tmp/openssl.conf \
+    -extensions v3_req
+  rm -f /tmp/openssl.conf
 fi
 
 echo "Starting NGINX..."
