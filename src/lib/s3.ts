@@ -10,8 +10,6 @@ import {
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
-import { NodeHttpHandler } from '@smithy/node-http-handler'
-import https from 'https'
 
 const requireEnv = (name: string): string => {
   const v = process.env[name]
@@ -85,12 +83,6 @@ const s3Client = new S3Client({
     secretAccessKey: AWS_SECRET_ACCESS_KEY,
   },
   forcePathStyle: FORCE_PATH_STYLE,
-  // Отключаем проверку сертификатов для MinIO в Docker (самоподписанные сертификаты)
-  requestHandler: new NodeHttpHandler({
-    httpsAgent: new https.Agent({
-      rejectUnauthorized: false,
-    }),
-  }),
 })
 
 // Build a browser-accessible public URL
