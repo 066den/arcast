@@ -38,6 +38,7 @@ import {
   CreditCard,
   Search,
   Filter,
+  PlusCircle,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { ApiError, updateBookingStatus } from '@/lib/api'
@@ -73,7 +74,6 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
       })
       toast.success('Booking status updated successfully')
     } catch (error) {
-      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -109,6 +109,20 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
       }).format(amount)
     }
     return 'N/A'
+  }
+
+  const toNumber = (value: unknown): number | undefined => {
+    if (typeof value === 'number') return value
+    if (
+      value &&
+      typeof value === 'object' &&
+      typeof (value as { toString?: unknown }).toString === 'function'
+    ) {
+      const s = (value as { toString: () => string }).toString()
+      const n = Number(s)
+      return Number.isNaN(n) ? undefined : n
+    }
+    return undefined
   }
 
   const formatDateTime = (date: Date | string) => {
@@ -227,6 +241,45 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
       },
     },
     {
+      header: 'Additional Services',
+      accessorKey: 'bookingAdditionalServices',
+      cell: ({ row }: { row: Row<Booking> }) => {
+        const booking = row.original
+        const additionalServices = booking.bookingAdditionalServices || []
+
+        if (additionalServices.length === 0) {
+          return (
+            <div className="text-sm text-muted-foreground max-w-[200px]">
+              No additional services
+            </div>
+          )
+        }
+
+        return (
+          <div className="max-w-[250px] space-y-1">
+            {additionalServices.map((item, index) => (
+              <div
+                key={item.id || index}
+                className="flex items-start gap-2 text-sm"
+              >
+                <PlusCircle className="h-3 w-3 text-muted-foreground mt-1 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium truncate">
+                    {item.service?.name || 'Unknown service'}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Qty: {item.quantity} ×{' '}
+                    {formatCurrency(toNumber(item.unitPrice))} ={' '}
+                    {formatCurrency(toNumber(item.totalPrice))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      },
+    },
+    {
       header: 'Status',
       accessorKey: 'status',
       cell: ({ row }: { row: Row<Booking> }) => {
@@ -291,11 +344,11 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
                 )}
               </span>
             </div>
-            {booking.discountAmount && Number(booking.discountAmount) > 0 && (
+            {booking.discountAmount && Number(booking.discountAmount) > 0 ? (
               <div className="text-sm text-green-600">
                 -{formatCurrency(Number(booking.discountAmount))} discount
               </div>
-            )}
+            ) : null}
             {booking.payment && (
               <div className="text-sm text-muted-foreground">
                 Payment: {booking.payment.status}

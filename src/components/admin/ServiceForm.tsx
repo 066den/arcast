@@ -56,6 +56,27 @@ const ServiceForm = ({
   const [includes, setIncludes] = useState<string[]>(service?.includes || [])
   const [newInclude, setNewInclude] = useState('')
 
+  // Helper function to convert Decimal or number to string safely
+  const priceToString = (price: unknown): string => {
+    if (price == null) return ''
+    if (typeof price === 'number') {
+      // Convert number to string, preserving precision
+      // If it's a whole number, return without decimals, otherwise return as is
+      return price % 1 === 0 ? price.toString() : price.toString()
+    }
+    if (typeof price === 'string') {
+      return price
+    }
+    // For Decimal objects (Prisma), convert to string
+    if (typeof price === 'object' && price !== null && 'toString' in price) {
+      const decimalStr = (price as { toString: () => string }).toString()
+      // Convert to number first to ensure precision, then back to string
+      const num = parseFloat(decimalStr)
+      return isNaN(num) ? '' : num.toString()
+    }
+    return ''
+  }
+
   const {
     register,
     handleSubmit,
@@ -72,7 +93,7 @@ const ServiceForm = ({
         : serviceTypes.length > 0
           ? serviceTypes[0].id
           : undefined,
-      price: service?.price?.toString() || '',
+      price: priceToString(service?.price),
       currency: service?.currency || 'AED',
       isPopular: service?.isPopular || false,
       isActive: service?.isActive ?? true,

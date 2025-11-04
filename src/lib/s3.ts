@@ -195,6 +195,14 @@ export const uploadToS3 = async (
     const publicUrl = buildPublicUrl(fileKey, bucketName)
     const cdnUrl = getCdnUrl(fileKey)
 
+    console.log('Uploaded file:', {
+      fileKey,
+      bucket: bucketName,
+      publicUrl,
+      cdnUrl,
+      cdnEnabled: !!CDN_ENDPOINT,
+    })
+
     return {
       url: publicUrl,
       cdnUrl,

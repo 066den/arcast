@@ -181,16 +181,6 @@ export function VideoModal({
           playing
           poster={poster || ''}
           preload="auto"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            minWidth: '100%',
-            minHeight: '100%',
-            objectFit: 'contain',
-          }}
         />
       </div>
     </Modal>

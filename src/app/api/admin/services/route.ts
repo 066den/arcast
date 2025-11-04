@@ -13,7 +13,13 @@ export async function GET() {
       },
     })
 
-    return NextResponse.json(services)
+    // Convert Decimal to number for JSON serialization
+    return NextResponse.json(
+      services.map(service => ({
+        ...service,
+        price: Number(service.price),
+      }))
+    )
   } catch (error) {
     
     return NextResponse.json(
@@ -76,7 +82,14 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    return NextResponse.json(service, { status: 201 })
+    // Convert Decimal to number for JSON serialization
+    return NextResponse.json(
+      {
+        ...service,
+        price: Number(service.price),
+      },
+      { status: 201 }
+    )
   } catch (error) {
     
     return NextResponse.json(

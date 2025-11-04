@@ -70,7 +70,6 @@ export default function SampleCreateForm({
       toast.success('Sample created successfully')
       router.push('/admin/samples')
     } catch (error) {
-      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -161,9 +160,9 @@ export default function SampleCreateForm({
                 className="mt-4 text-center"
                 alt="Sample Thumbnail"
                 onUpload={setThumbnailFile}
-                aspectRatio={ASPECT_RATIOS.LANDSCAPE}
+                aspectRatio={ASPECT_RATIOS.SQUARE}
                 showCrop={true}
-                size="large"
+                size="small"
               />
             </div>
           </CardContent>

@@ -28,6 +28,11 @@ export const getUploadedFile = async (
       },
     })
 
+    console.log('Upload result:', {
+      cdnUrl: result.cdnUrl,
+      url: result.url,
+      key: result.key,
+    })
     return result.cdnUrl || result.url
   } catch (error) {
     throw new Error('Failed to upload file')

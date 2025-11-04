@@ -18,12 +18,7 @@ import { useRouter } from 'next/navigation'
 import ImageEditable from '@/components/ui/ImageEditable'
 import VideoUpload from '@/components/ui/VideoUpload'
 import Image from 'next/image'
-import {
-  ApiError,
-  updateSample,
-  uploadSampleImage,
-  deleteSampleImage,
-} from '@/lib/api'
+import { ApiError, updateSample, deleteSampleImage } from '@/lib/api'
 import { ASPECT_RATIOS } from '@/lib/constants'
 
 interface Sample {
@@ -68,32 +63,11 @@ export default function SampleEditForm({
     }))
   }
 
-  const handleVideoSelect = (videoUrl: string, videoFile?: File) => {
+  const handleVideoSelect = (videoUrl: string) => {
     setFormData(prev => ({
       ...prev,
       videoUrl,
     }))
-  }
-
-  const handleImageUpload = async (file: File) => {
-    setIsLoading(true)
-    try {
-      const result = (await uploadSampleImage(sample.id, file)) as {
-        success: boolean
-        message: string
-        imageUrl: string
-      }
-      toast.success('Image uploaded successfully')
-    } catch (error) {
-      
-      if (error instanceof ApiError) {
-        toast.error(error.message)
-      } else {
-        toast.error('Failed to upload image')
-      }
-    } finally {
-      setIsLoading(false)
-    }
   }
 
   const handleImageRemove = async () => {
@@ -102,7 +76,6 @@ export default function SampleEditForm({
       await deleteSampleImage(sample.id)
       toast.success('Image removed successfully')
     } catch (error) {
-      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -130,7 +103,6 @@ export default function SampleEditForm({
       toast.success('Sample updated successfully')
       router.push('/admin/samples')
     } catch (error) {
-      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -215,16 +187,14 @@ export default function SampleEditForm({
           <CardHeader>
             <CardTitle>Thumbnail Image</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label size="default" className="mb-2 block">
-                Upload New Thumbnail
-              </Label>
+          <CardContent className="flex flex-wrap gap-4">
+            <div className="space-y-4">
+              <Label size="default">Upload New Thumbnail</Label>
               <ImageEditable
                 onUpload={setThumbnailFile}
                 aspectRatio={ASPECT_RATIOS.SQUARE}
                 showCrop={true}
-                size="medium"
+                size="small"
                 className="mx-auto"
               />
             </div>
@@ -233,7 +203,7 @@ export default function SampleEditForm({
               <div className="space-y-4">
                 <Label size="default">Current Thumbnail</Label>
                 <div className="relative group max-w-md">
-                  <div className="relative aspect-square w-full h-48 rounded-lg overflow-hidden">
+                  <div className="relative aspect-square h-50 rounded-lg overflow-hidden">
                     <Image
                       src={sample.thumbUrl}
                       alt="Sample thumbnail"

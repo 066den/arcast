@@ -125,7 +125,7 @@ export function BookingSummary({
             <h4 className="font-medium mb-2 text-white">Session Details</h4>
             <p className="text-sm text-slate-300">{formatDate(selectedDate)}</p>
             <p className="text-sm text-slate-300">
-              Time: {formatTimeRange(selectedTime, duration || 1, 'Asia/Dubai')}
+              Time: {formatTimeRange(selectedTime, duration || 1)}
             </p>
             <p className="text-sm text-slate-300">Duration: ({duration}h)</p>
             <p className="text-sm text-slate-300">Guests: {guests}</p>

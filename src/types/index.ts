@@ -33,6 +33,7 @@ export interface Booking {
     status: 'PENDING' | 'COMPLETED' | 'FAILED' | string
     provider?: string | null
   }
+  bookingAdditionalServices?: BookingAdditionalService[]
   notionEntryId?: string
 }
 
@@ -189,6 +190,18 @@ export interface AdditionalService {
 export interface SelectedAdditionalService {
   id: string
   quantity: number
+}
+
+export interface BookingAdditionalService {
+  id: string
+  bookingId: string
+  serviceId: string
+  quantity: number
+  unitPrice: number | Decimal
+  totalPrice: number | Decimal
+  createdAt?: Date | null
+  updatedAt?: Date | null
+  service?: AdditionalService
 }
 
 export interface Feature {
