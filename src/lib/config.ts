@@ -15,6 +15,7 @@ import {
   Tag,
   Package,
   Plus,
+  PhoneCall,
 } from 'lucide-react'
 import { ROUTES } from './constants'
 
@@ -67,6 +68,11 @@ export const adminNavigation = [
   },
   { name: 'Orders', href: ROUTES.ADMIN + '/orders', icon: ClipboardList },
   { name: 'Leads', href: ROUTES.ADMIN + '/leads', icon: UserCheck },
+  {
+    name: 'Call Requests',
+    href: ROUTES.ADMIN + '/call-requests',
+    icon: PhoneCall,
+  },
   { name: 'Clients', href: ROUTES.ADMIN + '/clients', icon: UsersRound },
   {
     name: 'Discount Codes',
