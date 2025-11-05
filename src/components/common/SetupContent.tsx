@@ -60,8 +60,8 @@ const SetupContent = ({ title, content, studio }: SetupContentProps) => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="left-4 opacity-30 hover:opacity-100" />
-          <CarouselNext className="right-4 opacity-30 hover:opacity-100" />
+          <CarouselPrevious className="left-4 hover:bg-accent" />
+          <CarouselNext className="right-4 hover:bg-accent" />
         </Carousel>
       </div>
 

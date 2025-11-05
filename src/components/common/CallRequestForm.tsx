@@ -16,6 +16,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { fadeVariants } from '@/lib/motion-variants'
 import { Calendar } from '../ui/calendar'
 import { TimePicker } from '../ui/time-picker'
+import { Textarea } from '../ui/textarea'
 
 interface CallRequestFormProps {
   isOpen: boolean
@@ -38,6 +39,7 @@ const CallRequestForm = ({ isOpen, onClose }: CallRequestFormProps) => {
       lastName: '',
       phone: '',
       callDateTime: '',
+      message: '',
     },
   })
 
@@ -81,7 +83,6 @@ const CallRequestForm = ({ isOpen, onClose }: CallRequestFormProps) => {
       setSelectedDate(undefined)
       setSelectedTime('')
     } catch (error) {
-      
       if (error instanceof Error) {
         toast.error(error.message)
       } else {
@@ -168,6 +169,18 @@ const CallRequestForm = ({ isOpen, onClose }: CallRequestFormProps) => {
                 {errors.callDateTime.message}
               </p>
             )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="message">Message</Label>
+            <Textarea
+              id="message"
+              size="md"
+              rows={6}
+              placeholder="Your message here..."
+              error={errors.message?.message}
+              {...register('message')}
+            />
           </div>
 
           <Button
