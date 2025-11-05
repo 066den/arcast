@@ -29,7 +29,6 @@ const HeroSection = ({
           loop
           autoPlay
           playsInline
-          poster="/assets/images/heronew.png"
           className="w-full h-full object-cover"
         />
       )}
