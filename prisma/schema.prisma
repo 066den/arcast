@@ -352,6 +352,7 @@ model CallRequest {
   lastName     String?
   phone        String
   callDateTime DateTime
+  message      String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

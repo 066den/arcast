@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '../ui/table'
 import { Input } from '../ui/input'
-import { Calendar, Phone, Search, User } from 'lucide-react'
+import { Calendar, MessageSquare, Phone, Search, User } from 'lucide-react'
 
 interface CallRequest {
   id: string
@@ -18,6 +18,7 @@ interface CallRequest {
   lastName: string | null
   phone: string
   callDateTime: Date
+  message: string | null
   createdAt: Date
   updatedAt: Date
 }
@@ -37,7 +38,9 @@ export default function CallRequestsTable({ initialData }: Props) {
         const fullName =
           `${request.firstName} ${request.lastName || ''}`.toLowerCase()
         const matches =
-          fullName.includes(s) || request.phone.toLowerCase().includes(s)
+          fullName.includes(s) ||
+          request.phone.toLowerCase().includes(s) ||
+          (request.message && request.message.toLowerCase().includes(s))
         return matches
       }),
     [callRequests, search]
@@ -94,6 +97,7 @@ export default function CallRequestsTable({ initialData }: Props) {
               <TableHead>Customer</TableHead>
               <TableHead>Phone</TableHead>
               <TableHead>Scheduled Call Time</TableHead>
+              <TableHead>Message</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Created</TableHead>
             </TableRow>
@@ -121,6 +125,12 @@ export default function CallRequestsTable({ initialData }: Props) {
                   <div className="flex items-center gap-2 text-sm">
                     <Calendar className="h-3 w-3 text-muted-foreground" />
                     <span>{formatCallDateTime(request.callDateTime)}</span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2 text-sm max-w-xs">
+                    <MessageSquare className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                    <span className="truncate">{request.message || '—'}</span>
                   </div>
                 </TableCell>
                 <TableCell>

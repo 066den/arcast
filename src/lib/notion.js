@@ -219,7 +219,7 @@ export async function createNotionBookingEntry(booking) {
     })
 
     return response
-  } catch (error) {
+  } catch {
     // Don't throw error to avoid breaking the main booking flow
     // Just log it and return null
     return null
@@ -417,6 +417,50 @@ export async function createNotionContactEntry(contactData) {
 }
 
 /**
+ * Create a call request entry in Notion
+ */
+export async function createNotionCallRequestEntry(callRequestData) {
+  try {
+    if (!CONTACT_DATABASE_ID) {
+      return null
+    }
+
+    const properties = {
+      Firstname: {
+        title: createTitle(callRequestData.firstName),
+      },
+      Lastname: {
+        rich_text: createRichText(callRequestData.lastName || ''),
+      },
+      Phone: {
+        rich_text: createRichText(`+${callRequestData.phone}`.trim()),
+      },
+      Message: {
+        rich_text: createRichText(callRequestData.message || ''),
+      },
+      'Booking Date': {
+        date: {
+          start: new Date(callRequestData.callDateTime).toISOString(),
+        },
+      },
+    }
+
+    const response = await notion.pages.create({
+      parent: {
+        database_id: CONTACT_DATABASE_ID,
+      },
+      properties,
+    })
+
+    return response
+  } catch {
+    // Don't throw error to avoid breaking the main call request flow
+    // Just log it and return null
+    return null
+  }
+}
+
+/**
  * Update booking status in Notion
  */
 export async function updateNotionBookingStatus(
@@ -578,6 +622,7 @@ const notionUtils = {
   createNotionOrderEntry,
   createNotionLeadEntry,
   createNotionContactEntry,
+  createNotionCallRequestEntry,
   updateNotionBookingStatus,
   getNotionBookings,
   testNotionConnection,

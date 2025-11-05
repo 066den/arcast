@@ -110,9 +110,10 @@ export const callRequestFormSchema = z.object({
   lastName: z
     .string()
     .max(100, { message: 'Last name must be less than 100 characters' })
-    .regex(VALIDATION.NAME_REGEX, {
-      message: 'Last name must only contain letters and spaces',
-    })
+    .refine(
+      val => !val || val.trim().length === 0 || VALIDATION.NAME_REGEX.test(val),
+      { message: 'Last name must only contain letters and spaces' }
+    )
     .optional(),
   phone: z
     .string()
@@ -130,6 +131,17 @@ export const callRequestFormSchema = z.object({
       },
       { message: 'Call date & time must be in the future' }
     ),
+  message: z
+    .union([
+      z
+        .string()
+        .max(1000, { message: 'Message must be less than 1000 characters' })
+        .refine(val => val.trim().length >= 10, {
+          message: 'Message must be at least 10 characters',
+        }),
+      z.literal(''),
+    ])
+    .optional(),
 })
 
 const studioSchemaBase = z.object({
