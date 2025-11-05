@@ -18,7 +18,7 @@ const HeroSection = ({
     <div
       className={cn(
         'relative rounded-3xl overflow-hidden mx-2 mb-4 xl:m-4',
-        image && 'lg:max-h-[700px] max-h-[350px]'
+        image && 'md:aspect-[2.5/1] aspect-[2/1]'
       )}
     >
       {videoUrl && (
@@ -37,8 +37,8 @@ const HeroSection = ({
         <Image
           src={image}
           alt={title || ''}
-          width={1400}
-          height={700}
+          fill
+          sizes="100vw"
           className="w-full h-full object-cover animate-fade-in"
           priority
         />
