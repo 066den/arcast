@@ -17,8 +17,8 @@ const HeroSection = ({
   return (
     <div
       className={cn(
-        'relative rounded-3xl overflow-hidden mx-2 mb-4 xl:m-4',
-        image && 'md:aspect-[2.5/1] aspect-[2/1]'
+        'relative rounded-3xl overflow-hidden',
+        image && 'md:aspect-[2.5/1] aspect-[2/1] mx-2 mb-4 xl:m-4'
       )}
     >
       {videoUrl && (
