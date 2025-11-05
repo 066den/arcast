@@ -296,7 +296,7 @@ export async function GET(req: NextRequest) {
         pages: Math.ceil(total / limit),
       },
     })
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { success: false, error: 'Failed to fetch orders' },
       { status: 500 }

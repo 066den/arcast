@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { Hanken_Grotesk, Nunito_Sans, Geist } from 'next/font/google'
-import Script from 'next/script'
 import { seoConfig } from '@/lib/config'
 import { Toaster } from '@/components/ui/sonner'
 
@@ -68,14 +67,8 @@ export default function RootLayout({
           href="/icons/logo-dark.svg"
           type="image/svg+xml"
         />
-      </head>
-      <body className={geist.className}>
-        {children}
-        <Toaster position="top-center" richColors />
         {/* Meta Pixel Code */}
-        <Script
-          id="meta-pixel"
-          strategy="afterInteractive"
+        <script
           dangerouslySetInnerHTML={{
             __html: `
               !function(f,b,e,v,n,t,s)
@@ -92,6 +85,7 @@ export default function RootLayout({
           }}
         />
         <noscript>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             height="1"
             width="1"
@@ -101,6 +95,10 @@ export default function RootLayout({
           />
         </noscript>
         {/* End Meta Pixel Code */}
+      </head>
+      <body className={geist.className}>
+        {children}
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   )
