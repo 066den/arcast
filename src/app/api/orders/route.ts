@@ -25,7 +25,6 @@ export async function POST(req: Request) {
     const validatedData = validateOrder(body)
 
     if (!validatedData.success) {
-      
       return NextResponse.json(
         {
           error: ERROR_MESSAGES.INVALID_REQUEST,
@@ -177,8 +176,7 @@ export async function POST(req: Request) {
       if (!result.lead.email || !result.lead.phoneNumber) {
         await createNotionLeadEntry(result.lead)
       }
-    } catch (notionError) {
-      
+    } catch {
       // Don't fail the entire request if Notion fails
     }
 
@@ -202,11 +200,8 @@ export async function POST(req: Request) {
       if (paymentLink && paymentLink.paymentLink) {
         response.paymentUrl = `${paymentLink.paymentLink.payment_url}?embedded=true&parent_origin=${process.env.NEXT_PUBLIC_APP_URL}&enable_postmessage=true`
       } else {
-        
       }
-    } catch (error) {
-      
-
+    } catch {
       return NextResponse.json(
         { success: false, error: ERROR_MESSAGES.PAYMENT.FAILED },
         { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
@@ -215,8 +210,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json(response)
   } catch (error) {
-    
-
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         {
@@ -304,7 +297,6 @@ export async function GET(req: NextRequest) {
       },
     })
   } catch (error) {
-    
     return NextResponse.json(
       { success: false, error: 'Failed to fetch orders' },
       { status: 500 }

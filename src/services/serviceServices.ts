@@ -13,6 +13,9 @@ export async function fetchServices() {
           },
         },
         {
+          sortOrder: 'asc',
+        },
+        {
           name: 'asc',
         },
       ],

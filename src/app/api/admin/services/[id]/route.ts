@@ -57,6 +57,9 @@ export async function PUT(
     const currency = formData.get('currency') as string
     const isPopular = formData.get('isPopular') === 'true'
     const isActive = formData.get('isActive') === 'true'
+    const sortOrder = formData.get('sortOrder')
+      ? parseInt(formData.get('sortOrder') as string)
+      : 0
 
     if (!name || !serviceTypeId || !price) {
       return NextResponse.json(
@@ -100,6 +103,7 @@ export async function PUT(
         currency: currency || 'AED',
         isPopular,
         isActive,
+        sortOrder,
       },
       include: {
         serviceType: true,

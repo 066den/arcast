@@ -29,6 +29,7 @@ const serviceSchema = z.object({
   currency: z.string().min(1, 'Currency is required'),
   isPopular: z.boolean(),
   isActive: z.boolean(),
+  sortOrder: z.string().optional(),
 })
 
 type ServiceFormData = z.infer<typeof serviceSchema>
@@ -97,12 +98,36 @@ const ServiceForm = ({
       currency: service?.currency || 'AED',
       isPopular: service?.isPopular || false,
       isActive: service?.isActive ?? true,
+      sortOrder: service?.sortOrder?.toString() || '0',
     },
   })
 
   useEffect(() => {
     fetchServiceTypes()
   }, [])
+
+  useEffect(() => {
+    if (service) {
+      setValue('name', service.name || '')
+      setValue('description', service.description || '')
+      setValue('serviceTypeId', service.serviceTypeId || '')
+      setValue('price', priceToString(service.price))
+      setValue('currency', service.currency || 'AED')
+      setValue('isPopular', service.isPopular || false)
+      setValue('isActive', service.isActive ?? true)
+      setValue('sortOrder', service.sortOrder?.toString() || '0')
+      setIncludes(service.includes || [])
+    } else {
+      setValue('name', '')
+      setValue('description', '')
+      setValue('price', '')
+      setValue('currency', 'AED')
+      setValue('isPopular', false)
+      setValue('isActive', true)
+      setValue('sortOrder', '0')
+      setIncludes([])
+    }
+  }, [service, setValue])
 
   const fetchServiceTypes = async () => {
     try {
@@ -237,6 +262,22 @@ const ServiceForm = ({
                   {...register('description')}
                   rows={3}
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label size="lg" htmlFor="sortOrder">
+                  Sort Order
+                </Label>
+                <Input
+                  id="sortOrder"
+                  type="number"
+                  {...register('sortOrder')}
+                  placeholder="0"
+                  error={errors.sortOrder?.message}
+                />
+                <p className="text-sm text-gray-500">
+                  Lower numbers appear first. Default is 0.
+                </p>
               </div>
 
               <div className="space-y-2">

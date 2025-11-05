@@ -92,7 +92,7 @@ export async function getDatabaseProperties() {
 
     const schema = await getDatabaseSchema(DATABASE_ID, false)
     return Object.keys(schema)
-  } catch (error) {
+  } catch {
     return null
   }
 }
@@ -315,7 +315,7 @@ export async function createNotionOrderEntry(order) {
     })
 
     return response
-  } catch (error) {
+  } catch {
     return null
   }
 }
@@ -373,7 +373,7 @@ export async function createNotionLeadEntry(lead) {
     })
 
     return response
-  } catch (error) {
+  } catch {
     // Don't throw error to avoid breaking the main lead creation flow
     return null
   }
@@ -463,7 +463,7 @@ export async function updateNotionBookingStatus(
     })
 
     return response
-  } catch (error) {
+  } catch {
     return null
   }
 }
@@ -526,7 +526,7 @@ export async function getNotionBookings(filters = {}) {
       status: page.properties.Status?.select?.name || 'Unknown',
       createdAt: page.created_time,
     }))
-  } catch (error) {
+  } catch {
     return []
   }
 }

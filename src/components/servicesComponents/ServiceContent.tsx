@@ -22,7 +22,6 @@ import {
   CarouselNext,
 } from '../ui/carousel'
 import { cn } from '@/lib/utils'
-import { isActive } from '@tiptap/react'
 import { useCallback, useState } from 'react'
 import { VideoModal } from '../modals/modal'
 import useFlag from '@/hooks/useFlag'
@@ -64,17 +63,15 @@ const ServiceContent = ({
   }
 
   const actionSection = () => {
-    switch (serviceType) {
+    const shortServiceType = serviceType.split('-')[0]
+    switch (shortServiceType) {
       case 'podcast':
         return { label: 'Fire up your Podcast' }
-
       case 'reels':
         return { label: 'Reach your Viewers' }
-
       case 'media':
         return { label: 'Let us call George Lucas' }
-
-      case 'social-media':
+      case 'social':
         return { label: 'Reach your Viewers' }
       default:
         return { label: 'Book Now' }
@@ -114,6 +111,12 @@ const ServiceContent = ({
           title={title ?? ''}
           description={description ?? ''}
           image={imageUrl ?? ''}
+          actionSection={[
+            {
+              label: actionSection().label,
+              event: () => handleBookNow(serviceType),
+            },
+          ]}
         />
       </motion.div>
       {content && (

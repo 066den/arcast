@@ -61,6 +61,7 @@ export default function ServicesTable({ initialData }: ServicesTableProps) {
       currency: string
       isPopular: boolean
       isActive: boolean
+      sortOrder?: string
     },
     includes?: string[]
   ) => {
@@ -76,6 +77,7 @@ export default function ServicesTable({ initialData }: ServicesTableProps) {
       formData.append('currency', serviceData.currency)
       formData.append('isPopular', serviceData.isPopular.toString())
       formData.append('isActive', serviceData.isActive.toString())
+      formData.append('sortOrder', serviceData.sortOrder || '0')
 
       const url = editingService
         ? `/api/admin/services/${editingService.id}`
@@ -192,6 +194,7 @@ export default function ServicesTable({ initialData }: ServicesTableProps) {
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Price</TableHead>
+                <TableHead>Sort Order</TableHead>
                 <TableHead>Includes</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
@@ -204,7 +207,7 @@ export default function ServicesTable({ initialData }: ServicesTableProps) {
                     {/* Service Type Header */}
                     <TableRow className="bg-gray-50">
                       <TableCell
-                        colSpan={5}
+                        colSpan={6}
                         className="font-semibold text-gray-700 py-3"
                       >
                         <div className="flex items-center text-xl gap-2">
@@ -232,6 +235,9 @@ export default function ServicesTable({ initialData }: ServicesTableProps) {
                         </TableCell>
                         <TableCell>
                           {service.currency} {service.price}
+                        </TableCell>
+                        <TableCell>
+                          {service.sortOrder ?? 0}
                         </TableCell>
                         <TableCell>
                           {service.includes.length > 0 ? (

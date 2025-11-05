@@ -155,6 +155,7 @@ export interface Service {
   isPopular: boolean
   isActive: boolean
   serviceTypeId: string
+  sortOrder?: number
   serviceType?: {
     slug: string
     name?: string

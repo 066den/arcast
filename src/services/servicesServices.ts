@@ -34,9 +34,14 @@ export const getServices = async () => {
 
   try {
     const services = await prisma.service.findMany({
-      orderBy: {
-        createdAt: 'asc',
-      },
+      orderBy: [
+        {
+          sortOrder: 'asc',
+        },
+        {
+          createdAt: 'asc',
+        },
+      ],
       where: {
         isActive: true,
       },
@@ -72,6 +77,14 @@ export const getServicesByType = async (slug: string) => {
         },
         isActive: true,
       },
+      orderBy: [
+        {
+          sortOrder: 'asc',
+        },
+        {
+          name: 'asc',
+        },
+      ],
       include: {
         serviceType: {
           select: {
@@ -113,6 +126,14 @@ export const getServiceTypes = async () => {
           where: {
             isActive: true,
           },
+          orderBy: [
+            {
+              sortOrder: 'asc',
+            },
+            {
+              name: 'asc',
+            },
+          ],
           include: {
             serviceType: {
               select: {

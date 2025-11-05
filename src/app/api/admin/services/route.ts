@@ -8,9 +8,14 @@ export async function GET() {
       include: {
         serviceType: true,
       },
-      orderBy: {
-        name: 'asc',
-      },
+      orderBy: [
+        {
+          sortOrder: 'asc',
+        },
+        {
+          name: 'asc',
+        },
+      ],
     })
 
     // Convert Decimal to number for JSON serialization
@@ -45,6 +50,9 @@ export async function POST(request: NextRequest) {
     const currency = formData.get('currency') as string
     const isPopular = formData.get('isPopular') === 'true'
     const isActive = formData.get('isActive') === 'true'
+    const sortOrder = formData.get('sortOrder')
+      ? parseInt(formData.get('sortOrder') as string)
+      : 0
 
     if (!name || !serviceTypeId || !price) {
       return NextResponse.json(
@@ -76,6 +84,7 @@ export async function POST(request: NextRequest) {
         currency: currency || 'AED',
         isPopular,
         isActive,
+        sortOrder,
       },
       include: {
         serviceType: true,
