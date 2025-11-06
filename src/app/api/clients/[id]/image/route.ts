@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { validateFile } from '@/lib/validate'
-import { deleteUploadedFile } from '@/utils/files'
+import { deleteUploadedFile, getUploadedFile } from '@/utils/files'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -21,25 +21,8 @@ export async function POST(
     if (validation)
       return NextResponse.json({ error: validation }, { status: 400 })
 
-    // Lazy-load S3 helpers at runtime
-    const s3 = await import('@/lib/s3')
-
-    const fileExt = (file.name.split('.').pop() || 'jpg').toLowerCase()
-    const uniqueFileName = `${Date.now()}-${Math.random()
-      .toString(36)
-      .slice(2)}.${fileExt}`
-
-    const uploadRes = await s3.uploadToS3(file, uniqueFileName, {
-      folder: 'clients',
-      contentType: file.type,
-      metadata: {
-        originalName: file.name,
-        uploadedAt: new Date().toISOString(),
-        entity: 'client',
-        entityId: id,
-      },
-    })
-    const imageUrl = uploadRes.cdnUrl || uploadRes.url
+    // Upload to S3
+    const imageUrl = await getUploadedFile(file, 'clients')
 
     const existing = await prisma.client.findUnique({ where: { id } })
     if (!existing)
@@ -47,14 +30,7 @@ export async function POST(
 
     if (existing.imageUrl) {
       try {
-        const oldUrl = existing.imageUrl
-        const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import('@/lib/s3')
-        if (isS3Url(oldUrl)) {
-          const key = extractFileKeyFromUrl(oldUrl)
-          if (key) await deleteFromS3(key)
-        } else {
-          await deleteUploadedFile(oldUrl)
-        }
+        await deleteUploadedFile(existing.imageUrl)
       } catch {}
     }
 
@@ -63,7 +39,7 @@ export async function POST(
       data: { imageUrl },
     })
     return NextResponse.json({ success: true, imageUrl: updated.imageUrl })
-  } catch (e) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to upload image' },
       { status: 500 }
@@ -82,19 +58,12 @@ export async function DELETE(
       return NextResponse.json({ error: 'Client not found' }, { status: 404 })
     if (existing.imageUrl) {
       try {
-        const oldUrl = existing.imageUrl
-        const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import('@/lib/s3')
-        if (isS3Url(oldUrl)) {
-          const key = extractFileKeyFromUrl(oldUrl)
-          if (key) await deleteFromS3(key)
-        } else {
-          await deleteUploadedFile(oldUrl)
-        }
+        await deleteUploadedFile(existing.imageUrl)
       } catch {}
     }
     await prisma.client.update({ where: { id }, data: { imageUrl: null } })
     return NextResponse.json({ success: true })
-  } catch (e) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to delete image' },
       { status: 500 }

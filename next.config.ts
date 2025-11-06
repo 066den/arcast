@@ -57,8 +57,14 @@ const nextConfig: NextConfig = {
       },
       // Allow local MinIO/path-style during development:
       // - http://localhost:9000/bucket/key
+      // - http://localhost/arcast-s3/... (through nginx proxy)
       // - http://arcast-s3.localhost:9000/key (bucket subdomain dev DNS)
       // - http://minio:9000/bucket/key (inside docker)
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        pathname: '/**',
+      },
       {
         protocol: 'http',
         hostname: 'localhost',

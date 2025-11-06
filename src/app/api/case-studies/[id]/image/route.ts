@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { auth } from '@/auth'
 import { validateFile } from '@/lib/validate'
-import { deleteUploadedFile } from '@/utils/files'
+import { deleteUploadedFile, getUploadedFile } from '@/utils/files'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -35,45 +35,46 @@ export async function POST(
       return NextResponse.json({ error: validation }, { status: 400 })
     }
 
-    // Upload to S3 (lazy import to avoid build-time evaluation in build step)
-    const s3 = await import('@/lib/s3')
-
-    const fileExt = (file.name.split('.').pop() || 'jpg').toLowerCase()
-    const uniqueFileName = `${Date.now()}-${Math.random()
-      .toString(36)
-      .slice(2)}.${fileExt}`
-
-    const uploadRes = await s3.uploadToS3(file, uniqueFileName, {
-      folder: 'case-studies',
-      contentType: file.type,
-      metadata: {
-        originalName: file.name,
-        uploadedAt: new Date().toISOString(),
-        entity: 'case-study',
-        entityId: id,
-      },
-    })
-
-    const imageUrl = uploadRes.cdnUrl || uploadRes.url
-
+    console.log('Finding case study with id:', id)
     const existingCaseStudy = await prisma.caseStudy.findUnique({
       where: { id },
     })
 
     if (!existingCaseStudy) {
+      console.error('Case study not found:', id)
       return NextResponse.json(
         { error: 'Case study not found' },
         { status: 404 }
       )
     }
 
-    // Add the new image URL to the existing array
-    const updatedImageUrls = [...existingCaseStudy.imageUrls, imageUrl]
+    // Delete ALL old images before uploading new one
+    if (existingCaseStudy.imageUrls && existingCaseStudy.imageUrls.length > 0) {
+      console.log('Deleting old images:', existingCaseStudy.imageUrls)
+      for (const oldImageUrl of existingCaseStudy.imageUrls) {
+        try {
+          await deleteUploadedFile(oldImageUrl)
+        } catch (error) {
+          console.warn('Failed to delete old image:', oldImageUrl, error)
+          // Ignore deletion errors
+        }
+      }
+    }
 
+    // Upload to S3
+    console.log('Uploading file to S3:', file.name, file.size, 'bytes')
+    const imageUrl = await getUploadedFile(file, 'case-studies')
+    console.log('File uploaded successfully, URL:', imageUrl)
+
+    // Replace all images with only the new one (only one image allowed)
+    const updatedImageUrls = [imageUrl]
+
+    console.log('Updating case study with image URLs:', updatedImageUrls)
     const updatedCaseStudy = await prisma.caseStudy.update({
       where: { id },
       data: { imageUrls: updatedImageUrls },
     })
+    console.log('Case study updated successfully')
 
     return NextResponse.json({
       success: true,
@@ -82,9 +83,9 @@ export async function POST(
       imageUrl,
     })
   } catch (error) {
-    
+    console.error('Error uploading case study image:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     )
   }
@@ -123,23 +124,13 @@ export async function DELETE(
       )
     }
 
-    // Remove the image URL from the array
-    const updatedImageUrls = existingCaseStudy.imageUrls.filter(
-      (url: any) => url !== imageUrl
-    )
-
-    // Delete the file from storage (S3 if applicable, fallback to local deletion)
+    // Delete the file from S3 or local storage
     try {
-      const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import('@/lib/s3')
-      if (isS3Url(imageUrl)) {
-        const key = extractFileKeyFromUrl(imageUrl)
-        if (key) {
-          await deleteFromS3(key)
-        }
-      } else {
-        await deleteUploadedFile(imageUrl)
-      }
+      await deleteUploadedFile(imageUrl)
     } catch {}
+
+    // Clear the image array (only one image at index 0)
+    const updatedImageUrls: string[] = []
 
     const updatedCaseStudy = await prisma.caseStudy.update({
       where: { id },
@@ -151,8 +142,7 @@ export async function DELETE(
       message: 'Case study image removed successfully',
       caseStudy: updatedCaseStudy,
     })
-  } catch (error) {
-    
+  } catch {
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

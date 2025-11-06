@@ -24,6 +24,7 @@ services:
       - AWS_ACCESS_KEY_ID=minioadmin
       - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD:-minioadmin123}
       - NEXT_PUBLIC_S3_PUBLIC_ENDPOINT=${NEXT_PUBLIC_S3_PUBLIC_ENDPOINT:-http://localhost}
+      - NEXT_IMAGE_UNOPTIMIZED=true
     restart: unless-stopped
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']

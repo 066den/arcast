@@ -111,7 +111,6 @@ const PackageForm = ({
         setServices(data)
       }
     } catch (error) {
-      
       toast.error('Error loading services')
     }
   }
@@ -259,16 +258,20 @@ const PackageForm = ({
                         <SelectValue placeholder="Select a service" />
                       </SelectTrigger>
                       <SelectContent>
-                        {services.map(service => (
-                          <SelectItem key={service.id} value={service.id}>
-                            {service.name}
-                            {service.serviceType && (
-                              <span className="text-xs text-gray-500 ml-2">
-                                ({service.serviceType.name})
-                              </span>
-                            )}
-                          </SelectItem>
-                        ))}
+                        {services
+                          .filter(
+                            service => service.id && service.id.trim() !== ''
+                          )
+                          .map(service => (
+                            <SelectItem key={service.id} value={service.id}>
+                              {service.name}
+                              {service.serviceType && (
+                                <span className="text-xs text-gray-500 ml-2">
+                                  ({service.serviceType.name})
+                                </span>
+                              )}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                     <Input

@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { toast } from 'sonner'
-import { ArrowLeft, Plus, Trash2, Save } from 'lucide-react'
+import { ArrowLeft, Plus, Trash2, Save, Edit, X } from 'lucide-react'
 import ImageEditable from '@/components/ui/ImageEditable'
 import Image from 'next/image'
 import {
@@ -25,6 +25,8 @@ import {
   updateCaseStudy,
   uploadCaseStudyImage,
   deleteCaseStudyImage,
+  uploadContentSectionImage,
+  deleteContentSectionImage,
 } from '@/lib/api'
 
 interface CaseStudy {
@@ -100,11 +102,24 @@ export default function CaseStudyEditForm({
     clientId: caseStudy.client?.id || 'none',
     staffIds: caseStudy.staff.map(s => s.id),
     equipmentIds: caseStudy.equipment.map(e => e.id),
-    imageUrls: caseStudy.imageUrls,
+    // Only keep the first image (index 0) if multiple exist
+    imageUrls:
+      caseStudy.imageUrls && caseStudy.imageUrls.length > 0
+        ? [caseStudy.imageUrls[0]]
+        : [],
     caseContent: caseStudy.caseContent,
   })
 
   const [newContentSection, setNewContentSection] = useState({
+    title: '',
+    text: '',
+    list: '',
+    imageUrl: '',
+  })
+  const [editingSectionIndex, setEditingSectionIndex] = useState<number | null>(
+    null
+  )
+  const [editingSection, setEditingSection] = useState({
     title: '',
     text: '',
     list: '',
@@ -134,6 +149,20 @@ export default function CaseStudyEditForm({
         ? prev.equipmentIds.filter(id => id !== equipmentId)
         : [...prev.equipmentIds, equipmentId],
     }))
+  }
+
+  const handleNewSectionImageUpload = async (file: File) => {
+    try {
+      const imageUrl = await uploadContentSectionImage(file, 'case-studies')
+      setNewContentSection(prev => ({
+        ...prev,
+        imageUrl,
+      }))
+      toast.success('Image uploaded successfully')
+    } catch (error) {
+      toast.error('Failed to upload image')
+      console.error('Image upload error:', error)
+    }
   }
 
   const addContentSection = () => {
@@ -166,6 +195,102 @@ export default function CaseStudyEditForm({
       ...prev,
       caseContent: prev.caseContent.filter((_, i) => i !== index),
     }))
+    // Cancel editing if the section being removed is being edited
+    if (editingSectionIndex === index) {
+      setEditingSectionIndex(null)
+      setEditingSection({ title: '', text: '', list: '', imageUrl: '' })
+    }
+  }
+
+  const [originalEditingSectionImage, setOriginalEditingSectionImage] =
+    useState<string>('')
+
+  const startEditingSection = (index: number) => {
+    const section = formData.caseContent[index]
+    const originalImageUrl = section.imageUrl || ''
+    setEditingSectionIndex(index)
+    setOriginalEditingSectionImage(originalImageUrl)
+    setEditingSection({
+      title: section.title,
+      text: section.text.join('\n'),
+      list: section.list.join('\n'),
+      imageUrl: originalImageUrl,
+    })
+  }
+
+  const cancelEditingSection = async (isSaving: boolean = false) => {
+    // Delete newly uploaded image if it was changed and not saved
+    // Only delete if we're canceling, not if we're saving
+    if (
+      !isSaving &&
+      editingSection.imageUrl &&
+      editingSection.imageUrl !== originalEditingSectionImage
+    ) {
+      try {
+        await deleteContentSectionImage(editingSection.imageUrl)
+      } catch {
+        // Ignore deletion errors
+      }
+    }
+
+    setEditingSectionIndex(null)
+    setEditingSection({ title: '', text: '', list: '', imageUrl: '' })
+    setOriginalEditingSectionImage('')
+  }
+
+  const saveEditingSection = async () => {
+    if (editingSectionIndex === null) return
+
+    if (!editingSection.title.trim()) {
+      toast.error('Title is required')
+      return
+    }
+
+    // Delete old image if it was replaced with a new one or removed
+    const oldSection = formData.caseContent[editingSectionIndex]
+    if (
+      oldSection.imageUrl &&
+      oldSection.imageUrl !== editingSection.imageUrl
+    ) {
+      try {
+        await deleteContentSectionImage(oldSection.imageUrl)
+      } catch {
+        // Ignore deletion errors
+      }
+    }
+
+    const updatedSection = {
+      ...formData.caseContent[editingSectionIndex],
+      title: editingSection.title,
+      text: editingSection.text.split('\n').filter(line => line.trim()),
+      list: editingSection.list.split('\n').filter(line => line.trim()),
+      imageUrl: editingSection.imageUrl,
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      caseContent: prev.caseContent.map((section, index) =>
+        index === editingSectionIndex ? updatedSection : section
+      ),
+    }))
+
+    // Pass true to indicate we're saving, so don't delete the new image
+    cancelEditingSection(true)
+    toast.success('Section updated successfully')
+  }
+
+  const handleEditingSectionImageUpload = async (file: File) => {
+    try {
+      const imageUrl = await uploadContentSectionImage(file, 'case-studies')
+      setEditingSection(prev => ({
+        ...prev,
+        imageUrl,
+      }))
+      toast.success('Image uploaded successfully')
+    } catch (error) {
+      toast.error('Failed to upload image')
+      console.error('Image upload error:', error)
+    }
   }
 
   const handleImageUpload = async (file: File) => {
@@ -177,14 +302,14 @@ export default function CaseStudyEditForm({
         imageUrl: string
       }
 
+      // Replace image at index 0 (only one image allowed)
       setFormData(prev => ({
         ...prev,
-        imageUrls: [...prev.imageUrls, result.imageUrl],
+        imageUrls: [result.imageUrl],
       }))
 
       toast.success('Image uploaded successfully')
     } catch (error) {
-      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -200,14 +325,14 @@ export default function CaseStudyEditForm({
     try {
       await deleteCaseStudyImage(caseStudy.id, imageUrl)
 
+      // Clear the image array (only one image at index 0)
       setFormData(prev => ({
         ...prev,
-        imageUrls: prev.imageUrls.filter(url => url !== imageUrl),
+        imageUrls: [],
       }))
 
       toast.success('Image removed successfully')
     } catch (error) {
-      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -224,9 +349,14 @@ export default function CaseStudyEditForm({
 
     try {
       // Convert "none" to null for clientId
+      // Ensure only one image is saved (at index 0)
       const submitData = {
         ...formData,
         clientId: formData.clientId === 'none' ? null : formData.clientId,
+        imageUrls:
+          formData.imageUrls && formData.imageUrls.length > 0
+            ? [formData.imageUrls[0]]
+            : [],
       }
 
       await updateCaseStudy(caseStudy.id, submitData)
@@ -234,7 +364,6 @@ export default function CaseStudyEditForm({
       toast.success('Case study updated successfully')
       router.push('/admin/case-studies')
     } catch (error) {
-      
       if (error instanceof ApiError) {
         toast.error(error.message)
       } else {
@@ -342,12 +471,14 @@ export default function CaseStudyEditForm({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="none">No client</SelectItem>
-                  {clients.map(client => (
-                    <SelectItem key={client.id} value={client.id}>
-                      {client.name}{' '}
-                      {client.showTitle && `(${client.showTitle})`}
-                    </SelectItem>
-                  ))}
+                  {clients
+                    .filter(client => client.id && client.id.trim() !== '')
+                    .map(client => (
+                      <SelectItem key={client.id} value={client.id}>
+                        {client.name}{' '}
+                        {client.showTitle && `(${client.showTitle})`}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
@@ -423,36 +554,33 @@ export default function CaseStudyEditForm({
               showCrop={true}
               size="medium"
               className="mx-auto"
+              src={formData.imageUrls[0]}
             />
           </div>
 
-          {/* Existing images */}
-          {formData.imageUrls.length > 0 && (
+          {/* Current image (only one at index 0) */}
+          {formData.imageUrls[0] && (
             <div className="space-y-4">
-              <Label size="default">Current Images</Label>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {formData.imageUrls.map((url, index) => (
-                  <div key={index} className="relative group">
-                    <div className="relative w-full h-48 rounded-lg overflow-hidden">
-                      <Image
-                        src={url}
-                        alt={`Case study image ${index + 1}`}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => handleImageRemove(url)}
-                      disabled={isLoading}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
+              <Label size="default">Current Image</Label>
+              <div className="relative group w-full max-w-md">
+                <div className="relative w-full h-48 rounded-lg overflow-hidden">
+                  <Image
+                    src={formData.imageUrls[0]}
+                    alt="Case study main image"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={() => handleImageRemove(formData.imageUrls[0])}
+                  disabled={isLoading}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           )}
@@ -468,55 +596,194 @@ export default function CaseStudyEditForm({
           {/* Existing Content Sections */}
           {formData.caseContent.map((section, index) => (
             <div key={section.id} className="border rounded-lg p-4 space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="font-medium">
-                  Section {index + 1}: {section.title}
-                </h4>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => removeContentSection(index)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
+              {editingSectionIndex === index ? (
+                // Edit Mode
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium">Edit Section {index + 1}</h4>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => cancelEditingSection()}
+                      >
+                        <X className="h-4 w-4 mr-2" />
+                        Cancel
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={saveEditingSection}
+                      >
+                        <Save className="h-4 w-4 mr-2" />
+                        Save
+                      </Button>
+                    </div>
+                  </div>
 
-              {section.text.length > 0 && (
-                <div>
-                  <Label size="sm" className="font-medium">
-                    Text:
-                  </Label>
-                  <div className="text-sm text-muted-foreground">
-                    {section.text.map((line, i) => (
-                      <p key={i}>{line}</p>
-                    ))}
+                  <div>
+                    <Label htmlFor={`editSectionTitle-${index}`} size="default">
+                      Title
+                    </Label>
+                    <Input
+                      id={`editSectionTitle-${index}`}
+                      value={editingSection.title}
+                      onChange={e =>
+                        setEditingSection(prev => ({
+                          ...prev,
+                          title: e.target.value,
+                        }))
+                      }
+                      placeholder="Enter section title"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor={`editSectionText-${index}`} size="default">
+                      Text (one per line)
+                    </Label>
+                    <Textarea
+                      id={`editSectionText-${index}`}
+                      value={editingSection.text}
+                      onChange={e =>
+                        setEditingSection(prev => ({
+                          ...prev,
+                          text: e.target.value,
+                        }))
+                      }
+                      placeholder="Enter text content, one paragraph per line"
+                      rows={4}
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor={`editSectionList-${index}`} size="default">
+                      List Items (one per line)
+                    </Label>
+                    <Textarea
+                      id={`editSectionList-${index}`}
+                      value={editingSection.list}
+                      onChange={e =>
+                        setEditingSection(prev => ({
+                          ...prev,
+                          list: e.target.value,
+                        }))
+                      }
+                      placeholder="Enter list items, one per line"
+                      rows={3}
+                    />
+                  </div>
+
+                  <div>
+                    <Label size="default">Image</Label>
+                    <div className="space-y-2">
+                      <ImageEditable
+                        className="mt-4"
+                        size="small"
+                        alt="Content Section Image"
+                        onUpload={handleEditingSectionImageUpload}
+                        src={editingSection.imageUrl || undefined}
+                        showCrop={false}
+                      />
+                      {editingSection.imageUrl && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={async () => {
+                            try {
+                              await deleteContentSectionImage(
+                                editingSection.imageUrl
+                              )
+                              setEditingSection(prev => ({
+                                ...prev,
+                                imageUrl: '',
+                              }))
+                              toast.success('Image removed')
+                            } catch {
+                              toast.error('Failed to remove image')
+                            }
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Remove Image
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
-              )}
-
-              {section.list.length > 0 && (
-                <div>
-                  <Label size="sm" className="font-medium">
-                    List:
-                  </Label>
-                  <ul className="text-sm text-muted-foreground list-disc list-inside">
-                    {section.list.map((item, i) => (
-                      <li key={i}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {section.imageUrl && (
-                <div>
-                  <Label size="sm" className="font-medium">
-                    Image:
-                  </Label>
-                  <div className="text-sm text-muted-foreground">
-                    {section.imageUrl}
+              ) : (
+                // View Mode
+                <>
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium">
+                      Section {index + 1}: {section.title}
+                    </h4>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => startEditingSection(index)}
+                      >
+                        <Edit className="h-4 w-4 mr-2" />
+                        Edit
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => removeContentSection(index)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                </div>
+
+                  {section.text.length > 0 && (
+                    <div>
+                      <Label size="sm" className="font-medium">
+                        Text:
+                      </Label>
+                      <div className="text-sm text-muted-foreground">
+                        {section.text.map((line, i) => (
+                          <p key={i}>{line}</p>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {section.list.length > 0 && (
+                    <div>
+                      <Label size="sm" className="font-medium">
+                        List:
+                      </Label>
+                      <ul className="text-sm text-muted-foreground list-disc list-inside">
+                        {section.list.map((item, i) => (
+                          <li key={i}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {section.imageUrl && (
+                    <div>
+                      <Label size="sm" className="font-medium">
+                        Image:
+                      </Label>
+                      <div className="relative aspect-[4/3] w-full max-w-xs rounded-lg overflow-hidden mt-2">
+                        <Image
+                          src={section.imageUrl}
+                          alt={`Section ${index + 1} image`}
+                          fill
+                          sizes="100px"
+                          className="object-cover"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           ))}
@@ -581,19 +848,14 @@ export default function CaseStudyEditForm({
             </div>
 
             <div>
-              <Label htmlFor="newSectionImage" size="default">
-                Image URL
-              </Label>
-              <Input
-                id="newSectionImage"
-                value={newContentSection.imageUrl}
-                onChange={e =>
-                  setNewContentSection(prev => ({
-                    ...prev,
-                    imageUrl: e.target.value,
-                  }))
-                }
-                placeholder="Enter image URL"
+              <Label size="default">Image</Label>
+              <ImageEditable
+                className="mt-4"
+                size="small"
+                alt="Content Section Image"
+                onUpload={handleNewSectionImageUpload}
+                src={newContentSection.imageUrl || undefined}
+                showCrop={false}
               />
             </div>
 

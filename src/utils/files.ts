@@ -1,6 +1,44 @@
 import { v4 as uuidv4 } from 'uuid'
-import { unlink } from 'fs/promises'
+import { unlink, mkdir, writeFile } from 'fs/promises'
 import { join } from 'path'
+import { existsSync } from 'fs'
+
+/**
+ * Save file to local uploads directory
+ * @param file - The file to save
+ * @param nameDir - Directory name for organization (e.g., 'images', 'videos', 'studios')
+ * @returns Promise<string> - The public URL of the saved file
+ */
+export const saveFileLocally = async (
+  file: File,
+  nameDir: string = 'images'
+): Promise<string> => {
+  try {
+    const fileExtension = file.name.split('.').pop()
+    const fileName = `${uuidv4()}.${fileExtension}`
+
+    // Create uploads directory structure
+    const uploadsDir = join(process.cwd(), 'public', 'uploads', nameDir)
+    if (!existsSync(uploadsDir)) {
+      await mkdir(uploadsDir, { recursive: true })
+    }
+
+    // Convert File to Buffer
+    const bytes = await file.arrayBuffer()
+    const buffer = Buffer.from(bytes)
+
+    // Save file
+    const filePath = join(uploadsDir, fileName)
+    await writeFile(filePath, buffer)
+
+    // Return public URL
+    const publicUrl = `/uploads/${nameDir}/${fileName}`
+    return publicUrl
+  } catch (error) {
+    console.error('Local file save error:', error)
+    throw error
+  }
+}
 
 /**
  * Upload a file to S3 storage
@@ -25,14 +63,10 @@ export const getUploadedFile = async (
         originalName: file.name,
         uploadedAt: new Date().toISOString(),
         folder: nameDir,
+        fileCategory: 'image',
       },
     })
 
-    console.log('Upload result:', {
-      cdnUrl: result.cdnUrl,
-      url: result.url,
-      key: result.key,
-    })
     return result.cdnUrl || result.url
   } catch (error) {
     console.error('File upload error:', error)
@@ -43,11 +77,41 @@ export const getUploadedFile = async (
 }
 
 /**
- * Delete a file from local uploads directory
+ * Delete a file from local uploads directory or S3
  * @param fileUrl - The URL of the file to delete
  * @returns Promise<boolean> - Success status
  */
 export const deleteUploadedFile = async (fileUrl: string): Promise<boolean> => {
+  // Static assets in /assets/ are not deletable via API (they're part of the codebase)
+  // Return true to indicate they don't need deletion
+  if (fileUrl.startsWith('/assets/')) {
+    console.log('Static asset path detected, skipping deletion:', fileUrl)
+    return true
+  }
+
+  // Check if it's a local uploaded file (starts with /uploads/)
+  const isLocalFile = fileUrl.startsWith('/uploads/')
+
+  // If it's a local file, delete it directly without importing S3
+  if (isLocalFile) {
+    try {
+      const urlPath = fileUrl.replace(/^\/uploads\//, '')
+      const filePath = join(process.cwd(), 'public', 'uploads', urlPath)
+      await unlink(filePath)
+      return true
+    } catch (error: any) {
+      // Ignore ENOENT errors (file doesn't exist) - this is not critical
+      if (error?.code === 'ENOENT') {
+        const urlPath = fileUrl.replace(/^\/uploads\//, '')
+        console.log('Local file not found (may already be deleted):', urlPath)
+        return true // Treat as success since file doesn't exist
+      }
+      console.error('Error deleting local file:', error)
+      return false
+    }
+  }
+
+  // For non-local files, try to delete from S3 (only if S3 is configured)
   try {
     const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import(
       '@/lib/s3'
@@ -61,24 +125,14 @@ export const deleteUploadedFile = async (fileUrl: string): Promise<boolean> => {
       }
     }
   } catch (error) {
-    console.error('Error deleting file from S3:', error)
+    // If S3 is not configured or import fails, just log and continue
+    // This is expected if we're using local storage only
+    if (process.env.NODE_ENV === 'development') {
+      console.log('S3 not available, skipping S3 deletion:', error)
+    }
   }
 
-  try {
-    const urlPath = fileUrl.replace(/^\/uploads\//, '')
-    const filePath = join(process.cwd(), 'public', 'uploads', urlPath)
-    await unlink(filePath)
-    return true
-  } catch (error: any) {
-    // Ignore ENOENT errors (file doesn't exist) - this is not critical
-    if (error?.code === 'ENOENT') {
-      const urlPath = fileUrl.replace(/^\/uploads\//, '')
-      console.log('Local file not found (may already be deleted):', urlPath)
-      return true // Treat as success since file doesn't exist
-    }
-    console.error('Error deleting local file:', error)
-    return false
-  }
+  return false
 }
 
 /**

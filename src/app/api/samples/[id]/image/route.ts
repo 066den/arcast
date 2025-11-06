@@ -64,7 +64,6 @@ export async function POST(
       sample: updatedSample,
     })
   } catch (error) {
-    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -94,7 +93,9 @@ export async function DELETE(
     if (sample.thumbUrl) {
       try {
         const oldUrl = sample.thumbUrl
-        const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import('@/lib/s3')
+        const { isS3Url, extractFileKeyFromUrl, deleteFromS3 } = await import(
+          '@/lib/s3'
+        )
         if (isS3Url(oldUrl)) {
           const key = extractFileKeyFromUrl(oldUrl)
           if (key) {
@@ -119,7 +120,6 @@ export async function DELETE(
       sample: updatedSample,
     })
   } catch (error) {
-    
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

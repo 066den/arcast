@@ -31,7 +31,7 @@ export default async function CaseStudyPage({
       <HeroSection
         title={title}
         description={tagline}
-        image="/assets/images/case-banner.jpg"
+        image={caseStudy.imageUrls[0] || '/assets/images/case-banner.jpg'}
       />
       <section className="lg:py-24 py-6">
         <h3 className="text-accent">{mainText}</h3>

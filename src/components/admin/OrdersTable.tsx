@@ -123,11 +123,13 @@ export default function OrdersTable({ initialData }: Props) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Status</SelectItem>
-              {Object.values(ORDER_STATUS).map(s => (
-                <SelectItem key={s} value={s}>
-                  <Badge variant={statusBadge(s)}>{s}</Badge>
-                </SelectItem>
-              ))}
+              {Object.values(ORDER_STATUS)
+                .filter(s => s && s.trim() !== '')
+                .map(s => (
+                  <SelectItem key={s} value={s}>
+                    <Badge variant={statusBadge(s)}>{s}</Badge>
+                  </SelectItem>
+                ))}
             </SelectContent>
           </Select>
         </div>
@@ -183,11 +185,13 @@ export default function OrdersTable({ initialData }: Props) {
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
-                      {Object.values(ORDER_STATUS).map(s => (
-                        <SelectItem key={s} value={s}>
-                          <Badge variant={statusBadge(s)}>{s}</Badge>
-                        </SelectItem>
-                      ))}
+                      {Object.values(ORDER_STATUS)
+                        .filter(s => s && s.trim() !== '')
+                        .map(s => (
+                          <SelectItem key={s} value={s}>
+                            <Badge variant={statusBadge(s)}>{s}</Badge>
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </TableCell>

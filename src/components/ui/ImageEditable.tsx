@@ -9,7 +9,7 @@ import { ImageCropper } from './ImageCropper'
 import { toast } from 'sonner'
 import Image from 'next/image'
 import { UploadIcon } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { validateFile } from '@/lib/validate'
 import { ASPECT_RATIOS } from '@/lib/constants'
 
@@ -35,6 +35,15 @@ const ImageEditable = ({
   const [cropImage, setCropImage] = useState<string | null>(null)
   const [isCropping, setIsCropping] = useState(false)
   const [imgUrl, setImgUrl] = useState<string>(src || '')
+
+  // Update imgUrl when src prop changes
+  useEffect(() => {
+    if (src) {
+      setImgUrl(src)
+    } else {
+      setImgUrl('')
+    }
+  }, [src])
 
   const handleDrop = async (files: File[]) => {
     const file = files[0]

@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 
 import { ERROR_MESSAGES, HTTP_STATUS } from '@/lib/constants'
 import { validateFile } from '@/lib/validate'
+import { getUploadedFile } from '@/utils/files'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -30,25 +31,8 @@ export async function POST(
       return NextResponse.json({ error: validation }, { status: 400 })
     }
 
-    // Upload to S3 (lazy import to avoid build-time evaluation during build)
-    const s3 = await import('@/lib/s3')
-
-    const fileExt = (file.name.split('.').pop() || 'jpg').toLowerCase()
-    const uniqueFileName = `${Date.now()}-${Math.random()
-      .toString(36)
-      .slice(2)}.${fileExt}`
-
-    const uploadRes = await s3.uploadToS3(file, uniqueFileName, {
-      folder: 'blog',
-      contentType: file.type,
-      metadata: {
-        originalName: file.name,
-        uploadedAt: new Date().toISOString(),
-        entity: 'blog',
-        entityId: id,
-      },
-    })
-    const imageUrl = uploadRes.cdnUrl || uploadRes.url
+    // Upload to S3
+    const imageUrl = await getUploadedFile(file, 'blog')
 
     const existingArticle = await prisma.blogRecord.findUnique({
       where: { id },
@@ -71,8 +55,7 @@ export async function POST(
       message: 'Article image updated successfully',
       article: updatedArticle,
     })
-  } catch (error) {
-    
+  } catch {
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -27,8 +27,6 @@ import {
   updateCaseStudy,
   getCaseStudies,
 } from '@/lib/api'
-import AddCaseStudyModal from './AddCaseStudyModal'
-import useFlag from '@/hooks/useFlag'
 
 interface CaseStudy {
   id: string
@@ -68,16 +66,6 @@ export default function CaseStudiesTable({
 }: CaseStudiesTableProps) {
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>(initialData)
   const [isLoading, setIsLoading] = useState(false)
-  const [isAddModalOpen, openAddModal, closeAddModal] = useFlag()
-
-  const handleAddSuccess = async () => {
-    try {
-      const updatedCaseStudies = (await getCaseStudies()) as CaseStudy[]
-      setCaseStudies(updatedCaseStudies)
-    } catch {
-      toast.error('Failed to refresh case studies')
-    }
-  }
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this case study?')) {
@@ -138,10 +126,12 @@ export default function CaseStudiesTable({
           <h2 className="text-2xl font-semibold">Case Studies</h2>
           <Badge variant="secondary">{caseStudies.length} total</Badge>
         </div>
-        <Button onClick={openAddModal}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Case Study
-        </Button>
+        <Link href="/admin/case-studies/create">
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Case Study
+          </Button>
+        </Link>
       </div>
 
       <div className="rounded-md border">
@@ -302,12 +292,6 @@ export default function CaseStudiesTable({
           </TableBody>
         </Table>
       </div>
-
-      <AddCaseStudyModal
-        isOpen={isAddModalOpen}
-        onClose={closeAddModal}
-        onSuccess={handleAddSuccess}
-      />
     </div>
   )
 }

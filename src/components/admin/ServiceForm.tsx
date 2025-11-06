@@ -137,7 +137,6 @@ const ServiceForm = ({
         setServiceTypes(data)
       }
     } catch (error) {
-      
       toast.error('Error loading service types')
     }
   }
@@ -200,13 +199,15 @@ const ServiceForm = ({
                   </SelectTrigger>
                   <SelectContent>
                     {serviceTypes.length > 0 ? (
-                      serviceTypes.map(type => (
-                        <SelectItem key={type.id} value={type.id}>
-                          {type.name}
-                        </SelectItem>
-                      ))
+                      serviceTypes
+                        .filter(type => type.id && type.id.trim() !== '')
+                        .map(type => (
+                          <SelectItem key={type.id} value={type.id}>
+                            {type.name}
+                          </SelectItem>
+                        ))
                     ) : (
-                      <SelectItem value="No service types found">
+                      <SelectItem value="none">
                         No service types found
                       </SelectItem>
                     )}

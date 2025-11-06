@@ -61,12 +61,14 @@ const InputPhoneNew = ({
             {countryCode}
           </SelectTrigger>
           <SelectContent className="max-h-60">
-            {countryes.map(country => (
-              <SelectItem key={country.code} value={country.code}>
-                {country.code}{' '}
-                <span className="text-muted-foreground">{country.country}</span>
-              </SelectItem>
-            ))}
+            {countryes
+              .filter(country => country.code && country.code.trim() !== '')
+              .map(country => (
+                <SelectItem key={country.code} value={country.code}>
+                  {country.code}{' '}
+                  <span className="text-muted-foreground">{country.country}</span>
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
         <Input

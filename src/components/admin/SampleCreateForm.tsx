@@ -128,11 +128,13 @@ export default function SampleCreateForm({
                 </SelectTrigger>
                 <SelectContent>
                   {serviceTypes.length > 0 ? (
-                    serviceTypes.map(serviceType => (
-                      <SelectItem key={serviceType.id} value={serviceType.id}>
-                        {serviceType.name}
-                      </SelectItem>
-                    ))
+                    serviceTypes
+                      .filter(st => st.id && st.id.trim() !== '')
+                      .map(serviceType => (
+                        <SelectItem key={serviceType.id} value={serviceType.id}>
+                          {serviceType.name}
+                        </SelectItem>
+                      ))
                   ) : (
                     <SelectItem value="none">No service type</SelectItem>
                   )}

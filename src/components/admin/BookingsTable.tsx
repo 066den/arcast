@@ -319,13 +319,15 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
                 <SelectValue placeholder={statusString} />
               </SelectTrigger>
               <SelectContent>
-                {Object.values(BOOKING_STATUS).map(status => (
-                  <SelectItem key={status} value={status}>
-                    <Badge variant={getStatusBadgeVariant(status)}>
-                      {status}
-                    </Badge>
-                  </SelectItem>
-                ))}
+                {Object.values(BOOKING_STATUS)
+                  .filter(status => status && status.trim() !== '')
+                  .map(status => (
+                    <SelectItem key={status} value={status}>
+                      <Badge variant={getStatusBadgeVariant(status)}>
+                        {status}
+                      </Badge>
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
@@ -420,13 +422,15 @@ const BookingsTable = ({ initialData }: BookingsTableProps) => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Status</SelectItem>
-              {Object.values(BOOKING_STATUS).map(status => (
-                <SelectItem key={status} value={status}>
-                  <Badge variant={getStatusBadgeVariant(status)}>
-                    {status}
-                  </Badge>
-                </SelectItem>
-              ))}
+              {Object.values(BOOKING_STATUS)
+                .filter(status => status && status.trim() !== '')
+                .map(status => (
+                  <SelectItem key={status} value={status}>
+                    <Badge variant={getStatusBadgeVariant(status)}>
+                      {status}
+                    </Badge>
+                  </SelectItem>
+                ))}
             </SelectContent>
           </Select>
         </div>

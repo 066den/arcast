@@ -106,8 +106,45 @@ function SelectLabel({
 function SelectItem({
   className,
   children,
+  value: rawValue,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Item>) {
+  // Prevent rendering SelectItem with empty string, null, or undefined value
+  // Radix UI Select doesn't allow empty string values
+  // Early validation - if value is invalid, don't render at all
+  if (
+    rawValue == null ||
+    rawValue === '' ||
+    (typeof rawValue === 'string' && rawValue.trim() === '')
+  ) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error(
+        '[SelectItem] Invalid value detected - cannot render with empty/null/undefined value',
+        {
+          value: rawValue,
+          type: typeof rawValue,
+          children: typeof children === 'string' ? children : 'ReactNode',
+        }
+      )
+    }
+    // Return null instead of rendering - this prevents Radix UI validation error
+    return null
+  }
+
+  // Normalize value to string - ensure it's always a valid non-empty string
+  const normalizedValue = String(rawValue).trim()
+
+  // Double check after normalization
+  if (!normalizedValue || normalizedValue === '') {
+    if (process.env.NODE_ENV === 'development') {
+      console.error(
+        '[SelectItem] Value normalized to empty string - skipping render',
+        { originalValue: rawValue, normalizedValue }
+      )
+    }
+    return null
+  }
+
   return (
     <SelectPrimitive.Item
       data-slot="select-item"
@@ -115,6 +152,7 @@ function SelectItem({
         "focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
         className
       )}
+      value={normalizedValue}
       {...props}
     >
       <span className="absolute right-2 flex size-3.5 items-center justify-center">

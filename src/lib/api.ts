@@ -34,8 +34,8 @@ export async function getArticles() {
 // Case Studies API functions
 export interface CaseStudyData {
   title: string
-  tagline: string
-  mainText: string
+  tagline?: string | null
+  mainText?: string | null
   clientId?: string | null
   staffIds: string[]
   equipmentIds: string[]
@@ -103,6 +103,35 @@ export async function deleteCaseStudyImage(id: string, imageUrl: string) {
       method: 'DELETE',
     }
   )
+}
+
+export async function uploadContentSectionImage(
+  file: File,
+  folder: string = 'case-studies'
+) {
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('folder', folder)
+
+  const result = await apiRequest<{
+    success: boolean
+    message: string
+    fileUrl: string
+  }>('/api/upload/image', {
+    method: 'POST',
+    body: formData,
+  })
+
+  return result.fileUrl
+}
+
+export async function deleteContentSectionImage(fileUrl: string) {
+  return apiRequest<{
+    success: boolean
+    message: string
+  }>(`/api/upload/image?fileUrl=${encodeURIComponent(fileUrl)}`, {
+    method: 'DELETE',
+  })
 }
 
 // Samples API functions
