@@ -66,7 +66,7 @@ const HeroSection = ({
         <Button
           variant="accent"
           size="lg"
-          className="absolute bottom-[12.5%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
+          className="absolute md:bottom-12 bottom-6 left-[50%] translate-x-[-50%]"
           onClick={handleBookNow}
         >
           I want to book
