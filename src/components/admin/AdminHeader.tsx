@@ -29,9 +29,8 @@ export default function AdminHeader({ user }: AdminHeaderProps) {
         callbackUrl: `${window.location.origin}/admin/login`,
       })
       toast.success('Successfully signed out')
-    } catch (error) {
+    } catch {
       toast.error('Error signing out')
-      
     }
   }
 

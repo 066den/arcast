@@ -19,7 +19,10 @@ export default async function Home() {
 
   return (
     <>
-      <HeroSection videoUrl={videoUrl} />
+      <HeroSection
+        videoUrl={videoUrl}
+        buttonUrl="https://api.whatsapp.com/send?phone=971508249795"
+      />
       <IntroSection />
       <AboutSection />
       <EpisodeSection

@@ -1,11 +1,14 @@
+'use client'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
+import { Button } from '../ui/button'
 
 interface HeroSectionProps {
   title?: string | null
   description?: string | null
   image?: string
   videoUrl?: string
+  buttonUrl?: string
 }
 
 const HeroSection = ({
@@ -13,7 +16,13 @@ const HeroSection = ({
   description,
   image,
   videoUrl,
+  buttonUrl,
 }: HeroSectionProps) => {
+  const handleBookNow = () => {
+    if (buttonUrl) {
+      window.open(buttonUrl, '_blank')
+    }
+  }
   return (
     <div
       className={cn(
@@ -52,6 +61,16 @@ const HeroSection = ({
             </h3>
           )}
         </div>
+      )}
+      {buttonUrl && (
+        <Button
+          variant="accent"
+          size="lg"
+          className="absolute bottom-[12.5%] left-[50%] translate-x-[-50%] translate-y-[-50%]"
+          onClick={handleBookNow}
+        >
+          I want to book
+        </Button>
       )}
     </div>
   )
