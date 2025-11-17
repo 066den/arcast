@@ -21,7 +21,7 @@ export default async function Home() {
     <>
       <HeroSection
         videoUrl={videoUrl}
-        buttonUrl="https://api.whatsapp.com/send?phone=971508249795"
+        buttonUrl="https://api.whatsapp.com/send?phone=971508249795&text=i%20want%20to%20book%20to"
       />
       <IntroSection />
       <AboutSection />

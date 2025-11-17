@@ -66,10 +66,10 @@ const HeroSection = ({
         <Button
           variant="accent"
           size="lg"
-          className="absolute md:bottom-12 bottom-6 left-[50%] translate-x-[-50%]"
+          className="absolute lg:bottom-[22%] md:bottom-16 bottom-6 left-[50%] translate-x-[-50%] md:text-xl text-base"
           onClick={handleBookNow}
         >
-          I want to book
+          WhatsApp
         </Button>
       )}
     </div>
