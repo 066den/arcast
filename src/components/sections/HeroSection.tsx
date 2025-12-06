@@ -7,6 +7,7 @@ interface HeroSectionProps {
   title?: string | null
   description?: string | null
   image?: string
+  poster?: string
   videoUrl?: string
   buttonUrl?: string
 }
@@ -15,6 +16,7 @@ const HeroSection = ({
   title,
   description,
   image,
+  poster,
   videoUrl,
   buttonUrl,
 }: HeroSectionProps) => {
@@ -34,6 +36,7 @@ const HeroSection = ({
         <video
           src={videoUrl}
           controls={false}
+          poster={poster || ''}
           muted
           loop
           autoPlay
@@ -66,7 +69,7 @@ const HeroSection = ({
         <Button
           variant="accent"
           size="lg"
-          className="absolute lg:bottom-[22%] md:bottom-16 bottom-6 left-[50%] translate-x-[-50%] md:text-xl text-base"
+          className="absolute lg:bottom-[22%] md:bottom-16 bottom-6 left-[50%] translate-x-[-50%] md:text-xl text-base bg-[#25D366]"
           onClick={handleBookNow}
         >
           WhatsApp
